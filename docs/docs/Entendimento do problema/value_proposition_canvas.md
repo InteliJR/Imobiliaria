@@ -5,4 +5,7 @@ description: Value Proposition Canvas do projeto.
 ---
 
 # Value Proposition Canvas
-<img src="../../static/img/canvas.png">
+
+
+
+<img src={require('../../static/img/canvas.png').default} alt="Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
