@@ -3,10 +3,10 @@ name: Deploy Docusaurus
 on:
   push:
     branches:
-      - documentation
+      - docs
   pull_request:
     branches:
-      - documentation
+      - docs
 # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
