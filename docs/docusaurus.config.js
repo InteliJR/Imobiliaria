@@ -60,7 +60,7 @@ const config = {
       // Replace with your project's social card
       image: 'img/EJ_logo.svg',
       navbar: {
-        title: 'My Site',
+        title: 'Docs',
         logo: {
           alt: 'My Site Logo',
           src: 'img/EJ_logo.svg',
