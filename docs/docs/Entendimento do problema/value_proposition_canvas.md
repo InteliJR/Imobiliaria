@@ -5,4 +5,4 @@ description: Value Proposition Canvas do projeto.
 ---
 
 # Value Proposition Canvas
-<img src="../../static/img/canvass.png">
+<img src="../../static/img/canvass.png" alt= "Example banner" style="display: block; margin-left: auto; margin-right: auto;"/>
