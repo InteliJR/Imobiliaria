@@ -6,7 +6,7 @@ description: Matriz É/Não é - Faz/Não faz
 
 # Matriz É/Não é - Faz/Não faz
 
-Essa matriz conssite em uma ferramenta de análise de soluções que ajuda a identificar o que de fato estamos desenvolvendo e o que isso tem de funcionalidade. Essa matriz é importante para que tanto os desenvolvedores quanto os clientes estajam alinhados do que vai ser entregue como produto final. A matriz é dividida em 4 quadrantes, sendo eles:
+Essa matriz consiste em uma ferramenta de análise de soluções que ajuda a identificar o que de fato estamos desenvolvendo e o que isso tem de funcionalidade. Essa matriz é importante para que tanto os desenvolvedores quanto os clientes estajam alinhados do que vai ser entregue como produto final. A matriz é dividida em 4 quadrantes, sendo eles:
 
 - **É**: O que é o produto?
   -  Tudo aquilo que o produto que iremos desenvolver é. Ex: aplicativo, digital, ferramenta, online, gestão de mudanças, inovador, seguro, acessível, etc.
