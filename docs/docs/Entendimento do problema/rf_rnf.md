@@ -26,7 +26,7 @@ O usuário deve ser capaz de realizar login para acessar os serviços da platafo
 | CT-03 | Verifica se o link de "Esqueceu sua Senha" redireciona corretamente        |
 | CT-04 | Verifica se o serviço de autenticação retorna o nível de acesso do usuário |
 
-<br>
+
 
 ### RF-02: Funcionalidade de Login com Google
 O usuário deve ser capaz de realizar login através da integração com a API do Google para acessar os serviços da plataforma.
@@ -39,7 +39,7 @@ O usuário deve ser capaz de realizar login através da integração com a API d
 | CT-06 | Verifica se uma mensagem de erro é mostrada para credenciais inválidas     |
 | CT-07 | Verifica se o serviço de autenticação retorna o nível de acesso do usuário |
 
-<br>
+
 
 ### RF-03: Funcionalidade de Persistência de Login
 O sistema deve ser capaz de manter uma sessão de usuário ativa por um período de tempo estendido ou até que o usuário faça logout.
@@ -53,7 +53,7 @@ O sistema deve ser capaz de manter uma sessão de usuário ativa por um período
 | CT-10 | Verificar se a persistência de login expira conforme o tempo configurado |
 | CT-11 | Verificar se a persistência de login expira após realização de logout    |
 
-<br>
+
 
 ### RF-04: Funcionalidade de Logout
 O usuário deve ser capaz de realizar logout para encerrar sua sessão ativa dentro da plataforma.
@@ -66,7 +66,7 @@ O usuário deve ser capaz de realizar logout para encerrar sua sessão ativa den
 | CT-13 | Verificar se o usuário não pode acessar áreas protegidas após realizar logout       |
 | CT-14 | Verificar se o logout afeta apenas a sessão atual, não afetando outros dispositivos |
 
-<br>
+
 
 ### RF-05: Visualização de Perfil
 O usuário deve ser capaz de visualizar e acessar informações pessoais e detalhes da conta na plataforma.
@@ -79,7 +79,7 @@ O usuário deve ser capaz de visualizar e acessar informações pessoais e detal
 | CT-16 | Verificar se as informações exibidas no perfil estão corretas                   |
 | CT-17 | Verificar se uma mensagem de erro é retornada em caso de falha na requisição       |
 
-<br>
+
 
 ### RF-06: Edição de Perfil
 O usuário deve ser capaz de editar informações pessoais e atualizar sua conta na plataforma.
@@ -93,7 +93,7 @@ O usuário deve ser capaz de editar informações pessoais e atualizar sua conta
 | CT-20 | Verificar se uma mensagem de erro é exibida para entradas inválidas        |
 | CT-21 | Verificar se uma confirmação é enviada por e-mail                          |
 
-<br>
+
 
 ### RF-07: Redirecionamento para Suporte por WhatsApp
 O usuário deve ser capaz de ser redirecionado para o suporte via WhatsApp de forma direta.
@@ -105,7 +105,7 @@ O usuário deve ser capaz de ser redirecionado para o suporte via WhatsApp de fo
 | CT-22 | Verificar se o usuário consegue acessar o suporte via WhatsApp       |
 | CT-23 | Verificar se o redirecionamento para o WhatsApp ocorre corretamente  |
 
-<br>
+
 
 ### RF-08: Assinatura de Contratos por Assinatura Digital
 O usuário deve ser capaz de assinar digitalmente os contratos através da plataforma.
@@ -118,7 +118,7 @@ O usuário deve ser capaz de assinar digitalmente os contratos através da plata
 | CT-25 | Verificar se a assinatura digital é registrada corretamente                  |
 | CT-26 | Verificar se uma mensagem de erro é exibida quando a assinatura falha        |
 
-<br>
+
 
 ### RF-09: Visualização de Contratos Assinados
 O locatário deve ser capaz de visualizar os contratos que já foram assinados na plataforma.
@@ -132,7 +132,7 @@ O locatário deve ser capaz de visualizar os contratos que já foram assinados n
 | CT-29 | Verificar se uma mensagem é exibida quando não há contratos assinados         |
 | CT-30 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento |
 
-<br>
+
 
 ### RF-10: Visualização de Contratos Pendentes
 O locatário deve ser capaz de visualizar os contratos que estão pendentes de assinatura na plataforma.
@@ -146,7 +146,7 @@ O locatário deve ser capaz de visualizar os contratos que estão pendentes de a
 | CT-33 | Verificar se uma mensagem é exibida quando não há contratos pendentes         |
 | CT-34 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento |
 
-<br>
+
 
 ### RF-11: Visualização de Boletos Pendentes
 O locatário deve ser capaz de visualizar os boletos de aluguel que estão pendentes de pagamento na plataforma.
@@ -160,7 +160,7 @@ O locatário deve ser capaz de visualizar os boletos de aluguel que estão pende
 | CT-37 | Verificar se uma mensagem é exibida quando não há boletos pendentes           |
 | CT-38 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento  |
 
-<br>
+
 
 ### RF-12: Visualização de Histórico de Pagamentos
 O locatário deve ser capaz de visualizar o histórico de pagamentos de aluguel realizados na plataforma.
@@ -174,7 +174,7 @@ O locatário deve ser capaz de visualizar o histórico de pagamentos de aluguel 
 | CT-41 | Verificar se uma mensagem é exibida quando não há histórico de pagamentos      |
 | CT-42 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento  |
 
-<br>
+
 
 ### RF-13: Filtro de Boletos por Data
 O locatário deve ser capaz de aplicar filtros por data para encontrar boletos específicos na plataforma.
@@ -187,7 +187,7 @@ O locatário deve ser capaz de aplicar filtros por data para encontrar boletos e
 | CT-44 | Verificar se os boletos exibidos correspondem aos filtros aplicados                           |
 | CT-45 | Verificar se uma mensagem de erro é exibida quando não há boletos correspondentes aos filtros |
 
-<br>
+
 
 ### RF-14: Visualização de Contrato Específico
 O locatário deve ser capaz de visualizar detalhes específicos de um contrato na plataforma.
@@ -201,7 +201,7 @@ O locatário deve ser capaz de visualizar detalhes específicos de um contrato n
 | CT-48 | Verificar se uma mensagem de erro é exibida quando o contrato solicitado não está disponível                 |
 | CT-49 | Verificar se os dados principais, como número do contrato, estão disponíveis para copiar e colar             |
 
-<br>
+
 
 ### RF-15: Visualização de Boleto Específico
 O locatário deve ser capaz de visualizar detalhes específicos de um boleto na
@@ -217,7 +217,7 @@ O locatário deve ser capaz de visualizar detalhes específicos de um boleto na
 | CT-52 | Verificar se uma mensagem de erro é exibida quando o boleto solicitado não está disponível                   |
 | CT-53 | Verificar se os dados principais, como número do boleto, estão dispostos textualmente para copiar e colar               |
 
-<br>
+
 
 ### RF-16: Download de Contrato
 O locatário deve ser capaz de baixar contratos em formato PDF através da plataforma.
@@ -231,7 +231,7 @@ O locatário deve ser capaz de baixar contratos em formato PDF através da plata
 | CT-56 | Verificar se uma mensagem de erro é exibida quando ocorre falha no download                                  |
 | CT-57 | Verificar se o contrato baixado pode ser aberto em diferentes leitores de PDF                                |
 
-<br>
+
 
 ### RF-17: Download de Boleto
 O locatário deve ser capaz de baixar boletos em formato PDF através da plataforma.
@@ -245,7 +245,7 @@ O locatário deve ser capaz de baixar boletos em formato PDF através da platafo
 | CT-60 | Verificar se uma mensagem de erro é exibida quando ocorre falha no download                                  |
 | CT-61 | Verificar se o boleto baixado pode ser aberto em diferentes leitores de PDF                                  |
 
-<br>
+
 
 ### RF-18: Visualizar Imóveis
 O locador deve ser capaz de visualizar os imóveis cadastrados na plataforma.
@@ -259,7 +259,7 @@ O locador deve ser capaz de visualizar os imóveis cadastrados na plataforma.
 | CT-64 | Verificar se uma mensagem é exibida quando não há imóveis cadastrados        |
 | CT-65 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento |
 
-<br>
+
 
 ### RF-19: Visualizar Valores Recebidos pela Imobiliária
 O locador deve ser capaz de visualizar os valores recebidos pela imobiliária através da plataforma.
@@ -273,7 +273,7 @@ O locador deve ser capaz de visualizar os valores recebidos pela imobiliária at
 | CT-68 | Verificar se uma mensagem é exibida quando não há valores recebidos                                          |
 | CT-69 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento                                 |
 
-<br>
+
 
 ### RF-20: Visualizar Comprovante de Pagamento de IPTU pela Imobiliária
 O locador deve ser capaz de visualizar os comprovantes de pagamento de IPTU realizados pela imobiliária.
@@ -287,7 +287,7 @@ O locador deve ser capaz de visualizar os comprovantes de pagamento de IPTU real
 | CT-72 | Verificar se uma mensagem é exibida quando não há comprovantes disponíveis                                  |
 | CT-73 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento                                 |
 
-<br>
+
 
 ### RF-21: Criação de Conta de Usuários
 A imobiliária deve ser capaz de criar contas de usuários manualmente ou através do upload de um arquivo CSV.
@@ -300,7 +300,7 @@ A imobiliária deve ser capaz de criar contas de usuários manualmente ou atrav�
 | CT-75 | Verificar se a imobiliária pode criar contas de usuários através do upload de um arquivo CSV                |
 | CT-76 | Verificar se uma mensagem de confirmação é exibida após a criação de uma conta                               |
 | CT-77 | Verificar se um email com as credenciais é enviado para o usuário após a criação da conta                  |
-<br>
+
 
 ### RF-22: Gerenciamento de Nível de Acesso
 A imobiliária deve ser capaz de gerenciar o nível de acesso dos usuários cadastrados na plataforma.
@@ -314,7 +314,7 @@ A imobiliária deve ser capaz de gerenciar o nível de acesso dos usuários cada
 | CT-80 | Verificar se uma mensagem de confirmação é exibida após a alteração do nível de acesso                       |
 | CT-81 | Verificar se uma mensagem de erro é exibida quando ocorre falha na alteração do nível de acesso              |
 
-<br>
+
 
 ### RF-23: Visualização de Todos os Usuários
 A imobiliária deve ser capaz de visualizar todos os usuários cadastrados na plataforma.
@@ -328,7 +328,7 @@ A imobiliária deve ser capaz de visualizar todos os usuários cadastrados na pl
 | CT-84 | Verificar se uma mensagem é exibida quando não há usuários cadastrados                                       |
 | CT-85 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento                                 |
 
-<br>
+
 
 ### RF-24: Visualização de um Usuário Específico
 A imobiliária deve ser capaz de visualizar informações detalhadas de um usuário específico na plataforma.
@@ -342,7 +342,7 @@ A imobiliária deve ser capaz de visualizar informações detalhadas de um usuá
 | CT-88 | Verificar se uma mensagem de erro é exibida quando o usuário específico não é encontrado                      |
 | CT-89 | Verificar se os dados principais, como nome e e-mail, estão disponíveis para copiar e colar                   |
 
-<br>
+
 
 ### RF-25: Remoção de Conta de Usuário
 A imobiliária deve ser capaz de remover contas de usuários da plataforma.
@@ -356,7 +356,7 @@ A imobiliária deve ser capaz de remover contas de usuários da plataforma.
 | CT-92 | Verificar se uma mensagem de erro é exibida quando ocorre falha na remoção da conta                           |
 | CT-93 | Verificar se a conta removida não pode mais acessar a plataforma após a remoção                              |
 
-<br>
+
 
 ### RF-26: Cadastro de Imóveis
 A imobiliária deve ser capaz de cadastrar novos imóveis na plataforma.
@@ -370,7 +370,7 @@ A imobiliária deve ser capaz de cadastrar novos imóveis na plataforma.
 | CT-96 | Verificar se uma mensagem de erro é exibida quando ocorre falha no cadastro do imóvel                          |
 | CT-97 | Verificar se o imóvel cadastrado está disponível para visualização após o cadastro                           |
 
-<br>
+
 
 ### RF-27: Cadastro de Contratos
 A imobiliária deve ser capaz de cadastrar novos contratos na plataforma, incluindo campos como valor, aluguel, reajuste, tempo de contrato, condomínio e IPTU.
@@ -384,7 +384,7 @@ A imobiliária deve ser capaz de cadastrar novos contratos na plataforma, inclui
 | CT-100| Verificar se uma mensagem de confirmação é exibida após o cadastro do contrato                                |
 | CT-101| Verificar se uma mensagem de erro é exibida quando ocorre falha no cadastro do contrato                        |
 
-<br>
+
 
 ### RF-28: Upload de Contrato por PDF
 A imobiliária deve ser capaz de realizar o upload de contratos em formato PDF na plataforma.
@@ -398,7 +398,7 @@ A imobiliária deve ser capaz de realizar o upload de contratos em formato PDF n
 | CT-104| Verificar se uma mensagem de confirmação é exibida após o upload do contrato                                  |
 | CT-105| Verificar se uma mensagem de erro é exibida quando ocorre falha no upload do contrato                         |
 
-<br>
+
 
 ### RF-29: Upload de Boleto por PDF
 A imobiliária deve ser capaz de realizar o upload de boletos em formato PDF na plataforma.
@@ -412,7 +412,7 @@ A imobiliária deve ser capaz de realizar o upload de boletos em formato PDF na 
 | CT-108| Verificar se uma mensagem de confirmação é exibida após o upload do boleto                                    |
 | CT-109| Verificar se uma mensagem de erro é exibida quando ocorre falha no upload do boleto                           |
 
-<br>
+
 
 ### RF-30: Leitura de Contratos e Boletos por IA
 O sistema deve ser capaz de utilizar inteligência artificial para ler documentos e extrair informações para transcrevê-los em campos de copiar e colar.
@@ -426,7 +426,7 @@ O sistema deve ser capaz de utilizar inteligência artificial para ler documento
 | CT-112| Verificar se as informações extraídas são precisas e estão disponíveis para uso na plataforma                |
 | CT-113| Verificar se uma mensagem de erro é exibida quando ocorre falha na extração das informações                   |
 
-<br>
+
 
 ### RF-31: Gerar Boletos com API Externa
 O sistema deve ser capaz de gerar boletos de pagamento utilizando uma API externa.
@@ -440,7 +440,7 @@ O sistema deve ser capaz de gerar boletos de pagamento utilizando uma API extern
 | CT-116| Verificar se uma mensagem de confirmação é exibida após a geração do boleto                                  |
 | CT-117| Verificar se uma mensagem de erro é exibida quando ocorre falha na geração do boleto                          |
 
-<br>
+
 
 ### RF-32: Verificação de Vencimento de Contratos
 O sistema deve ser capaz de verificar automaticamente o vencimento dos contratos cadastrados na plataforma.
@@ -453,7 +453,7 @@ O sistema deve ser capaz de verificar automaticamente o vencimento dos contratos
 | CT-119| Verificar se o sistema envia notificações quando um contrato está próximo do vencimento                      |
 | CT-120| Verificar se uma mensagem de erro é exibida quando ocorre falha na verificação do vencimento do contrato      |
 
-<br>
+
 
 ### RF-33: Verificação de Vencimento de Boletos
 O sistema deve ser capaz de verificar automaticamente o vencimento dos boletos de pagamento gerados na plataforma.
@@ -466,7 +466,7 @@ O sistema deve ser capaz de verificar automaticamente o vencimento dos boletos d
 | CT-122| Verificar se o sistema envia notificações quando um boleto está próximo do vencimento                        |
 | CT-123| Verificar se uma mensagem de erro é exibida quando ocorre falha na verificação do vencimento do boleto        |
 
-<br>
+
 
 ### RF-34: Envio de Notificação de Vencimento por E-mail
 O sistema deve ser capaz de enviar notificações por e-mail aos usuários quando contratos ou boletos estão próximos do vencimento.
@@ -480,7 +480,7 @@ O sistema deve ser capaz de enviar notificações por e-mail aos usuários quand
 | CT-126| Verificar se uma mensagem de confirmação é exibida após o envio da notificação por e-mail                    |
 | CT-127| Verificar se uma mensagem de erro é exibida quando ocorre falha no envio da notificação por e-mail            |
 
-<br>
+
 
 ### RF-35: Envio de Notificação de Boleto Gerado por E-mail
 O sistema deve ser capaz de enviar notificações por e-mail aos usuários quando novos boletos de pagamento são gerados.
@@ -494,7 +494,7 @@ O sistema deve ser capaz de enviar notificações por e-mail aos usuários quand
 | CT-130| Verificar se uma mensagem de confirmação é exibida após o envio da notificação por e-mail                    |
 | CT-131| Verificar se uma mensagem de erro é exibida quando ocorre falha no envio da notificação por e-mail            |
 
-<br>
+
 
 ### RF-36: Envio de Notificação de Contrato Assinado por E-mail
 O sistema deve ser capaz de enviar notificações por e-mail aos usuários quando novos contratos são assinados digitalmente.
@@ -508,7 +508,7 @@ O sistema deve ser capaz de enviar notificações por e-mail aos usuários quand
 | CT-134| Verificar se o sistema notifica quando todas as partes assinaram o contrato                                     |
 | CT-135| Verificar se uma mensagem de erro é exibida quando ocorre falha no envio da notificação por e-mail            |
 
-<br>
+
 
 ## **Requisitos Não Funcionais**
 
