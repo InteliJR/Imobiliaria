@@ -15,3 +15,4 @@ O Canvas de Proposta de Valor é uma ferramenta de estratégia de negócios proj
 <br>
 
 A principal vantagem do Canvas de Proposta de Valor é sua capacidade de criar uma correspondência direta entre o que o produto oferece e o que o cliente realmente precisa ou deseja. Ele divide o processo em duas seções principais: o perfil do cliente e a própria proposta de valor. Isso inclui a identificação de problemas do cliente, os benefícios que o produto traz, e como esses benefícios solucionam esses problemas de uma maneira única.
+
