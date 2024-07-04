@@ -40,10 +40,13 @@ jobs:
       with:
         node-version: latest
 
+    - name: Clean npm cache
+      run: npm cache clean --force
+
     - name: Install and Build
       run: |
         cd docs
-        npm ci
+        npm ci --force
         npm run build
         mv build ../build
 
@@ -64,10 +67,13 @@ jobs:
       with:
         node-version: latest
 
+    - name: Clean npm cache
+      run: npm cache clean --force
+
     - name: Install and Build
       run: |
         cd docs
-        npm ci
+        npm ci --force
         npm run build
         mv build ../build
         
