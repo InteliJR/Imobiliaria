@@ -41,14 +41,14 @@ jobs:
         npm run build
         mv build ../build
 
-    - name: Upload artifact (pull_request)
+    - name: Upload artifact
       if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v2
       with:
         name: build-artifact
-        path: ./build
+        path: ../build
 
-    - name: Download artifact (push)
+    - name: Download artifact
       if: github.event_name == 'push'
       uses: actions/download-artifact@v2
       with:
@@ -63,5 +63,3 @@ jobs:
       if: github.event_name == 'push'
       id: deployment
       uses: actions/deploy-pages@v2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
