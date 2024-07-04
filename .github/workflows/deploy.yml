@@ -9,7 +9,6 @@ on:
       - opened
       - reopened
       - synchronize
-      - closed
 
 # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -26,15 +25,35 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Hosted GitHub runners have 7 GB of memory available, let's use 6 GB
   NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: latest
+
+    - name: Install and Build
+      run: |
+        cd docs
+        npm ci
+        npm run build
+        mv build ../build
+
+  deploy:
+    if: github.ref == 'refs/heads/docs'
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
