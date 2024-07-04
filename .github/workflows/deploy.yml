@@ -6,7 +6,7 @@ on:
       - docs
   pull_request:
     branches:
-      - docs
+      - '*'  # Permite deploys a partir de qualquer branch em pull requests
   workflow_dispatch:
 
 permissions:
@@ -41,25 +41,17 @@ jobs:
         npm run build
         mv build ../build
 
-    - name: Upload artifact
-      if: github.event_name == 'pull_request'
-      uses: actions/upload-artifact@v2
-      with:
-        name: build-artifact
-        path: ../build
-
-    - name: Download artifact
-      if: github.event_name == 'push'
-      uses: actions/download-artifact@v2
-      with:
-        name: build-artifact
-        path: ./build
-
     - name: Setup Pages
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'pull_request'
       uses: actions/configure-pages@v3
 
+    - name: Upload artifact
+      if: github.event_name == 'push' || github.event_name == 'pull_request'
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: ../build
+
     - name: Deploy to GitHub Pages
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'pull_request'
       id: deployment
       uses: actions/deploy-pages@v2
