@@ -9,7 +9,7 @@ description: Value Proposition Canvas do projeto.
 <img src={require('../../static/img/canvasss.png').default} alt= "Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
 
 <br />
-<br />
+<br /> ss
 
 O Canvas de Proposta de Valor é uma ferramenta de estratégia de negócios projetada para ajudar a desenvolver produtos ou serviços alinhados com as necessidades específicas dos clientes. Desenvolvido por Alex Osterwalder, este modelo visual permite aos empreendedores e gerentes de produto identificar e comunicar claramente o valor que seus produtos ou serviços oferecem aos seus clientes.
 
