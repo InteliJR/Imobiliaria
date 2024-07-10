@@ -113,9 +113,9 @@ description: Justificativa detalhadas das tecnologias escolhidas para o projeto.
 
 |                 | Curva de Aprendizado | Documentação, Comunidade e Suporte | Flexibilidade         | Visão de Mercado |
 | --------------- | -------------------- | ---------------------------------- | --------------------- | ---------------- |
-| React<br><br>   | Moderada             | Alto \*                            | Alta                  | Alta             |
-| Angular<br><br> | Moderada-Difícil     | Alto                               | Regular               | Alta             |
-| Vue<br><br>     | Suave                | Regular                            | Altíssima (Excessiva) | Baixa            |
+| React  | Moderada             | Alto \*                            | Alta                  | Alta             |
+| Angular| Moderada-Difícil     | Alto                               | Regular               | Alta             |
+| Vue     | Suave                | Regular                            | Altíssima (Excessiva) | Baixa            |
 
 <sub>* *Observação: Embora React possua documentação e comunidade amplas na internet, o fato do framework ter sido descontinuado deve ser levado em consideração na escolha de tecnologia.*</sub><br/>
 <sub>Fonte: Material produzido pelos autores(2024).</sub>
@@ -172,7 +172,7 @@ description: Justificativa detalhadas das tecnologias escolhidas para o projeto.
 | Back-End           | ASP.NET Core    |
 | Banco de Dados     | MySQL ou SQLite |
 
-<sup>Fonte: Material produzido pelos autores(2024).</sub>
+<sub>Fonte: Material produzido pelos autores(2024).</sub>
 </div>
 
 ## Justificativa
