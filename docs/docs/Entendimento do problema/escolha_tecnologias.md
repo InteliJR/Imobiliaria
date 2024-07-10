@@ -106,11 +106,23 @@ description: Justificativa detalhadas das tecnologias escolhidas para o projeto.
 - Consultas Complexas: Não é tão eficiente em realizar consultas complexas como bancos de dados SQL.
 - Ferramentas de Backup: As ferramentas de backup e recuperação podem ser menos maduras em comparação com bancos de dados relacionais.
 
+### Quadros comparativos das tecnologias
+
+<div align="center">
+<sup> Quadro 1 - Frameworks de Front-End </sup>
+
 |                 | Curva de Aprendizado | Documentação, Comunidade e Suporte | Flexibilidade         | Visão de Mercado |
 | --------------- | -------------------- | ---------------------------------- | --------------------- | ---------------- |
 | React<br><br>   | Moderada             | Alto \*                            | Alta                  | Alta             |
 | Angular<br><br> | Moderada-Difícil     | Alto                               | Regular               | Alta             |
 | Vue<br><br>     | Suave                | Regular                            | Altíssima (Excessiva) | Baixa            |
+
+<sub>* *Observação: Embora React possua documentação e comunidade amplas na internet, o fato do framework ter sido descontinuado deve ser levado em consideração na escolha de tecnologia.*</sub><br/>
+<sub>Fonte: Material produzido pelos autores(2024).</sub>
+</div>
+
+<div align="center">
+<sup>Quadro 2 - Frameworks de Back-End</sup>
 
 |              | Curva de Aprendizado | Robustez e Performance | Documentação, Comunidade e Suporte | Visão de Mercado |
 | ------------ | -------------------- | ---------------------- | ---------------------------------- | ---------------- |
@@ -118,6 +130,12 @@ description: Justificativa detalhadas das tecnologias escolhidas para o projeto.
 | Spring Boot  | Moderada-Difícil     | Alta                   | Alta                               | Grande porte     |
 | Django       | Suave                | Limitado               | Alta                               | Médio            |
 | ASP.NET Core | Moderada-Difícil     | Alta                   | Alta                               | Grande porte     |
+
+<sub>Fonte: Material produzido pelos autores(2024).</sub>
+</div>
+
+<div align="center">
+<sup> Quadro 3 - Bancos de Dados </sup>
 
 |                            | SQL (Relacional) | NoSQL (Não-relacional) |
 | -------------------------- | ---------------- | ---------------------- |
@@ -127,8 +145,14 @@ description: Justificativa detalhadas das tecnologias escolhidas para o projeto.
 | Rastreabilidade            | Otimizado        | Restrito               |
 | Desempenho                 | Regular          | Alto                   |
 
+<sub>Fonte: Material produzido pelos autores(2024).</sub>
+</div>
+
 ## Possibilidades de escolha de tecnologia 
 &emsp;&emsp;Considerando o escopo do projeto, com seus requisitos funcionais e não-funcionais, o aperfeiçoamento técnico da equipe e as vantagens e desvantagens das tecnologias mencionadas, sugere-se de forma produtiva as seguintes escolhas de tecnologias:
+
+<div align="center">
+<sup> Quadro 4 - Escolha Principal de Tecnologias </sup>
 
 | Escolha Principal | Stack                |
 | ----------------- | -------------------- |
@@ -136,11 +160,20 @@ description: Justificativa detalhadas das tecnologias escolhidas para o projeto.
 | Back-End          | Express.js (Node.js) |
 | Banco de Dados    | SQL (Postgres)       |
 
+<sub>Fonte: Material produzido pelos autores(2024).</sub>
+</div>
+
+<div align="center">
+<sup>Quadro 5 - Escolha Secundária de Tecnologias</sup>
+
 | Escolha Secundária | Stack           |
 | ------------------ | --------------- |
 | Front-End          | Angular         |
 | Back-End           | ASP.NET Core    |
 | Banco de Dados     | MySQL ou SQLite |
+
+<sup>Fonte: Material produzido pelos autores(2024).</sub>
+</div>
 
 ## Justificativa
 
