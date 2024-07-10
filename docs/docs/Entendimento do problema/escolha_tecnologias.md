@@ -105,3 +105,60 @@ description: Justificativa detalhadas das tecnologias escolhidas para o projeto.
 - Consistência: Pode enfrentar problemas de consistência em alguns cenários devido à sua natureza eventual.
 - Consultas Complexas: Não é tão eficiente em realizar consultas complexas como bancos de dados SQL.
 - Ferramentas de Backup: As ferramentas de backup e recuperação podem ser menos maduras em comparação com bancos de dados relacionais.
+
+|                 | Curva de Aprendizado | Documentação, Comunidade e Suporte | Flexibilidade         | Visão de Mercado |
+| --------------- | -------------------- | ---------------------------------- | --------------------- | ---------------- |
+| React<br><br>   | Moderada             | Alto \*                            | Alta                  | Alta             |
+| Angular<br><br> | Moderada-Difícil     | Alto                               | Regular               | Alta             |
+| Vue<br><br>     | Suave                | Regular                            | Altíssima (Excessiva) | Baixa            |
+
+|              | Curva de Aprendizado | Robustez e Performance | Documentação, Comunidade e Suporte | Visão de Mercado |
+| ------------ | -------------------- | ---------------------- | ---------------------------------- | ---------------- |
+| Express      | Suave                | Regular                | Alta                               | Médio            |
+| Spring Boot  | Moderada-Difícil     | Alta                   | Alta                               | Grande porte     |
+| Django       | Suave                | Limitado               | Alta                               | Médio            |
+| ASP.NET Core | Moderada-Difícil     | Alta                   | Alta                               | Grande porte     |
+
+|                            | SQL (Relacional) | NoSQL (Não-relacional) |
+| -------------------------- | ---------------- | ---------------------- |
+| Escalabilidade             | Vertical         | Horizontal             |
+| Consultas complexas        | Otimizado        | Restrito               |
+| Consistência e Integridade | Garantida        | Eventual               |
+| Rastreabilidade            | Otimizado        | Restrito               |
+| Desempenho                 | Regular          | Alto                   |
+
+## Possibilidades de escolha de tecnologia 
+&emsp;&emsp;Considerando o escopo do projeto, com seus requisitos funcionais e não-funcionais, o aperfeiçoamento técnico da equipe e as vantagens e desvantagens das tecnologias mencionadas, sugere-se de forma produtiva as seguintes escolhas de tecnologias:
+
+| Escolha Principal | Stack                |
+| ----------------- | -------------------- |
+| Front-End         | Angular (Typescript) |
+| Back-End          | Express.js (Node.js) |
+| Banco de Dados    | SQL (Postgres)       |
+
+| Escolha Secundária | Stack           |
+| ------------------ | --------------- |
+| Front-End          | Angular         |
+| Back-End           | ASP.NET Core    |
+| Banco de Dados     | MySQL ou SQLite |
+
+## Justificativa
+
+### Front-End
+&emsp;&emsp;Para o Front-End, apesar da curva de aprendizado razoável, a escolha do Angular se baseia no uso difundido no mercado e no suporte contínuo do Google, assim como, na grande comunidade atual e conteúdo disponível na internet.<br/>
+&emsp;&emsp;De forma alternativa, React ou Vue podem ser utilizados, mas o React foi secundarizado por sua declarada descontinuidade de desenvolvimento, enquanto o Vue foi desconsiderado pelo seu uso tímido em grandes empresas.<br/>
+
+### Back-End
+&emsp;&emsp;Para o Back-End, há duas opções principais diretas: Express.js ou ASP.NET Core. Primeiramente, Express.js tem curva de aprendizado suave, ampla comunidade e suporte disponíveis na internet e escalabilidade horizontal – o que culmina em um período de desenvolvimento mais veloz, eficaz e eficiente.
+&emsp;&emsp;Em segundo lugar, ASP.NET Core possui grande robustez e performance, com escalabilidade vertical e uso amplo em empresas/aplicações de grande porte – o que possibilita grande aprendizado para o time e uma enorme robustez na aplicação, embora o prazo possa se tornar uma dificuldade.
+&emsp;&emsp;Cabe ao time de desenvolvimento escolher qual é a melhor tecnologia, considerando sobretudo o tempo de aprendizagem inerente e os requisitos da aplicação. <br/>
+&emsp;&emsp;Alternativamente, Django ou Spring Boot também eram opções, sobretudo, por seu amplo uso no mercado. Contudo, embora o Django proporcione um desenvolvimento rápido, não possui a robustez necessária para o projeto. Nesse sentido, o Java com Spring Boot oferece uma robustez admirável, porém, a curva de aprendizagem seria um impeditivo potencial, tendo em vista o prazo do projeto – além disso, em uma conversa com o prof. Afonso (Inteli), a transição C# - Java é mais suave e recomendada do que o inverso.<br/>
+
+### Banco de Dados
+&emsp;&emsp;Por fim, com a análise comparativa apontada acima, recomenda-se a utilização de um banco de dados relacional para a aplicação.<br/>
+&emsp;&emsp;Nesse sentido, considerando a seriedade e a sensibilidade dos dados processados e processos envolvidos, existe a necessidade de armazenar os dados de forma íntegra (de forma adequada e precisa) e consistente (com um mesmo formato), as quais são características quase intrínsecas aos bancos de dados relacionais.<br/>
+&emsp;&emsp;Além disso, a consulta desses dados armazenados necessita de precisão, as quais serão realizadas por meio de consultas SQL complexas, as quais são otimizadas em bancos de dados relacionais.<br/>
+&emsp;&emsp;Desse modo, compreende-se que, embora bancos NoSQL possuam performance superior em ambientes de grandes volumes de dados, a aplicação será otimizada como bancos de dados SQL.<br/>
+&emsp;&emsp;Ademais, para a escolha do banco de dados, recomenda-se o uso de PostgreSQL, database mais utilizado segundo Stack Overflow Survey 2023 - empregado amplamente em empresas de diferentes portes. Contudo, MySQL e SQLite também se destacam como opções viáveis, as quais correspondem aos requisitos do projeto.<br/>
+&emsp;&emsp;Finalmente, cabe à equipe de desenvolvimento escolher um database para o projeto, considerando afinidade ou interesse no aprendizado.
+
