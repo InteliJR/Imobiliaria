@@ -20,12 +20,13 @@ A criptografia de informações é uma prática fundamental para assegurar a con
 Utilize consultas parametrizadas ou prepared statements em vez de concatenar strings diretamente nas consultas SQL.
 Adote um ORM (Object-Relational Mapping) que abstraia e proteja a interação com o banco de dados.
 Realize a validação e sanitização de todas as entradas do usuário.
-Classificação dos Riscos
-Riscos Externos
-Os riscos externos incluem hacking, roubo de propriedade intelectual e todas as ameaças associadas ao acesso de cibercriminosos ao banco de dados. Tais riscos podem se materializar caso os desenvolvedores utilizem serviços, ferramentas e tecnologias de origem duvidosa durante o processo de desenvolvimento.
 
-## Riscos Internos
-Os riscos internos estão relacionados a possíveis vazamentos de informações e dados sensíveis devido a falhas dos profissionais envolvidos no projeto. Esses vazamentos podem ocorrer intencionalmente ou acidentalmente.
+## Classificação dos Riscos
+### Riscos Externos
+- Os riscos externos incluem hacking, roubo de propriedade intelectual e todas as ameaças associadas ao acesso de cibercriminosos ao banco de dados. Tais riscos podem se materializar caso os desenvolvedores utilizem serviços, ferramentas e tecnologias de origem duvidosa durante o processo de desenvolvimento.
+
+### Riscos Internos
+- Os riscos internos estão relacionados a possíveis vazamentos de informações e dados sensíveis devido a falhas dos profissionais envolvidos no projeto. Esses vazamentos podem ocorrer intencionalmente ou acidentalmente.
 
 ### Medidas de Mitigação
 Uso de Ferramentas Confiáveis: Assegure-se de que todos os membros da equipe utilizem apenas serviços, ferramentas e tecnologias de confiança comprovada.
