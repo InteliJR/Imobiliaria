@@ -13,6 +13,9 @@ Cookies: Assegure que os cookies sejam configurados com a flag HttpOnly para imp
 
 Token de Sessão: Implemente tokens de sessão com um tempo de expiração adequado. Considere a utilização de JWT (JSON Web Tokens) para gerenciar sessões de forma segura e eficiente. Adote a rotação de tokens para minimizar os impactos em caso de comprometimento.
 
+## Criptografia da informação
+A criptografia de informações é uma prática fundamental para assegurar a confidencialidade e integridade dos dados armazenados e transmitidos. Recomenda-se o uso de algoritmos de criptografia robustos, como AES (Advanced Encryption Standard) para dados em repouso e TLS (Transport Layer Security) para dados em trânsito. Além disso, a gestão adequada de chaves criptográficas é crucial para a segurança do sistema, incluindo a rotação periódica de chaves e o armazenamento seguro das mesmas. A implementação de criptografia de ponta a ponta também deve ser considerada para proteger dados sensíveis ao longo de todo o ciclo de vida da informação.
+
 ## Proteção Contra SQL Injection
 Utilize consultas parametrizadas ou prepared statements em vez de concatenar strings diretamente nas consultas SQL.
 Adote um ORM (Object-Relational Mapping) que abstraia e proteja a interação com o banco de dados.
