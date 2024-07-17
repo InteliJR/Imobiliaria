@@ -4,7 +4,6 @@ sidebar_position: 10
 description: Detalhamento dos serviços de pagamentos disponíveis no mercado, que poderiamos usar no nosso projeto.
 ---
 
-
 # Serviço de Pagamento
 
 ## Stripe
@@ -101,8 +100,8 @@ Acredito que para tomar essa decisão exista alguns pontos que precisam ser disc
 - Volume de Transações
   - Algumas plataformas oferecem taxas reduzidas para volumes maiores de transações. É importante validar com a cliente o volume esperado para negociar melhores condições.
 
-- Antecipação de pagametnos
+- Antecipação de pagamentos
   - Verificar se a cliente precisa de antecipação dos pagamentos. Algumas plataformas oferecem preços diferentes dependendo do prazo em que o dinheiro será disponibilizado na conta.
 
 - Tipo de Pagamento
-  - Avaliar se a cliente precisa de todos os tipos de pagamento disponíveis. Optar por menos tipos de pagamento pode reduzir os custos do serviço. Isso inclui também avalisar a necessidade de parcelamento.
+  - Avaliar se a cliente precisa de todos os tipos de pagamento disponíveis. Optar por menos tipos de pagamento pode reduzir os custos do serviço. Isso inclui também avaliar a necessidade de parcelamento.
