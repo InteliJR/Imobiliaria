@@ -4,22 +4,18 @@ on:
   push:
     branches:
       - docs
-# Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 env:
-  # Hosted GitHub runners have 7 GB of memory available, let's use 6 GB
   NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
@@ -38,11 +34,24 @@ jobs:
       with:
         node-version: latest
 
-    - name: Install and Build
+    - name: Update npm
+      run: npm install -g npm@latest
+
+    - name: Clean npm cache
+      run: npm cache clean --force
+
+    - name: Install Docusaurus globally
+      run: npm install -g @docusaurus/core @docusaurus/preset-classic
+
+    - name: Install dependencies
       run: |
         cd docs
         npm ci
-        npm run build
+
+    - name: Build Docusaurus site
+      run: |
+        cd docs
+        npx docusaurus build
         mv build ../build
         
     - name: Setup Pages
