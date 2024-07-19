@@ -8,24 +8,24 @@ on:
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 
 jobs:
-  build:
+  test-deploy:
+    name: Test deployment
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: latest
-
-    - name: Clean npm cache
-      run: npm cache clean --force
-
-    - name: Install and Build
-      run: |
-        cd docs
-        npm ci --force
-        npm run build
-        mv build ../build
+      - name: Install dependencies
+        run: |
+          cd docs
+          npm ci
+          
+      - name: Test build website
+        run: |
+          cd docs
+          npm run build
