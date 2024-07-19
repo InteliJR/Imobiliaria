@@ -43,10 +43,15 @@ jobs:
     - name: Clean npm cache
       run: npm cache clean --force
 
-    - name: Install and Build
+    - name: Install dependencies
       run: |
         cd docs
         npm ci --force
+        npm install -g docusaurus
+
+    - name: Build Docusaurus site
+      run: |
+        cd docs
         npm run build
         mv build ../build
 
@@ -62,24 +67,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: latest
-
-    - name: Clean npm cache
-      run: npm cache clean --force
-
-    - name: Install and Build
-      run: |
-        cd docs
-        npm ci --force
-        npm run build
-        mv build ../build
-        
     - name: Setup Pages
       uses: actions/configure-pages@v3
-        
+
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
       with:
