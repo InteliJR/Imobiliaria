@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - docs
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-
 # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -25,43 +19,15 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  # Hosted GitHub runners have 7 GB of memory available, let's use 6 GB
   NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: latest
-
-    - name: Clean npm cache
-      run: npm cache clean --force
-
-    - name: Install dependencies
-      run: |
-        cd docs
-        npm ci --force
-        npx docusaurus --version
-
-    - name: Build Docusaurus site
-      run: |
-        cd docs
-        npm run build
-        mv build ../build
-
-  deploy:
-    if: github.ref == 'refs/heads/docs'
-    needs: build
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
@@ -72,12 +38,16 @@ jobs:
       with:
         node-version: latest
 
-    - name: Clean npm cache
-      run: npm cache clean --force
-
+    - name: Install and Build
+      run: |
+        cd docs
+        npm ci
+        npm run build
+        mv build ../build
+        
     - name: Setup Pages
       uses: actions/configure-pages@v3
-
+        
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
       with:

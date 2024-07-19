@@ -1,0 +1,31 @@
+name: Test deployment
+
+on:
+  pull_request:
+    branches:
+      - docs
+    # Review gh actions docs if you want to further define triggers, paths, etc
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: latest
+
+    - name: Clean npm cache
+      run: npm cache clean --force
+
+    - name: Install and Build
+      run: |
+        cd docs
+        npm ci --force
+        npm run build
+        mv build ../build
