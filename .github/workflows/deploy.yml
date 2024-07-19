@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - docs
+  pull_request:
+    branches:
+      - docs
   workflow_dispatch:
 
 permissions:
@@ -34,23 +37,11 @@ jobs:
       with:
         node-version: latest
 
-    - name: Clean npm cache
-      run: npm cache clean --force
-
-    - name: Install dependencies
+    - name: Install and Build
       run: |
         cd docs
         npm ci
-
-    - name: Ensure Docusaurus is installed
-      run: |
-        cd docs
-        npx docusaurus --version
-
-    - name: Build Docusaurus site
-      run: |
-        cd docs
-        npx docusaurus build
+        npm run build
         mv build ../build
         
     - name: Setup Pages
