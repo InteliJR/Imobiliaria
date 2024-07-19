@@ -47,7 +47,7 @@ jobs:
       run: |
         cd docs
         npm ci --force
-        npm install -g docusaurus
+        npx docusaurus --version
 
     - name: Build Docusaurus site
       run: |
@@ -66,6 +66,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: latest
+
+    - name: Clean npm cache
+      run: npm cache clean --force
 
     - name: Setup Pages
       uses: actions/configure-pages@v3
