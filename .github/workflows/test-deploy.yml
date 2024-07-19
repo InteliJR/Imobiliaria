@@ -27,5 +27,5 @@ jobs:
           
       - name: Test build website
         run: |
-          cd docs
           npm run build
+          mv build ../build
