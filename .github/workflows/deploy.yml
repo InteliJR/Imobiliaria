@@ -34,19 +34,18 @@ jobs:
       with:
         node-version: latest
 
-    - name: Update npm
-      run: npm install -g npm@latest
-
     - name: Clean npm cache
       run: npm cache clean --force
-
-    - name: Install Docusaurus globally
-      run: npm install -g @docusaurus/core @docusaurus/preset-classic
 
     - name: Install dependencies
       run: |
         cd docs
         npm ci
+
+    - name: Ensure Docusaurus is installed
+      run: |
+        cd docs
+        npx docusaurus --version
 
     - name: Build Docusaurus site
       run: |
