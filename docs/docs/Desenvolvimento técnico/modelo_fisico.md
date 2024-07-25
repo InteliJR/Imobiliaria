@@ -6,7 +6,7 @@ description: Modelo Fisico do Banco de Dados do projeto.
 
 # Modelo Fisico
 
-<img src={require('../../static/img/modelo_fisico_imob.jpeg').default} alt= "Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
+<img src={require('../../static/img/modelo_fisico_imob.png').default} alt= "Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
 
 Com a modelagem conceitual pronta, a próxima etapa é a implementação do modelo físico. O modelo físico é a representação mais próxima da estrutura real do banco de dados, incluindo detalhes como a alocação de espaço em disco, a organização dos dados em armazenamento e a otimização para consultas. Este modelo é responsável por traduzir o modelo lógico (neste caso, o modelo conceitual) em estruturas de armazenamento físico, garantindo que os dados sejam armazenados de forma eficiente e acessíveis de maneira rápida e segura. A implementação do modelo físico envolve a definição de índices, a escolha de tipos de dados específicos para otimização de espaço e a configuração de parâmetros de armazenamento para melhorar o desempenho das operações de banco de dados.
 
