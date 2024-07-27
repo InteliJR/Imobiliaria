@@ -10,7 +10,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;Este documento compara serviços de cloud para hospedar o projeto, um sistema de gestão de imóveis de pequeno a médio porte. Avaliamos Google Cloud Platform (GCP), Oracle Cloud Infrastructure (OCI), Microsoft Azure e Amazon EC2 (AWS), com base em uso mensal de 730 horas, Linux, 2 vCPUs, memória entre 3.5 e 4.3 GB, e armazenamento em bloco na região de São Paulo. O objetivo é identificar a opção mais custo-efetiva e adequada às necessidades da aplicação.
+        &emsp;&emsp;Este documento compara serviços de cloud para hospedar o projeto, um sistema de gestão de imóveis de pequeno a médio porte. Avaliamos Google Cloud Platform (GCP), Oracle Cloud Infrastructure (OCI), Microsoft Azure, Amazon EC2 (AWS) e Firebase, com base em uso mensal de 730 horas, Linux, 2 vCPUs, memória entre 3.5 e 4.3 GB, e armazenamento em bloco na região de São Paulo. O objetivo é identificar a opção mais custo-efetiva e adequada às necessidades da aplicação.
     </p>
 </div>
 
@@ -80,6 +80,23 @@ description: Benchmark de serviços de cloud para implementação no projeto.
     </p>
 </div>
 
+#### Firebase
+**Configuração**:
+
+- 730 horas mensais
+- Linux
+- 2 vCPUs (5,256mi vCPUs-segundos), 4 GB de memória (10,512mi GB-segundos)
+- 50 GB de Block Storage (30 GB iniciais gratuitos)
+
+**Preço**: US$ 73/mês
+
+<div style={{ textAlign: 'justify' }}>
+    <p>
+        Firebase oferece uma condição de armazenamento gratuito inicial e integração com os serviços da Google, contudo, para as capacidades de processamento e memória exigidas pelo projeto, não apresentou preços competitivos .
+    </p>
+</div>
+
+
 ### Conclusão
 
 <div style={{ textAlign: 'justify' }}>
@@ -94,7 +111,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;Nesta seção, comparamos quatro serviços de cloud storage: AWS, Oracle Cloud (OCI), Google Cloud (GCP) e Microsoft Azure. Avaliamos capacidade, custos e a região de operação, considerando 50 GB de armazenamento na região de São Paulo.
+        &emsp;&emsp;Nesta seção, comparamos cinco serviços de cloud storage: AWS, Oracle Cloud (OCI), Google Cloud (GCP), Microsoft Azure e Firebase. Avaliamos capacidade, custos e a região de operação, considerando 50 GB de armazenamento na região de São Paulo.
     </p>
 </div>
 
@@ -163,13 +180,30 @@ description: Benchmark de serviços de cloud para implementação no projeto.
     </p>
 </div>
 
+#### Firebase
+
+**Configuração:**
+- Armazenamento: 50 GB
+- Requisições: 30 GB
+- Operações: 210k (uploads)/ 1890k (downloads)
+- Preço: US$ 1.17/mês
+- Região: São Paulo
+- Capacidade: Reservada
+
+**Descrição:**
+
+<div style={{ textAlign: 'justify' }}>
+    <p>
+        &emsp;&emsp;O Firebase oferece uma solução de armazenamento acessível e eficiente, com capacidade reservada. Por US$ 1.17/mês, você obtém 50 GB de armazenamento, 30 GB de requisições, e 210 mil uploads e 1.89 milhões de downloads. É uma escolha econômica para quem busca uma integração fácil com outros serviços Firebase e um gerenciamento simples de dados na nuvem.
+    </p>
+</div>
+
+#### Conclusão
+
 #### Conclusão
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;<b>OCI</b> é a opção mais econômica a US$ 1.07/mês. <b>AWS S3</b> e <b>Microsoft Azure</b> são competitivos a US$ 2.04 e US$ 2.22/mês, respectivamente, oferecendo boa integração e confiabilidade. <b>GCP</b> é um pouco mais caro a US$ 2.28/mês, mas oferece robustez e integração com os serviços Google.
-        A escolha ideal depende das necessidades específicas de integração, orçamento e desempenho esperado.
+        &emsp;&emsp;<b>OCI</b> é a opção mais econômica, com 50 GB por US$ 1.07/mês. <b>Firebase</b> é também competitivo, custando US$ 1.17/mês, e oferece boa capacidade de operações. <b>AWS S3</b> e <b>Microsoft Azure</b> são intermediários, com preços de US$ 2.04 e US$ 2.22/mês, respectivamente, e boa integração com seus ecossistemas. <b>GCP</b> é a mais cara a US$ 2.28/mês, mas é robusta e se integra bem com outros serviços Google. A escolha ideal vai depender do equilíbrio entre custo, integração e recursos necessários.
     </p>
 </div>
-
-
