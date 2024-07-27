@@ -10,7 +10,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;Este documento compara serviços de cloud para hospedar o projeto, um ERP de uma imobiliária de pequeno a médio porte. Avaliamos Google Cloud Platform (GCP), Oracle Cloud Infrastructure (OCI), Microsoft Azure e Amazon EC2 (AWS), com base em uso mensal de 730 horas, Linux, 2 vCPUs, memória entre 3.5 e 4.3 GB, e armazenamento em bloco na região de São Paulo. O objetivo é identificar a opção mais custo-efetiva e adequada às necessidades da aplicação.
+        &emsp;&emsp;Este documento compara serviços de cloud para hospedar o projeto, um sistema de gestão de imóveis de pequeno a médio porte. Avaliamos Google Cloud Platform (GCP), Oracle Cloud Infrastructure (OCI), Microsoft Azure e Amazon EC2 (AWS), com base em uso mensal de 730 horas, Linux, 2 vCPUs, memória entre 3.5 e 4.3 GB, e armazenamento em bloco na região de São Paulo. O objetivo é identificar a opção mais custo-efetiva e adequada às necessidades da aplicação.
     </p>
 </div>
 
@@ -84,7 +84,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;Para um ERP de imobiliária de pequeno a médio porte, <b>Oracle Cloud Infrastructure</b> é a opção mais econômica, oferecendo excelente capacidade e custo-benefício. Para quem busca confiabilidade e suporte robusto, <b>Amazon EC2</b> é uma escolha sólida com um compromisso de 1 ano.
+        &emsp;&emsp;Para um sistema de gestão de imóveis de pequeno a médio porte, <b>Oracle Cloud Infrastructure</b> é a opção mais econômica, oferecendo excelente capacidade e custo-benefício. Para quem busca confiabilidade e suporte robusto, <b>Amazon EC2</b> é uma escolha sólida com um compromisso de 1 ano.
     </p>
 </div>
 
