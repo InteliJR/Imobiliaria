@@ -110,16 +110,3 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 <sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
 </div>
-
-#### Anexos
-
-Indicação dos orçamentos dispostos nesse documento (para opções disponíveis em compartilhamento por hiperlink).
-
-**Hospedagem GCP**
-https://cloud.google.com/products/calculator/?hl=pt-BR&dl=CiQzNzA0NTllMy04ZGYzLTQxYTUtODE2ZC0wOGRiOTAzNWQ3ZDcQCBokMjNEQjNBMTQtRjQ5Qy00MzI5LTgxNDItNjRCRDY4QTcyOURG
-
-**Hospedagem Azure**
-https://azure.com/e/a8d5b553d5e945eb882b52ae968c9f53
-
-**Hospedagem AWS**
-https://calculator.aws/#/estimate?id=c89c40df9bdb25c69366d80605cde5f2c4b2c16f
