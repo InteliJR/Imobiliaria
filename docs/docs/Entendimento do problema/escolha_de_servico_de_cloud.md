@@ -4,206 +4,122 @@ sidebar_position: 11
 description: Benchmark de serviços de cloud para implementação no projeto.
 ---
 
-## Benchmark de Serviços de Cloud para Hospedagem da Aplicação
+## Benchmark de Serviços de Cloud para implementação na aplicação
 
 ### Introdução
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;Este documento compara serviços de cloud para hospedar o projeto, um sistema de gestão de imóveis de pequeno a médio porte. Avaliamos Google Cloud Platform (GCP), Oracle Cloud Infrastructure (OCI), Microsoft Azure, Amazon EC2 (AWS) e Firebase, com base em uso mensal de 730 horas, Linux, 2 vCPUs, memória entre 3.5 e 4.3 GB, e armazenamento em bloco na região de São Paulo. O objetivo é identificar a opção mais custo-efetiva e adequada às necessidades da aplicação.
+        &emsp;&emsp;Este documento compara serviços de cloud para hospedar o projeto, um sistema de gestão de imóveis de pequeno a médio porte. Nesse sentido, a fim de estudar a viabilidade de implementação das opções disponíveis no mercado atualmente, estima-se uma aplicação com capacidade para 50 acessos simultâneos, para realização de consultas à base de dados e interações com a aplicação, sem estresse do sistema. Além disso, adota-se também que seja possível o acesso simultâneo para tarefas de administrador, como gravação e edição na base de dados, com escala menor (cerca de 20 usuários), dada a maior exigência dessas operações.<br/>
+        &emsp;&emsp;Nessa análise, com o objetivo de escalabilidade futura e de manutenção da aplicação em produção, avaliamos 5 (cinco) fornecedores principais de serviço na nuvem: Google Cloud Platform (GCP), Oracle Cloud Infrastructure (OCI), Microsoft Azure, Amazon Web Services (AWS) e Firebase. Finalmente, o objetivo é identificar a opção mais custo-efetiva e adequada às necessidades da aplicação.
     </p>
 </div>
 
-### Opções de Serviço de Cloud
+### Opções de Hospedagem da Aplicação na Nuvem
 
-#### Google Cloud Platform (GCP)
-
-**Configuração:**
-- 730 horas mensais
-- Linux
-- 2 vCPUs, 3.5 GB de memória
-- 70 GB Block Storage
-
-**Preço**: $76/mês
-
+**Configurações**:
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;GCP oferece flexibilidade e fácil integração com outros serviços Google. No entanto, tem um custo relativamente alto, sendo mais adequado para quem já utiliza a infraestrutura Google.
+        &emsp;&emsp;Essa seção compara os serviços de hospedagem para a aplicação na nuvem. Nesse sentido, alguns critérios foram adotados para a comparação entre os players, levando em conta as exigências do sistema:<br/>
+        &emsp;&emsp;<b>Uso mensal de 730 horas</b>: A aplicação precisa estar em pleno funcionamento durante todo mês, durante 24 horas por dia; desse modo, o padrão dos serviços de hospedagem é de 730 horas mensais (cerca de 30 dias).<br/>
+        &emsp;&emsp;<b>Uso do Sistema Operacional Linux/UNIX</b>: O uso do Linux/UNIX é recomendado para hospedagem de servidores e back-end, dado a sua maior performance e menor memória exigida em relação ao Windows; além disso, o uso do Windows implica na contratação de uma licença da Microsoft, o que eleva os custos de desenvolvimento.<br/> 
+        &emsp;&emsp;<b>Uso de 2 vCPUs</b>: Ao considerar a quantidade e natureza das operações realizadas pela aplicação (consulta, gravação e edição de dados em volume razoável), referentes a um sistema de gestão de imóveis, inicialmente, de pequeno a médio porte, considera-se que o uso de um processador com dois núcleos virtuais é suficiente.<br/>
+        &emsp;&emsp;<b>Memória RAM entre 1 e 2 GB</b>: A memória RAM indicada mostra-se eficiente para servidores com até 200 usuários ativos, desse modo, considerando a estimativa inicial de 50 acessos simultâneos com operações simples, tal armazenamento permite escalabilidade futura e funcionamento garantido mesmo com estresse acima da capacidade esperada.  <br/> 
+        &emsp;&emsp;<b>Armazenamento em bloco na região de São Paulo</b>: Ao tratar de uma máquina virtual, mostra-se necessária a instalação de sistema operacional, a configuração de ambiente de execução e a inicialização de dependências; assim, o armazenamento em bloco (conjugado à máquina virtual) é usado para esse fim. Estima-se que, ao todo, serão usados cerca de 30 GB para configuração total da máquina virtual (adicionalmente, 20 GB são preparados para expansões futuras da aplicação). Por fim, a escolha pela região de São Paulo diminui a latência e o tempo de resposta do servidor que mantém a aplicação. <br/>
     </p>
 </div>
 
-#### Oracle Cloud Infrastructure (OCI)
+### Benchmark de serviços de hospedagem na nuvem
 
-**Configuração:**
-- 730 horas mensais
-- Linux
-- 2 vCPUs, 4 GB de memória
-- 200 GB Block Storage
+| Serviço                       | Horas Mensais | Sistema Operacional | vCPUs | Memória RAM      | Armazenamento de Disco    | Preço        |
+|-------------------------------|----------------|----------------------|-------|--------------|---------------------|--------------|
+| Google Cloud Platform (GCP)   | 730            | Linux                | 2     | 2 GB       | 50 GB | 360 R$/mês <sub>Fidelidade de 1 ano</sub>      |
+| Oracle Cloud Infrastructure (OCI) | 730        | Linux                | 2     | 2 GB         | 200 GB | 105 R$/mês      |
+| Microsoft Azure               | 730            | Linux                | 2     | 1.75 GB       | 40 GB | 220 R$/mês     |
+| Amazon EC2 (AWS)              | 730            | Linux                | 2     | 2.2 GB       | 50 GB | 105 R$/mês <sub>Fidelidade de 1 ano</sub> |
+| Firebase                      | 730            | Linux                | 2 <sub>(5,250mi vCPU-segundos)</sub>     | 2 GB <sub>(5,250mi GB-segundos)</sub> | 50 GB | 350 R$/mês |
 
-**Preço**: $23/mês
-
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        &emsp;&emsp;OCI é a opção mais econômica, oferecendo maior capacidade de armazenamento e memória por um custo muito baixo. Ideal para pequenas e médias empresas que precisam de um serviço acessível e eficiente.
-    </p>
+<div align="center">
+<sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
 </div>
-
-#### Microsoft Azure
-
-**Configuração:**
-- 730 horas mensais
-- Linux
-- 2 vCPUs, 3.5 GB de memória
-- 10 GB Block Storage (50 GB por $100)
-
-**Preço**: $10/mês
-
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        &emsp;&emsp;Azure tem um custo inicial baixo, mas o preço aumenta significativamente com mais armazenamento. É adequado para cargas de trabalho com baixo armazenamento inicial.
-    </p>
-</div>
-
-#### Amazon EC2 (AWS)
-
-**Configuração:**
-- 730 horas mensais
-- Linux
-- 2 vCPUs, 4.3 GB de memória
-- 70 GB Block Storage
-
-**Preço**: $33/mês (1 ano de compromisso)
-
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        &emsp;&emsp;AWS oferece um bom equilíbrio entre custo e capacidade, com alta confiabilidade e uma ampla gama de serviços. Ideal para uma solução de longo prazo com alta disponibilidade.
-    </p>
-</div>
-
-#### Firebase
-**Configuração**:
-
-- 730 horas mensais
-- Linux
-- 2 vCPUs (5,256mi vCPUs-segundos), 4 GB de memória (10,512mi GB-segundos)
-- 50 GB de Block Storage (30 GB iniciais gratuitos)
-
-**Preço**: US$ 73/mês
-
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        Firebase oferece uma condição de armazenamento gratuito inicial e integração com os serviços da Google, contudo, para as capacidades de processamento e memória exigidas pelo projeto, não apresentou preços competitivos .
-    </p>
-</div>
-
 
 ### Conclusão
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;Para um sistema de gestão de imóveis de pequeno a médio porte, <b>Oracle Cloud Infrastructure</b> é a opção mais econômica, oferecendo excelente capacidade e custo-benefício. Para quem busca confiabilidade e suporte robusto, <b>Amazon EC2</b> é uma escolha sólida com um compromisso de 1 ano.
+        &emsp;&emsp;Para um sistema de gestão de imóveis de pequeno a médio porte, <b>Oracle Cloud Infrastructure</b> e <b>AWS EC2</b> são as opções mais econômicas, oferecendo excelente capacidade e custo-benefício.<br/>
+        &emsp;&emsp;Em comparação direta, <b>AWS EC2</b> apresenta memória RAM ligeiramente maior, contudo, exige o compromisso de cobrança anual. Por outro lado, <b>OCI</b> oferece maior flexibilidade, com cobrança mensal sem compromisso, e armazenamento de disco superior, com 200 GB gratuito.<br/>
+        &emsp;&emsp;Alternativamente, entre as opções apresentadas, o desempenho de outros provedores é similar, contudo, com faixas de preço consideravelmente mais altas; desse modo, tais opções foram desconsideradas em função do menor custo-benefício, sem ganhos expressivos;
+        Portanto, <b>OCI</b> se apresenta como melhor opção de hospedagem da aplicação em nuvem, levando em conta os critérios de desempenho, de flexibilidade e de custo-benefício.
     </p>
 </div>
 
 ### Benchmark de Serviços de Armazenamento na Nuvem
 
-#### Introdução
+#### Configurações:
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;Nesta seção, comparamos cinco serviços de cloud storage: AWS, Oracle Cloud (OCI), Google Cloud (GCP), Microsoft Azure e Firebase. Avaliamos capacidade, custos e a região de operação, considerando 50 GB de armazenamento na região de São Paulo.
+        &emsp;&emsp;Nesta seção, comparamos cinco serviços de cloud storage: AWS, Oracle Cloud (OCI), Google Cloud (GCP), Microsoft Azure e Firebase.<br/>
+        &emsp;&emsp;Inicialmente, o sistema deve suportar o armazenamento, consulta e edição de arquivos, sobretudo, no formato de documentos, como contratos e laudos de imóvel. Nesse sentido, a estimativa de armazenamento deve contemplar os requisitos atuais para funcionamento do sistema, bem como, suportar a possibilidade de escalabilidade posterior, conforme alinhado com as expectativas da cliente. <br/>
+        &emsp;&emsp;Dessa forma, a partir dos arquivos fornecidos pela imobiliária para estudo da equipe de desenvolvimento, estima-se que cada imóvel deve possuir ao menos dois arquivos relacionados (um contrato e um laudo de vistoria do imóvel), os quais ocupam cerca de 1MB, no total. A seguir, aplica-se um coeficiente de segurança de 2, reservando 2MB para cada imóvel, além disso, exige-se 1MB complementar para a foto do usuário na plataforma.<br/>
+        &emsp;&emsp;Portanto, a partir dessa estimativa de 3MB por imóvel, conclui-se que 10.000 imóveis exigiriam 30 GB. A seguir, com um coeficiente arbitrário de escalabilidade futura de 50%, chegamos a cerca de 45 GB de armazenamento na nuvem, com uma capacidade final de, ao menos, 15.000 imóveis.
     </p>
 </div>
 
-#### AWS S3
+### Quadro de serviços de armazenamento na nuvem
 
-**Configuração:**
-- Armazenamento: 50 GB
-- Requisições: 20 GB select
-- Preço: US$ 2.04/mês
-- Região: São Paulo
-- Capacidade: Reservada
+| Serviço                        | Armazenamento | Requisições | Preço         | Região      | Capacidade         |
+|--------------------------------|---------------|-------------|---------------|-------------|--------------------|
+| AWS S3                         | 50 GB         | 20 GB <sub>(select query)</sub> | R$11,46/mês  | São Paulo   | Reservada          |
+| OCI (Oracle Cloud Infrastructure) | 50 GB       | 20k <sub>(primeiros 50k gratuitos)</sub> | R$6,01/mês | São Paulo   | Reservada          |
+| GCP (Google Cloud Platform)    | 50 GB         | 5 GB <sub>(select query)</sub>  | R$12,80/mês  | São Paulo   | Reservada          |
+| Microsoft Azure Blob Storage   | 50 GB         | 20k         | R$12,47/mês  | São Paulo   | Pay as You Go      |
+| Firebase                       | 50 GB         | 30 GB <sub>(210k uploads/1890k downloads)</sub> | R$6,57/mês  | São Paulo   | Reservada          |      
 
-**Descrição:**
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        &emsp;&emsp;AWS S3 oferece alta durabilidade e disponibilidade. Com capacidade reservada, você garante disponibilidade e previsibilidade de preços. Custo total de US$ 2.04/mês.
-    </p>
+<div align="center">
+<sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
 </div>
 
-#### OCI (Oracle Cloud Infrastructure)
-
-**Configuração:**
-- Armazenamento: 50 GB
-- Requisições: 20k (primeiros 50k gratuitos)
-- Preço: US$ 1.07/mês
-- Região: São Paulo
-- Capacidade: Reservada
-
-**Descrição:**
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        &emsp;&emsp;OCI é uma solução econômica, oferecendo 50 GB de armazenamento e 20 mil requisições por US$ 1.07/mês, com as primeiras 50 mil requisições gratuitas.
-    </p>
-</div>
-
-#### GCP (Google Cloud Platform)
-
-**Configuração:**
-- Armazenamento: 50 GB
-- Requisições: 5 GB select
-- Preço: US$ 2.28/mês
-- Região: São Paulo
-- Capacidade: Reservada
-
-**Descrição:**
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        &emsp;&emsp;Google Cloud Storage integra-se bem com outros serviços GCP. Oferece 50 GB de armazenamento e 5 GB de requisições select por US$ 2.28/mês.
-    </p>
-</div>
-
-#### Microsoft Azure Blob Storage
-
-**Configuração:**
-- Armazenamento: 50 GB
-- Requisições: 20k
-- Preço: US$ 2.22/mês
-- Região: São Paulo
-- Capacidade: Pay as You Go
-
-**Descrição:**
-
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        &emsp;&emsp;Azure Blob Storage é flexível e bem integrado ao ecossistema Azure. Com "Pay as You Go", custa US$ 2.22/mês para 50 GB de armazenamento e 20 mil requisições.
-    </p>
-</div>
-
-#### Firebase
-
-**Configuração:**
-- Armazenamento: 50 GB
-- Requisições: 30 GB
-- Operações: 210k (uploads)/ 1890k (downloads)
-- Preço: US$ 1.17/mês
-- Região: São Paulo
-- Capacidade: Reservada
-
-**Descrição:**
-
-<div style={{ textAlign: 'justify' }}>
-    <p>
-        &emsp;&emsp;O Firebase oferece uma solução de armazenamento acessível e eficiente, com capacidade reservada. Por US$ 1.17/mês, você obtém 50 GB de armazenamento, 30 GB de requisições, e 210 mil uploads e 1.89 milhões de downloads. É uma escolha econômica para quem busca uma integração fácil com outros serviços Firebase e um gerenciamento simples de dados na nuvem.
-    </p>
-</div>
-
-#### Conclusão
 
 #### Conclusão
 
 <div style={{ textAlign: 'justify' }}>
     <p>
-        &emsp;&emsp;<b>OCI</b> é a opção mais econômica, com 50 GB por US$ 1.07/mês. <b>Firebase</b> é também competitivo, custando US$ 1.17/mês, e oferece boa capacidade de operações. <b>AWS S3</b> e <b>Microsoft Azure</b> são intermediários, com preços de US$ 2.04 e US$ 2.22/mês, respectivamente, e boa integração com seus ecossistemas. <b>GCP</b> é a mais cara a US$ 2.28/mês, mas é robusta e se integra bem com outros serviços Google. A escolha ideal vai depender do equilíbrio entre custo, integração e recursos necessários.
+    &emsp;&emsp;Inicialmente, <b>OCI</b> e <b>Firebase</b> são as opções mais econômicas dentre os principais provedores de serviço em nuvem.<br/>
+    &emsp;&emsp;Em comparação direta, <b>OCI</b> apresenta o menor preço e condição das primeiras 50k requisições gratuitamente; Por outro lado, <b>Firebase</b> possui um modelo de cobrança diferente para uploads/downloads, as quais serão as operações mais usadas na aplicação; possibilitando o uso mensal intensivo de transferência de dados (210k uploads/1890k downloads) sem custos adicionais - o que pode resultar em um ganho expressivo, com a escalabilidade da aplicação.<br/>
+    &emsp;&emsp;Alternativamente, outros provedores, como Microsoft Azure Blob Storage, AWS S3 e GCP, apresentam faixas de preço maiores, com condições mais restritas em relação à transferência de dados. Dessa forma, tais opções foram secundarizadas, por seu custo-benefício comparativamente menor.<br/>
+    &emsp;&emsp;Portanto, <b>OCI</b> é a opção com maior custo-benefício no curto e médio prazo, com infraestrutura ampla e econômica, além de condições especiais de início. Em paralelo, considerando um ganho expressivo de escalabilidade, com um uso futuro intensivo de requisições e transferência de dados, <b>Firebase</b> apresenta maior economia e robustez no longo prazo. 
     </p>
 </div>
+
+### Opção de orçamento 
+
+<div style={{ textAlign: 'justify' }}>
+    <p>&emsp;&emsp;Por fim, conforme todos os critérios adotados na escolha e na análise dos provedores, indica-se o seguinte orçamento para a manutenção da aplicação com serviços em nuvem.</p>
+</div>
+
+<div align="center">
+<sup><b>Quadro de orçamento de serviços na nuvem</b></sup>
+
+| Serviço na nuvem | Provedor | Preço mensal |
+|        ---       |     ---      |    ---   |
+| Hospedagem da aplicação |    OCI   |   R$105 |
+| Armazenamento de arquivos |   OCI  |   R$6   |
+| Total |            |                   **R$121** |
+
+<sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
+</div>
+
+#### Anexos
+
+Indicação dos orçamentos dispostos nesse documento (para opções disponíveis em compartilhamento por hiperlink).
+
+**Hospedagem GCP**
+https://cloud.google.com/products/calculator/?hl=pt-BR&dl=CiQzNzA0NTllMy04ZGYzLTQxYTUtODE2ZC0wOGRiOTAzNWQ3ZDcQCBokMjNEQjNBMTQtRjQ5Qy00MzI5LTgxNDItNjRCRDY4QTcyOURG
+
+**Hospedagem Azure**
+https://azure.com/e/a8d5b553d5e945eb882b52ae968c9f53
+
+**nom**
+https://calculator.aws/#/estimate?id=c89c40df9bdb25c69366d80605cde5f2c4b2c16f
