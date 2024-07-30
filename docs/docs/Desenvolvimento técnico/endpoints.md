@@ -1,6 +1,6 @@
 ---
 title: Documentação dos Endpoints
-sidebar_position: 11
+sidebar_position: 12
 description: Documentação dos endpoints do projeto.
 ---
 
@@ -20,7 +20,7 @@ description: Documentação dos endpoints do projeto.
 - **senha (obrigatório):** Senha do usuário
 - **tipo_usuario (obrigatório):** Tipo de usuário (ex: administrador)
 - **ativo (obrigatório):** Status do usuário (true para ativo, false para inativo)
-- **data_de_criacao (opcional):** Data e hora de criação do usuário (formato ISO 8601)
+- **data_de_criacao (obrigatório):** Data e hora de criação do usuário (formato ISO 8601)
 
 **Exemplo de Requisição:**
 
@@ -75,6 +75,7 @@ Content-Type: application/json
 - **cep (obrigatório):** CEP do imóvel
 - **condominio (obrigatório):** Valor do condomínio
 - **valor_imovel (obrigatório):** Valor do imóvel
+- **iptu (obrigatório):** Valor do iptu do imóvel
 - **bairro (obrigatório):** Bairro onde o imóvel está localizado
 - **endereco_imovel (obrigatório):** Endereço completo do imóvel
 - **descricao (opcional):** Descrição detalhada do imóvel
@@ -90,6 +91,7 @@ Content-Type: application/json
   "cep": 12345678,
   "condominio": 500,
   "valor_imovel": 300000.00,
+  "iptu":1000.00,
   "bairro": "Centro",
   "endereco_imovel": "Rua das Flores, 123",
   "descricao": "Apartamento com 2 quartos e 2 banheiros."
@@ -105,6 +107,7 @@ Content-Type: application/json
   "cep": 12345678,
   "condominio": 500,
   "valor_imovel": 300000.00,
+  "iptu": 1000.00,
   "bairro": "Centro",
   "endereco_imovel": "Rua das Flores, 123",
   "descricao": "Apartamento com 2 quartos e 2 banheiros."
@@ -470,6 +473,50 @@ Content-Type: application/json
 **Código de Status:** `400 Bad Request`  
 **Tipo de Resposta:** `application/json`
 
+
+### Recuperação de Senha
+
+**Endpoint:** `/recuperar-senha`  
+**Método HTTP:** `POST`  
+**Descrição:** Inicia o processo de recuperação de senha, enviando um email com instruções para redefinição.
+
+**Parâmetros do Corpo da Requisição:**
+
+- **email (obrigatório):** Email do usuário para o qual será enviado o link de recuperação
+
+**Exemplo de Requisição:**
+
+```http
+POST https://api.exemplo.com/v1/recuperar-senha
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com"
+}
+```
+
+**Exemplo de Resposta de Sucesso:**
+
+```json
+{
+  "message": "Instruções para recuperação de senha foram enviadas para o email fornecido."
+}
+```
+
+**Código de Status:** `200 OK`  
+**Tipo de Resposta:** `application/json`
+
+**Exemplo de Resposta de Erro:**
+
+```json
+{
+  "error": "Email não encontrado"
+}
+```
+
+**Código de Status:** `404 Not Found`  
+**Tipo de Resposta:** `application/json`
+
 ## Método HTTP PUT
 
 ### Atualizar Status do Aluguel
@@ -547,9 +594,7 @@ Content-Type: application/json
   "senha": "novaSenha123",
   "tipo_usuario": "administrador",
   "ativo": true,
-  "data_de_criacao": "202
-
-4-07-27T12:00:00Z"
+  "data_de_criacao": "2024-07-27T12:00:00Z"
 }
 ```
 
