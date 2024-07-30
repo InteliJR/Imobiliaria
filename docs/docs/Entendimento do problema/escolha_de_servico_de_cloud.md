@@ -121,5 +121,5 @@ https://cloud.google.com/products/calculator/?hl=pt-BR&dl=CiQzNzA0NTllMy04ZGYzLT
 **Hospedagem Azure**
 https://azure.com/e/a8d5b553d5e945eb882b52ae968c9f53
 
-**nom**
+**Hospedagem AWS**
 https://calculator.aws/#/estimate?id=c89c40df9bdb25c69366d80605cde5f2c4b2c16f
