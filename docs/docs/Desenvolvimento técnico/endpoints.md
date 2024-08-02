@@ -850,9 +850,7 @@ Content-Type: application/json
 - **cpf (opcional):** Número do CPF do locador
 - **nacionalidade (opcional):** Nacionalidade do locador
 - **numero_telefone (opcional):** Número de telefone do locador
-- **email (opcional):** Email do loc
-
-ador
+- **email (opcional):** Email do locador
 - **id_usuarios (opcional):** ID do usuário associado ao locador
 - **pessoa_juridica (opcional):** Indica se o locador é pessoa jurídica (true para sim, false para não)
 - **cnpj (opcional):** Número do CNPJ, caso o locador seja pessoa jurídica
