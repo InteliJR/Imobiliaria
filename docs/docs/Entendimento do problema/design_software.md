@@ -60,6 +60,12 @@ A imagem a seguir demonstra de modo visual o fluxo das iterações entre os mód
 ```
 <sup><a href="#referencia-1">1</a></sup>
 
+# Projeto de exemplo:
+Para facilitar o entendimento da estrutura sugerida para a criação do projeto, desenvolvi baseado em um outro projeto que encontrei na internet, atualizações em uma api simples para demonstrar a estrutura de um sistema criado baseado na Arquitetura em Camadas.
+
+Segue o link do repositório: [Layer Architecture by Example](https://github.com/omatheu/layer-architecture).
+
+
 **Referências:**
 
 1. <a name="referencia-1"></a> ALVES, A. Começando com .NET Core, com Arquitetura em Camadas. Disponível em: https://alexalvess.medium.com/criando-uma-api-em-net-core-baseado-na-arquitetura-ddd-2c6a409c686.
