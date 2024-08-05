@@ -104,8 +104,8 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 | Serviço na nuvem | Provedor | Preço mensal |
 |        ---       |     ---      |    ---   |
-| Hospedagem da aplicação |    **OCI**   |   R$105 |
-| Armazenamento de arquivos |   **Firebase**  |   R$6   |
+| Hospedagem da aplicação |    OCI   |   R$105 |
+| Armazenamento de arquivos |   Firebase  |   R$6   |
 | Total |            |                   **R$121** |
 
 <sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
