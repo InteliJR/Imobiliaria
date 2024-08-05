@@ -34,7 +34,7 @@ description: Matriz de risco do projeto.
 </div>
 
 <div align="center">
-    <h3> Sprint 3 </h3>
+    <h3> Sprint 4 </h3>
     <p> Matriz de Risco </p>
     <img src={require('../../static/img/matriz_de_risco_sprint_4.png').default} alt="Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
     <p><b>Fonte:</b> elaborado pela equipe.</p>
