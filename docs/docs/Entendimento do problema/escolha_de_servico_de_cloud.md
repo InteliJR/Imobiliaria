@@ -17,7 +17,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 ### Opções de Hospedagem da Aplicação na Nuvem
 
-**Configurações**:
+#### Configurações:
 <div style={{ textAlign: 'justify' }}>
     <p>
         &emsp;&emsp;Essa seção compara os serviços de hospedagem para a aplicação na nuvem. Nesse sentido, alguns critérios foram adotados para a comparação entre os players, levando em conta as exigências do sistema:<br/>
@@ -29,7 +29,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
     </p>
 </div>
 
-### Benchmark de serviços de hospedagem na nuvem
+#### Benchmark de serviços de hospedagem na nuvem
 
 | Serviço                       | Horas Mensais | Sistema Operacional | vCPUs | Memória RAM      | Armazenamento de Disco    | Preço        |
 |-------------------------------|----------------|----------------------|-------|--------------|---------------------|--------------|
@@ -43,7 +43,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 <sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
 </div>
 
-### Conclusão
+#### Conclusão
 
 <div style={{ textAlign: 'justify' }}>
     <p>
@@ -67,7 +67,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
     </p>
 </div>
 
-### Quadro de serviços de armazenamento na nuvem
+#### Quadro de serviços de armazenamento na nuvem
 
 | Serviço                        | Armazenamento | Requisições | Preço         | Região      | Capacidade         |
 |--------------------------------|---------------|-------------|---------------|-------------|--------------------|
@@ -92,6 +92,14 @@ description: Benchmark de serviços de cloud para implementação no projeto.
     &emsp;&emsp;Portanto, <b>OCI</b> é a opção com maior custo-benefício no curto e médio prazo, com infraestrutura ampla e econômica, além de condições especiais de início. Em paralelo, considerando um ganho expressivo de escalabilidade, com um uso futuro intensivo de requisições e transferência de dados, <b>Firebase</b> apresenta maior economia e robustez no longo prazo. 
     </p>
 </div>
+
+### Benchmark de serviços de hospedagem de banco de dados
+
+#### Configurações
+
+#### Quadro de serviços de hospedagem de banco de dados
+
+#### Conclusão
 
 ### Opção de orçamento 
 
