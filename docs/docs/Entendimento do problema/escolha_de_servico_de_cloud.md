@@ -105,6 +105,13 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 #### Configurações
 
+<div style={{ textAlign: 'justify' }}>
+<p>
+    &emsp;&emsp;Para a aplicação de uma imobiliária de pequeno-médio porte, com cerca de 10 usuários simultâneos realizando consultas simples de leitura e gravação, é crucial garantir que o banco de dados SQL tenha no mínimo 1 GB de SSD e 2 GB de RAM. A justificativa para o uso de no mínimo 1 GB de SSD baseia-se nos cálculos que mostram que o armazenamento necessário para suportar até 10.000 imóveis com as tabelas e atributos especificados é cerca de 90 MB. Contudo, considerando expansões futuras e a necessidade de espaço adicional para índices e logs, 1 GB de SSD proporciona uma margem segura.<br/> 
+    &emsp;&emsp;Em relação à memória RAM, a escolha de no mínimo 2 GB é baseada na necessidade de garantir um desempenho consistente e eficiente. Durante picos de acesso, consultas simultâneas podem exigir mais memória para manter a rapidez nas respostas e evitar gargalos, especialmente em operações de leitura e gravação. Essa configuração é adequada para manter a aplicação responsiva e eficiente, mesmo com um uso moderado.
+</p>
+</div>
+
 #### Quadro de serviços de hospedagem de banco de dados
 
 <div align="center">
@@ -121,11 +128,20 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 | AWS         | 2 vCPU        | 1 GB      | 20 GB* SSD| 730h/mês  | R$ 132,07|
 
 <div align="center">
+<sub><b>*</b>: O asterisco indica valores fixos mínimos para utilizar aquele provedor.</sub><br/>
 <sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
 </div>
 
-
 #### Conclusão
+
+### Conclusão
+
+<div style={{ textAlign: 'justify' }}>
+<p>
+    &emsp;&emsp;Considerando o preço e as necessidades de uma aplicação de imobiliária de pequeno-médio porte, o serviço SQL Azure oferece o melhor custo-benefício. Com apenas R$ 16,05 por mês, proporciona 1 vCPU, 4.5 GB de RAM e 6.5 GB de SSD, o que é suficiente para a operação eficiente da aplicação com consultas simples de leitura e gravação. O SQL Azure utiliza a linguagem SQL padrão, que inclui suporte para PostgreSQL.<br/>
+    &emsp;&emsp;Como alternativa, o serviço da Render, por R$ 112,74 por mês, oferece 1 vCPU, 1 GB de RAM e 16 GB de SSD. Apesar de ser mais caro, é uma boa opção caso seja necessária maior capacidade de armazenamento. No entanto, o ponto fraco da Render é a menor quantidade de RAM, o que pode impactar o desempenho durante picos de acesso.
+</p>
+</div>
 
 ### Opção de orçamento 
 
@@ -140,7 +156,8 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 |        ---       |     ---      |    ---   |
 | Hospedagem da aplicação |    OCI   |   R$105 |
 | Armazenamento de arquivos |   Firebase  |   R$6   |
-| Total |            |                   **R$121** |
+| Hospedagem de Banco de Dados | Microsoft Azure | R$16 | 
+| Total |            |                   **R$127** |
 
 <sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
 </div>
