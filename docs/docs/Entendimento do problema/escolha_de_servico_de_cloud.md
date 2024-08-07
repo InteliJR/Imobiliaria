@@ -31,6 +31,10 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 #### Benchmark de serviços de hospedagem na nuvem
 
+<div align="center">
+<sup><b>Quadro 1</b>: Comparação entre provedores de hospedagem na nuvem.</sup>
+</div>
+
 | Serviço                       | Horas Mensais | Sistema Operacional | vCPUs | Memória RAM      | Armazenamento de Disco    | Preço        |
 |-------------------------------|----------------|----------------------|-------|--------------|---------------------|--------------|
 | Google Cloud Platform (GCP)   | 730            | Linux                | 2     | 2 GB       | 50 GB | 360 R$/mês <sub>Fidelidade de 1 ano</sub>      |
@@ -69,6 +73,10 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 #### Quadro de serviços de armazenamento na nuvem
 
+<div align="center">
+<sup><b>Quadro 2</b>: Comparação entre provedores de armazenamento na nuvem.</sup>
+</div>
+
 | Serviço                        | Armazenamento | Requisições | Preço         | Região      | Capacidade         |
 |--------------------------------|---------------|-------------|---------------|-------------|--------------------|
 | AWS S3                         | 50 GB         | 20 GB <sub>(select query)</sub> | R$11,46/mês  | São Paulo   | Reservada          |
@@ -99,6 +107,24 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 #### Quadro de serviços de hospedagem de banco de dados
 
+<div align="center">
+<sup><b>Quadro 3</b>: Comparação entre provedores de banco de dados na nuvem.</sup>
+</div>
+
+| Serviço     | vCPU          | RAM       | SSD       | Horas/mês | Preço   |
+|-------------|---------------|-----------|-----------|-----------|---------|
+| SQL Azure   | 1 vCPU        | 4.5 GB*   | 6.5 GB*   | 730h/mês  | R$ 16,05|
+| GCP         | 1 vCPU        | 3.75 GB   | 10GB* SSD | 730h/mês  | R$ 251,18|
+| Render      | 1 vCPU        | 1 GB      | 16 GB SSD | 730h/mês  | R$ 112,74|
+| Supabase    | 2 vCPU        | 1 GB      | 8 GB SSD  | 730h/mês  | R$ 140,93|
+| OCI         | 2 vCPU        | 16 GB*    | 50 GB* SSD| 730h/mês  | R$ 238,88|
+| AWS         | 2 vCPU        | 1 GB      | 20 GB* SSD| 730h/mês  | R$ 132,07|
+
+<div align="center">
+<sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
+</div>
+
+
 #### Conclusão
 
 ### Opção de orçamento 
@@ -108,7 +134,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 </div>
 
 <div align="center">
-<sup><b>Quadro de orçamento de serviços na nuvem</b></sup>
+<sup><b>Quadro 4</b>: Orçamento de serviços na nuvem.</sup>
 
 | Serviço na nuvem | Provedor | Preço mensal |
 |        ---       |     ---      |    ---   |
