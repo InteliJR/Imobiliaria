@@ -28,6 +28,12 @@ Tendo em vista a complexidade do software a ser desenvolvido pela equipe, bem co
 
 Os modelos de design de software existentes, como: Clean Architecture, MVC, MVVM, Layer Architecture, entre outros, são baseados na filosofia DDD (Domain Driven Design). O DDD tem o objetivo de facilitar a implementação de regras e processos complexos, visando a divisão de responsabilidades por camadas e é independente da tecnologia a ser utilizada.
 
+<div align="center">
+    <p> Arquitetura em camadas em alto nível </p>
+    <img src={require('../../static/img/arquitetura_em_camadas.png').default} alt="Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
+    <p><b>Fonte:</b> Antonieta, Yari. Layered Architecture for NodeJs. Disponível em: [site](https://ctrly.blog/nodejs-layered-architecture/).</p>
+</div>
+
 ## Arquitetura em camadas
 Esse padrão de design em camadas propõe uma divisão clara do software, separação de responsabilidades e acoplamento fraco.
 Acredito, que cabe aqui uma breve explicação do que é "acoplamento", tendo em vista a importância do conceito para o entendimento do leitor: o termo "acoplamento" em engenharia de software, refere-se ao grau de interdependência entre os módulos e componentes do sistema, indica o quanto um módulo depende de outro para funcionar corretamente. De modo que um acoplamento fraco é uma boa característica para um design de software.
