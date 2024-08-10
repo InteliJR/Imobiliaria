@@ -1,6 +1,10 @@
+
+
+---
+
 ## Introdução aos Testes
 
-A qualidade e a confiabilidade de uma aplicação são fundamentais para garantir que ela funcione conforme esperado e atenda às necessidades dos usuários. Para alcançar esses objetivos, a implementação de uma estratégia de testes robusta é essencial. Nesta seção, apresentamos a estrutura de testes para a nossa API, incluindo testes unitários e de integração, que visam verificar a correta funcionalidade dos endpoints e assegurar que todas as partes da aplicação estejam funcionando harmoniosamente.
+A qualidade e a confiabilidade de uma aplicação são fundamentais para garantir que ela funcione conforme esperado e atenda às necessidades dos usuários. Para alcançar esses objetivos, a implementação de uma estratégia de testes robusta é essencial. Nesta seção, apresentamos a estrutura de testes para a nossa API, incluindo testes unitários e de integração, que visam verificar a correta funcionalidade dos componentes individuais e a interação entre as diferentes partes do sistema.
 
 ### Objetivos dos Testes
 
@@ -17,14 +21,14 @@ Para assegurar a qualidade da aplicação, implementamos dois principais tipos d
 
 1. **Testes Unitários**: Focados em testar componentes individuais da aplicação, como funções ou métodos específicos. Utilizamos o framework `xUnit` para criar e executar testes unitários, garantindo que cada unidade de código funcione isoladamente de acordo com as especificações.
 
-2. **Testes de Integração**: Focados em verificar a interação entre diferentes partes da aplicação. Estes testes garantem que os componentes funcionem corretamente quando integrados. Utilizamos `xUnit` e `HttpClient` para simular requisições reais aos endpoints da API, validando as respostas e o comportamento do sistema em um ambiente mais próximo do real.
+2. **Testes de Integração**: Focados em verificar a interação entre diferentes partes da aplicação. Estes testes garantem que os componentes funcionem corretamente quando integrados, validando o fluxo completo de uma funcionalidade através de múltiplos módulos ou sistemas.
 
 ### Estrutura de Testes
 
 A estrutura de testes foi organizada de maneira a cobrir todos os aspectos críticos da aplicação:
 
 - **Organização por Entidades**: Os testes são organizados em pastas e classes correspondentes a cada entidade da aplicação (ex. `Usuarios`, `Imoveis`, `Pagamentos`), facilitando a manutenção e a escalabilidade.
-- **Cobertura de Endpoints**: Cada endpoint da API possui testes dedicados que validam tanto os casos de sucesso quanto os de erro, garantindo uma cobertura abrangente.
+- **Cobertura de Funcionalidades Críticas**: Cada componente crítico da aplicação, como validações e operações de banco de dados, possui testes dedicados que garantem seu correto funcionamento.
 - **Assertivas Detalhadas**: Utilizamos o `FluentAssertions` para tornar as assertivas mais legíveis e expressivas, facilitando a compreensão dos resultados dos testes.
 
 ### Benefícios dos Testes
@@ -52,10 +56,9 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
 2. **Configuração Inicial**:
    - Adicionar as dependências necessárias no projeto (`xUnit`, `FluentAssertions`, `System.Net.Http.Json`).
 
-3. **Cobertura dos Endpoints**:
-   - Testar todos os endpoints criados: `POST`, `PUT`, `GET`.
-   - Validar tanto respostas de sucesso quanto respostas de erro.
-   - Garantir que todas as validações de dados e regras de negócio sejam testadas.
+3. **Cobertura dos Componentes Críticos**:
+   - Testar todas as funcionalidades críticas como validações, criação de hash de senhas, e inserção de dados no banco.
+   - Garantir que todos os componentes funcionem de maneira independente nos testes unitários e de maneira integrada nos testes de integração.
 
 ### Estrutura dos Testes Unitários
 
@@ -76,71 +79,35 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
     - Criar um projeto separado para os testes dentro da solução, chamado `Projeto.Tests`.
 
 3. **Organização das Classes de Teste**:
-    - Criar pastas para separar os testes por entidade/endpoints, por exemplo:
+    - Criar pastas para separar os testes por funcionalidades ou módulos, por exemplo:
         ```
         Projeto.Tests/
         ├── Usuarios/
-        │   ├── UsuariosControllerTests.cs
+        │   ├── UsuariosValidationTests.cs
+        │   ├── PasswordHasherTests.cs
         ├── Imoveis/
-        │   ├── ImoveisControllerTests.cs
+        │   ├── ImoveisServiceTests.cs
         ├── Pagamentos/
-        │   ├── PagamentosControllerTests.cs
+        │   ├── PagamentosServiceTests.cs
         └── ...
         ```
 
-4. **Exemplo de Classe de Teste**:
-    - Dentro de cada classe de teste, organizar os métodos de teste para cada endpoint. Por exemplo, para `UsuariosControllerTests.cs`:
+4. **Exemplo de Classe de Teste Unitário**:
+    - Para verificar a funcionalidade autônoma de hashing de senha, por exemplo, podemos ter um teste como o seguinte:
 
     ```csharp
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-    using Xunit;
-    using FluentAssertions;
-
-    namespace Projeto.Tests.Usuarios
+    [Fact]
+    public void HashPassword_ShouldReturnHashedPassword()
     {
-        public class UsuariosControllerTests
-        {
-            private readonly HttpClient _client;
+        // Arrange
+        var password = "minhasenha1234";
+        var hasher = new PasswordHasher();
 
-            public UsuariosControllerTests()
-            {
-                _client = new HttpClient
-                {
-                    BaseAddress = new System.Uri("https://api.exemplo.com/v1/")
-                };
-            }
+        // Act
+        var hashedPassword = hasher.HashPassword(password);
 
-            [Fact]
-            public async Task CreateUser_ShouldReturnCreatedUser()
-            {
-                var newUser = new
-                {
-                    email = "usuario@example.com",
-                    senha = "senha123",
-                    tipo_usuario = "administrador",
-                    ativo = true,
-                    data_de_criacao = "2024-07-27T12:00:00Z"
-                };
-
-                var response = await _client.PostAsJsonAsync("usuarios", newUser);
-
-                response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
-                var createdUser = await response.Content.ReadFromJsonAsync<dynamic>();
-                createdUser.email.Should().Be(newUser.email);
-            }
-
-            [Fact]
-            public async Task GetUserById_ShouldReturnUser()
-            {
-                var userId = 1;
-                var response = await _client.GetAsync($"usuarios/{userId}");
-                response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-                var user = await response.Content.ReadFromJsonAsync<dynamic>();
-                user.id.Should().Be(userId);
-            }
-        }
+        // Assert
+        Assert.NotEqual(password, hashedPassword);
     }
     ```
 
@@ -148,7 +115,7 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
 
 1. **Configuração Inicial**:
     - Adicionar dependências de teste de integração no projeto (`xUnit`, `FluentAssertions`, `System.Net.Http.Json`).
-    - Configurar um ambiente de teste que possa ser usado para rodar os testes de integração (podendo ser um banco de dados de teste).
+    - Configurar um ambiente de teste que possa ser usado para rodar os testes de integração, como um banco de dados de teste.
 
 2. **Organização dos Testes de Integração**:
     - Criar pastas e classes específicas para testes de integração, separando-os dos testes unitários.
@@ -160,58 +127,34 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
         ```
 
 3. **Exemplo de Classe de Teste de Integração**:
-    - Dentro de cada classe de teste de integração, organizar os métodos de teste para cada endpoint. Por exemplo, para `UsuariosIntegrationTests.cs`:
+    - Dentro de cada classe de teste de integração, organize os métodos para testar o fluxo completo da funcionalidade, como a criação de um usuário que envolve validação, aplicação de regras de negócio e inserção no banco de dados:
 
     ```csharp
-    using System.Net.Http;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
-    using Xunit;
-    using FluentAssertions;
-
-    namespace Projeto.Tests.IntegrationTests
+    [Fact]
+    public async Task CreateUser_ShouldAddUserToDatabase()
     {
-        public class UsuariosIntegrationTests
+        // Arrange
+        var newUser = new
         {
-            private readonly HttpClient _client;
+            email = "usuario@example.com",
+            senha = "senha123",
+            tipo_usuario = "administrador",
+            ativo = true,
+            data_de_criacao = "2024-07-27T12:00:00Z"
+        };
 
-            public UsuariosIntegrationTests()
-            {
-                _client = new HttpClient
-                {
-                    BaseAddress = new System.Uri("https://api.exemplo.com/v1/")
-                };
-            }
+        var client = new HttpClient
+        {
+            BaseAddress = new Uri("https://api.exemplo.com/v1/")
+        };
 
-            [Fact]
-            public async Task CreateUser_ShouldReturnCreatedUser()
-            {
-                var newUser = new
-                {
-                    email = "usuario@example.com",
-                    senha = "senha123",
-                    tipo_usuario = "administrador",
-                    ativo = true,
-                    data_de_criacao = "2024-07-27T12:00:00Z"
-                };
+        // Act
+        var response = await client.PostAsJsonAsync("usuarios", newUser);
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-                var response = await _client.PostAsJsonAsync("usuarios", newUser);
-
-                response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
-                var createdUser = await response.Content.ReadFromJsonAsync<dynamic>();
-                createdUser.email.Should().Be(newUser.email);
-            }
-
-            [Fact]
-            public async Task GetUserById_ShouldReturnUser()
-            {
-                var userId = 1;
-                var response = await _client.GetAsync($"usuarios/{userId}");
-                response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-                var user = await response.Content.ReadFromJsonAsync<dynamic>();
-                user.id.Should().Be(userId);
-            }
-        }
+        // Additional assertions can include verifying the user was correctly added to the database
     }
     ```
 
@@ -225,6 +168,61 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
 
 ---
 
+### Indicadores de Testes no xUnit
+
+No xUnit, temos dois principais atributos que são utilizados para identificar e categorizar os testes: `Fact` e `Theory`. Ambos desempenham papéis importantes na estruturação dos testes, mas têm finalidades diferentes:
+
+- **`Fact`**: Este atributo é usado para testes que são verdadeiros sob todas as circunstâncias. Em outras palavras, um teste decorado com `Fact` não depende de entradas externas ou variações de dados. Ele valida um fato único e absoluto sobre a aplicação.
+
+    **Exemplo:**
+
+    ```csharp
+    [Fact]
+    public void ShouldReturnTrueForValidUser()
+    {
+        var user = new User { IsActive = true };
+        var result = user.IsActive;
+        
+        Assert.True(result);
+    }
+    ```
+
+- **`Theory`**: Este atributo é usado para testes que precisam ser verificados sob várias condições ou com diferentes conjuntos de dados. `Theory` trabalha em conjunto com outros atributos como `InlineData`, que permite a passagem de múltiplas combinações de entradas para o teste.
+
+    **Exemplo:**
+
+    ```csharp
+    [Theory]
+    [InlineData(3, 5, 8)]
+    [InlineData(2, 4, 6)]
+    [InlineData(6, 6, 12)]
+    public void AddNumbers_ShouldReturnCorrectSum(int a, int b, int
+
+ expectedSum)
+    {
+        int sum = a + b;
+        
+        Assert.Equal(expectedSum, sum);
+    }
+    ```
+
+### Cobertura de Código
+
+Para garantir que a qualidade do código esteja sendo mantida, é recomendado definir uma meta mínima de cobertura de código. A cobertura de código é uma métrica que indica a porcentagem do código que é coberto pelos testes automatizados. Ao definir uma porcentagem mínima de cobertura, você assegura que a maioria das funcionalidades e fluxos de código estejam devidamente testados.
+
+- **Meta de Cobertura de Código**: Sugerimos estabelecer uma meta mínima de **80%** de cobertura de código. Isso garante que a maioria do código seja testada, sem comprometer a agilidade do desenvolvimento. É importante monitorar essa métrica regularmente e integrar a verificação de cobertura de código no processo de integração contínua (CI).
+
+    **Como Verificar a Cobertura de Código:**
+
+    - Utilize ferramentas como `coverlet` para medir a cobertura de código em projetos .NET. Você pode integrá-lo ao Visual Studio ou rodar via linha de comando com:
+
+    ```sh
+    dotnet test /p:CollectCoverage=true
+    ```
+
+    - O relatório gerado indicará a porcentagem de código coberto e ajudará a identificar áreas que precisam de mais atenção nos testes.
+
+---
 
 ### Fontes e Referências
 
@@ -251,3 +249,4 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
    - Pluralsight: "Testing .NET Core Applications with xUnit.net": [https://www.pluralsight.com/courses/xunit-dotnet-testing](https://www.pluralsight.com/courses/xunit-dotnet-testing)
    - YouTube: "Unit Testing in ASP.NET Core with xUnit" por Tim Corey: [https://www.youtube.com/watch?v=EXvIahupmJk](https://www.youtube.com/watch?v=EXvIahupmJk)
 
+---
