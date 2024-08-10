@@ -30,7 +30,7 @@ Os modelos de design de software existentes, como: Clean Architecture, MVC, MVVM
 
 <div align="center">
     <p> Arquitetura em camadas em alto nível </p>
-    <img src={require('../../static/img/arquitetura_em_camadas.png').default} alt="Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
+    <img src={require('../../static/img/layer-architecture.png').default} alt="Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
     <p><b>Fonte:</b> Antonieta, Yari. Layered Architecture for NodeJs. Disponível em: [site](https://ctrly.blog/nodejs-layered-architecture/).</p>
 </div>
 
