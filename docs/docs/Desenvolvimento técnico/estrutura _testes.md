@@ -60,6 +60,7 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
    - Testar todas as funcionalidades críticas como validações, criação de hash de senhas, e inserção de dados no banco.
    - Garantir que todos os componentes funcionem de maneira independente nos testes unitários e de maneira integrada nos testes de integração.
 
+...
 ### Estrutura dos Testes Unitários
 
 1. **Adicionar Dependências**:
@@ -110,82 +111,7 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
         Assert.NotEqual(password, hashedPassword);
     }
     ```
-
-### Estrutura dos Testes de Integração
-
-1. **Configuração Inicial**:
-    - Adicionar dependências de teste de integração no projeto (`xUnit`, `FluentAssertions`, `System.Net.Http.Json`).
-    - Configurar um ambiente de teste que possa ser usado para rodar os testes de integração, como um banco de dados de teste.
-
-2. **Organização dos Testes de Integração**:
-    - Criar pastas e classes específicas para testes de integração, separando-os dos testes unitários.
-        ```
-        Projeto.Tests/
-        ├── IntegrationTests/
-        │   ├── UsuariosIntegrationTests.cs
-        └── ...
-        ```
-
-3. **Exemplo de Classe de Teste de Integração**:
-    - Dentro de cada classe de teste de integração, organize os métodos para testar o fluxo completo da funcionalidade, como a criação de um usuário que envolve validação, aplicação de regras de negócio e inserção no banco de dados:
-
-    ```csharp
-    [Fact]
-    public async Task CreateUser_ShouldAddUserToDatabase()
-    {
-        // Arrange
-        var newUser = new
-        {
-            email = "usuario@example.com",
-            senha = "senha123",
-            tipo_usuario = "administrador",
-            ativo = true,
-            data_de_criacao = "2024-07-27T12:00:00Z"
-        };
-
-        var client = new HttpClient
-        {
-            BaseAddress = new Uri("https://api.exemplo.com/v1/")
-        };
-
-        // Act
-        var response = await client.PostAsJsonAsync("usuarios", newUser);
-        
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
-
-        // Additional assertions can include verifying the user was correctly added to the database
-    }
-    ```
-
-4. **Executar os Testes**:
-    - Use o `Test Explorer` do Visual Studio para rodar e visualizar os resultados dos testes.
-    - Para rodar os testes via linha de comando, use o comando:
-
-    ```sh
-    dotnet test
-    ```
-
----
-
-### Indicadores de Testes no xUnit
-
-No xUnit, temos dois principais atributos que são utilizados para identificar e categorizar os testes: `Fact` e `Theory`. Ambos desempenham papéis importantes na estruturação dos testes, mas têm finalidades diferentes:
-
-- **`Fact`**: Este atributo é usado para testes que são verdadeiros sob todas as circunstâncias. Em outras palavras, um teste decorado com `Fact` não depende de entradas externas ou variações de dados. Ele valida um fato único e absoluto sobre a aplicação.
-
-    **Exemplo:**
-
-    ```csharp
-    [Fact]
-    public void ShouldReturnTrueForValidUser()
-    {
-        var user = new User { IsActive = true };
-        var result = user.IsActive;
-        
-        Assert.True(result);
-    }
-    ```
+...
 
 - **`Theory`**: Este atributo é usado para testes que precisam ser verificados sob várias condições ou com diferentes conjuntos de dados. `Theory` trabalha em conjunto com outros atributos como `InlineData`, que permite a passagem de múltiplas combinações de entradas para o teste.
 
