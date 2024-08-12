@@ -17,7 +17,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 
 ### Opções de Hospedagem da Aplicação na Nuvem
 
-**Configurações**:
+#### Configurações:
 <div style={{ textAlign: 'justify' }}>
     <p>
         &emsp;&emsp;Essa seção compara os serviços de hospedagem para a aplicação na nuvem. Nesse sentido, alguns critérios foram adotados para a comparação entre os players, levando em conta as exigências do sistema:<br/>
@@ -29,7 +29,11 @@ description: Benchmark de serviços de cloud para implementação no projeto.
     </p>
 </div>
 
-### Benchmark de serviços de hospedagem na nuvem
+#### Benchmark de serviços de hospedagem na nuvem
+
+<div align="center">
+<sup><b>Quadro 1</b>: Comparação entre provedores de hospedagem na nuvem.</sup>
+</div>
 
 | Serviço                       | Horas Mensais | Sistema Operacional | vCPUs | Memória RAM      | Armazenamento de Disco    | Preço        |
 |-------------------------------|----------------|----------------------|-------|--------------|---------------------|--------------|
@@ -43,7 +47,7 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 <sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
 </div>
 
-### Conclusão
+#### Conclusão
 
 <div style={{ textAlign: 'justify' }}>
     <p>
@@ -67,7 +71,11 @@ description: Benchmark de serviços de cloud para implementação no projeto.
     </p>
 </div>
 
-### Quadro de serviços de armazenamento na nuvem
+#### Quadro de serviços de armazenamento na nuvem
+
+<div align="center">
+<sup><b>Quadro 2</b>: Comparação entre provedores de armazenamento na nuvem.</sup>
+</div>
 
 | Serviço                        | Armazenamento | Requisições | Preço         | Região      | Capacidade         |
 |--------------------------------|---------------|-------------|---------------|-------------|--------------------|
@@ -93,6 +101,48 @@ description: Benchmark de serviços de cloud para implementação no projeto.
     </p>
 </div>
 
+### Benchmark de serviços de hospedagem de banco de dados
+
+#### Configurações
+
+<div style={{ textAlign: 'justify' }}>
+<p>
+    &emsp;&emsp;Para a aplicação de uma imobiliária de pequeno-médio porte, com cerca de 10 usuários simultâneos realizando consultas simples de leitura e gravação, é crucial garantir que o banco de dados SQL tenha no mínimo 1 GB de SSD e 2 GB de RAM. A justificativa para o uso de no mínimo 1 GB de SSD baseia-se nos cálculos que mostram que o armazenamento necessário para suportar até 10.000 imóveis com as tabelas e atributos especificados é cerca de 90 MB. Contudo, considerando expansões futuras e a necessidade de espaço adicional para índices e logs, 1 GB de SSD proporciona uma margem segura.<br/> 
+    &emsp;&emsp;Em relação à memória RAM, a escolha de no mínimo 2 GB é baseada na necessidade de garantir um desempenho consistente e eficiente. Durante picos de acesso, consultas simultâneas podem exigir mais memória para manter a rapidez nas respostas e evitar gargalos, especialmente em operações de leitura e gravação. Essa configuração é adequada para manter a aplicação responsiva e eficiente, mesmo com um uso moderado.
+</p>
+</div>
+
+#### Quadro de serviços de hospedagem de banco de dados
+
+<div align="center">
+<sup><b>Quadro 3</b>: Comparação entre provedores de banco de dados na nuvem.</sup>
+</div>
+
+| Serviço     | vCPU          | RAM       | SSD       | Horas/mês | Preço   |
+|-------------|---------------|-----------|-----------|-----------|---------|
+| SQL Azure   | 1 vCPU        | 4.5 GB*   | 6.5 GB*   | 730h/mês  | R$ 16,05|
+| GCP         | 1 vCPU        | 3.75 GB   | 10GB* SSD | 730h/mês  | R$ 251,18|
+| Render      | 1 vCPU        | 1 GB      | 16 GB SSD | 730h/mês  | R$ 112,74|
+| Supabase    | 2 vCPU        | 1 GB      | 8 GB SSD  | 730h/mês  | R$ 140,93|
+| OCI         | 2 vCPU        | 16 GB*    | 50 GB* SSD| 730h/mês  | R$ 238,88|
+| AWS         | 2 vCPU        | 1 GB      | 20 GB* SSD| 730h/mês  | R$ 132,07|
+
+<div align="center">
+<sub><b>*</b>: O asterisco indica valores fixos mínimos para utilizar aquele provedor.</sub><br/>
+<sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
+</div>
+
+#### Conclusão
+
+### Conclusão
+
+<div style={{ textAlign: 'justify' }}>
+<p>
+    &emsp;&emsp;Considerando o preço e as necessidades de uma aplicação de imobiliária de pequeno-médio porte, o serviço SQL Azure oferece o melhor custo-benefício. Com apenas R$ 16,05 por mês, proporciona 1 vCPU, 4.5 GB de RAM e 6.5 GB de SSD, o que é suficiente para a operação eficiente da aplicação com consultas simples de leitura e gravação. O SQL Azure utiliza a linguagem SQL padrão, que inclui suporte para PostgreSQL.<br/>
+    &emsp;&emsp;Como alternativa, o serviço da Render, por R$ 112,74 por mês, oferece 1 vCPU, 1 GB de RAM e 16 GB de SSD. Apesar de ser mais caro, é uma boa opção caso seja necessária maior capacidade de armazenamento. No entanto, o ponto fraco da Render é a menor quantidade de RAM, o que pode impactar o desempenho durante picos de acesso.
+</p>
+</div>
+
 ### Opção de orçamento 
 
 <div style={{ textAlign: 'justify' }}>
@@ -100,13 +150,14 @@ description: Benchmark de serviços de cloud para implementação no projeto.
 </div>
 
 <div align="center">
-<sup><b>Quadro de orçamento de serviços na nuvem</b></sup>
+<sup><b>Quadro 4</b>: Orçamento de serviços na nuvem.</sup>
 
 | Serviço na nuvem | Provedor | Preço mensal |
 |        ---       |     ---      |    ---   |
 | Hospedagem da aplicação |    OCI   |   R$105 |
-| Armazenamento de arquivos |   OCI  |   R$6   |
-| Total |            |                   **R$121** |
+| Armazenamento de arquivos |   Firebase  |   R$6   |
+| Hospedagem de Banco de Dados | Microsoft Azure | R$16 | 
+| Total |            |                   **R$127** |
 
 <sub><b>Fonte</b>: Material produzido pelos autores (2024).</sub>
 </div>
