@@ -122,9 +122,7 @@ Para executar os testes, utilizamos o `Test Explorer` no Visual Studio ou a linh
     [InlineData(3, 5, 8)]
     [InlineData(2, 4, 6)]
     [InlineData(6, 6, 12)]
-    public void AddNumbers_ShouldReturnCorrectSum(int a, int b, int
-
- expectedSum)
+    public void AddNumbers_ShouldReturnCorrectSum(int a, int b, intexpectedSum)
     {
         int sum = a + b;
         
