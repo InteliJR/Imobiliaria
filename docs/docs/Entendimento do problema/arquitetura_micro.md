@@ -14,13 +14,25 @@ A arquitetura pensada para esturar o projeto foi a monolítica, que é um padrã
 
 ### Justificativa da escolha
 
-O motivo de escolhermos a arquitetura monolítica foi a simplicidade e facilidade de desenvolvimento, pois o projeto não é muito complexo e não possui muitas funcionalidades complexas No mercado atualmente uma outra arquitetura muito utilizada é a arquitetura de microsserviços, que é uma arquitetura de software que consiste em um conjunto de serviços pequenos e independentes que se comunicam entre si para formar uma aplicação completa. Justificando a escolha da arquitetura monolítica sob a de microsserviços, temos que a arquitetura de microsserviços é mais complexa e difícil de ser implementada e não vimos necessidade de isolar as funcionalidades do sistema em serviços independentes.
+O motivo de escolhermos a arquitetura monolítica foi a simplicidade e facilidade de desenvolvimento, pois o projeto não é muito complexo e não possui muitas funcionalidades complexas No mercado atualmente uma outra arquitetura muito utilizada é a arquitetura de microsserviços, que é uma arquitetura de software que consiste em um conjunto de serviços pequenos e independentes que se comunicam entre si para formar uma aplicação completa. Justificando a escolha da arquitetura monolítica sob a de microsserviços, temos que a arquitetura de microsserviços é mais complexa e difícil de ser implementada e não vimos necessidade de isolar as funcionalidades do sistema em serviços independentes. 
+
+No geral, estamos utilizando uma arquitetura monolítica para o backend e teremos o frontend separado do backend, o que facilita a manutenção e escalabilidade do sistema.
 
 Segue abaixo um diagrama da arquitetura monolítica proposta para o projeto:
 
 <div align="center">
     <p> Arquitetura</p>
-    <img src={require('../../static/img/arquitetura_micro.png').default} alt="Arquitetura micro" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
+    <img src={require('../../static/img/arquitetura_micro_tech.png').default} alt="Arquitetura micro com tecnologias" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
+    <p><b>Fonte:</b> Autoria própria.</p>
+</div>
+
+Estamos utilizando para o frontend o framework React, para o backend o framework .NET do C# e o banco de dados PostgreSQL. Para hospedar o sistema que inclui backend e frontend, utilizaremos o Oracle Cloud Infrastructure (OCI), para o armazenamento de arquivos utilizaremos o serviço de armazenamento do firebase e para o banco de dados utilizaremos o serviço de banco de dados PostgreSQL da Azure.
+
+Arquitetura sem as tecologias que utilizaremos:
+
+<div align="center">
+    <p> Arquitetura</p>
+    <img src={require('../../static/img/arquitetura_micro_no_tech.png').default} alt="Arquitetura micro sem tecnologias" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
     <p><b>Fonte:</b> Autoria própria.</p>
 </div>
 
@@ -28,15 +40,10 @@ Segue abaixo um diagrama da arquitetura monolítica proposta para o projeto:
 
 Dando um zoom nas camadas da aplicação em si, temos:
 
-#### Camada de Apresentação (UI)
-
-**Responsabilidade:**
-- A camada de apresentação é a interface do usuário (UI) do sistema. Ela é responsável por capturar a entrada do usuário e apresentar os dados de forma amigável. Nesta camada, o foco é a experiência do usuário, garantindo que ele possa interagir facilmente com o sistema.
-
 #### Camada de Aplicação
 
 **Responsabilidade:**
-- A camada de aplicação age como um intermediário entre a UI e a lógica de negócio. Ela gerencia as requisições da UI, aplica validações iniciais, e encaminha as operações para a camada de negócios. São compostas pelos controllers e ViewModels.
+- A camada de aplicação age como um intermediário entre o frontend e a lógica de negócio. Ela gerencia as requisições da UI, aplica validações iniciais, e encaminha as operações para a camada de negócios. São compostas pelos controllers e ViewModels.
   
 #### Camada de Negócio
 
@@ -63,7 +70,7 @@ Dando um zoom nas camadas da aplicação em si, temos:
 
 ### 1. Administrador Acessa a Página de Cadastro
 
-- **Camada de Apresentação (UI):**
+- **Frontend:**
   - O administrador acessa a página de cadastro de usuário e preenche o formulário com os dados do novo usuário.
 - **Camada de Aplicação:**
   - O controlador de usuários recebe os dados do formulário e valida as informações.
@@ -87,6 +94,6 @@ Dando um zoom nas camadas da aplicação em si, temos:
   - PostgreSQL armazena as informações do novo usuário.
 - **Resposta:**
   - O serviço confirma a criação do novo usuário e o controlador retorna um feedback para a UI.
-- **Camada de Apresentação (UI):**
+- **Frontend:**
   - A interface exibe uma mensagem de sucesso ou erro ao administrador, dependendo do resultado do cadastro.
 
