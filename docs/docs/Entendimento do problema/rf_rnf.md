@@ -196,8 +196,8 @@ O locador deve ser capaz de visualizar os valores recebidos pela administradora 
 
 | ID    | Descrição                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------- |
-| CT-56 | Verificar se o locador consegue acessar os valores recebidos pela administradora                                |
-| CT-57 | Verificar se há um relatório de cada valor depositado                                |
+| CT-56 | Verificar se o locador consegue acessar os valores recebidos pela administradora                            |
+| CT-57 | Verificar se há um relatório de cada valor depositado                                                        |
 | CT-58 | Verificar se uma mensagem é exibida quando não há valores recebidos                                          |
 | CT-59 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento                                 |
 
@@ -220,8 +220,8 @@ A administradora deve ser capaz de criar contas de usuários manualmente ou atra
 
 | ID    | Descrição                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------- |
-| CT-64 | Verificar se a administradora pode criar uma conta de usuário manualmente                                       |
-| CT-65 | Verificar se a administradora pode criar contas de usuários através do upload de um arquivo CSV                |
+| CT-64 | Verificar se a administradora pode criar uma conta de usuário manualmente                                    |
+| CT-65 | Verificar se a administradora pode criar contas de usuários através do upload de um arquivo CSV              |
 | CT-66 | Verificar se uma mensagem de confirmação é exibida após a criação de uma conta                               |
 | CT-67 | Verificar se um email com as credenciais é enviado para o usuário após a criação da conta                    |
 
@@ -232,8 +232,8 @@ A administradora deve ser capaz de gerenciar o nível de acesso dos usuários ca
 
 | ID    | Descrição                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------- |
-| CT-68 | Verificar se a administradora pode alterar o nível de acesso de um usuário                                     |
-| CT-69 | Verificar se a administradora pode visualizar o nível de acesso atual de um usuário                             |
+| CT-68 | Verificar se a administradora pode alterar o nível de acesso de um usuário                                   |
+| CT-69 | Verificar se a administradora pode visualizar o nível de acesso atual de um usuário                          |
 | CT-70 | Verificar se uma mensagem de confirmação é exibida após a alteração do nível de acesso                       |
 | CT-71 | Verificar se uma mensagem de erro é exibida quando ocorre falha na alteração do nível de acesso              |
 
@@ -244,7 +244,7 @@ A administradora deve ser capaz de visualizar todos os usuários cadastrados na 
 
 | ID    | Descrição                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------- |
-| CT-72 | Verificar se a administradora pode acessar a lista completa de usuários cadastrados                             |
+| CT-72 | Verificar se a administradora pode acessar a lista completa de usuários cadastrados                         |
 | CT-73 | Verificar se os usuários exibidos correspondem aos cadastrados na plataforma                                 |
 | CT-74 | Verificar se uma mensagem é exibida quando não há usuários cadastrados                                       |
 | CT-75 | Verificar se uma mensagem de erro é exibida em caso de falha no carregamento                                 |
@@ -256,10 +256,10 @@ A administradora deve ser capaz de visualizar informações detalhadas de um usu
 
 | ID    | Descrição                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------- |
-| CT-76 | Verificar se a administradora pode acessar informações detalhadas de um usuário específico                       |
+| CT-76 | Verificar se a administradora pode acessar informações detalhadas de um usuário específico                   |
 | CT-77 | Verificar se as informações exibidas correspondem ao usuário específico buscado                              |
-| CT-78 | Verificar se uma mensagem de erro é exibida quando o usuário específico não é encontrado                      |
-| CT-79 | Verificar se os dados principais, como nome e e-mail, estão disponíveis para copiar e colar                   |
+| CT-78 | Verificar se uma mensagem de erro é exibida quando o usuário específico não é encontrado                     |
+| CT-79 | Verificar se os dados principais, como nome e e-mail, estão disponíveis para copiar e colar                  |
 
 ### RF-22: Remoção de Conta de Usuário
 A administradora deve ser capaz de remover contas de usuários da plataforma.
@@ -268,9 +268,9 @@ A administradora deve ser capaz de remover contas de usuários da plataforma.
 
 | ID    | Descrição                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------- |
-| CT-80 | Verificar se a administradora pode remover uma conta de usuário da plataforma                                   |
+| CT-80 | Verificar se a administradora pode remover uma conta de usuário da plataforma                                |
 | CT-81 | Verificar se uma mensagem de confirmação é exibida após a remoção da conta                                   |
-| CT-82 | Verificar se uma mensagem de erro é exibida quando ocorre falha na remoção da conta                           |
+| CT-82 | Verificar se uma mensagem de erro é exibida quando ocorre falha na remoção da conta                          |
 | CT-83 | Verificar se a conta removida não pode mais acessar a plataforma após a remoção                              |
 
 ### RF-23: Cadastro de Imóveis
@@ -280,9 +280,9 @@ A administradora deve ser capaz de cadastrar novos imóveis na plataforma.
 
 | ID    | Descrição                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------- |
-| CT-84 | Verificar se a administradora pode cadastrar um novo imóvel na plataforma                                       |
-| CT-85 | Verificar se uma mensagem de confirmação é exibida após o cadastro do imóvel                                  |
-| CT-86 | Verificar se uma mensagem de erro é exibida quando ocorre falha no cadastro do imóvel                          |
+| CT-84 | Verificar se a administradora pode cadastrar um novo imóvel na plataforma                                    |
+| CT-85 | Verificar se uma mensagem de confirmação é exibida após o cadastro do imóvel                                 |
+| CT-86 | Verificar se uma mensagem de erro é exibida quando ocorre falha no cadastro do imóvel                        |
 | CT-87 | Verificar se o imóvel cadastrado está disponível para visualização após o cadastro                           |
 
 ### RF-24: Cadastro de Contratos
@@ -292,10 +292,10 @@ A administradora deve ser capaz de cadastrar novos contratos na plataforma, incl
 
 | ID    | Descrição                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------- |
-| CT-88 | Verificar se a administradora pode cadastrar um novo contrato na plataforma                                     |
-| CT-89 | Verificar se todos os campos obrigatórios são validados corretamente durante o cadastro do contrato           |
-| CT-90 | Verificar se uma mensagem de confirmação é exibida após o cadastro do contrato                                |
-| CT-91 | Verificar se uma mensagem de erro é exibida quando ocorre falha no cadastro do contrato                        |
+| CT-88 | Verificar se a administradora pode cadastrar um novo contrato na plataforma                                  |
+| CT-89 | Verificar se todos os campos obrigatórios são validados corretamente durante o cadastro do contrato          |
+| CT-90 | Verificar se uma mensagem de confirmação é exibida após o cadastro do contrato                               |
+| CT-91 | Verificar se uma mensagem de erro é exibida quando ocorre falha no cadastro do contrato                      |
 
 ### RF-25: Upload de Contrato por PDF
 A administradora deve ser capaz de realizar o upload de contratos em formato PDF na plataforma.
@@ -306,44 +306,78 @@ A administradora deve ser capaz de realizar o upload de contratos em formato PDF
 | ----- | ----------------------------------------------------------------------------------------------------------- |
 | CT-92 | Verificar se a administradora pode fazer o upload de um contrato em formato PDF                              |
 | CT-93 | Verificar se o contrato PDF está completo e legível após o upload                                            |
-| CT-94 | Verificar se uma mensagem de confirmação é exibida após o upload do contrato                                  |
-| CT-95 | Verificar se uma mensagem de erro é exibida quando ocorre falha no upload do contrato                         |
+| CT-94 | Verificar se uma mensagem de confirmação é exibida após o upload do contrato                                 |
+| CT-95 | Verificar se uma mensagem de erro é exibida quando ocorre falha no upload do contrato                        |
+
+### RF-26: Gerar Boletos com API Externa
+O sistema deve ser capaz de gerar boletos de pagamento utilizando uma API externa.
+
+**Casos de Teste**
+
+| ID    | Descrição                                                                                                   |
+| ----- | ----------------------------------------------------------------------------------------------------------- |
+| CT-96 | Verificar se o sistema pode gerar boletos utilizando a API externa                                           |
+| CT-97 | Verificar se os boletos gerados estão completos e válidos para pagamento                                     |
+| CT-98 | Verificar se uma mensagem de confirmação é exibida após a geração do boleto                                  |
+| CT-99 | Verificar se uma mensagem de erro é exibida quando ocorre falha na geração do boleto                         |
 
 ### RF-27: Verificação de Vencimento de Contratos
 O sistema deve ser capaz de verificar automaticamente o vencimento dos contratos cadastrados na plataforma.
 
 **Casos de Teste**
 
-| ID      | Descrição                                                                                                   |
-| ------- | ----------------------------------------------------------------------------------------------------------- |
-| CT-100  | Verificar se o sistema pode verificar o vencimento dos contratos automaticamente                             |
-| CT-101  | Verificar se o sistema envia notificações quando um contrato está próximo do vencimento                      |
-| CT-102  | Verificar se uma mensagem de erro é exibida quando ocorre falha na verificação do vencimento do contrato     |
+| ID    | Descrição                                                                                                   |
+| ----- | ----------------------------------------------------------------------------------------------------------- |
+| CT-100| Verificar se o sistema pode verificar o vencimento dos contratos automaticamente                             |
+| CT-101| Verificar se o sistema envia notificações quando um contrato está próximo do vencimento                      |
+| CT-102| Verificar se uma mensagem de erro é exibida quando ocorre falha na verificação do vencimento do contrato     |
 
+### RF-28: Verificação de Vencimento de Boletos
+O sistema deve ser capaz de verificar automaticamente o vencimento dos boletos de pagamento gerados na plataforma.
+
+**Casos de Teste**
+
+| ID    | Descrição                                                                                                   |
+| ----- | ----------------------------------------------------------------------------------------------------------- |
+| CT-103| Verificar se o sistema pode verificar o vencimento dos boletos automaticamente                               |
+| CT-104| Verificar se o sistema envia notificações quando um boleto está próximo do vencimento                        |
+| CT-105| Verificar se uma mensagem de erro é exibida quando ocorre falha na verificação do vencimento do boleto       |
 
 ### RF-29: Envio de Notificação de Pagamento Próximo por E-mail
 O sistema deve ser capaz de enviar notificações por e-mail aos usuários quando contratos ou boletos estão próximos do vencimento ou quando ocorrem ajustes.
 
 **Casos de Teste**
 
-| ID      | Descrição                                                                                                   |
-| ------- | ----------------------------------------------------------------------------------------------------------- |
-| CT-106  | Verificar se o sistema pode enviar notificações por e-mail para contratos próximos do vencimento ou com ajustes  |
-| CT-107  | Verificar se o sistema pode enviar notificações por e-mail para boletos próximos do vencimento               |
-| CT-108  | Verificar se uma mensagem de confirmação é exibida após o envio da notificação por e-mail                    |
-| CT-109  | Verificar se uma mensagem de erro é exibida quando ocorre falha no envio da notificação por e-mail           |
+| ID    | Descrição                                                                                                   |
+| ----- | ----------------------------------------------------------------------------------------------------------- |
+| CT-106| Verificar se o sistema pode enviar notificações por e-mail para contratos próximos do vencimento ou com ajustes|
+| CT-107| Verificar se o sistema pode enviar notificações por e-mail para boletos próximos do vencimento               |
+| CT-108| Verificar se uma mensagem de confirmação é exibida após o envio da notificação por e-mail                    |
+| CT-109| Verificar se uma mensagem de erro é exibida quando ocorre falha no envio da notificação por e-mail           |
 
 ### RF-30: Envio de Notificação de Boleto Gerado por E-mail
 O sistema deve ser capaz de enviar notificações por e-mail aos usuários quando novos boletos de pagamento são gerados.
 
 **Casos de Teste**
 
-| ID      | Descrição                                                                                                   |
-| ------- | ----------------------------------------------------------------------------------------------------------- |
-| CT-110  | Verificar se o sistema pode enviar notificações por e-mail quando novos boletos são gerados                  |
-| CT-111  | Verificar se o sistema envia o boleto gerado como anexo no e-mail                                            |
-| CT-112  | Verificar se uma mensagem de confirmação é exibida após o envio da notificação por e-mail                    |
-| CT-113  | Verificar se uma mensagem de erro é exibida quando ocorre falha no envio da notificação por e-mail           |
+| ID    | Descrição                                                                                                   |
+| ----- | ----------------------------------------------------------------------------------------------------------- |
+| CT-110| Verificar se o sistema pode enviar notificações por e-mail quando novos boletos são gerados                  |
+| CT-111| Verificar se o sistema envia o boleto gerado como anexo no e-mail                                            |
+| CT-112| Verificar se uma mensagem de confirmação é exibida após o envio da notificação por e-mail                    |
+| CT-113| Verificar se uma mensagem de erro é exibida quando ocorre falha no envio da notificação por e-mail           |
+
+### RF-31: Envio de Notificação de Contrato Assinado por E-mail
+O sistema deve ser capaz de enviar notificações por e-mail aos usuários quando novos contratos são adicionados na plataforma.
+
+**Casos de Teste**
+
+| ID    | Descrição                                                                                                   |
+| ----- | ----------------------------------------------------------------------------------------------------------- |
+| CT-114| Verificar se o sistema pode enviar notificações por e-mail quando novos contratos são adicionados, bem como o imóvel referente|
+| CT-115| Verificar se o sistema envia o contrato como anexo no e-mail                                                 |
+| CT-116| Verificar se o sistema notifica quando todas as partes assinaram o contrato                                  |
+| CT-117| Verificar se uma mensagem de erro é exibida quando ocorre falha no envio da notificação por e-mail           |
 
 ### RF-32: Dashboard de Contratos para Locador
 O sistema deve fornecer ao locador um painel que mostre todos os imóveis que ele possui em contrato, incluindo o status de pagamentos, próximos reajustes e histórico de interações.
@@ -352,10 +386,10 @@ O sistema deve fornecer ao locador um painel que mostre todos os imóveis que el
 
 | ID    | Descrição                                                                            |
 | ----- | ------------------------------------------------------------------------------------ |
-| CT-118 | Verificar se o locador consegue acessar o painel de contratos                          |
-| CT-119 | Verificar se o painel exibe corretamente o status de pagamentos para cada imóvel      |
-| CT-120 | Verificar se o painel exibe corretamente as informações de próximos reajustes         |
-| CT-121 | Verificar se o painel exibe corretamente o histórico de interações relacionadas aos imóveis  |
+| CT-118| Verificar se o locador consegue acessar o painel de contratos                        |
+| CT-119| Verificar se o painel exibe corretamente o status de pagamentos para cada imóvel     |
+| CT-120| Verificar se o painel exibe corretamente as informações de próximos reajustes        |
+| CT-121| Verificar se o painel exibe corretamente o histórico de interações relacionadas aos imóveis|
 
 ### RF-33: Acompanhamento Financeiro para Locador
 O sistema deve permitir ao locador visualizar os recebimentos de aluguéis, multas e outras receitas, com a opção de gerar extratos mensais e relatórios financeiros.
@@ -364,10 +398,10 @@ O sistema deve permitir ao locador visualizar os recebimentos de aluguéis, mult
 
 | ID    | Descrição                                                                                    |
 | ----- | -------------------------------------------------------------------------------------------- |
-| CT-122 | Verificar se o locador consegue visualizar os recebimentos de aluguéis, multas e outras receitas |
-| CT-123 | Verificar se o locador consegue gerar extratos mensais                                        |
-| CT-124 | Verificar se o locador consegue gerar relatórios financeiros                                  |
-| CT-125 | Verificar se os extratos e relatórios gerados estão corretos e completos                     |
+| CT-122| Verificar se o locador consegue visualizar os recebimentos de aluguéis, multas e outras receitas|
+| CT-123| Verificar se o locador consegue gerar extratos mensais                                       |
+| CT-124| Verificar se o locador consegue gerar relatórios financeiros                                 |
+| CT-125| Verificar se os extratos e relatórios gerados estão corretos e completos                     |
 
 ### RF-34: Acesso a Documentos para Locador
 O sistema deve permitir ao locador visualizar e baixar contratos, laudos de vistoria e documentos jurídicos relacionados aos imóveis que possui.
@@ -376,10 +410,10 @@ O sistema deve permitir ao locador visualizar e baixar contratos, laudos de vist
 
 | ID    | Descrição                                                                                    |
 | ----- | -------------------------------------------------------------------------------------------- |
-| CT-126 | Verificar se o locador consegue acessar a lista de documentos relacionados aos seus imóveis |
-| CT-127 | Verificar se o locador consegue visualizar contratos, laudos de vistoria e documentos jurídicos  |
-| CT-128 | Verificar se o locador consegue baixar os documentos visualizados                              |
-| CT-129 | Verificar se os documentos baixados estão completos e legíveis                                 |
+| CT-126| Verificar se o locador consegue acessar a lista de documentos relacionados aos seus imóveis  |
+| CT-127| Verificar se o locador consegue visualizar contratos, laudos de vistoria e documentos jurídicos|
+| CT-128| Verificar se o locador consegue baixar os documentos visualizados                            |
+| CT-129| Verificar se os documentos baixados estão completos e legíveis                               |
 
 ### RF-35: Dashboard de Pagamentos para Locatário
 O sistema deve fornecer ao locatário um painel que mostre os próximos pagamentos, o histórico de pagamentos efetuados e possíveis pendências.
@@ -388,242 +422,276 @@ O sistema deve fornecer ao locatário um painel que mostre os próximos pagament
 
 | ID    | Descrição                                                                             |
 | ----- | ------------------------------------------------------------------------------------- |
-| CT-130 | Verificar se o locatário consegue acessar o painel de pagamentos                      |
-| CT-131 | Verificar se o painel exibe corretamente os próximos pagamentos                       |
-| CT-132 | Verificar se o painel exibe corretamente o histórico de pagamentos efetuados          |
-| CT-133 | Verificar se o painel exibe corretamente as pendências de pagamento                   |
+| CT-130| Verificar se o locatário consegue acessar o painel de pagamentos                      |
+| CT-131| Verificar se o painel exibe corretamente os próximos pagamentos                       |
+| CT-132| Verificar se o painel exibe corretamente o histórico de pagamentos efetuados          |
+| CT-133| Verificar se o painel exibe corretamente as pendências de pagamento                   |
 
+### RF-36: Emissão de Boletos para Locatário
+O sistema deve permitir ao locatário emitir boletos de pagamento e gerar segunda via de boletos em caso de extravio.
 
-### RF-33.3: Solicitações de Manutenção para Locatário
+**Casos de Teste**
+
+| ID    | Descrição                                                                              |
+| ----- | -------------------------------------------------------------------------------------- |
+| CT-134| Verificar se o locatário consegue emitir boletos de pagamento                          |
+| CT-135| Verificar se o locatário consegue emitir a segunda via de boletos em caso de extravio  |
+| CT-136| Verificar se os boletos emitidos estão completos e válidos para pagamento              |
+| CT-137| Verificar se uma mensagem de erro é exibida em caso de falha na emissão do boleto      |
+
+### RF-37: Solicitações de Manutenção para Locatário
 O sistema deve fornecer uma ferramenta para que o locatário solicite reparos e acompanhe o status das solicitações, com comunicação realizada via API do WhatsApp.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                              |
 | ----- | -------------------------------------------------------------------------------------- |
-| CT-138 | Verificar se o locatário consegue abrir uma solicitação de manutenção na plataforma    |
-| CT-139 | Verificar se o locatário consegue acompanhar o status das solicitações de manutenção   |
-| CT-140 | Verificar se a comunicação via WhatsApp é iniciada corretamente para as solicitações   |
-| CT-141 | Verificar se uma mensagem de erro é exibida em caso de falha na abertura da solicitação |
+| CT-138| Verificar se o locatário consegue abrir uma solicitação de manutenção na plataforma    |
+| CT-139| Verificar se o locatário consegue acompanhar o status das solicitações de manutenção   |
+| CT-140| Verificar se a comunicação via WhatsApp é iniciada corretamente para as solicitações   |
+| CT-141| Verificar se uma mensagem de erro é exibida em caso de falha na abertura da solicitação|
 
-### RF-33.5: Gestão de Documentos para Locatário
+### RF-38: Notificações para Locatário
+O sistema deve enviar notificações ao locatário sobre vencimentos de aluguéis, reajustes e quaisquer multas aplicadas (sem o cálculo da multa).
+
+**Casos de Teste**
+
+| ID    | Descrição                                                                              |
+| ----- | -------------------------------------------------------------------------------------- |
+| CT-142| Verificar se o locatário recebe notificações sobre vencimentos de aluguéis             |
+| CT-143| Verificar se o locatário recebe notificações sobre reajustes de aluguel                |
+| CT-144| Verificar se o locatário recebe notificações sobre multas aplicadas                    |
+| CT-145| Verificar se uma mensagem de erro é exibida em caso de falha no envio das notificações |
+
+### RF-39: Gestão de Documentos para Locatário
 O sistema deve permitir ao locatário acessar contratos e laudos de vistoria relacionados ao imóvel que está locando.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                              |
 | ----- | -------------------------------------------------------------------------------------- |
-| CT-146 | Verificar se o locatário consegue acessar a lista de contratos e laudos de vistoria   |
-| CT-147 | Verificar se o locatário consegue visualizar os documentos relacionados ao imóvel     |
-| CT-148 | Verificar se os documentos acessados estão completos e legíveis                       |
-| CT-149 | Verificar se uma mensagem de erro é exibida em caso de falha ao acessar os documentos |
+| CT-146| Verificar se o locatário consegue acessar a lista de contratos e laudos de vistoria    |
+| CT-147| Verificar se o locatário consegue visualizar os documentos relacionados ao imóvel      |
+| CT-148| Verificar se os documentos acessados estão completos e legíveis                        |
+| CT-149| Verificar se uma mensagem de erro é exibida em caso de falha ao acessar os documentos  |
 
-### RF-33.6: Comunicação com a Administração para Locatário
+### RF-40: Comunicação com a Administração para Locatário
 O sistema deve oferecer um canal direto para que o locatário possa se comunicar com o administrador sobre questões relacionadas ao imóvel, utilizando o WhatsApp.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                              |
 | ----- | -------------------------------------------------------------------------------------- |
-| CT-150 | Verificar se o locatário consegue acessar o canal de comunicação com a administração  |
-| CT-151 | Verificar se a comunicação via WhatsApp é iniciada corretamente                       |
-| CT-152 | Verificar se as mensagens enviadas pelo locatário são registradas no sistema          |
-| CT-153 | Verificar se uma mensagem de erro é exibida em caso de falha na comunicação           |
+| CT-150| Verificar se o locatário consegue acessar o canal de comunicação com a administração   |
+| CT-151| Verificar se a comunicação via WhatsApp é iniciada corretamente                        |
+| CT-152| Verificar se as mensagens enviadas pelo locatário são registradas no sistema           |
+| CT-153| Verificar se uma mensagem de erro é exibida em caso de falha na comunicação            |
 
-### RF-34.1: Gestão Centralizada para Administrador
+### RF-41: Gestão Centralizada para Administrador
 O sistema deve fornecer ao administrador um painel centralizado para gerenciar todos os contratos, imóveis, usuários (locadores e locatários) e processos financeiros.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                     |
 | ----- | --------------------------------------------------------------------------------------------- |
-| CT-154 | Verificar se o administrador consegue acessar o painel centralizado                          |
-| CT-155 | Verificar se o painel permite a visualização e gestão de todos os contratos                   |
-| CT-156 | Verificar se o painel permite a visualização e gestão de todos os imóveis                     |
-| CT-157 | Verificar se o painel permite a visualização e gestão de todos os usuários                    |
-| CT-158 | Verificar se o painel permite a visualização e gestão de todos os processos financeiros       |
+| CT-154| Verificar se o administrador consegue acessar o painel centralizado                           |
+| CT-155| Verificar se o painel permite a visualização e gestão de todos os contratos                   |
+| CT-156| Verificar se o painel permite a visualização e gestão de todos os imóveis                     |
+| CT-157| Verificar se o painel permite a visualização e gestão de todos os usuários                    |
+| CT-158| Verificar se o painel permite a visualização e gestão de todos os processos financeiros       |
 
-### RF-34.2: Gestão de Contratos para Administrador
-O sistema deve permitir ao administrador criar, editar e cancelar contratos, definir prazos, reajustes.
+### RF-42: Gestão de Contratos para Administrador
+O sistema deve permitir ao administrador criar, editar e cancelar contratos, definir prazos, reajustes e configurar notificações automáticas.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                     |
 | ----- | --------------------------------------------------------------------------------------------- |
-| CT-159 | Verificar se o administrador consegue criar novos contratos                                   |
-| CT-160 | Verificar se o administrador consegue editar contratos existentes                             |
-| CT-161 | Verificar se o administrador consegue cancelar contratos                                      |
-| CT-162 | Verificar se o sistema permite definir prazos e reajustes para os contratos                   |
-| CT-163 | Verificar se o sistema envia notificações automáticas relacionadas aos contratos              |
-| CT-164 | Verificar se uma mensagem de erro é exibida em caso de falha na criação, edição ou cancelamento de contratos |
+| CT-159| Verificar se o administrador consegue criar novos contratos                                   |
+| CT-160| Verificar se o administrador consegue editar contratos existentes                             |
+| CT-161| Verificar se o administrador consegue cancelar contratos                                      |
+| CT-162| Verificar se o sistema permite definir prazos e reajustes para os contratos                   |
+| CT-163| Verificar se o sistema envia notificações automáticas relacionadas aos contratos              |
+| CT-164| Verificar se uma mensagem de erro é exibida em caso de falha na criação, edição ou cancelamento de contratos|
 
-### RF-34.3: Gestão de Pagamentos para Administrador
+### RF-43: Gestão de Pagamentos para Administrador
 O sistema deve permitir ao administrador controlar a emissão de boletos, o recebimento de pagamentos, a aplicação de multas e juros, e o repasse dos valores ao locador.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                     |
 | ----- | --------------------------------------------------------------------------------------------- |
-| CT-165 | Verificar se o administrador consegue emitir boletos de pagamento                             |
-| CT-166 | Verificar se o administrador consegue registrar o recebimento de pagamentos                   |
-| CT-167 | Verificar se o administrador consegue aplicar multas e juros quando necessário                |
-| CT-168 | Verificar se o sistema permite o repasse dos valores recebidos ao locador                     |
-| CT-169 | Verificar se uma mensagem de erro é exibida em caso de falha na emissão ou controle dos pagamentos |
+| CT-165| Verificar se o administrador consegue emitir boletos de pagamento                             |
+| CT-166| Verificar se o administrador consegue registrar o recebimento de pagamentos                   |
+| CT-167| Verificar se o administrador consegue aplicar multas e juros quando necessário                |
+| CT-168| Verificar se o sistema permite o repasse dos valores recebidos ao locador                     |
+| CT-169| Verificar se uma mensagem de erro é exibida em caso de falha na emissão ou controle dos pagamentos|
 
-### RF-34.4: Comunicação e Notificações para Administrador
+### RF-44: Comunicação e Notificações para Administrador
 O sistema deve permitir ao administrador enviar notificações e comunicados aos locadores e locatários, registrando todas as comunicações realizadas.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                     |
 | ----- | --------------------------------------------------------------------------------------------- |
-| CT-170 | Verificar se o administrador consegue enviar notificações para locadores e locatários         |
-| CT-171 | Verificar se as notificações enviadas são registradas no sistema                              |
-| CT-172 | Verificar se o administrador consegue enviar comunicados gerais                               |
-| CT-173 | Verificar se uma mensagem de erro é exibida em caso de falha no envio das notificações ou comunicados |
+| CT-170| Verificar se o administrador consegue enviar notificações para locadores e locatários         |
+| CT-171| Verificar se as notificações enviadas são registradas no sistema                              |
+| CT-172| Verificar se o administrador consegue enviar comunicados gerais                               |
+| CT-173| Verificar se uma mensagem de erro é exibida em caso de falha no envio das notificações ou comunicados|
 
-### RF-34.5: Relatórios e Auditoria para Administrador
+### RF-45: Relatórios e Auditoria para Administrador
 O sistema deve permitir ao administrador gerar relatórios financeiros e contratuais, com logs detalhados das atividades de todos os usuários no sistema.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                     |
 | ----- | --------------------------------------------------------------------------------------------- |
-| CT-174 | Verificar se o administrador consegue gerar relatórios financeiros                           |
-| CT-175 | Verificar se o administrador consegue gerar relatórios contratuais                            |
-| CT-176 | Verificar se o sistema registra logs detalhados das atividades dos usuários                   |
-| CT-177 | Verificar se os relatórios gerados estão corretos e completos                                 |
-| CT-178 | Verificar se uma mensagem de erro é exibida em caso de falha na geração de relatórios ou logs  |
+| CT-174| Verificar se o administrador consegue gerar relatórios financeiros                           |
+| CT-175| Verificar se o administrador consegue gerar relatórios contratuais                            |
+| CT-176| Verificar se o sistema registra logs detalhados das atividades dos usuários                   |
+| CT-177| Verificar se os relatórios gerados estão corretos e completos                                 |
+| CT-178| Verificar se uma mensagem de erro é exibida em caso de falha na geração de relatórios ou logs  |
 
-### RF-34.6: Dashboards para Controle de Usuários para Administrador
+### RF-46: Dashboards para Controle de Usuários para Administrador
 O sistema deve fornecer ao administrador dashboards para a visualização e gestão de usuários cadastrados na plataforma.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                     |
 | ----- | --------------------------------------------------------------------------------------------- |
-| CT-179 | Verificar se o administrador consegue acessar os dashboards de controle de usuários           |
-| CT-180 | Verificar se os dashboards permitem a visualização de todos os usuários cadastrados           |
-| CT-181 | Verificar se o administrador consegue gerenciar (editar, ativar/desativar) usuários através dos dashboards |
-| CT-182 | Verificar se uma mensagem de erro é exibida em caso de falha na visualização ou gestão dos usuários  |
+| CT-179| Verificar se o administrador consegue acessar os dashboards de controle de usuários           |
+| CT-180| Verificar se os dashboards permitem a visualização de todos os usuários cadastrados           |
+| CT-181| Verificar se o administrador consegue gerenciar (editar, ativar/desativar) usuários através dos dashboards|
+| CT-182| Verificar se uma mensagem de erro é exibida em caso de falha na visualização ou gestão dos usuários|
 
-### RF-35.1: Acesso a Contratos e Documentos Jurídicos para Time Jurídico
+### RF-47: Definir e Ajustar Permissões de Acesso para Administrador
+O sistema deve permitir ao administrador da imobiliária definir e ajustar as permissões de acesso dos usuários cadastrados na plataforma.
+
+**Casos de Teste**
+
+| ID    | Descrição                                                                                           |
+| ----- | --------------------------------------------------------------------------------------------------- |
+| CT-183| Verificar se o administrador consegue definir permissões de acesso ao criar um novo usuário         |
+| CT-184| Verificar se o administrador consegue ajustar as permissões de acesso de usuários existentes        |
+| CT-185| Verificar se as alterações nas permissões de acesso são aplicadas corretamente                      |
+| CT-186| Verificar se o sistema registra um log das alterações de permissões de acesso realizadas pelo administrador|
+| CT-187| Verificar se uma mensagem de erro é exibida em caso de falha ao definir ou ajustar as permissões    |
+
+### RF-48: Acesso a Contratos e Documentos Jurídicos para Time Jurídico
 O sistema deve permitir ao time jurídico visualizar e fazer o download de todos os contratos e documentos jurídicos relacionados a locações.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                              |
 | ----- | -------------------------------------------------------------------------------------- |
-| CT-183 | Verificar se o time jurídico consegue acessar a lista de contratos relacionados às locações  |
-| CT-184 | Verificar se o time jurídico consegue visualizar os contratos disponíveis               |
-| CT-185 | Verificar se o time jurídico consegue fazer o download dos contratos visualizados       |
-| CT-186 | Verificar se o time jurídico consegue acessar a lista de documentos jurídicos relacionados às locações |
-| CT-187 | Verificar se o time jurídico consegue visualizar os documentos jurídicos disponíveis     |
-| CT-188 | Verificar se o time jurídico consegue fazer o download dos documentos jurídicos visualizados |
-| CT-189 | Verificar se os documentos baixados estão completos e legíveis                          |
-| CT-190 | Verificar se uma mensagem de erro é exibida em caso de falha ao acessar ou baixar os documentos  |
+| CT-188| Verificar se o time jurídico consegue acessar a lista de contratos relacionados às locações|
+| CT-189| Verificar se o time jurídico consegue visualizar os contratos disponíveis               |
+| CT-190| Verificar se o time jurídico consegue fazer o download dos contratos visualizados       |
+| CT-191| Verificar se o time jurídico consegue acessar a lista de documentos jurídicos relacionados às locações|
+| CT-192| Verificar se o time jurídico consegue visualizar os documentos jurídicos disponíveis     |
+| CT-193| Verificar se o time jurídico consegue fazer o download dos documentos jurídicos visualizados|
+| CT-194| Verificar se os documentos baixados estão completos e legíveis                          |
+| CT-195| Verificar se uma mensagem de erro é exibida em caso de falha ao acessar ou baixar os documentos|
 
-### RF-35.2: Visualização de Logs de Atividades Relacionadas aos Litígios para Time Jurídico
+### RF-49: Visualização de Logs de Atividades Relacionadas aos Litígios para Time Jurídico
 O sistema deve permitir ao time jurídico visualizar logs detalhados das atividades relacionadas aos litígios.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                      |
 | ----- | ------------------------------------------------------------------------------------------------|
-| CT-191 | Verificar se o time jurídico consegue acessar os logs de atividades relacionadas aos litígios   |
-| CT-192 | Verificar se os logs exibem detalhes completos das atividades realizadas                        |
-| CT-193 | Verificar se o sistema permite a filtragem dos logs por data, tipo de atividade ou usuário       |
-| CT-194 | Verificar se os logs exibidos estão corretos e atualizados                                       |
-| CT-195 | Verificar se uma mensagem de erro é exibida em caso de falha ao acessar ou visualizar os logs    |
+| CT-196| Verificar se o time jurídico consegue acessar os logs de atividades relacionadas aos litígios   |
+| CT-197| Verificar se os logs exibem detalhes completos das atividades realizadas                        |
+| CT-198| Verificar se o sistema permite a filtragem dos logs por data, tipo de atividade ou usuário       |
+| CT-199| Verificar se os logs exibidos estão corretos e atualizados                                       |
+| CT-200| Verificar se uma mensagem de erro é exibida em caso de falha ao acessar ou visualizar os logs    |
 
-
-### RF-32.4: Acesso Restrito para Locador
+### RF-50: Acesso Restrito para Locador
 O sistema deve garantir que o locador tenha acesso somente aos imóveis e contratos nos quais ele está envolvido.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                      |
 | ----- | ------------------------------------------------------------------------------------------------|
-| CT-201 | Verificar se o locador só consegue visualizar os imóveis nos quais ele é parte envolvida         |
-| CT-202 | Verificar se o locador só consegue visualizar os contratos nos quais ele é parte envolvida       |
-| CT-203 | Verificar se o locador não consegue acessar imóveis ou contratos nos quais ele não está envolvido |
-| CT-204 | Verificar se uma mensagem de erro é exibida em caso de tentativa de acesso não autorizado         |
+| CT-201| Verificar se o locador só consegue visualizar os imóveis nos quais ele é parte envolvida         |
+| CT-202| Verificar se o locador só consegue visualizar os contratos nos quais ele é parte envolvida       |
+| CT-203| Verificar se o locador não consegue acessar imóveis ou contratos nos quais ele não está envolvido|
+| CT-204| Verificar se uma mensagem de erro é exibida em caso de tentativa de acesso não autorizado         |
 
-### RF-33.7: Acesso Restrito para Locatário
+### RF-51: Acesso Restrito para Locatário
 O sistema deve garantir que o locatário tenha acesso limitado ao contrato e imóvel que ele está locando.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                      |
 | ----- | ------------------------------------------------------------------------------------------------|
-| CT-205 | Verificar se o locatário só consegue visualizar o imóvel que ele está locando                   |
-| CT-206 | Verificar se o locatário só consegue visualizar o contrato relacionado ao imóvel que ele está locando |
-| CT-207 | Verificar se o locatário não consegue acessar imóveis ou contratos que não estão relacionados a ele |
-| CT-208 | Verificar se uma mensagem de erro é exibida em caso de tentativa de acesso não autorizado         |
+| CT-205| Verificar se o locatário só consegue visualizar o imóvel que ele está locando                   |
+| CT-206| Verificar se o locatário só consegue visualizar o contrato relacionado ao imóvel que ele está locando|
+| CT-207| Verificar se o locatário não consegue acessar imóveis ou contratos que não estão relacionados a ele|
+| CT-208| Verificar se uma mensagem de erro é exibida em caso de tentativa de acesso não autorizado         |
 
-### RF-34.8: Deletar Usuários Inativos
+### RF-52: Deletar Usuários Inativos
 O sistema deve deletar automaticamente os usuários inativos que não tenham contratos ativos após 30 dias de inatividade.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                              |
 | ----- | ------------------------------------------------------------------------------------------------------ |
-| CT-209 | Verificar se o sistema identifica corretamente os usuários inativos sem contratos ativos               |
-| CT-210 | Verificar se o sistema deleta os usuários inativos que não tenham contratos ativos após 30 dias        |
-| CT-211 | Verificar se o sistema notifica o administrador antes de deletar os usuários inativos                   |
-| CT-212 | Verificar se uma mensagem de erro é exibida em caso de falha ao tentar deletar usuários inativos        |
-| CT-213 | Verificar se os usuários deletados não conseguem mais acessar a plataforma após a exclusão              |
+| CT-209| Verificar se o sistema identifica corretamente os usuários inativos sem contratos ativos               |
+| CT-210| Verificar se o sistema deleta os usuários inativos que não tenham contratos ativos após 30 dias        |
+| CT-211| Verificar se o sistema notifica o administrador antes de deletar os usuários inativos                   |
+| CT-212| Verificar se uma mensagem de erro é exibida em caso de falha ao tentar deletar usuários inativos        |
+| CT-213| Verificar se os usuários deletados não conseguem mais acessar a plataforma após a exclusão              |
 
-### RF-34.9: Notificação de Reajuste de Aluguel
+### RF-53: Notificação de Reajuste de Aluguel
 O sistema deve notificar o administrador um mês antes do reajuste de aluguel programado para cada contrato.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                          |
 | ----- | -------------------------------------------------------------------------------------------------- |
-| CT-214 | Verificar se o sistema identifica corretamente os contratos com reajuste de aluguel programado     |
-| CT-215 | Verificar se o sistema envia uma notificação ao administrador um mês antes do reajuste de aluguel  |
-| CT-216 | Verificar se a notificação contém todas as informações relevantes sobre o contrato e o reajuste    |
-| CT-217 | Verificar se uma mensagem de erro é exibida em caso de falha ao enviar a notificação                |
+| CT-214| Verificar se o sistema identifica corretamente os contratos com reajuste de aluguel programado     |
+| CT-215| Verificar se o sistema envia uma notificação ao administrador um mês antes do reajuste de aluguel  |
+| CT-216| Verificar se a notificação contém todas as informações relevantes sobre o contrato e o reajuste    |
+| CT-217| Verificar se uma mensagem de erro é exibida em caso de falha ao enviar a notificação                |
 
-### RF-34.10: Inserção de Atraso por Administrador
+### RF-54: Inserção de Atraso por Administrador
 O sistema deve permitir que o administrador insira um atraso nos pagamentos e justifique o motivo dentro do fluxo de pagamento.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                          |
 | ----- | -------------------------------------------------------------------------------------------------- |
-| CT-218 | Verificar se o administrador consegue inserir um atraso nos pagamentos                             |
-| CT-219 | Verificar se o sistema permite ao administrador justificar o motivo do atraso                       |
-| CT-220 | Verificar se o atraso e a justificativa são registrados corretamente no sistema                     |
-| CT-221 | Verificar se uma mensagem de erro é exibida em caso de falha ao inserir o atraso ou a justificativa |
+| CT-218| Verificar se o administrador consegue inserir um atraso nos pagamentos                             |
+| CT-219| Verificar se o sistema permite ao administrador justificar o motivo do atraso                       |
+| CT-220| Verificar se o atraso e a justificativa são registrados corretamente no sistema                     |
+| CT-221| Verificar se uma mensagem de erro é exibida em caso de falha ao inserir o atraso ou a justificativa |
 
-### RF-34.11: Campo de Justificativa no Fluxo de Pagamento
+### RF-55: Campo de Justificativa no Fluxo de Pagamento
 O sistema deve permitir ao administrador adicionar um campo de justificativa para um determinado pagamento dentro do fluxo de pagamento.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                          |
 | ----- | -------------------------------------------------------------------------------------------------- |
-| CT-222 | Verificar se o sistema permite ao administrador adicionar uma justificativa para um pagamento      |
-| CT-223 | Verificar se o campo de justificativa é exibido corretamente no fluxo de pagamento                 |
-| CT-224 | Verificar se a justificativa inserida é armazenada corretamente no sistema                         |
-| CT-225 | Verificar se a justificativa está associada corretamente ao pagamento específico                   |
-| CT-226 | Verificar se uma mensagem de erro é exibida em caso de falha ao adicionar ou salvar a justificativa |
+| CT-222| Verificar se o sistema permite ao administrador adicionar uma justificativa para um pagamento      |
+| CT-223| Verificar se o campo de justificativa é exibido corretamente no fluxo de pagamento                 |
+| CT-224| Verificar se a justificativa inserida é armazenada corretamente no sistema                         |
+| CT-225| Verificar se a justificativa está associada corretamente ao pagamento específico                   |
+| CT-226| Verificar se uma mensagem de erro é exibida em caso de falha ao adicionar ou salvar a justificativa|
 
-### RF-34.12: Registro de Rescisão de Contrato pelo Administrador
+### RF-56: Registro de Rescisão de Contrato pelo Administrador
 O sistema deve permitir que o administrador registre a rescisão de contratos, incluindo as informações relevantes sobre a rescisão.
 
 **Casos de Teste**
 
 | ID    | Descrição                                                                                          |
 | ----- | -------------------------------------------------------------------------------------------------- |
-| CT-227 | Verificar se o administrador consegue acessar a opção de registrar a rescisão de contrato           |
-| CT-228 | Verificar se o sistema permite ao administrador inserir todas as informações necessárias para a rescisão |
-| CT-229 | Verificar se o contrato é marcado como rescindido após o registro pelo administrador                 |
-| CT-230 | Verificar se o sistema atualiza o status do imóvel relacionado à rescisão (por exemplo, desocupado) |
-| CT-231 | Verificar se uma mensagem de erro é exibida em caso de falha ao registrar a rescisão de contrato     |
-
+| CT-227| Verificar se o administrador consegue acessar a opção de registrar a rescisão de contrato          |
+| CT-228| Verificar se o sistema permite ao administrador inserir todas as informações necessárias para a rescisão|
+| CT-229| Verificar se o contrato é marcado como rescindido após o registro pelo administrador                 |
+| CT-230| Verificar se o sistema atualiza o status do imóvel relacionado à rescisão (por exemplo, desocupado)|
+| CT-231| Verificar se uma mensagem de erro é exibida em caso de falha ao registrar a rescisão de contrato     |
 
 ## **Requisitos Não Funcionais**
 
