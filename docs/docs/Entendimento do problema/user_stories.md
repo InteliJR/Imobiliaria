@@ -18,8 +18,9 @@ As User Stories descrevem as principais funcionalidades do projeto relacionando 
 | **Título**            | Visualização de todas as informações dos contratos fechados                           |
 | **Personas**          | Administrador(a) dos imóveis                                                          |
 | **História**          | Eu, como responsável pela administração dos imóveis alugados, quero ter uma visualização completa de todos os contratos fechados (data de vencimento, data de pagamento, pdf's dos contratos, etc.).       |
-| **Critérios de aceitação** | - **CR-01**: O usuário administrador consegue visualizar todas as informações dos contratos fechados. <br> - **Validação-01**: As informações estão organizadas de maneira clara. <br> - **Validação-02**: As informações mais relevantes de todos os contratos são encontradas. |
-| **Testes de aceitação** | - **Critério de aceitação: CR-01** <br> a. O administrador seleciona determinado imóvel para visualizar suas informações. <br> – Os dados do contrato de locação do imóvel são visualizados = correto. <br> – Os dados do contrato de locação do imóvel não são visualizados = errado, deve ser corrigido. |
+| **Critérios de aceitação** | - **CR-01**: O usuário administrador consegue visualizar todas as informações dos contratos fechados. <br /> - **Validação-01**: As informações estão organizadas de maneira clara. <br /> - **Validação-02**: As informações mais relevantes de todos os contratos são encontradas. |
+| **Testes de aceitação** | - **Critério de aceitação: CR-01** <br /> a. O administrador seleciona determinado imóvel para visualizar suas informações. <br /> – Os dados do contrato de locação do imóvel são visualizados = correto. <br /> – Os dados do contrato de locação do imóvel não são visualizados = errado, deve ser corrigido. |
+
 
 
   <p><b>Fonte:</b> elaboração pela equipe.</p>
