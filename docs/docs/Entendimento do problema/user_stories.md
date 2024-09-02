@@ -103,8 +103,6 @@ As User Stories descrevem as principais funcionalidades do projeto relacionando 
 <div align="center">
   <p> <b>Tabela de User Stories </b> - User Story 7</p>
 
-  <p>OBS.: validar com a cliente o envio relatório via email pela plataforma.</p>
-
   | Categoria             | Dados                                                                                                               |
   |-----------------------|---------------------------------------------------------------------------------------------------------------------|
   | Número                | 1.7                                                                                                                 |
@@ -113,6 +111,22 @@ As User Stories descrevem as principais funcionalidades do projeto relacionando 
   | História              | Eu, como locador, quero receber um relatório mensal com informações básicas (imóveis, contratos, valores recebidos, IPTU, condomínio pagos e datas) para ter uma visão clara dos meus investimentos. |
   | Critérios de aceitação| CR-01 - O sistema deve gerar relatórios mensais para os locadores. Validação-01: Os relatórios contêm todas as informações relevantes e estão organizados de maneira clara. Validação-02: Os relatórios são enviados automaticamente por e-mail no final de cada mês. |
   | Testes de aceitação   | Critério de aceitação: CR-01 a. O sistema gera um relatório mensal. <br /> – O relatório contém todas as informações corretas = correto. <br /> – O relatório está faltando informações ou contém erros = errado, deve ser corrigido. <br /> b. O locador recebe o relatório por e-mail. <br /> – O e-mail é recebido com o relatório anexado = correto. <br /> – O e-mail não é recebido ou não contém o relatório = errado, deve ser corrigido. |
+
+  <p><b>Fonte:</b> elaboração pela equipe.</p>
+</div>
+
+<div align="center">
+  <p> <b>Tabela de User Stories </b> - User Story 8</p>
+
+  | Categoria             | Dados                                                                                                               |
+  |-----------------------|---------------------------------------------------------------------------------------------------------------------|
+  | Número                | 1.7                                                                                                                 |
+  | Título                | Envio de chamados de manutenção                                                                  |
+  | Personas              | Locatário(a)                                                                                                          |
+  | História              | Eu, como locatário, gostaria de poder notificar sobre a necessidade de manutenção dentro da plataforma da imobiliária |
+  | Critérios de aceitação| CR-01 - O sistema deve permitir que os locatários enviem chamados de manutenção. <br /> Validação-01: Os chamados são enviados com todas as informações necessárias (tipo de problema, localização, etc.). <br /> Validação-02: Os chamados são registrados e acompanham o status de resolução. |
+  | Testes de aceitação   | Critério de aceitação: CR-01 a. O locatário envia um chamado de manutenção. <br /> – O chamado é enviado corretamente = correto. <br /> – O chamado não é enviado ou contém informações incorretas = errado, deve ser corrigido. <br /> b. O locatário acompanha o status do chamado. <br /> – O status é atualizado corretamente = correto. <br /> – O status não é atualizado ou contém erros = errado, deve ser corrigido. |
+
 
   <p><b>Fonte:</b> elaboração pela equipe.</p>
 </div>
