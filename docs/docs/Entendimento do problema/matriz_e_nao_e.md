@@ -19,4 +19,4 @@ Essa matriz consiste em uma ferramenta de análise de soluções que ajuda a ide
 
 Segue abaixo a matriz que desenvolvemos para o projeto:
 
-<img src={require('../../static/img/matriz-e-nao-e.png').default} alt="Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
+<img src={require('../../static/img/matriz-e-nao-e.jpg').default} alt="Example banner" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
