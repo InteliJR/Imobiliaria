@@ -8,6 +8,8 @@
 .docusaurus
 .cache-loader
 
+/docs
+
 .env
 
 # Misc
