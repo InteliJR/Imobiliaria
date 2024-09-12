@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Layer.Domain", "Layer.Domain\Layer.Domain.csproj", "{4630B13F-8A13-4FBC-B013-4550405173B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layer.Domain", "Layer.Domain\Layer.Domain.csproj", "{4630B13F-8A13-4FBC-B013-4550405173B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Layer.Infrastructure", "Layer.Infrastructure\Layer.Infrastructure.csproj", "{0A40CED8-823B-4AFD-82A6-A59144216F12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layer.Infrastructure", "Layer.Infrastructure\Layer.Infrastructure.csproj", "{0A40CED8-823B-4AFD-82A6-A59144216F12}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Layer.Services", "Layer.Services\Layer.Services.csproj", "{4F7DABEF-FEAB-43D0-9535-C84B4CD0785A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layer.Services", "Layer.Services\Layer.Services.csproj", "{4F7DABEF-FEAB-43D0-9535-C84B4CD0785A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Layer.Application", "Layer.Application\Layer.Application.csproj", "{DF95D01C-750E-4349-93C8-FDF27761589B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layer.Application", "Layer.Application\Layer.Application.csproj", "{DF95D01C-750E-4349-93C8-FDF27761589B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
