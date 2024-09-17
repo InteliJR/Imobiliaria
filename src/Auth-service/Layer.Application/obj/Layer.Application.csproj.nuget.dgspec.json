@@ -56,9 +56,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "DotNetEnv": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
             "Microsoft.Azure.WebJobs.Extensions.OpenApi.Core": {
               "target": "Package",
               "version": "[1.5.1, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.4, )"
             },
             "Swashbuckle.AspNetCore.Swagger": {
               "target": "Package",
@@ -138,6 +146,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
             "Swashbuckle.AspNetCore.Swagger": {
               "target": "Package",
               "version": "[6.7.3, )"
@@ -195,7 +207,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj": {
+                "projectPath": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -213,6 +229,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
             "Swashbuckle.AspNetCore.Swagger": {
               "target": "Package",
               "version": "[6.7.3, )"
@@ -273,6 +293,9 @@
             "projectReferences": {
               "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj": {
                 "projectPath": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj"
+              },
+              "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj"
               }
             }
           }
@@ -292,6 +315,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
             "Swashbuckle.AspNetCore.Swagger": {
               "target": "Package",
               "version": "[6.7.3, )"

@@ -2,8 +2,17 @@
 using Layer.Domain.Interfaces;
 using Layer.Services;
 using Layer.Services.Services;
+using Layer.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Carregar variáveis de ambiente do arquivo .env
+Env.Load();
+
+// Sobrepor os valores das variáveis no appsettings.json com as variáveis do ambiente
+builder.Configuration.AddEnvironmentVariables();
 
 // !!!!! Injenções de dependência !!!!!
 
@@ -11,8 +20,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Se usamos o AddScoped, ele cria uma instância por requisição aí ele vai zerar a lista de mensagens a cada requisição
 builder.Services.AddSingleton<IMessageService, MessageService>();
 
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
+
+
+// Registrar o dbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
