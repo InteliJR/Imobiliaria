@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {}
+    "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {
+    "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj",
         "projectName": "Layer.Infrastructure",
-        "projectPath": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Inteli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Inteli\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -45,6 +45,20 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Swashbuckle.AspNetCore.Swagger": {
+              "target": "Package",
+              "version": "[6.7.3, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerGen": {
+              "target": "Package",
+              "version": "[6.7.3, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerUI": {
+              "target": "Package",
+              "version": "[6.7.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
