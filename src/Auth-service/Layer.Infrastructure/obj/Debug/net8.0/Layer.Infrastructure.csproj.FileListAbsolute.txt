@@ -1,0 +1,13 @@
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\bin\Debug\net8.0\Layer.Infrastructure.deps.json
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\bin\Debug\net8.0\Layer.Infrastructure.dll
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\bin\Debug\net8.0\Layer.Infrastructure.pdb
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\Layer.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\Layer.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\Layer.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\Layer.Infrastructure.AssemblyInfo.cs
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\Layer.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\Layer.Infrastructure.sourcelink.json
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\Layer.Infrastructure.dll
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\refint\Layer.Infrastructure.dll
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\Layer.Infrastructure.pdb
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Infrastructure\obj\Debug\net8.0\ref\Layer.Infrastructure.dll
