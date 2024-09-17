@@ -14,3 +14,5 @@ C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Services\obj
 C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Services\bin\Debug\net8.0\Layer.Domain.dll
 C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Services\bin\Debug\net8.0\Layer.Domain.pdb
 C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Services\obj\Debug\net8.0\Layer.Se.3750DFE3.Up2Date
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Services\bin\Debug\net8.0\Layer.Infrastructure.dll
+C:\Users\Inteli\Documents\GitHub\Imobiliaria\src\Auth-service\Layer.Services\bin\Debug\net8.0\Layer.Infrastructure.pdb
