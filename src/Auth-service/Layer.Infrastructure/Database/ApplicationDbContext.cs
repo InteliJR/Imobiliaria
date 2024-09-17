@@ -5,24 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Layer.Domain.Entities;
-using Microsoft.Extensions.Configuration;
 
 namespace Layer.Infrastructure.Database
 {
-    public class AppDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
-
+        // Mapear a tabela de usuarios
         public DbSet<User> Usuarios { get; set; }
-        public DbSet<Locador> Locadores { get; set; }
-        public DbSet<Locatario> Locatarios { get; set; }
-
-        public DbSet<Colaborador> Colaboradores { get; set; }
-
     }
-
 }
