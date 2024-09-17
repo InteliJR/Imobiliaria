@@ -1,42 +1,52 @@
+using DotNetEnv;
+using property_management.Contracts;
+using property_management.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Carregar variáveis do .env
+Env.Load();
+
+var URL = Environment.GetEnvironmentVariable("SUPABASE_URL");
+var KEY = Environment.GetEnvironmentVariable("SUPABASE_KEY");
+
+var options = new Supabase.SupabaseOptions
+{
+    AutoConnectRealtime = true
+};
+
+// Inicializando o Supabase Client
+var supabase = new Supabase.Client(supabaseUrl: URL, supabaseKey: KEY, options);
+await supabase.InitializeAsync();
+
+// Registrar Supabase Client no container de serviços
+builder.Services.AddSingleton(supabase);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Middlewares
+app.UseSwagger();
+app.UseSwaggerUI();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Rota simples para verificar se a API está funcionando
+app.MapGet("/", () => "API funcionando!");
 
-app.MapGet("/weatherforecast", () =>
+// Endpoint para criar uma nova newsletter
+app.MapPost("/newsletter", async (
+    CreateNewsletterRequest request,
+    Supabase.Client client) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    var newsletter = new Newsletter
+    {
+        Name = request.Name,
+        Description = request.Description,
+        ReadTime = request.ReadTime
+    };
+
+    var response = await client.From<Newsletter>().Insert(newsletter);
+    var newNewsletter = response.Models.First();
+
+    return Results.Ok(newNewsletter.Id);
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
