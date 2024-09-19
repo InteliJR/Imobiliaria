@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Menu from './Menu'; // Adjust the path if necessary
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,46 +8,28 @@ export default function Navbar() {
     setIsOpen(!isOpen);
   };
 
+  // Example userType, you would get this dynamically in your app
+  const userType = 'Administrador'; 
+
   return (
     <div>
-      <div className='bg-neutral-black flex justify-between items-center p-4'>
+      <div className='bg-neutral-black flex justify-between items-center px-4 py-2'>
         <div>
           <img src="/Logo.svg" alt="Logo" />
         </div>
         <div>
           <button onClick={toggleMenu} className="focus:outline-none">
-            {/* Add rotation class conditionally */}
-            <img
-              src="/Menu.svg"
-              alt="Menu"
-              className={`transition-transform duration-700 ${isOpen ? 'rotate-90' : ''}`}
+            <img 
+              src="/Menu.svg" 
+              alt="Menu" 
+              className={`transition-transform duration-300 ${isOpen ? 'rotate-90' : ''}`} 
             />
           </button>
         </div>
       </div>
 
       {/* Full-Screen Hamburger Menu */}
-      {isOpen && (
-        <div className='fixed inset-0 bg-neutral-black text-white flex flex-col items-center justify-center'>
-          <ul className='text-center space-y-8 text-2xl'>
-            <li className='hover:text-gray-600'>Home</li>
-            <li className='hover:text-gray-600'>About</li>
-            <li className='hover:text-gray-600'>Services</li>
-            <li className='hover:text-gray-600'>Contact</li>
-          </ul>
-
-          <button 
-            onClick={toggleMenu} 
-            className="absolute top-4 right-4 text-white text-2xl focus:outline-none"
-          >
-            <img 
-              src="/Menu.svg" 
-              alt="Close Menu" 
-              className={`transition-transform duration-700 ${isOpen ? 'rotate-90' : ''}`}
-            />
-          </button>
-        </div>
-      )}
+      {isOpen && <Menu userType={userType} toggleMenu={toggleMenu} isOpen={isOpen} />}
     </div>
   );
 }
