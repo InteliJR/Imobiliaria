@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {}
+    "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {
+    "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj",
         "projectName": "Layer.Infrastructure",
-        "projectPath": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\Layer.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Inteli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Inteli\\AppData\\Roaming\\NuGet\\NuGet.Config",
