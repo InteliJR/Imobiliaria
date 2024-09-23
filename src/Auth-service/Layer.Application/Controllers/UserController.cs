@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Layer.Domain.Interfaces;
+using Layer.Application.Models;
+using Layer.Domain.Entities;
 
 namespace Layer.Application.Controllers
 {
@@ -23,5 +25,28 @@ namespace Layer.Application.Controllers
             var users = await _userService.GetUsuariosAsync();
             return Ok(users);
         }
+
+        [HttpPost("AdicionarNovoUsuario")]
+        public async Task<IActionResult> AddNewUser([FromBody] NewUserModel userModel)
+        {
+            if (!ModelState.IsValid) // Verifica se o modelo é realmente válido
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = new User
+            {
+                Email = userModel.Email,
+                Senha = userModel.Senha, // TODO: Criptografar a senha
+                TipoUsuario = userModel.TipoUsuario,
+                Ativo = true,
+                DataRegistro = DateTime.UtcNow,
+                DataAtualizacao = DateTime.UtcNow
+            };
+
+            var newUser = await _userService.InsertNewUser(user);
+            return Ok(newUser);
+        }
+
     }
 }
