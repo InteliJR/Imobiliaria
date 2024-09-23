@@ -5,6 +5,8 @@ using Layer.Services.Services;
 using Layer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +18,26 @@ builder.Configuration.AddEnvironmentVariables();
 
 // !!!!! Injenções de dependência !!!!!
 
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(
+                builder.Configuration.GetConnectionString("DefaultConnection"),
+                npgsqlOptions =>
+                {
+                    npgsqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorCodesToAdd: null);
+                    npgsqlOptions.CommandTimeout(30); // Timeout de 30 segundos
+                })
+            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
+        );
+
 // Vamos usar o AddSingleton usar a msm instância em usada em toda a aplicação
 // Se usamos o AddScoped, ele cria uma instância por requisição aí ele vai zerar a lista de mensagens a cada requisição
-builder.Services.AddSingleton<IMessageService, MessageService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -26,11 +45,6 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
 
-// Registrar o dbContext
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
