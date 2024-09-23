@@ -6,6 +6,7 @@ using Layer.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace Layer.Services.Services
 {
@@ -21,9 +22,17 @@ namespace Layer.Services.Services
             _dbcontext = dbcontext;
         }
 
-        public Task<List<User>> GetUsuariosAsync()
+        public async Task<List<User>> GetUsuariosAsync()
         {
-            return _dbcontext.Usuarios.ToListAsync(); // Retornando a lista de usuarios de maneira assincrona
+
+            return await _dbcontext.Usuarios.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<User> InsertNewUser(User user)
+        {
+            await _dbcontext.Usuarios.AddAsync(user);
+            await _dbcontext.SaveChangesAsync();
+            return user;
         }
     }
 }

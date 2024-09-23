@@ -10,5 +10,7 @@ namespace Layer.Domain.Interfaces
     public interface IUserService
     {
         Task<List<User>> GetUsuariosAsync();
+
+        Task<User> InsertNewUser(User user);
     }
 }
