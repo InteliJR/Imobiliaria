@@ -38,6 +38,38 @@
   },
   {
     "ContainingType": "Layer.Application.Controllers.ImoveisController",
+    "Method": "DeleteImovel",
+    "RelativePath": "Imoveis/DeletarImovel/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Layer.Application.Controllers.ImoveisController",
+    "Method": "GetImovelById",
+    "RelativePath": "Imoveis/PegarImovelPorId/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Layer.Application.Controllers.ImoveisController",
     "Method": "GetAllImoveis",
     "RelativePath": "Imoveis/PegarTodosImoveis",
     "HttpMethod": "GET",
