@@ -512,7 +512,10 @@
           "Swashbuckle.AspNetCore.SwaggerUI": "6.7.3"
         },
         "runtime": {
-          "Layer.Domain.dll": {}
+          "Layer.Domain.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Layer.Insfrastructure/1.0.0": {
@@ -524,7 +527,10 @@
           "Swashbuckle.AspNetCore.SwaggerUI": "6.7.3"
         },
         "runtime": {
-          "Layer.Insfrastructure.dll": {}
+          "Layer.Insfrastructure.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
