@@ -78,5 +78,30 @@ namespace Layer.Application.Controllers
             _imoveisService.UpdateImoveisAsync(id, imovel);
             return Ok(imovel);
         }
+
+        [HttpGet("PegarImovelPorId/{id}")]
+        public async Task<IActionResult> GetImovelById(int id)
+        {
+            var imovel = await _imoveisService.GetByIdImoveisAsync(id);
+            if (imovel == null)
+            {
+                return NotFound();
+            }
+            return Ok(imovel);
+        }
+
+        [HttpDelete("DeletarImovel/{id}")]
+        public async Task<IActionResult> DeleteImovel(int id)
+        {
+            var imovel = await _imoveisService.GetByIdImoveisAsync(id);
+
+            if(imovel == null)
+            {
+                return NotFound();
+            }
+
+            await _imoveisService.DeleteImoveisAsync(id);
+            return NoContent();
+        }
     }
 }
