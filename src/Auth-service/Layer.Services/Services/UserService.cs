@@ -14,19 +14,28 @@ namespace Layer.Services.Services
     {
 
         // Vamo adicionar o contexto do banco de dados
-        private readonly ApplicationDbContext _dbcontext;
+        private readonly AppDbContext _dbcontext;
 
         // Constructor
-        public UserService(ApplicationDbContext dbcontext)
+        public UserService(AppDbContext dbcontext)
         {
             _dbcontext = dbcontext;
         }
 
         public async Task<List<User>> GetUsuariosAsync()
         {
+            try
+            {
+                return await _dbcontext.Usuarios.AsNoTracking().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao obter os usuários: {ex.Message}");
 
-            return await _dbcontext.Usuarios.AsNoTracking().ToListAsync();
+                throw new Exception("Ocorreu um erro ao buscar os usuários no banco de dados.", ex);
+            }
         }
+
 
         public async Task<User> InsertNewUser(User user)
         {
