@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Eu+op8Bif7M=",
+  "dgSpecHash": "zkErotlNMgk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Property-service\\property-management\\Layer.Application.csproj",
+  "projectFilePath": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Property-service\\Layer.Application\\Layer.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Inteli\\.nuget\\packages\\dotnetenv\\3.1.1\\dotnetenv.3.1.1.nupkg.sha512",
     "C:\\Users\\Inteli\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

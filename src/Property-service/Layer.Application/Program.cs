@@ -19,7 +19,7 @@ builder.Configuration.AddEnvironmentVariables();
 // Vamos usar o AddSingleton usar a msm instância em usada em toda a aplicação
 // Se usamos o AddScoped, ele cria uma instância por requisição aí ele vai zerar a lista de mensagens a cada requisição
 
-builder.Services.AddScoped<Iimoveis, ImoveisService>();
+builder.Services.AddScoped<IimoveisRepository, ImoveisService>();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
