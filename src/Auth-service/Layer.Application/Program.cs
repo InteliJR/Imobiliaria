@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
+using Layer.Domain.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +46,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IMessageService, MessageService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+
+// Configura JWT settings
+var jwtSettings = new JwtSettings
+{
+    SecretKey = Environment.GetEnvironmentVariable("JwtSettings__SecretKey"),
+    ExpiryMinutes = int.Parse(Environment.GetEnvironmentVariable("JwtSettings__ExpiryMinutes")),
+    Issuer = Environment.GetEnvironmentVariable("JwtSettings__Issuer"),
+    Audience = Environment.GetEnvironmentVariable("JwtSettings__Audience")
+};
+builder.Services.AddSingleton(jwtSettings);
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
