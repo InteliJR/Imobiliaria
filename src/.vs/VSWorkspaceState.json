@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Layer.Application",
+    "\\Layer.Domain",
+    "\\Layer.Insfrastructure",
+    "\\Layer.Services",
+    "\\property-management"
+  ],
+  "SelectedNode": "\\Layer.Application\\bin",
+  "PreviewInSolutionExplorer": false
+}

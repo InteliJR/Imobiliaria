@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Services\\Layer.Services.csproj",
+      "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Services\\Layer.Services.csproj",
       "projectName": "Layer.Services",
-      "projectPath": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Services\\Layer.Services.csproj",
+      "projectPath": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Services\\Layer.Services.csproj",
       "packagesPath": "C:\\Users\\Inteli\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Services\\obj\\",
+      "outputPath": "C:\\Users\\Inteli\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Services\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Inteli\\AppData\\Roaming\\NuGet\\NuGet.Config",
