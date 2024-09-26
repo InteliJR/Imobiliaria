@@ -2,6 +2,8 @@
 using Layer.Domain.Interfaces;
 using Layer.Application.Models;
 using Layer.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Layer.Domain.Enums;
 
 namespace Layer.Application.Controllers
 {
@@ -20,6 +22,7 @@ namespace Layer.Application.Controllers
 
         // Rota de pagar todos os usuários
         [HttpGet("PegarTodosUsuarios")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetUsuariosAsync();
@@ -27,6 +30,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoUsuario")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> AddNewUser([FromBody] NewUserModel userModel)
         {
             if (!ModelState.IsValid) // Verifica se o modelo é realmente válido

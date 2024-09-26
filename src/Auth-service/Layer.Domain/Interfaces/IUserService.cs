@@ -12,5 +12,9 @@ namespace Layer.Domain.Interfaces
         Task<List<User>> GetUsuariosAsync();
 
         Task<User> InsertNewUser(User user);
+
+        Task<bool> UserExist(User user);
+
+        Task<User> GetUserByEmail(string email);
     }
 }

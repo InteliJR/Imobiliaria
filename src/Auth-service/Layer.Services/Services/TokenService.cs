@@ -17,14 +17,21 @@ namespace Layer.Services.Services
     public class TokenService : ITokenService
     {
         private readonly JwtSettings _jwtSettings;
+        private readonly IUserService _userService;
 
-        public TokenService(JwtSettings jwtSettings)
+        public TokenService(JwtSettings jwtSettings, IUserService userService)
         {
             _jwtSettings = jwtSettings;
+            _userService = userService;
         }
 
         public string GenerateToken(User user)
         {
+            if(_userService.UserExist(user).Result == false)
+            {
+                throw new Exception("Usuário não existe.");
+            }
+
             var role = Roles.Admin.ToString(); // Pega o role do usuário !!!PUXAR DO BANCO DE DADOS!!!
 
             var claims = new List<Claim>
