@@ -1,4 +1,4 @@
-﻿namespace Layer.Infrastructure
+﻿namespace Layer.Insfrastructure
 {
     public class Class1
     {
