@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Layer.Domain.Interfaces;
+using Layer.Domain.Enums;
 using property_management.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Layer.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Layer.Application.Controllers
 {
@@ -22,6 +24,7 @@ namespace Layer.Application.Controllers
 
         // Rota de pagar todos os imóveis
         [HttpGet("PegarTodosImoveis")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllImoveis()
         {
             var imoveis = await _imoveisService.GetImoveisAsync();
