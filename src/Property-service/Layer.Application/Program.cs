@@ -1,10 +1,18 @@
 ﻿using Microsoft.OpenApi.Models;
 using Layer.Domain.Interfaces;
+using Layer.Domain.Entities;
 using Layer.Services;
 using Layer.Services.Services;
 using Layer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using DotNetEnv;
+
+using System.Text;
+using Layer.Domain.Entites;
+using Layer.Domain.Enums;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +28,45 @@ builder.Configuration.AddEnvironmentVariables();
 // Se usamos o AddScoped, ele cria uma instância por requisição aí ele vai zerar a lista de mensagens a cada requisição
 
 builder.Services.AddScoped<IimoveisRepository, ImoveisService>();
+
+// Configura JWT settings
+var jwtSettings = new JwtSettings
+{
+    SecretKey = Environment.GetEnvironmentVariable("JwtSettings__SecretKey"),
+    ExpiryMinutes = int.Parse(Environment.GetEnvironmentVariable("JwtSettings__ExpiryMinutes")),
+    Issuer = Environment.GetEnvironmentVariable("JwtSettings__Issuer"),
+    Audience = Environment.GetEnvironmentVariable("JwtSettings__Audience")
+};
+builder.Services.AddSingleton(jwtSettings);
+
+// Configura autenticação JWT
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+    };
+});
+
+// Configurar roles para o JWT
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(nameof(Roles.Admin), policy => policy.RequireRole(nameof(Roles.Admin)));
+    options.AddPolicy(nameof(Roles.Locador), policy => policy.RequireRole(nameof(Roles.Locador)));
+    options.AddPolicy(nameof(Roles.Locatario), policy => policy.RequireRole(nameof(Roles.Locatario)));
+});
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
@@ -85,6 +132,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
