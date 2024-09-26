@@ -43,5 +43,22 @@ namespace Layer.Services.Services
             await _dbcontext.SaveChangesAsync();
             return user;
         }
+
+        public async Task<bool> UserExist(User user)
+        {
+            var userCheck = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == user.Email);
+            
+            if (userCheck == null)
+            {
+                return false;
+            }else{
+                return true;
+            }
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+        }
     }
 }
