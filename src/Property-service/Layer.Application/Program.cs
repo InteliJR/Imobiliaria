@@ -28,6 +28,7 @@ builder.Configuration.AddEnvironmentVariables();
 // Se usamos o AddScoped, ele cria uma instância por requisição aí ele vai zerar a lista de mensagens a cada requisição
 
 builder.Services.AddScoped<IimoveisRepository, ImoveisService>();
+builder.Services.AddScoped<IContratosRepository, ContratoService>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
