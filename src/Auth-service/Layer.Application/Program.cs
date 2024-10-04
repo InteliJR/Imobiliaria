@@ -49,6 +49,7 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ILocadorService, LocadorService>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
@@ -149,8 +150,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
+    
 app.UseRouting();
 
 app.UseAuthentication();
