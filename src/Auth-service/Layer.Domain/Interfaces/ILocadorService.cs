@@ -20,5 +20,9 @@ namespace Layer.Domain.Interfaces
         Task<Locador> GetLocadorByUserId(int userId);
 
         Task<bool> UserAlreadyLinkedLocador(int userId);
+
+        Task<Locador> GetLocadorByLocadorID(int locadorID);
+
+        Task<Locador> UpdateLocador(Locador locadorToUpdate);
     }
 }
