@@ -133,5 +133,39 @@ namespace Layer.Services.Services
             }
         }
 
+        public async Task<Locador> GetLocadorByLocadorID(int locadorID)
+        {
+            try
+            {
+                var locador = await _dbcontext.Locadores.FirstOrDefaultAsync(x => x.LocadorId == locadorID);
+
+                if (locador == null)
+                {
+                    throw new Exception("Locador não encontrado.");
+                }
+
+                return locador;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao buscar o locador no banco de dados.", ex);
+            }
+        }
+
+        public async Task<Locador> UpdateLocador(Locador locador)
+        {
+            try
+            {
+                _dbcontext.Locadores.Update(locador);
+                await _dbcontext.SaveChangesAsync();
+
+                return locador;
+            } catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao atualizar o locador no banco de dados.", ex);
+            }
+
+        }
+
     }
 }

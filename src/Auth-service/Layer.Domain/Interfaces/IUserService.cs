@@ -16,5 +16,15 @@ namespace Layer.Domain.Interfaces
         Task<bool> UserExist(User user);
 
         Task<User> GetUserByEmail(string email);
+
+        Task<User> GetUserByCPF(string cpf);
+
+        Task<User> GetUsserById(int userId);
+
+        Task<User> UpdateUser(User userToUpdate);
+
+        Task<User> DeleteUser(User userToDelete);
+
+        Task<bool> LastUpdate(int UserId);
     }
 }

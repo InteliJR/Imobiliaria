@@ -92,5 +92,58 @@ namespace Layer.Application.Controllers
             return Ok(locador);
         }
 
+        [HttpGet("PegarLocadorPorLocadorID")]
+        public async Task<IActionResult> GetLocadorByLocadorID([FromQuery] int locadorID)
+        {
+            var locador = await _locadorService.GetLocadorByLocadorID(locadorID);
+            return Ok(locador);
+        }
+
+        [HttpPost("AtualizarLocador")]
+        public async Task<IActionResult> UpdateLocador(string CPF, [FromBody] UpdateLocadorModel locadorToUpdate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (locadorToUpdate == null)
+            {
+                return BadRequest("Locador não encontrado.");
+            }
+
+            var userID = await _userService.GetUserByCPF(CPF);
+
+            if (userID == null)
+            {
+                return BadRequest("Usuário não encontrado.");
+            }
+
+            var locador = await _locadorService.GetLocadorByUserId(userID.UsuarioId);
+
+            // Atualizar apenas os campos que foram preenchidos
+
+            if (!string.IsNullOrEmpty(locadorToUpdate.CPF))
+                locador.CPF = locadorToUpdate.CPF;
+            if(!string.IsNullOrEmpty(locadorToUpdate.Nacionalidade))
+                locador.Nacionalidade = locadorToUpdate.Nacionalidade;
+            if(!string.IsNullOrEmpty(locadorToUpdate.NumeroTelefone))
+                locador.NumeroTelefone = locadorToUpdate.NumeroTelefone;
+            if(!string.IsNullOrEmpty(locadorToUpdate.NomeCompletoLocador))
+                locador.NomeCompletoLocador = locadorToUpdate.NomeCompletoLocador;
+            if(!string.IsNullOrEmpty(locadorToUpdate.CNPJ))
+                locador.CNPJ = locadorToUpdate.CNPJ;
+            if(!string.IsNullOrEmpty(locadorToUpdate.Endereco))
+                locador.Endereco = locadorToUpdate.Endereco;
+            if(!string.IsNullOrEmpty(locadorToUpdate.Passaporte))
+                locador.Passaporte = locadorToUpdate.Passaporte;
+            if(!string.IsNullOrEmpty(locadorToUpdate.RG))
+                locador.RG = locadorToUpdate.RG;
+
+            var updatedLocador = await _locadorService.UpdateLocador(locador);
+
+            return Ok(updatedLocador);
+        }
+
     }
 }
