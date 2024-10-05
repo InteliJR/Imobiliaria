@@ -22,7 +22,7 @@ namespace Layer.Application.Controllers
 
         // Rota de pagar todos os usuários
         [HttpGet("PegarTodosUsuarios")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        // [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetUsuariosAsync();
@@ -50,6 +50,39 @@ namespace Layer.Application.Controllers
 
             var newUser = await _userService.InsertNewUser(user);
             return Ok(newUser);
+        }
+
+        [HttpGet("VerificarUsuarioExistente")]
+        public async Task<IActionResult> CheckUserExist([FromQuery] string email)
+        {
+            var user = new User
+            {
+                Email = email
+            };
+
+            var userExist = await _userService.UserExist(user);
+
+            return Ok(userExist);
+        }
+
+        [HttpGet("PegarUsuarioPorEmail")]
+        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+        {
+            var user = await _userService.GetUserByEmail(email);
+            return Ok(user);
+        }
+
+        [HttpGet("PegarUsuarioPorCPF")]
+        public async Task<IActionResult> GetUserInfoRoleByCPF([FromQuery] string cpf)
+        {
+            var user = await _userService.GetUserByCPF(cpf);
+
+            if (user == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            return Ok(user);
         }
 
     }

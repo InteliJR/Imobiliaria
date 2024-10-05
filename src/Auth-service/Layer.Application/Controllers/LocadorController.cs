@@ -102,7 +102,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarLocadorPorLocadorID")]
-        [Authorize(Policy = "AdminORLocador")]
         public async Task<IActionResult> GetLocadorByLocadorID([FromQuery] int locadorID)
         {
             var locador = await _locadorService.GetLocadorByLocadorID(locadorID);
@@ -110,7 +109,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AtualizarLocador")]
-        [Authorize(Policy = "AdminORLocador")]
         public async Task<IActionResult> UpdateLocador(string CPF, [FromBody] UpdateLocadorModel locadorToUpdate)
         {
             if (!ModelState.IsValid)
@@ -154,35 +152,6 @@ namespace Layer.Application.Controllers
             var updatedLocador = await _locadorService.UpdateLocador(locador);
 
             return Ok(updatedLocador);
-        }
-
-        [HttpDelete("DeletarLocador")]
-        [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> DeleteLocador([FromBody] string CPF)
-        {
-            var locador = await _locadorService.DeleteLocador(CPF);
-            return Ok(locador);
-        }
-
-        [HttpGet("TokenInformation")]
-        [Authorize(Policy = "AdminORLocador")]
-        public async Task<IActionResult> LocadorTokenInfo()
-        {
-            var roleClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;
-
-            if(roleClaim != null && roleClaim == "Locador")
-            {
-                var locadorIdClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleID").Value;
-
-                var locador = await _locadorService.GetLocadorByLocadorID(int.Parse(locadorIdClaim));
-
-                return Ok(locador);
-            }
-            else
-            {
-                return BadRequest("Credenciais incorretas");
-            }
-
         }
 
     }

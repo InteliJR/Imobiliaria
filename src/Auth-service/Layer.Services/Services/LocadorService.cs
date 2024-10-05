@@ -161,35 +161,12 @@ namespace Layer.Services.Services
                 _dbcontext.Locadores.Update(locador);
                 await _dbcontext.SaveChangesAsync();
 
-                await _userService.LastUpdate(Convert.ToInt32(locador.UsuarioId));
-
                 return locador;
             } catch (Exception ex)
             {
                 throw new Exception("Ocorreu um erro ao atualizar o locador no banco de dados.", ex);
             }
 
-        }
-
-        public async Task<Locador> DeleteLocador(string CPF)
-        {
-            try
-            {
-                var locador = await _dbcontext.Locadores.FirstOrDefaultAsync(x => x.CPF == CPF);
-
-                if (locador == null)
-                {
-                    throw new Exception("Locador não encontrado.");
-                }
-
-                _dbcontext.Locadores.Remove(locador);
-                await _dbcontext.SaveChangesAsync();
-
-                return locador;
-            } catch (Exception ex)
-            {
-                throw new Exception("Ocorreu um erro ao deletar o locador no banco de dados.", ex);
-            }
         }
 
     }

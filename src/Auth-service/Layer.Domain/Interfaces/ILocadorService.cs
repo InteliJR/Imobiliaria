@@ -24,7 +24,5 @@ namespace Layer.Domain.Interfaces
         Task<Locador> GetLocadorByLocadorID(int locadorID);
 
         Task<Locador> UpdateLocador(Locador locadorToUpdate);
-
-        Task<Locador> DeleteLocador(string CPF);
     }
 }
