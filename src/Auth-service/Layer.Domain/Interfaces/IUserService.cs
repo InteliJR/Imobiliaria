@@ -23,7 +23,7 @@ namespace Layer.Domain.Interfaces
 
         Task<User> UpdateUser(User userToUpdate);
 
-        Task<User> DeleteUser(User userToDelete);
+        Task<User> DeleteUser(string email);
 
         Task<bool> LastUpdate(int UserId);
     }

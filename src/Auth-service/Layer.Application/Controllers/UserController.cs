@@ -4,6 +4,7 @@ using Layer.Application.Models;
 using Layer.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Layer.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Layer.Application.Controllers
 {
@@ -83,6 +84,15 @@ namespace Layer.Application.Controllers
             }
 
             return Ok(user);
+        }
+
+        [HttpDelete("DeletarUsuario")]
+        public async Task<IActionResult> DeleteUser([FromQuery] [EmailAddress] string email)
+        {
+
+            await _userService.DeleteUser(email);
+
+            return Ok("Usuário deletado com sucesso.");
         }
 
     }
