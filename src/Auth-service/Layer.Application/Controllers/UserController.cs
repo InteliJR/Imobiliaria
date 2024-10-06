@@ -45,8 +45,8 @@ namespace Layer.Application.Controllers
                 Senha = userModel.Senha, // TODO: Criptografar a senha
                 TipoUsuario = userModel.TipoUsuario,
                 Ativo = true,
-                DataRegistro = DateTime.UtcNow,
-                DataAtualizacao = DateTime.UtcNow
+                DataRegistro = DateTime.Now,
+                DataAtualizacao = DateTime.Now
             };
 
             var newUser = await _userService.InsertNewUser(user);
@@ -93,6 +93,15 @@ namespace Layer.Application.Controllers
             await _userService.DeleteUser(email);
 
             return Ok("Usuário deletado com sucesso.");
+        }
+
+        [HttpPost("InativarUsuario")]
+        public async Task<IActionResult> InactivateUser([FromQuery] string email)
+        {
+
+            await _userService.InactivateUser(email);
+
+            return Ok("Usuário inativado com sucesso.");
         }
 
     }
