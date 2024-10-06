@@ -3,9 +3,6 @@ using Layer.Domain.Interfaces;
 using Layer.Application.Models;
 using Layer.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Layer.Domain.Enums;
 
 namespace Layer.Application.Controllers
 {
@@ -41,7 +38,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoLocador")]
-        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> AddNewLocador([Required] [EmailAddress] string email, [FromBody] NewLocadorModel locador)
         {
             if (!ModelState.IsValid)
@@ -152,6 +148,13 @@ namespace Layer.Application.Controllers
             var updatedLocador = await _locadorService.UpdateLocador(locador);
 
             return Ok(updatedLocador);
+        }
+
+        [HttpDelete("DeletarLocador")]
+        public async Task<IActionResult> DeleteLocador([FromBody] string CPF)
+        {
+            var locador = await _locadorService.DeleteLocador(CPF);
+            return Ok(locador);
         }
 
     }

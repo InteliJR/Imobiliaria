@@ -169,5 +169,26 @@ namespace Layer.Services.Services
 
         }
 
+        public async Task<Locador> DeleteLocador(string CPF)
+        {
+            try
+            {
+                var locador = await _dbcontext.Locadores.FirstOrDefaultAsync(x => x.CPF == CPF);
+
+                if (locador == null)
+                {
+                    throw new Exception("Locador não encontrado.");
+                }
+
+                _dbcontext.Locadores.Remove(locador);
+                await _dbcontext.SaveChangesAsync();
+
+                return locador;
+            } catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao deletar o locador no banco de dados.", ex);
+            }
+        }
+
     }
 }
