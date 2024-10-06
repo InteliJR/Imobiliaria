@@ -99,11 +99,19 @@ namespace Layer.Services.Services
             return userToUpdate;
         }
 
-        public async Task<User> DeleteUser(User userToDelete)
+        public async Task<User> DeleteUser(string email)
         {
-            _dbcontext.Usuarios.Remove(userToDelete);
+            var user = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            _dbcontext.Usuarios.Remove(user);
             await _dbcontext.SaveChangesAsync();
-            return userToDelete;
+
+            return user;
         }
 
         public async Task<bool> LastUpdate(int UserId)

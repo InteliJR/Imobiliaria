@@ -5,10 +5,6 @@ namespace Layer.Application.Models
     public class NewLocadorModel
     {
         [Required]
-        [MaxLength(30)]
-        public string Email { get; set; }
-
-        [Required]
         [MaxLength(255)]
         public string CPF { get; set; }
 

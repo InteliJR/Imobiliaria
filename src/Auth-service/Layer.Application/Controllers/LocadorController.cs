@@ -2,6 +2,7 @@
 using Layer.Domain.Interfaces;
 using Layer.Application.Models;
 using Layer.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Layer.Application.Controllers
 {
@@ -35,7 +36,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoLocador")]
-        public async Task<IActionResult> AddNewLocador([FromBody] NewLocadorModel locador)
+        public async Task<IActionResult> AddNewLocador([Required] [EmailAddress] string email, [FromBody] NewLocadorModel locador)
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +45,7 @@ namespace Layer.Application.Controllers
 
             // Pegar o id do usuário pelo email e adicionar no locador
 
-            var userID = await _userService.GetUserByEmail(locador.Email);
+            var userID = await _userService.GetUserByEmail(email);
 
             if (userID == null)
             {
@@ -143,6 +144,13 @@ namespace Layer.Application.Controllers
             var updatedLocador = await _locadorService.UpdateLocador(locador);
 
             return Ok(updatedLocador);
+        }
+
+        [HttpDelete("DeletarLocador")]
+        public async Task<IActionResult> DeleteLocador([FromBody] string CPF)
+        {
+            var locador = await _locadorService.DeleteLocador(CPF);
+            return Ok(locador);
         }
 
     }
