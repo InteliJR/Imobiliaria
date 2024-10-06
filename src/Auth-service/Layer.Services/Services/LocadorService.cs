@@ -14,10 +14,12 @@ namespace Layer.Services.Services
     {
 
         private readonly AppDbContext _dbcontext;
+        private readonly IUserService _userService;
 
-        public LocadorService(AppDbContext dbContext)
+        public LocadorService(AppDbContext dbContext, IUserService userService)
         {
             _dbcontext = dbContext;
+            _userService = userService;
         }
 
         public async Task<List<Locador>> GetAllLocadorsAsync()
@@ -158,6 +160,8 @@ namespace Layer.Services.Services
             {
                 _dbcontext.Locadores.Update(locador);
                 await _dbcontext.SaveChangesAsync();
+
+                await _userService.LastUpdate(Convert.ToInt32(locador.UsuarioId));
 
                 return locador;
             } catch (Exception ex)

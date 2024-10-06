@@ -123,7 +123,33 @@ namespace Layer.Services.Services
                 return false;
             }
 
-            user.DataAtualizacao = DateTime.UtcNow;
+/*            TimeZoneInfo brtZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+
+            // Converte a data e hora para o fuso de brasileira
+            DateTime brasiliaTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, brtZone);
+
+            user.DataAtualizacao = brasiliaTime;*/
+
+            user.DataAtualizacao = DateTime.Now;
+
+            _dbcontext.Usuarios.Update(user);
+
+            await _dbcontext.SaveChangesAsync();
+
+            return true;
+        }
+
+
+        public async Task<bool> InactivateUser(string email)
+        {
+            var user = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.Ativo = false;
 
             _dbcontext.Usuarios.Update(user);
 

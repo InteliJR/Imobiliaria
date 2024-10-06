@@ -26,5 +26,7 @@ namespace Layer.Domain.Interfaces
         Task<User> DeleteUser(string email);
 
         Task<bool> LastUpdate(int UserId);
+
+        Task<bool> InactivateUser(string email);
     }
 }
