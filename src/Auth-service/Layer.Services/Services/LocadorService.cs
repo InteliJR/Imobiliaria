@@ -161,6 +161,8 @@ namespace Layer.Services.Services
                 _dbcontext.Locadores.Update(locador);
                 await _dbcontext.SaveChangesAsync();
 
+                await _userService.LastUpdate(Convert.ToInt32(locador.UsuarioId));
+
                 return locador;
             } catch (Exception ex)
             {
