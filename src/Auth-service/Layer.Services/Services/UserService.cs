@@ -16,7 +16,6 @@ namespace Layer.Services.Services
         // Vamo adicionar o contexto do banco de dados
         private readonly AppDbContext _dbcontext;
 
-        // Constructor
         public UserService(AppDbContext dbcontext)
         {
             _dbcontext = dbcontext;
@@ -157,5 +156,77 @@ namespace Layer.Services.Services
 
             return true;
         }
+
+        public async Task<(User, Locador)> IsertNewUserLocador(string email, Locador locador)
+        {
+            // Verificar se o usuário já existe
+            // Criar senha aleatoria
+            // Criar usuário com email e senha aleatorio
+            // Criar locador com o usuário criado
+            // Retornar o usuário e o locador
+
+            var userCheck = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+            if (userCheck != null)
+            {
+                throw new InvalidOperationException("Usuário com esse email já existe.");
+            }
+
+            // Criar senha aleatória
+
+            var random = new Random();
+
+            var password = random.Next(100000, 999999).ToString();
+
+            // Montar o objeto usuário com o email e a senha aleatória e inserir no banco de dados
+            var user = new User
+            {
+                Email = email,
+                Senha = password,
+                TipoUsuario = "Locador",
+                Ativo = true,
+                DataRegistro = DateTime.Now,
+                DataAtualizacao = DateTime.Now
+            };
+
+            await InsertNewUser(user);
+
+            // Pegar o usuário criado
+
+            var userCreated = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+            // Montar o objeto Locador
+
+            if (userCreated != null) {
+                var locadorNew = new Locador
+                {
+                    UsuarioId = userCreated.UsuarioId,
+                    ImovelId = locador.ImovelId,
+                    PessoaJuridica = locador.PessoaJuridica,
+                    CPF = locador.CPF,
+                    Nacionalidade = locador.Nacionalidade,
+                    NumeroTelefone = locador.NumeroTelefone,
+                    NomeCompletoLocador = locador.NomeCompletoLocador,
+                    CNPJ = locador.CNPJ,
+                    Endereco = locador.Endereco,
+                    Passaporte = locador.Passaporte,
+                    RG = locador.RG
+                };
+
+                // Inserir o locador no banco de dados
+                await _dbcontext.Locadores.AddAsync(locadorNew);
+                await _dbcontext.SaveChangesAsync();
+
+                // Pegar o locador criado
+                var locadorCreated = await _dbcontext.Locadores.FirstOrDefaultAsync(x => x.UsuarioId == userCreated.UsuarioId);
+    
+                return (userCreated, locadorCreated);
+            }
+            else
+            {
+                throw new InvalidOperationException("Usuário não foi criado corretamente");
+            }
+        }
+
     }
 }

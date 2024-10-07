@@ -104,5 +104,34 @@ namespace Layer.Application.Controllers
             return Ok("Usuário inativado com sucesso.");
         }
 
+        [HttpPost("CriarUsuarioLocador")]
+        public async Task<IActionResult> InsertNewUserLocador([FromQuery] string email, [FromBody] NewLocadorModel locador)
+        {
+            // Montar o objeto Locador
+            var locadorNew = new Locador
+            {
+                UsuarioId = null,
+                ImovelId = locador.ImovelId,
+                PessoaJuridica = false,
+                CPF = locador.CPF,
+                Nacionalidade = locador.Nacionalidade,
+                NumeroTelefone = locador.NumeroTelefone,
+                NomeCompletoLocador = locador.NomeCompletoLocador,
+                CNPJ = locador.CNPJ,
+                Endereco = locador.Endereco,
+                Passaporte = locador.Passaporte,
+                RG = locador.RG
+            };
+
+
+            var userLocador = await _userService.IsertNewUserLocador(email, locadorNew);
+
+            // Forçar desserialização do objeto para devolver
+            var user = userLocador.Item1;
+            var locadorCretead = userLocador.Item2;
+
+            return Ok(new { user, locador });
+        }
+
     }
 }
