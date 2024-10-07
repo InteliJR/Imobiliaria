@@ -28,5 +28,8 @@ namespace Layer.Domain.Interfaces
         Task<bool> LastUpdate(int UserId);
 
         Task<bool> InactivateUser(string email);
+
+        Task<(User, Locador)> IsertNewUserLocador(string email, Locador locador);
+
     }
 }
