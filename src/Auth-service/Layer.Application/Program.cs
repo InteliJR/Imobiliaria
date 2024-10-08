@@ -52,6 +52,7 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ILocadorService, LocadorService>();
+builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
