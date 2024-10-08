@@ -15,10 +15,12 @@ namespace Layer.Services.Services
 
         // Vamo adicionar o contexto do banco de dados
         private readonly AppDbContext _dbcontext;
+        private readonly IEmailSender _emailSender;
 
-        public UserService(AppDbContext dbcontext)
+        public UserService(AppDbContext dbcontext, IEmailSender emailSender)
         {
             _dbcontext = dbcontext;
+            _emailSender = emailSender;
         }
 
         public async Task<List<User>> GetUsuariosAsync()
@@ -190,6 +192,10 @@ namespace Layer.Services.Services
             };
 
             await InsertNewUser(user);
+
+            // Enviar email com a senha aleatória
+
+            await _emailSender.SendEmailAsync(email, password);
 
             // Pegar o usuário criado
 
