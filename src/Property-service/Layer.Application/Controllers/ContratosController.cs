@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using property_management.Models;
 
+//TODO:
+    //Para a criação de um contrato, precisamos criar uma rota conectada ao firebase para enviar arquivos que estão relacionados a esse contrato e inserir alguma coisa que relacione esse documento a determinado contrato
+
 namespace property_management.Controllers
 {
     [ApiController]
@@ -39,7 +42,7 @@ namespace property_management.Controllers
         }
 
         [HttpPost("CriarUmNovoContrato")]
-        public async Task<IActionResult> AddContrato([FromBody] NewContratos newContrato)
+        public async Task<IActionResult> AddContrato([FromForm] NewContratos newContrato, IFormFile file)
         {
             if (!ModelState.IsValid)
             {
@@ -87,14 +90,52 @@ namespace property_management.Controllers
                 ValorReajuste = newContrato.ValorReajuste
             };
 
-            var novoContrato = await _contratoService.AddAsync(contrato);
+            var novoContrato = await _contratoService.AddAsync(contrato, file);
             return Ok(novoContrato);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContrato(int id, [FromBody] Contratos contrato)
+        [HttpPut("AtualizarContrato/{id}")]
+        public async Task<IActionResult> UpdateContrato(int id, [FromBody] Contratos novocontrato)
         {
-            throw new NotImplementedException();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var contrato = await _contratoService.GetByIdAsync(id);
+
+            if (contrato == null)
+            {
+                return NotFound();
+            }
+
+            // Atualizando os campos do contrato existente com os valores do novo contrato
+            contrato.LocadorId = novocontrato.LocadorId;
+            contrato.LocatarioId = novocontrato.LocatarioId;
+            contrato.ImovelId = novocontrato.ImovelId;
+            contrato.ValorAluguel = novocontrato.ValorAluguel;
+            contrato.Iptu = novocontrato.Iptu;
+            contrato.TaxaAdm = novocontrato.TaxaAdm;
+            contrato.DataInicio = novocontrato.DataInicio;
+            contrato.DataEncerramento = novocontrato.DataEncerramento;
+            contrato.TipoGarantia = novocontrato.TipoGarantia;
+            contrato.CondicoesEspeciais = novocontrato.CondicoesEspeciais;
+            contrato.Status = novocontrato.Status;
+            contrato.DataPagamento = novocontrato.DataPagamento;
+            contrato.DataRescisao = novocontrato.DataRescisao;
+            contrato.Renovado = novocontrato.Renovado;
+            contrato.DataEncerramentoRenovacao = novocontrato.DataEncerramentoRenovacao;
+            contrato.ValorReajuste = novocontrato.ValorReajuste;
+
+            // Salvando as alterações no banco de dados
+            var result = await _contratoService.UpdateAsync(id, contrato);
+
+            //if (result == false)
+            //{
+            //    return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao atualizar o contrato");
+            //}
+
+            return Ok(contrato);
         }
 
         [HttpDelete("{id}")]
