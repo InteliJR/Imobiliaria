@@ -1,6 +1,7 @@
 ﻿using Layer.Domain.Entites;
 using Layer.Domain.Interfaces;
 using Layer.Infrastructure.Database;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System;
@@ -14,18 +15,37 @@ namespace Layer.Services.Services
     public class ContratoService : IContratosRepository
     {
         private readonly ApplicationDbContext _dbcontext;
+        private readonly GoogleCloudStorageService _storageService;
 
         public ContratoService(ApplicationDbContext dbcontext)
         {
             _dbcontext = dbcontext;
+            var credentialsPath = @"C:\Users\Inteli\Desktop\Imobiliaria\src\Property-service\Layer.Application\imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json";
+            var bucketName = "imobiliaria-kk.appspot.com"; // Substitua pelo nome correto do seu bucket
+            _storageService = new GoogleCloudStorageService(credentialsPath, bucketName);
         }
 
-        public async Task<Contratos> AddAsync(Contratos contrato)
+        public async Task<Contratos> AddAsync(Contratos contrato, IFormFile file)
         {
+            if (file != null && file.Length > 0)
+            {
+                var tempFilePath = Path.GetTempFileName();
+                using (var stream = new FileStream(tempFilePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var objectName = $"uploads/{file.FileName}";
+                var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
+
+                contrato.Documentos = publicUrl;
+            }
+
             await _dbcontext.Contratos.AddAsync(contrato);
             await _dbcontext.SaveChangesAsync();
             return contrato;
         }
+
         public async Task<Contratos> GetByIdAsync(int id)
         {
             return await _dbcontext.Contratos.FindAsync(id);
