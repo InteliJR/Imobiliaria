@@ -1,17 +1,16 @@
 ﻿using Microsoft.OpenApi.Models;
 using Layer.Domain.Interfaces;
-using Layer.Domain.Entities;
-using Layer.Services;
 using Layer.Services.Services;
 using Layer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using DotNetEnv;
-
 using System.Text;
 using Layer.Domain.Entites;
 using Layer.Domain.Enums;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,10 +21,22 @@ Env.Load();
 // Sobrepor os valores das variáveis no appsettings.json com as variáveis do ambiente
 builder.Configuration.AddEnvironmentVariables();
 
-// !!!!! Injenções de dependência !!!!!
+// !!!!! Injenções de dependência !!!
 
 // Vamos usar o AddSingleton usar a msm instância em usada em toda a aplicação
 // Se usamos o AddScoped, ele cria uma instância por requisição aí ele vai zerar a lista de mensagens a cada requisição
+
+// Iniciando o Firebase
+//FirestoreDb db = FirestoreDb.Create(project);
+//Console.WriteLine("Created Cloud Firestore client with project ID: {0}", project);
+
+string path = @"C:\Users\Inteli\Desktop\Imobiliaria\src\Property-service\Layer.Application\imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json";  // Caminho relativo
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(path)
+});
 
 builder.Services.AddScoped<IimoveisRepository, ImoveisService>();
 builder.Services.AddScoped<IContratosRepository, ContratoService>();
