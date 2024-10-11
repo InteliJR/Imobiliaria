@@ -1,4 +1,5 @@
 ﻿using Layer.Domain.Entites;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Layer.Domain.Interfaces
     {
         Task<Contratos> GetByIdAsync(int id);
         Task<List<Contratos>> GetAllAsync();
-        Task<Contratos> AddAsync(Contratos contrato);
+        Task<Contratos> AddAsync(Contratos contrato, IFormFile file);
         Task<int> UpdateAsync(int id, Contratos contrato);
         Task<int> DeleteAsync(int id);
     }
