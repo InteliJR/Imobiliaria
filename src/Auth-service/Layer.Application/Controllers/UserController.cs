@@ -133,5 +133,12 @@ namespace Layer.Application.Controllers
             return Ok(new { user, locador });
         }
 
+        [HttpGet("VerificarUsuariosInativos")]
+        public async Task<IActionResult> CheckInactiveUsers()
+        {
+            var users = await _userService.VerifyInactivityUser();
+            return Ok(users);
+        }
+
     }
 }

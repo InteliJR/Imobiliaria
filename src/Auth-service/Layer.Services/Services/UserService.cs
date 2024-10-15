@@ -234,5 +234,20 @@ namespace Layer.Services.Services
             }
         }
 
+        public Task<List<User>> VerifyInactivityUser()
+        {
+            try
+            {
+                int days = 1; // Colocar 1 dia só para testar
+                var users = _dbcontext.Usuarios.FromSqlRaw($@"SELECT * FROM usuarios WHERE ativo = false AND data_atualizacao < NOW() - INTERVAL '{days} DAY';").ToListAsync();
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao verificar os usuários inativos.", ex);
+            }
+        }
+
     }
 }

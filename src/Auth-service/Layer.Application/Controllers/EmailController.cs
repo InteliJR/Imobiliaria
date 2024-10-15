@@ -16,7 +16,7 @@ namespace Layer.Application.Controllers
             _emailService = emailService;
         }
 
-        [HttpGet]
+        [HttpGet("EnviarEmailSenha")]
         public async Task<IActionResult> SendEmail([FromQuery] string emailRecipient, [FromQuery] string mensage)
         {
             await _emailService.SendEmailAsync(emailRecipient, mensage);
