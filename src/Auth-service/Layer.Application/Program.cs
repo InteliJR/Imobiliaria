@@ -11,6 +11,8 @@ using Layer.Domain.Entities;
 using Layer.Domain.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Hangfire;
+using Hangfire.PostgreSql;
 using System.Text;
 
 
@@ -42,6 +44,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         })
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
 );
+
+// Configurar HangFire
+
+builder.Services.AddHangfire(config =>
+{
+    config.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddHangfireServer();
 
 /*builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 */
@@ -151,6 +162,17 @@ if (app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+// Configurar o HangFire na aplicacao
+
+app.UseHangfireDashboard();
+app.UseHangfireServer();
+
+RecurringJob.AddOrUpdate<HangfireJobsHelper>(
+    "verificar-usuarios-inativos",
+    x => x.VerificarUsuariosInativos(),
+    //Cron.DayInterval(15)
+    Cron.Minutely);
 
 app.UseHttpsRedirection();
     
