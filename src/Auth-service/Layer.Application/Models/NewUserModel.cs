@@ -11,9 +11,5 @@ namespace Layer.Application.Models
         [MaxLength(255)]
         public string Email { get; set; }
 
-
-        [Required]
-        [MaxLength(50)]
-        public string TipoUsuario { get; set; }
     }
 }

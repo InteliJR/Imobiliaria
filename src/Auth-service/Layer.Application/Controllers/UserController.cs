@@ -2,6 +2,7 @@
 using Layer.Domain.Interfaces;
 using Layer.Application.Models;
 using Layer.Domain.Entities;
+using Layer.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Layer.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
@@ -32,7 +33,7 @@ namespace Layer.Application.Controllers
 
         [HttpPost("AdicionarNovoUsuario")]
         // [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> AddNewUser([FromBody] NewUserModel userModel)
+        public async Task<IActionResult> AddNewUser([FromQuery] Roles role, [FromBody] NewUserModel userModel)
         {
             if (!ModelState.IsValid) // Verifica se o modelo é realmente válido
             {
@@ -43,7 +44,7 @@ namespace Layer.Application.Controllers
             {
                 Email = userModel.Email,
                 Senha = null, // Criptografar a senha
-                TipoUsuario = userModel.TipoUsuario,
+                TipoUsuario = role.ToString(),
                 Ativo = true,
                 DataRegistro = DateTime.Now,
                 DataAtualizacao = DateTime.Now
