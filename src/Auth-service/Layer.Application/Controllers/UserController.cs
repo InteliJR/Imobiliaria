@@ -31,7 +31,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoUsuario")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        // [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> AddNewUser([FromBody] NewUserModel userModel)
         {
             if (!ModelState.IsValid) // Verifica se o modelo é realmente válido
@@ -42,14 +42,14 @@ namespace Layer.Application.Controllers
             var user = new User
             {
                 Email = userModel.Email,
-                Senha = userModel.Senha, // TODO: Criptografar a senha
+                Senha = null, // Criptografar a senha
                 TipoUsuario = userModel.TipoUsuario,
                 Ativo = true,
                 DataRegistro = DateTime.Now,
                 DataAtualizacao = DateTime.Now
             };
 
-            var newUser = await _userService.InsertNewUser(user);
+            var newUser = await _userService.InsertNewUser(user, true);
             return Ok(newUser);
         }
 
