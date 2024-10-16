@@ -11,10 +11,6 @@ namespace Layer.Application.Models
         [MaxLength(255)]
         public string Email { get; set; }
 
-        [Required]
-        [MinLength(6)]
-        [MaxLength(255)]
-        public string Senha { get; set; }
 
         [Required]
         [MaxLength(50)]

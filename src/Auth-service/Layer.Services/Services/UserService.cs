@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Data;
+using System;
+using System.Linq;
+using System.Text;
+
 
 namespace Layer.Services.Services
 {
@@ -16,11 +20,24 @@ namespace Layer.Services.Services
         // Vamo adicionar o contexto do banco de dados
         private readonly AppDbContext _dbcontext;
         private readonly IEmailSender _emailSender;
+        private readonly IHashingPasswordService hashingPasswordService;
 
-        public UserService(AppDbContext dbcontext, IEmailSender emailSender)
+        public UserService(AppDbContext dbcontext, IEmailSender emailSender, IHashingPasswordService hashingPasswordService)
         {
             _dbcontext = dbcontext;
             _emailSender = emailSender;
+            this.hashingPasswordService = hashingPasswordService;
+        }
+
+        private static string RandomString(int length)
+        {
+
+            var random = new Random();
+
+            const string pool = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var chars = Enumerable.Range(0, length)
+                .Select(x => pool[random.Next(0, pool.Length)]);
+            return new string(chars.ToArray());
         }
 
         public async Task<List<User>> GetUsuariosAsync()
@@ -38,8 +55,20 @@ namespace Layer.Services.Services
         }
 
 
-        public async Task<User> InsertNewUser(User user)
+        public async Task<User> InsertNewUser(User user, bool generatePassword)
         {
+            // Criar senha aleatória
+            if (generatePassword)
+            {
+                string password = RandomString(8);
+
+                user.Senha = password;
+
+                // Hashing da senha
+
+                user.Senha = await hashingPasswordService.HashPassword(password);
+            }
+
             await _dbcontext.Usuarios.AddAsync(user);
             await _dbcontext.SaveChangesAsync();
             return user;
@@ -176,9 +205,15 @@ namespace Layer.Services.Services
 
             // Criar senha aleatória
 
-            var random = new Random();
+            string password = RandomString(8);
 
-            var password = random.Next(100000, 999999).ToString();
+            // Enviar email com a senha aleatória
+
+            await _emailSender.SendEmailAsync(email, password);
+
+            // Hashing da senha
+
+            password = await hashingPasswordService.HashPassword(password);
 
             // Montar o objeto usuário com o email e a senha aleatória e inserir no banco de dados
             var user = new User
@@ -191,11 +226,7 @@ namespace Layer.Services.Services
                 DataAtualizacao = DateTime.Now
             };
 
-            await InsertNewUser(user);
-
-            // Enviar email com a senha aleatória
-
-            await _emailSender.SendEmailAsync(email, password);
+            await InsertNewUser(user, false);
 
             // Pegar o usuário criado
 

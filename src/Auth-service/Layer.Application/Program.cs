@@ -64,6 +64,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ILocadorService, LocadorService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
+builder.Services.AddScoped<IHashingPasswordService, HashingPasswordService>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
@@ -171,8 +172,8 @@ app.UseHangfireServer();
 RecurringJob.AddOrUpdate<HangfireJobsHelper>(
     "verificar-usuarios-inativos",
     x => x.VerificarUsuariosInativos(),
-    //Cron.DayInterval(15)
-    Cron.Minutely);
+    Cron.DayInterval(15));
+    //Cron.Minutely);
 
 app.UseHttpsRedirection();
     
