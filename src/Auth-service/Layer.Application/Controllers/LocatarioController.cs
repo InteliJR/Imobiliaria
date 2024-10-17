@@ -3,10 +3,6 @@ using Layer.Domain.Interfaces;
 using Layer.Application.Models;
 using Layer.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
-using Layer.Services.Services;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Layer.Domain.Enums;
 
 namespace Layer.Application.Controllers
 {
@@ -26,7 +22,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarTodosLocatarios")]
-        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllLocatarios()
         {
             var locatarios = await _locatarioService.GetAllLocatariosAsync();
@@ -34,7 +29,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarLocatarioPorEmail")]
-        [Authorize(Policy = "AdminORLocatario")]
         public async Task<IActionResult> GetLocatarioByEmail([FromQuery] string email)
         {
             var locatario = await _locatarioService.GetLocatarioByEmail(email);
@@ -42,7 +36,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoLocatario")]
-        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> AddNewLocatario([Required] [EmailAddress] string email, [FromBody] NewLocatarioModel locatario)
         {
             if (!ModelState.IsValid)
@@ -71,6 +64,7 @@ namespace Layer.Application.Controllers
             {
                 UsuarioId = userID.UsuarioId,
                 ImovelId = locatario.ImovelId,
+                PessoaJuridica = false,
                 CPF = locatario.CPF,
                 Nacionalidade = locatario.Nacionalidade,
                 NumeroTelefone = locatario.NumeroTelefone,
@@ -86,7 +80,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("LocatarioExiste")]
-        [Authorize(Policy = "AdminORLocatario")]
         public async Task<IActionResult> LocatarioExist([FromQuery] string LocatarioCPF)
         {
             var locatario = await _locatarioService.LocatarioExist(LocatarioCPF);
@@ -94,7 +87,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarLocatarioPorUserId")]
-        [Authorize(Policy = "AdminORLocatario")]
         public async Task<IActionResult> GetLocatarioByUserId([FromQuery] int userId)
         {
             var locatario = await _locatarioService.GetLocatarioByUserId(userId);
@@ -102,7 +94,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarLocatarioPorLocatarioID")]
-        [Authorize (Policy = "AdminORLocatario")]
         public async Task<IActionResult> GetLocatarioByLocatarioID([FromQuery] int LocatarioID)
         {
             var locatario = await _locatarioService.GetLocatarioByLocatarioID(LocatarioID);
@@ -110,7 +101,6 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AtualizarLocatario")]
-        [Authorize (Policy = "AdminORLocatario")]
         public async Task<IActionResult> UpdateLocatario(string CPF, [FromBody] UpdateLocatarioModel LocatarioToUpdate)
         {
             if (!ModelState.IsValid)
@@ -142,6 +132,8 @@ namespace Layer.Application.Controllers
                 locatario.NumeroTelefone = LocatarioToUpdate.NumeroTelefone;
             if(!string.IsNullOrEmpty(LocatarioToUpdate.NomeCompletoLocatario))
                 locatario.NomeCompletoLocatario = LocatarioToUpdate.NomeCompletoLocatario;
+            if(!string.IsNullOrEmpty(LocatarioToUpdate.CNPJ))
+                locatario.CNPJ = LocatarioToUpdate.CNPJ;
             if(!string.IsNullOrEmpty(LocatarioToUpdate.Endereco))
                 locatario.Endereco = LocatarioToUpdate.Endereco;
             if(!string.IsNullOrEmpty(LocatarioToUpdate.Passaporte))
@@ -155,32 +147,10 @@ namespace Layer.Application.Controllers
         }
 
         [HttpDelete("DeletarLocatario")]
-        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteLocatario([FromBody] string CPF)
         {
             var locatario = await _locatarioService.DeleteLocatario(CPF);
             return Ok(locatario);
-        }
-
-        [HttpGet("TokenInformation")]
-        [Authorize(Policy = "AdminORLocatario")]
-        public async Task<IActionResult> LocatarioTokenInfo()
-        {
-            var roleClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;
-
-            if (roleClaim != null && roleClaim == "Locatario")
-            {
-                var locatarioIdClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleID").Value;
-
-                var locatario = await _locatarioService.GetLocatarioByLocatarioID(int.Parse(locatarioIdClaim));
-
-                return Ok(locatario);
-            }
-            else
-            {
-                return BadRequest("Credenciais incorretas");
-            }
-
         }
 
     }

@@ -41,12 +41,5 @@ namespace Layer.Domain.Entities
         [Column("endereco")]
         [MaxLength(255)]
         public string? Endereco { get; set; }
-
-        [Column("cnpj")]
-        [MaxLength(18)]
-        public string? CNPJ { get; set; }
-
-        [Column("imovelid")]
-        public int? ImovelId { get; set; }
     }
 }
