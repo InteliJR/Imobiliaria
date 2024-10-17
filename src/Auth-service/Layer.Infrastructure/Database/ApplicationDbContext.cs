@@ -19,6 +19,7 @@ namespace Layer.Infrastructure.Database
 
         public DbSet<User> Usuarios { get; set; }
         public DbSet<Locador> Locadores { get; set; }
+        public DbSet<Locatario> Locatarios { get; set; }
 
     }
 
