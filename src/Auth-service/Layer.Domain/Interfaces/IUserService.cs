@@ -31,6 +31,8 @@ namespace Layer.Domain.Interfaces
 
         Task<(User, Locador)> IsertNewUserLocador(string email, Locador locador);
 
+        Task<(User, Locatario)> IsertNewUserLocatario(string email, Locatario locatario);
+
         Task<List<User>> VerifyInactivityUser();
 
     }

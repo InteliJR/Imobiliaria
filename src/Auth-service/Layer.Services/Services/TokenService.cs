@@ -19,12 +19,14 @@ namespace Layer.Services.Services
         private readonly JwtSettings _jwtSettings;
         private readonly IUserService _userService;
         private readonly ILocadorService _locadorService;
+        private readonly ILocatarioService _locatarioService;
 
-        public TokenService(JwtSettings jwtSettings, IUserService userService, ILocadorService locadorService)
+        public TokenService(JwtSettings jwtSettings, IUserService userService, ILocadorService locadorService, ILocatarioService locatarioService)
         {
             _jwtSettings = jwtSettings;
             _userService = userService;
             _locadorService = locadorService;
+            _locatarioService = locatarioService;
         }
 
         public string GenerateToken(User user)
@@ -45,7 +47,7 @@ namespace Layer.Services.Services
             else if (user.TipoUsuario.ToString() == Roles.Locatario.ToString())
             {
                 role += Roles.Locatario.ToString();
-                roleID = _locadorService.GetLocadorByUserId(user.UsuarioId).Result.LocadorId;
+                roleID = _locatarioService.GetLocatarioByUserId(user.UsuarioId).Result.LocatarioId;
             }
             else if (user.TipoUsuario.ToString() == Roles.Admin.ToString())
             {

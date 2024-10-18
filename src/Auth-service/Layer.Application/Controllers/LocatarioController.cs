@@ -64,7 +64,6 @@ namespace Layer.Application.Controllers
             {
                 UsuarioId = userID.UsuarioId,
                 ImovelId = locatario.ImovelId,
-                PessoaJuridica = false,
                 CPF = locatario.CPF,
                 Nacionalidade = locatario.Nacionalidade,
                 NumeroTelefone = locatario.NumeroTelefone,
@@ -132,8 +131,6 @@ namespace Layer.Application.Controllers
                 locatario.NumeroTelefone = LocatarioToUpdate.NumeroTelefone;
             if(!string.IsNullOrEmpty(LocatarioToUpdate.NomeCompletoLocatario))
                 locatario.NomeCompletoLocatario = LocatarioToUpdate.NomeCompletoLocatario;
-            if(!string.IsNullOrEmpty(LocatarioToUpdate.CNPJ))
-                locatario.CNPJ = LocatarioToUpdate.CNPJ;
             if(!string.IsNullOrEmpty(LocatarioToUpdate.Endereco))
                 locatario.Endereco = LocatarioToUpdate.Endereco;
             if(!string.IsNullOrEmpty(LocatarioToUpdate.Passaporte))
