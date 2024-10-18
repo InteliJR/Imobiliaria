@@ -134,6 +134,33 @@ namespace Layer.Application.Controllers
             return Ok(new { user, locador });
         }
 
+        [HttpPost("CriarUsuarioLocatario")]
+        public async Task<IActionResult> InsertNewUserLocatario([FromQuery] string email, [FromBody] NewLocatarioModel locatario)
+        {
+            // Montar o objeto Locatario
+            var locatarioNew = new Locatario
+            {
+                UsuarioId = null,
+                ImovelId = locatario.ImovelId,
+                CPF = locatario.CPF,
+                Nacionalidade = locatario.Nacionalidade,
+                NumeroTelefone = locatario.NumeroTelefone,
+                NomeCompletoLocatario = locatario.NomeCompletoLocatario,
+                CNPJ = locatario.CNPJ,
+                Endereco = locatario.Endereco,
+                Passaporte = locatario.Passaporte,
+                RG = locatario.RG
+            };
+
+            var userLocatario = await _userService.IsertNewUserLocatario(email, locatarioNew);
+
+            // Forçar desserialização do objeto para devolver
+            var user = userLocatario.Item1;
+            var locatarioCretead = userLocatario.Item2;
+
+            return Ok(new { user, locatario });
+        }
+
         [HttpGet("VerificarUsuariosInativos")]
         public async Task<IActionResult> CheckInactiveUsers()
         {

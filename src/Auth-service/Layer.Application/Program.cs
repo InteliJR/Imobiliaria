@@ -63,6 +63,7 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ILocadorService, LocadorService>();
+builder.Services.AddScoped<ILocatarioService, LocatarioService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IHashingPasswordService, HashingPasswordService>();
 

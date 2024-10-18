@@ -8,7 +8,8 @@ namespace Layer.Application.Models
         [MaxLength(255)]
         public string CPF { get; set; }
 
-        public int? ImovelId { get; set; }
+        [Required]
+        public int ImovelId { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -21,15 +22,17 @@ namespace Layer.Application.Models
         [MaxLength(255)]
         public string NomeCompletoLocador { get; set; }
 
+        [Required]
         [MaxLength(18)]
-        public string? CNPJ { get; set; }
+        public string CNPJ { get; set; }
 
         [Required]
         [MaxLength(255)]
         public string Endereco { get; set; }
 
+        [Required]
         [MaxLength(25)]
-        public string? Passaporte { get; set; }
+        public string Passaporte { get; set; }
 
         [Required]
         [MaxLength(25)]

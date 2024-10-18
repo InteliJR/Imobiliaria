@@ -265,6 +265,79 @@ namespace Layer.Services.Services
             }
         }
 
+        public async Task<(User, Locatario)> IsertNewUserLocatario(string email, Locatario locatario)
+        {
+            var userCheck = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+            if (userCheck != null)
+            {
+                throw new InvalidOperationException("Usuário com esse email já existe.");
+            }
+
+            // Criar senha aleatória
+
+            string password = RandomString(8);
+
+            // Enviar email com a senha aleatória
+
+            await _emailSender.SendEmailAsync(email, password);
+
+            // Hashing da senha
+            
+            password = await hashingPasswordService.HashPassword(password);
+
+            // Montar o objeto usuário com o email e a senha aleatória e inserir no banco de dados
+
+            var user = new User
+            {
+                Email = email,
+                Senha = password,
+                TipoUsuario = "Locatario",
+                Ativo = true,
+                DataRegistro = DateTime.Now,
+                DataAtualizacao = DateTime.Now
+            };
+
+            await InsertNewUser(user, false);
+
+            // Pegar o usuário criado
+
+            var userCreated = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+            // Montar o objeto Locatario
+
+            if (userCreated == null)
+            {
+                throw new InvalidOperationException("Usuário não foi criado corretamente"
+                );
+            }
+
+            var locatarioNew = new Locatario
+            {
+                UsuarioId = userCreated.UsuarioId,
+                ImovelId = locatario.ImovelId,
+                CPF = locatario.CPF,
+                Nacionalidade = locatario.Nacionalidade,
+                NumeroTelefone = locatario.NumeroTelefone,
+                NomeCompletoLocatario = locatario.NomeCompletoLocatario,
+                CNPJ = locatario.CNPJ,
+                Endereco = locatario.Endereco,
+                Passaporte = locatario.Passaporte,
+                RG = locatario.RG
+            };
+
+            // Inserir o locatario no banco de dados
+
+            await _dbcontext.Locatarios.AddAsync(locatarioNew);
+            await _dbcontext.SaveChangesAsync();
+
+            // Pegar o locatario criado
+
+            var locatarioCreated = await _dbcontext.Locatarios.FirstOrDefaultAsync(x => x.UsuarioId == userCreated.UsuarioId);
+
+            return (userCreated, locatarioCreated);
+        }
+
         public Task<List<User>> VerifyInactivityUser()
         {
             try
