@@ -2,7 +2,7 @@
 
 namespace Layer.Application.Models
 {
-    public class NewLocatarioModel
+    public class NewLocadorModel
     {
         [Required]
         [MaxLength(255)]
@@ -20,7 +20,7 @@ namespace Layer.Application.Models
 
         [Required]
         [MaxLength(255)]
-        public string NomeCompletoLocatario { get; set; }
+        public string NomeCompletoLocador { get; set; }
 
         [Required]
         [MaxLength(18)]
