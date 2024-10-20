@@ -19,3 +19,29 @@ COPY . .
 
 # Compilar o projeto em modo Release
 RUN dotnet build -c Release --no-restore
+
+# Publicar o aplicativo
+RUN dotnet publish -c Release -o /app --no-restore
+
+# Etapa 2: Imagem base para runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+
+# Definir o diretório de trabalho no container
+WORKDIR /app
+
+# Copiar a saída da compilação da etapa anterior
+COPY --from=build /app .
+
+# Copiar o arquivo .env do diretório Layer.Application para o diretório de trabalho do container
+COPY Layer.Application/.env .env
+
+# Expor a porta que a aplicação vai utilizar
+EXPOSE 8080
+
+# Definir a variável de ambiente para especificar a URL e a porta
+ENV ASPNETCORE_URLS=http://+:8080
+
+ENV DISABLE_HTTPS_REDIRECTION=true
+
+# Iniciar a aplicação
+CMD ["bash", "-c", "export $(cat .env | xargs) && dotnet Layer.Application.dll"]

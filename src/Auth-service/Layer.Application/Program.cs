@@ -21,8 +21,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Carregar variáveis de ambiente do arquivo .env
 Env.Load();
 
+
 // Sobrepor os valores das variáveis no appsettings.json com as variáveis do ambiente
 builder.Configuration.AddEnvironmentVariables();
+
+
+Console.WriteLine("Variáveis de ambiente:");
+Console.WriteLine($"Connection string: {builder.Configuration.GetConnectionString("DefaultConnection")}");
+Console.WriteLine($"JwtSettings__SecretKey: {Environment.GetEnvironmentVariable("JwtSettings__SecretKey")}");
+Console.WriteLine($"JwtSettings__ExpiryMinutes: {Environment.GetEnvironmentVariable("JwtSettings__ExpiryMinutes")}");
+Console.WriteLine($"JwtSettings__Issuer: {Environment.GetEnvironmentVariable("JwtSettings__Issuer")}");
+Console.WriteLine($"JwtSettings__Audience: {Environment.GetEnvironmentVariable("JwtSettings__Audience")}");
 
 // !!!!! Injenções de dependência !!!!!
 
@@ -159,15 +168,19 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Serviço de gestão de usuários");
         c.RoutePrefix = string.Empty; // Para carregar o Swagger na raiz (http://localhost:<port>/)
     });
-}else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
 }
+// else if(!app.Environment.IsDevelopment() && Environment.GetEnvironmentVariable("DISABLE_HTTPS_REDIRECTION") != "true")
+// {
+//     app.UseHttpsRedirection();
+//     app.UseHsts(); // HSTS apenas em produção
+// }
 
 // Configurar o HangFire na aplicacao
 
-app.UseHangfireDashboard();
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = null // Temporariamente desabilitar autenticação para teste
+});
 app.UseHangfireServer();
 
 RecurringJob.AddOrUpdate<HangfireJobsHelper>(
