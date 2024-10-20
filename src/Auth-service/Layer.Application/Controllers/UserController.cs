@@ -6,6 +6,7 @@ using Layer.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Layer.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace Layer.Application.Controllers
 {
@@ -166,6 +167,20 @@ namespace Layer.Application.Controllers
         {
             var users = await _userService.VerifyInactivityUser();
             return Ok(users);
+        }
+
+        [HttpPost("RedefinirSenhaUsuario")]
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
+        {
+            var newPassword = await _userService.UserForgotPassword(email);
+            return Ok(newPassword);
+        }
+
+        [HttpPost("AlterarSenhaUsuario")]
+        public async Task<IActionResult> ChangePassword([FromQuery] string email, [PasswordPropertyText]  string oldPassword, [PasswordPropertyText]  string newPassword)
+        {
+            var newPass = await _userService.ChangePassword(email, oldPassword, newPassword);
+            return Ok(newPass);
         }
 
     }

@@ -353,5 +353,85 @@ namespace Layer.Services.Services
             }
         }
 
+        public async Task<string> UserForgotPassword(string email)
+        {
+            try
+            {
+                var userCheck = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+                if (userCheck == null)
+                {
+                    throw new InvalidOperationException("Usuário não existente.");
+                }
+
+                // Criar senha aleatória
+
+                string password = RandomString(8);
+
+                // Enviar email com a senha aleatória
+
+                await _emailSender.SendEmailAsync(email, password);
+
+                // Hashing da senha
+
+                password = await hashingPasswordService.HashPassword(password);
+
+                // Atualizar a senha do usuário
+
+                userCheck.Senha = password;
+
+                _dbcontext.Usuarios.Update(userCheck);
+
+                await _dbcontext.SaveChangesAsync();
+
+                return "Senha redifina com sucesso";
+            } catch (Exception ex)
+            {
+
+               throw new Exception("Ocorreu um erro ao redefinir a senha do usuário.", ex);
+            }
+
+        }
+
+        public async Task<string> ChangePassword(string email, string oldPassword, string newPassword)
+        {
+
+            try
+            {
+                // Chekar se o usuário existe
+
+                var userCheck = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+                if (userCheck == null)
+                {
+                    throw new InvalidOperationException("Usuário não encontrado.");
+                }
+
+                // Verificar se a senha antiga está correta
+
+                if (!hashingPasswordService.VerifyPassword(oldPassword, userCheck.Senha).Result)
+                {
+                    throw new InvalidOperationException("Senha antiga incorreta.");
+                }
+
+                // Hashing da nova senha
+
+                newPassword = await hashingPasswordService.HashPassword(newPassword);
+
+                // Atualizar a senha do usuário
+
+                userCheck.Senha = newPassword;
+
+                _dbcontext.Usuarios.Update(userCheck);
+
+                await _dbcontext.SaveChangesAsync();
+
+                return "Senha alterada com sucesso";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao alterar a senha do usuário.", ex);
+            }
+        }
     }
 }
