@@ -3,6 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Definir o diretório de trabalho
 WORKDIR /source
+    
 
 # Copiar arquivos de solução e de projeto
 COPY *.sln ./
@@ -11,17 +12,20 @@ COPY Layer.Domain/*.csproj ./Layer.Domain/
 COPY Layer.Infrastructure/*.csproj ./Layer.Infrastructure/
 COPY Layer.Services/*.csproj ./Layer.Services/
 
+# Limpar o cache de pacotes do NuGet
+RUN dotnet nuget locals all --clear
+
 # Restaurar dependências
-RUN dotnet restore
+RUN dotnet restore ./Layer.Application/Layer.Application.csproj --force
 
 # Copiar o restante do código fonte
 COPY . .
 
 # Compilar o projeto em modo Release
-RUN dotnet build -c Release --no-restore
+RUN dotnet build ./Layer.Application/Layer.Application.csproj -c Release
 
 # Publicar o aplicativo
-RUN dotnet publish -c Release -o /app --no-restore
+RUN dotnet publish ./Layer.Application/Layer.Application.csproj -c Release -o /app --no-restore
 
 # Etapa 2: Imagem base para runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
