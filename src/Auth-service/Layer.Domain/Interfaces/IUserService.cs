@@ -35,5 +35,9 @@ namespace Layer.Domain.Interfaces
 
         Task<List<User>> VerifyInactivityUser();
 
+        Task<string> UserForgotPassword(string email);
+
+        Task<string> ChangePassword(string email, string oldPassword, string newPassword);
+
     }
 }
