@@ -1,7 +1,9 @@
 ﻿using Layer.Application.Models;
 using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
+using Layer.Services.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Layer.Application.Controllers
 {
@@ -10,10 +12,12 @@ namespace Layer.Application.Controllers
     public class ColaboradorController : Controller
     {
         private readonly IColaboradorService _colaboradorService;
+        private readonly IUserService _userService;
 
-        public ColaboradorController(IColaboradorService colaboradorService)
+        public ColaboradorController(IColaboradorService colaboradorService, IUserService userService)
         {
             _colaboradorService = colaboradorService;
+            _userService = userService;
         }
 
         [HttpGet("PegarTodosColaboradores")]
@@ -31,18 +35,24 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoColaborador")]
-        public async Task<IActionResult> AddNewColaborador([FromBody] NewColaboradorModel newColaborador)
+        public async Task<IActionResult> AddNewColaborador([FromQuery] [EmailAddress] string email ,[FromBody] NewColaboradorModel newColaborador)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            // Pegar o userId
+
+            var userID = await _userService.GetUserByEmail(email);
+
             // Montar o objeto colaborador e adicionar no banco
+
+
 
             var colaborador = new Colaborador
             {
-                UsuarioId = newColaborador.UsuarioId,
+                UsuarioId = userID.UsuarioId,
                 NomeCompleto = newColaborador.NomeCompleto,
                 TipoColaborador = newColaborador.TipoColaborador
             };
