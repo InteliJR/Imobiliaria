@@ -162,6 +162,46 @@ namespace Layer.Application.Controllers
             return Ok(new { user, locatario });
         }
 
+        [HttpPost("CriarUsuarioAdmin")]
+        public async Task<IActionResult> InsertNewUserColaboradorAdmin([FromQuery] string email, string NomeCompleto)
+        {
+            // Montar o objeto Colaborador
+            var colaboradorNew = new Colaborador
+            {
+                UsuarioId = null,
+                NomeCompleto = NomeCompleto,
+                TipoColaborador = Roles.Admin.ToString()
+            };
+
+            var userColaborador = await _userService.InsertNewUserColaborador(email, colaboradorNew);
+
+            // Forçar desserialização do objeto para devolver
+            var user = userColaborador.Item1;
+            var colaboradorCretead = userColaborador.Item2;
+
+            return Ok(new { user, colaboradorCretead });
+        }
+
+        [HttpPost("CriarUsuarioJudiciario")]
+        public async Task<IActionResult> InsertNewUserColaboradorJudiciario([FromQuery] string email, string NomeCompleto)
+        {
+            // Montar o objeto Colaborador
+            var colaboradorNew = new Colaborador
+            {
+                UsuarioId = null,
+                NomeCompleto = NomeCompleto,
+                TipoColaborador = Roles.Judiciario.ToString()
+            };
+
+            var userColaborador = await _userService.InsertNewUserColaborador(email, colaboradorNew);
+
+            // Forçar desserialização do objeto para devolver
+            var user = userColaborador.Item1;
+            var colaboradorCretead = userColaborador.Item2;
+
+            return Ok(new { user, colaboradorCretead });
+        }
+
         [HttpGet("VerificarUsuariosInativos")]
         public async Task<IActionResult> CheckInactiveUsers()
         {

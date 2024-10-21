@@ -33,6 +33,8 @@ namespace Layer.Domain.Interfaces
 
         Task<(User, Locatario)> IsertNewUserLocatario(string email, Locatario locatario);
 
+        Task<(User, Colaborador)> InsertNewUserColaborador(string email, Colaborador colaborador);
+
         Task<List<User>> VerifyInactivityUser();
 
         Task<string> UserForgotPassword(string email);

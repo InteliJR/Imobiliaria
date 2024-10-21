@@ -4,8 +4,6 @@ namespace Layer.Application.Models
 {
     public class NewColaboradorModel
     {
-        [Required]
-        public int? UsuarioId { get; set; }
 
         [Required]
         [MaxLength(100)]

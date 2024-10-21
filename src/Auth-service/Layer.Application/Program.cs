@@ -26,12 +26,12 @@ Env.Load();
 builder.Configuration.AddEnvironmentVariables();
 
 
-Console.WriteLine("Variáveis de ambiente:");
+/*Console.WriteLine("Variáveis de ambiente:");
 Console.WriteLine($"Connection string: {builder.Configuration.GetConnectionString("DefaultConnection")}");
 Console.WriteLine($"JwtSettings__SecretKey: {Environment.GetEnvironmentVariable("JwtSettings__SecretKey")}");
 Console.WriteLine($"JwtSettings__ExpiryMinutes: {Environment.GetEnvironmentVariable("JwtSettings__ExpiryMinutes")}");
 Console.WriteLine($"JwtSettings__Issuer: {Environment.GetEnvironmentVariable("JwtSettings__Issuer")}");
-Console.WriteLine($"JwtSettings__Audience: {Environment.GetEnvironmentVariable("JwtSettings__Audience")}");
+Console.WriteLine($"JwtSettings__Audience: {Environment.GetEnvironmentVariable("JwtSettings__Audience")}");*/
 
 // !!!!! Injenções de dependência !!!!!
 
@@ -150,6 +150,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(nameof(Roles.Admin), policy => policy.RequireRole(nameof(Roles.Admin)));
     options.AddPolicy(nameof(Roles.Locador), policy => policy.RequireRole(nameof(Roles.Locador)));
     options.AddPolicy(nameof(Roles.Locatario), policy => policy.RequireRole(nameof(Roles.Locatario)));
+    options.AddPolicy(nameof(Roles.Judiciario), policy => policy.RequireRole(nameof(Roles.Judiciario)));
 });
 
 builder.Logging.ClearProviders();

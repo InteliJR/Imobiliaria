@@ -433,5 +433,75 @@ namespace Layer.Services.Services
                 throw new Exception("Ocorreu um erro ao alterar a senha do usuário.", ex);
             }
         }
+
+        public async Task<(User, Colaborador)> InsertNewUserColaborador(string email, Colaborador colaborador)
+        {
+            try
+            {
+                var userCheck = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+                if (userCheck != null)
+                {
+                    throw new InvalidOperationException("Usuário com esse email já existe.");
+                }
+
+                // Criar senha aleatória
+
+                string password = RandomString(8);
+
+                // Enviar email com a senha aleatória
+
+                await _emailSender.SendEmailAsync(email, password);
+
+                // Hashing da senha
+
+                password = await hashingPasswordService.HashPassword(password);
+
+                // Montar o objeto usuário com o email e a senha aleatória e inserir no banco de dados
+                var user = new User
+                {
+                    Email = email,
+                    Senha = password,
+                    TipoUsuario = colaborador.TipoColaborador,
+                    Ativo = true,
+                    DataRegistro = DateTime.Now,
+                    DataAtualizacao = DateTime.Now
+                };
+
+                await InsertNewUser(user, false);
+
+                // Pegar o usuário criado
+
+                var userCreated = await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+
+                // Montar o objeto colaborador
+
+                if (userCreated != null)
+                {
+                    var colaboradorNew = new Colaborador
+                    {
+                        UsuarioId = userCreated.UsuarioId,
+                        NomeCompleto = colaborador.NomeCompleto,
+                        TipoColaborador = colaborador.TipoColaborador
+                    };
+
+                    // Inserir o colaborador no banco de dados
+                    await _dbcontext.Colaboradores.AddAsync(colaboradorNew);
+                    await _dbcontext.SaveChangesAsync();
+
+                    // Pegar o colaborador criado
+                    var colaboradorCreated = await _dbcontext.Colaboradores.FirstOrDefaultAsync(x => x.UsuarioId == userCreated.UsuarioId);
+
+                    return (userCreated, colaboradorCreated);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Usuário não foi criado corretamente");
+                }
+            } catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao inserir um novo colaborador.", ex);
+            }
+        }
     }
 }
