@@ -20,9 +20,10 @@ namespace Layer.Services.Services
         public ContratoService(ApplicationDbContext dbcontext)
         {
             _dbcontext = dbcontext;
-            var credentialsPath = @"C:\Users\Inteli\Desktop\Imobiliaria\src\Property-service\Layer.Application\imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json";
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json");
+            //var credentialsPath = @"C:\Users\Inteli\Desktop\Imobiliaria\src\Property-service\Layer.Application\imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json";
             var bucketName = "imobiliaria-kk.appspot.com"; // Substitua pelo nome correto do seu bucket
-            _storageService = new GoogleCloudStorageService(credentialsPath, bucketName);
+            _storageService = new GoogleCloudStorageService(filePath, bucketName);
         }
 
         public async Task<Contratos> AddAsync(Contratos contrato, IFormFile file)

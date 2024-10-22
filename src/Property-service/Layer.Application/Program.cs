@@ -30,13 +30,34 @@ builder.Configuration.AddEnvironmentVariables();
 //FirestoreDb db = FirestoreDb.Create(project);
 //Console.WriteLine("Created Cloud Firestore client with project ID: {0}", project);
 
-string path = @"C:\Users\Inteli\Desktop\Imobiliaria\src\Property-service\Layer.Application\imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json";  // Caminho relativo
-Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+// Definir o caminho do arquivo de credenciais Firebase corretamente
+string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json");
 
-FirebaseApp.Create(new AppOptions()
+// Definir a variável de ambiente GOOGLE_APPLICATION_CREDENTIALS
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
+
+// Verificar se a variável de ambiente FIREBASE_CREDENTIALS_PATH foi configurada corretamente
+var firebaseCredentialsPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+
+// Verificar se o caminho está correto antes de usar o arquivo
+if (!string.IsNullOrEmpty(firebaseCredentialsPath) && File.Exists(firebaseCredentialsPath))
 {
-    Credential = GoogleCredential.FromFile(path)
-});
+    // Criar a credencial do Google a partir do arquivo de credenciais
+    var googleCredential = GoogleCredential.FromFile(firebaseCredentialsPath);
+
+    // Inicializar o FirebaseApp usando as credenciais
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = googleCredential
+    });
+
+    Console.WriteLine("Firebase initialized with credentials from: " + firebaseCredentialsPath);
+}
+else
+{
+    // Lidar com erro de arquivo não encontrado ou variável de ambiente não configurada corretamente
+    Console.WriteLine("Error: Firebase credentials file not found or environment variable not set.");
+}
 
 builder.Services.AddScoped<IimoveisRepository, ImoveisService>();
 builder.Services.AddScoped<IContratosRepository, ContratoService>();
@@ -133,13 +154,13 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty; // Para carregar o Swagger na raiz (http://localhost:<port>/)
     });
 }
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+//else
+//{
+//    app.UseExceptionHandler("/Home/Error");
+//    app.UseHsts();
+//}
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
