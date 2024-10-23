@@ -49,27 +49,6 @@ namespace property_management.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Verificar se o LocadorId existe
-            //var locadorExists = await _locadoresService.LocadorExistsAsync(newContrato.LocadorId);
-            //if (!locadorExists)
-            //{
-            //    return NotFound(new { Message = $"Locador com ID {newContrato.LocadorId} não encontrado." });
-            //}
-
-            // Verificar se o LocatarioId existe
-            //var locatarioExists = await _locatariosService.LocatarioExistsAsync(newContrato.LocatarioId);
-            //if (!locatarioExists)
-            //{
-            //    return NotFound(new { Message = $"Locatário com ID {newContrato.LocatarioId} não encontrado." });
-            //}
-
-            //// Verificar se o ImovelId existe
-            //var imovelExists = await _imoveisService.GetByIdImoveisAsync(newContrato.ImovelId);
-            //if (!imovelExists)
-            //{
-            //    return NotFound(new { Message = $"Imóvel com ID {newContrato.ImovelId} não encontrado." });
-            //}
-
             var contrato = new Contratos
             {
                 LocadorId = newContrato.LocadorId,
@@ -129,11 +108,6 @@ namespace property_management.Controllers
 
             // Salvando as alterações no banco de dados
             var result = await _contratoService.UpdateAsync(id, contrato);
-
-            //if (result == false)
-            //{
-            //    return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao atualizar o contrato");
-            //}
 
             return Ok(contrato);
         }

@@ -12,7 +12,7 @@ namespace Layer.Domain.Interfaces
     {
         Task<Contratos> GetByIdAsync(int id);
         Task<List<Contratos>> GetAllAsync();
-        Task<Contratos> AddAsync(Contratos contrato, IFormFile file);
+        Task<Contratos> AddAsync(Contratos contrato, List<IFormFile> file);
         Task<int> UpdateAsync(int id, Contratos contrato);
         Task<int> DeleteAsync(int id);
     }
