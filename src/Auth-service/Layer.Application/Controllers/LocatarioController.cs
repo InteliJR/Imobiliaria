@@ -3,6 +3,9 @@ using Layer.Domain.Interfaces;
 using Layer.Application.Models;
 using Layer.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+using Layer.Services.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Layer.Application.Controllers
 {
@@ -148,6 +151,27 @@ namespace Layer.Application.Controllers
         {
             var locatario = await _locatarioService.DeleteLocatario(CPF);
             return Ok(locatario);
+        }
+
+        [Authorize]
+        [HttpGet("TokenInformation")]
+        public async Task<IActionResult> LocatarioTokenInfo()
+        {
+            var roleClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;
+
+            if (roleClaim != null && roleClaim == "Locatario")
+            {
+                var locatarioIdClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleID").Value;
+
+                var locatario = await _locatarioService.GetLocatarioByLocatarioID(int.Parse(locatarioIdClaim));
+
+                return Ok(locatario);
+            }
+            else
+            {
+                return BadRequest("Credenciais incorretas");
+            }
+
         }
 
     }
