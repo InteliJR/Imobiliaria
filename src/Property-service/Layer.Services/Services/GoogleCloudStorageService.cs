@@ -1,4 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using System;
 using System.IO;
@@ -49,5 +50,42 @@ public class GoogleCloudStorageService
             Console.WriteLine($"Erro ao fazer upload do arquivo: {ex.Message}");
             throw;
         }
+    }
+
+    public async Task<List<string>> UploadMultipleFilesAsync(List<string> localFilePaths, List<string> objectNames)
+    {
+        if (localFilePaths.Count != objectNames.Count)
+        {
+            throw new ArgumentException("A lista de arquivos e de nomes dos objetos devem ter o memso tamanho.");
+        }
+
+        var publicUrls = new List<string>();
+
+        for (int i = 0; i < localFilePaths.Count; i++)
+        {
+            try
+            {
+                using (var fileStream = File.OpenRead(localFilePaths[i]))
+                {
+                    var storageObject = await _storageClient.UploadObjectAsync(
+                        bucket: _bucketName,
+                        objectName: objectNames[i],
+                        contentType: null,
+                        source: fileStream
+                    );
+
+                    Console.WriteLine($"Arquivo {storageObject.Name} enviado para o bucket {storageObject.Bucket}.");
+
+                    publicUrls.Add($"https://storage.googleapis.com/{_bucketName}/{objectNames[i]}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao fazer upload do arquivo {localFilePaths[i]}: {ex.Message}");
+                throw;
+            }
+        }
+
+        return publicUrls;
     }
 }
