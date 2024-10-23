@@ -37,7 +37,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 # Copiar o arquivo .env do diretório Layer.Application para o diretório de trabalho do container
-COPY Layer.Application/.env .env
+COPY Layer.Application/.env.production .env.production
 
 # Expor a porta que a aplicação vai utilizar
 EXPOSE 8080
@@ -48,4 +48,5 @@ ENV ASPNETCORE_URLS=http://+:8080
 ENV DISABLE_HTTPS_REDIRECTION=true
 
 # Iniciar a aplicação
-CMD ["bash", "-c", "export $(cat .env | xargs) && dotnet Layer.Application.dll"]
+# CMD ["bash", "-c", "export $(cat .env | xargs) && dotnet Layer.Application.dll"]
+CMD ["dotnet", "Layer.Application.dll"]
