@@ -47,6 +47,38 @@ namespace Layer.Services.Services
             return contrato;
         }
 
+        public async Task<Contratos> AddAsyncWithMultipleFiles(Contratos contrato, IFormFileCollection files)
+        {
+            var documentos = new List<string>();
+
+            if (files != null && files.Count > 0)
+            {
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var tempFilePath = Path.GetTempFileName();
+                        using (var stream = new FileStream(tempFilePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        var objectName = $"uploads/{file.FileName}";
+                        var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
+
+                        documentos.Add(publicUrl);
+                    }
+                }
+
+                // Aqui você pode concatenar os documentos ou salvá-los como uma lista, dependendo da sua estrutura
+                contrato.Documentos = string.Join(";", documentos);
+            }
+
+            await _dbcontext.Contratos.AddAsync(contrato);
+            await _dbcontext.SaveChangesAsync();
+            return contrato;
+        }
+
         public async Task<Contratos> GetByIdAsync(int id)
         {
             return await _dbcontext.Contratos.FindAsync(id);

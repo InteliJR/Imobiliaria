@@ -73,6 +73,38 @@ namespace property_management.Controllers
             return Ok(novoContrato);
         }
 
+        [HttpPost("CriarContratoComMultiplosArquivos")]
+        public async Task<IActionResult> AddContratoWithMultipleFiles([FromForm] NewContratos newContrato, IFormFileCollection files)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var contrato = new Contratos
+            {
+                LocadorId = newContrato.LocadorId,
+                LocatarioId = newContrato.LocatarioId,
+                ImovelId = newContrato.ImovelId,
+                ValorAluguel = newContrato.ValorAluguel,
+                Iptu = newContrato.Iptu,
+                TaxaAdm = newContrato.TaxaAdm,
+                DataInicio = newContrato.DataInicio,
+                DataEncerramento = newContrato.DataEncerramento,
+                TipoGarantia = newContrato.TipoGarantia,
+                CondicoesEspeciais = newContrato.CondicoesEspeciais,
+                Status = newContrato.Status,
+                DataPagamento = newContrato.DataPagamento,
+                DataRescisao = newContrato.DataRescisao,
+                Renovado = newContrato.Renovado,
+                DataEncerramentoRenovacao = newContrato.DataEncerramentoRenovacao,
+                ValorReajuste = newContrato.ValorReajuste
+            };
+
+            var novoContrato = await _contratoService.AddAsyncWithMultipleFiles(contrato, files);
+            return Ok(novoContrato);
+        }
+
         [HttpPut("AtualizarContrato/{id}")]
         public async Task<IActionResult> UpdateContrato(int id, [FromBody] Contratos novocontrato)
         {
