@@ -47,6 +47,9 @@ ENV ASPNETCORE_URLS=http://+:8080
 
 ENV DISABLE_HTTPS_REDIRECTION=true
 
+# Env de produção
+ENV ASPNETCORE_ENVIRONMENT=Production
+
 # Iniciar a aplicação
 # CMD ["bash", "-c", "export $(cat .env | xargs) && dotnet Layer.Application.dll"]
 CMD ["dotnet", "Layer.Application.dll"]
