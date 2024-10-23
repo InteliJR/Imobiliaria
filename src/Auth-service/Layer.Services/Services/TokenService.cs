@@ -69,7 +69,8 @@ namespace Layer.Services.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Role, role), // Adiciona o role no token
-                new Claim("RoleID", roleID.ToString())
+                new Claim("RoleID", roleID.ToString()),
+                new Claim("UserID", user.UsuarioId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));

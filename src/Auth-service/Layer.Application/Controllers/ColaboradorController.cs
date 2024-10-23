@@ -2,8 +2,10 @@
 using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
 using Layer.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace Layer.Application.Controllers
 {
@@ -97,6 +99,28 @@ namespace Layer.Application.Controllers
             await _colaboradorService.DeleteColaborador(email);
             
             return Ok("Colaborador deletado com sucesso.");
+        }
+
+
+        [Authorize]
+        [HttpGet("TokenInformation")]
+        public async Task<IActionResult> ColaboradroTokenInfo()
+        {
+            var roleClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;
+
+            if (roleClaim != null && (roleClaim == "Admin" || roleClaim == "Judiciario"))
+            {
+                var colaboradorIdClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleID").Value;
+
+                var colaborador = await _colaboradorService.GetColaboradorByColaboradorID(int.Parse(colaboradorIdClaim));
+
+                return Ok(colaborador);
+            }
+            else
+            {
+                return BadRequest("Credenciais incorretas");
+            }
+
         }
 
 
