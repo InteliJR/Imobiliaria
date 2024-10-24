@@ -29,13 +29,22 @@ namespace Layer.Services.Services
 
         public async Task<Payment> GetPaymentByIdAsync(int id)
         {
-            return await _context.Pagamentos.FindAsync(id);
+            var payment = await _context.Pagamentos.FindAsync(id);
+            if (payment == null)
+            {
+                throw new Exception("Payment not found.");
+            }
+            return payment;
         }
-
         public async Task AddPaymentAsync(Payment payment)
-        {
-            _context.Pagamentos.Add(payment);
-            await _context.SaveChangesAsync();
+        {   
+            try{
+                _context.Pagamentos.Add(payment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex){
+                throw new Exception("Error adding payment: " + ex.Message);
+            }
         }
 
         public async Task UpdatePaymentAsync(Payment payment)
@@ -51,6 +60,10 @@ namespace Layer.Services.Services
             {
                 _context.Pagamentos.Remove(payment);
                 await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception("Payment not found.");
             }
         }
     }
