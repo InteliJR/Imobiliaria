@@ -31,3 +31,8 @@
     @apply rounded;
   }
 }
+
+.main-custom { /* classe padrão para elementos main  */
+  @apply flex flex-col gap-4 px-4 py-6 overflow-hidden bg-gray-200;
+}
+
