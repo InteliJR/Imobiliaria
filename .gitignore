@@ -22,7 +22,8 @@ slnx.sqlite
 
 .env
 
-src/Auth-service/Layer.Services/obj/
+slnx.sqlite
+
 
 # Misc
 .DS_Store
@@ -58,3 +59,5 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react
+
+
