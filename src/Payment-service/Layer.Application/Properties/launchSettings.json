@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Layer.Application": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "UserService__BaseUrl": "https://localhost:57349"
+      },
+      "applicationUrl": "https://localhost:57327;http://localhost:57328"
+    }
+  }
+}
