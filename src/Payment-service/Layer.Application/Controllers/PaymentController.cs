@@ -9,7 +9,7 @@ using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Layer.Domain.DTO;
+
 using Microsoft.AspNetCore.Mvc;
 using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
@@ -30,8 +30,7 @@ namespace Layer.Application.Controllers
         }
 
         // GET: api/payment
-        [HttpGet("listarpagamentos")]
-        [Authorize(Policy = "AdminORJudiciario")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Payment>>> GetAllPayments()
         {
             var payments = await _paymentService.GetAllPaymentsAsync();
@@ -39,8 +38,7 @@ namespace Layer.Application.Controllers
         }
 
         // GET: api/payment/{id}
-        [HttpGet("pagamentos/{id}")]
-        [Authorize(Policy = "AllRoles")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Payment>> GetPaymentById(int id)
         {
             var payment = await _paymentService.GetPaymentByIdAsync(id);
@@ -48,72 +46,47 @@ namespace Layer.Application.Controllers
             {
                 return NotFound();
             }
+            if (payment == null)
+            {
+                return NotFound();
+            }
+
             return Ok(payment);
         }
 
         // POST: api/payment
-        [HttpPost("criarpagamentos")]
-        [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<ActionResult<Payment>> AddPayment([FromBody] CreatePaymentDTO paymentDto)
+        [HttpPost]
+        public async Task<ActionResult<Payment>> AddPayment([FromBody] Payment payment)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            // Mapeamento manual do DTO para a entidade Payment
-            var payment = new Payment
-            {
-                ContratoId = paymentDto.ContratoId,
-                Valor = paymentDto.Valor,
-                Data = paymentDto.Data,
-                Pagante = paymentDto.Pagante,
-                MetodoPagamento = paymentDto.MetodoPagamento,
-                Descricao = paymentDto.Descricao,
-                TipoPagamento = paymentDto.TipoPagamento,
-                Multa = paymentDto.Multa,
-                ValorMulta = paymentDto.ValorMulta
-            };
 
             await _paymentService.AddPaymentAsync(payment);
             return CreatedAtAction(nameof(GetPaymentById), new { id = payment.PaymentId }, payment);
         }
 
         // PUT: api/payment/{id}
-        [HttpPut("atualizarpagamento/{id}")]
-        [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> UpdatePayment(int id, [FromBody] CreatePaymentDTO paymentDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePayment(int id, [FromBody] Payment payment)
         {
+            if (id != payment.PaymentId)
+            {
+                return BadRequest("ID in URL does not match Payment ID.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            // Buscar o pagamento existente
-            var existingPayment = await _paymentService.GetPaymentByIdAsync(id);
-            if (existingPayment == null)
-            {
-                return NotFound();
-            }
-
-            // Atualizar as propriedades permitidas
-            existingPayment.ContratoId = paymentDto.ContratoId;
-            existingPayment.Valor = paymentDto.Valor;
-            existingPayment.Data = paymentDto.Data;
-            existingPayment.Pagante = paymentDto.Pagante;
-            existingPayment.MetodoPagamento = paymentDto.MetodoPagamento;
-            existingPayment.Descricao = paymentDto.Descricao;
-            existingPayment.TipoPagamento = paymentDto.TipoPagamento;
-            existingPayment.Multa = paymentDto.Multa;
-            existingPayment.ValorMulta = paymentDto.ValorMulta;
-
-            await _paymentService.UpdatePaymentAsync(existingPayment);
-
+            await _paymentService.UpdatePaymentAsync(payment);
             return NoContent();
         }
+
         // DELETE: api/payment/{id}
-        [HttpDelete("excluirpagamento/{id}")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePayment(int id)
         {
             var payment = await _paymentService.GetPaymentByIdAsync(id);
