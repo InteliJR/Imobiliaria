@@ -5,6 +5,7 @@ using Layer.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Layer.Domain.Enums;
 
 namespace Layer.Application.Controllers
 {
@@ -40,6 +41,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoLocador")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> AddNewLocador([Required] [EmailAddress] string email, [FromBody] NewLocadorModel locador)
         {
             if (!ModelState.IsValid)
@@ -100,6 +102,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarLocadorPorLocadorID")]
+        [Authorize(Policy = "AdminORLocador")]
         public async Task<IActionResult> GetLocadorByLocadorID([FromQuery] int locadorID)
         {
             var locador = await _locadorService.GetLocadorByLocadorID(locadorID);
@@ -107,6 +110,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AtualizarLocador")]
+        [Authorize(Policy = "AdminORLocador")]
         public async Task<IActionResult> UpdateLocador(string CPF, [FromBody] UpdateLocadorModel locadorToUpdate)
         {
             if (!ModelState.IsValid)
@@ -153,14 +157,15 @@ namespace Layer.Application.Controllers
         }
 
         [HttpDelete("DeletarLocador")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteLocador([FromBody] string CPF)
         {
             var locador = await _locadorService.DeleteLocador(CPF);
             return Ok(locador);
         }
 
-        [Authorize]
         [HttpGet("TokenInformation")]
+        [Authorize(Policy = "AdminORLocador")]
         public async Task<IActionResult> LocadorTokenInfo()
         {
             var roleClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;

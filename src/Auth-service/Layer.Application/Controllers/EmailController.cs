@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Layer.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Layer.Domain.Enums;
 
 namespace Layer.Application.Controllers
 {
@@ -17,6 +19,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("EnviarEmailSenha")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> SendEmail([FromQuery] string emailRecipient, [FromQuery] string mensage)
         {
             await _emailService.SendEmailAsync(emailRecipient, mensage);
