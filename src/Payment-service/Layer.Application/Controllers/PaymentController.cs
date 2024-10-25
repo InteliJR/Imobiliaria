@@ -30,7 +30,7 @@ namespace Layer.Application.Controllers
         }
 
         // GET: api/payment
-        [HttpGet("ListarPagamentos")]
+        [HttpGet("listarpagamentos")]
         public async Task<ActionResult<IEnumerable<Payment>>> GetAllPayments()
         {
             var payments = await _paymentService.GetAllPaymentsAsync();
@@ -38,7 +38,7 @@ namespace Layer.Application.Controllers
         }
 
         // GET: api/payment/{id}
-        [HttpGet("{id}")]
+        [HttpGet("pagamentos/{id}")]
         public async Task<ActionResult<Payment>> GetPaymentById(int id)
         {
             var payment = await _paymentService.GetPaymentByIdAsync(id);
@@ -50,7 +50,7 @@ namespace Layer.Application.Controllers
         }
 
         // POST: api/payment
-        [HttpPost]
+        [HttpPost("criarpagamentos")]
         public async Task<ActionResult<Payment>> AddPayment([FromBody] CreatePaymentDTO paymentDto)
         {
             if (!ModelState.IsValid)
@@ -77,7 +77,7 @@ namespace Layer.Application.Controllers
         }
 
         // PUT: api/payment/{id}
-        [HttpPut("{id}")]
+        [HttpPut("atualizarpagamento/{id}")]
         public async Task<IActionResult> UpdatePayment(int id, [FromBody] CreatePaymentDTO paymentDto)
         {
             if (!ModelState.IsValid)
@@ -108,7 +108,7 @@ namespace Layer.Application.Controllers
             return NoContent();
         }
         // DELETE: api/payment/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete("excluirpagamento/{id}")]
         public async Task<IActionResult> DeletePayment(int id)
         {
             var payment = await _paymentService.GetPaymentByIdAsync(id);
