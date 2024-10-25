@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using Layer.Domain.Enums;
 
 namespace Layer.Application.Controllers
 {
@@ -23,6 +24,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarTodosColaboradores")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllColaboradores()
         {
             var colaboradores = await _colaboradorService.GetAllColabadores();
@@ -30,6 +32,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarColaboradorPorEmail")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetColaboradorByEmail([FromQuery] string email)
         {
             var colaborador = await _colaboradorService.GetColaboradorByEmail(email);
@@ -37,6 +40,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoColaborador")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> AddNewColaborador([FromQuery] [EmailAddress] string email ,[FromBody] NewColaboradorModel newColaborador)
         {
             if (!ModelState.IsValid)
@@ -64,6 +68,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPut("AtualizarColaborador")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> UpdateColaborador([FromQuery] string email, [FromBody] UpdateColaboradorModel colaboradorToUpdate)
         {
             if (!ModelState.IsValid)
@@ -93,6 +98,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpDelete("DeletarColaborador")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteColaborador([FromQuery] string email)
         {
 
@@ -102,8 +108,8 @@ namespace Layer.Application.Controllers
         }
 
 
-        [Authorize]
         [HttpGet("TokenInformation")]
+        [Authorize]
         public async Task<IActionResult> ColaboradroTokenInfo()
         {
             var roleClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;

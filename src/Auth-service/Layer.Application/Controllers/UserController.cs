@@ -25,7 +25,7 @@ namespace Layer.Application.Controllers
 
         // Rota de pagar todos os usuários
         [HttpGet("PegarTodosUsuarios")]
-        // [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetUsuariosAsync();
@@ -33,7 +33,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AdicionarNovoUsuario")]
-        // [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> AddNewUser([FromQuery] Roles role, [FromBody] NewUserModel userModel)
         {
             if (!ModelState.IsValid) // Verifica se o modelo é realmente válido
@@ -44,7 +44,7 @@ namespace Layer.Application.Controllers
             var user = new User
             {
                 Email = userModel.Email,
-                Senha = null, // Criptografar a senha
+                Senha = null,
                 TipoUsuario = role.ToString(),
                 Ativo = true,
                 DataRegistro = DateTime.Now,
@@ -56,6 +56,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("VerificarUsuarioExistente")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> CheckUserExist([FromQuery] string email)
         {
             var user = new User
@@ -69,6 +70,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarUsuarioPorEmail")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
         {
             var user = await _userService.GetUserByEmail(email);
@@ -76,6 +78,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarUsuarioPorCPF")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetUserInfoRoleByCPF([FromQuery] string cpf)
         {
             var user = await _userService.GetUserByCPF(cpf);
@@ -89,6 +92,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpDelete("DeletarUsuario")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteUser([FromQuery] [EmailAddress] string email)
         {
 
@@ -98,6 +102,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("InativarUsuario")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> InactivateUser([FromQuery] string email)
         {
 
@@ -107,6 +112,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("CriarUsuarioLocador")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> InsertNewUserLocador([FromQuery] string email, [FromBody] NewLocadorModel locador)
         {
             // Montar o objeto Locador
@@ -136,6 +142,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("CriarUsuarioLocatario")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> InsertNewUserLocatario([FromQuery] string email, [FromBody] NewLocatarioModel locatario)
         {
             // Montar o objeto Locatario
@@ -163,6 +170,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("CriarUsuarioAdmin")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> InsertNewUserColaboradorAdmin([FromQuery] string email, string NomeCompleto)
         {
             // Montar o objeto Colaborador
@@ -183,6 +191,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("CriarUsuarioJudiciario")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> InsertNewUserColaboradorJudiciario([FromQuery] string email, string NomeCompleto)
         {
             // Montar o objeto Colaborador
@@ -203,6 +212,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("VerificarUsuariosInativos")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> CheckInactiveUsers()
         {
             var users = await _userService.VerifyInactivityUser();
@@ -210,6 +220,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("RedefinirSenhaUsuario")]
+        [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
             var newPassword = await _userService.UserForgotPassword(email);
@@ -217,6 +228,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AlterarSenhaUsuario")]
+        [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> ChangePassword([FromQuery] string email, [PasswordPropertyText]  string oldPassword, [PasswordPropertyText]  string newPassword)
         {
             var newPass = await _userService.ChangePassword(email, oldPassword, newPassword);

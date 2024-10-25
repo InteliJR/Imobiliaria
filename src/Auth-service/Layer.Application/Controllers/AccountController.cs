@@ -2,6 +2,8 @@
 using Layer.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Layer.Application.Controllers
 {
@@ -39,7 +41,8 @@ namespace Layer.Application.Controllers
 
             return Ok(token);
         }
-
+        
+        [Authorize]
         [HttpPost("WhoAmI")]
         public async Task<IActionResult> WhoAmI() {
             // Puxar Email do usuário logado
