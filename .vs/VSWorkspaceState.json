@@ -1,9 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\src",
-    "\\src\\Auth-service"
+    ""
   ],
-  "SelectedNode": "\\src\\Auth-service\\Auth-service.sln",
+  "SelectedNode": "\\Property-service.sln",
   "PreviewInSolutionExplorer": false
 }
