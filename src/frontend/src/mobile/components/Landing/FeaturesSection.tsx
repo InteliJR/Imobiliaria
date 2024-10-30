@@ -1,4 +1,4 @@
-import houseBg from "../../assets/landingPage/houseBg.jpg";
+import houseBg from "../../../assets/landingPage/houseBg.jpg";
 
 export default function FeaturesSection() {
   return (
