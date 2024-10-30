@@ -16,11 +16,13 @@ namespace property_management.Controllers
     {
         private readonly IContratosRepository _contratoService;
         private readonly IimoveisRepository _imoveisService;
+        private readonly IEmailSender _emailSender;
 
-        public ContratosController(IContratosRepository contratoService, IimoveisRepository imoveisService)
+        public ContratosController(IContratosRepository contratoService, IimoveisRepository imoveisService, IEmailSender emailSender)
         {
             _contratoService = contratoService;
             _imoveisService = imoveisService;
+            _emailSender = emailSender;
         }
 
         [HttpGet("PegarContratoPorId/{id}")]
@@ -42,7 +44,7 @@ namespace property_management.Controllers
         }
 
         [HttpPost("CriarUmNovoContrato")]
-        public async Task<IActionResult> AddContrato([FromForm] NewContratos newContrato, IFormFile file)
+        public async Task<IActionResult> AddContrato([FromForm] NewContratos newContrato, IFormFile file, string emailLocador, string emailLocatario)
         {
             if (!ModelState.IsValid)
             {
@@ -70,11 +72,22 @@ namespace property_management.Controllers
             };
 
             var novoContrato = await _contratoService.AddAsync(contrato, file);
+
+            string contractDetails = $"Contrato ID: {novoContrato.ContratoId}, Valor do Aluguel: {novoContrato.ValorAluguel}, Início: {novoContrato.DataInicio}, Término do contrato: {novoContrato.DataEncerramento}";
+
+            string locadorUserType = "Locador";
+
+            await _emailSender.SendEmailAsync(emailLocador, locadorUserType, contractDetails);
+            
+            string locatarioUserType = "Locatário";
+
+            await _emailSender.SendEmailAsync(emailLocatario, locatarioUserType, contractDetails);
+
             return Ok(novoContrato);
         }
 
         [HttpPost("CriarContratoComMultiplosArquivos")]
-        public async Task<IActionResult> AddContratoWithMultipleFiles([FromForm] NewContratos newContrato, IFormFileCollection files)
+        public async Task<IActionResult> AddContratoWithMultipleFiles([FromForm] NewContratos newContrato, IFormFileCollection files, string emailLocador, string emailLocatario)
         {
             if (!ModelState.IsValid)
             {
@@ -102,6 +115,17 @@ namespace property_management.Controllers
             };
 
             var novoContrato = await _contratoService.AddAsyncWithMultipleFiles(contrato, files);
+
+            string contractDetails = $"Contrato ID: {novoContrato.ContratoId}, Valor do Aluguel: {novoContrato.ValorAluguel}, Início: {novoContrato.DataInicio}, Término do contrato: {novoContrato.DataEncerramento}";
+
+            string locadorUserType = "Locador";
+
+            await _emailSender.SendEmailAsync(emailLocador, locadorUserType, contractDetails);
+
+            string locatarioUserType = "Locatário";
+
+            await _emailSender.SendEmailAsync(emailLocatario, locatarioUserType, contractDetails);
+
             return Ok(novoContrato);
         }
 

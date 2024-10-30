@@ -16,5 +16,7 @@ namespace Layer.Infrastructure.Database
         // Mapear a tabela de imoveis
         public DbSet<Imoveis> Imoveis { get; set; }
         public DbSet<Contratos> Contratos { get; set; }
+
+        public DbSet<Usuarios> Usuarios { get; }
     }
 }
