@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using Layer.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Layer.Infrastructure.Database;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+
+
 
 namespace Layer.Application.Controllers
 {
@@ -16,11 +21,13 @@ namespace Layer.Application.Controllers
     {
         // Chamar o serviço de usuário
         private readonly IUserService _userService;
+        private readonly ApplicationLog _applicationLog;
 
         // Construtor
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ApplicationLog applicationLog)
         {
             _userService = userService;
+            _applicationLog = applicationLog;
         }
 
         // Rota de pagar todos os usuários
@@ -28,6 +35,10 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllUsers()
         {
+            // Registra a ação no log
+
+            _applicationLog.LogAsync("PegarTodosUsuarios", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             var users = await _userService.GetUsuariosAsync();
             return Ok(users);
         }

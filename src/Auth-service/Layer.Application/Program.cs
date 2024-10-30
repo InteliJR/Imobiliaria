@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Hangfire;
 using Hangfire.PostgreSql;
 using System.Text;
+using MongoDB.Driver;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,19 @@ Console.WriteLine($"JwtSettings__SecretKey: {Environment.GetEnvironmentVariable(
 Console.WriteLine($"JwtSettings__ExpiryMinutes: {Environment.GetEnvironmentVariable("JwtSettings__ExpiryMinutes")}");
 Console.WriteLine($"JwtSettings__Issuer: {Environment.GetEnvironmentVariable("JwtSettings__Issuer")}");
 Console.WriteLine($"JwtSettings__Audience: {Environment.GetEnvironmentVariable("JwtSettings__Audience")}");*/
+
+// Configuração do Mongo
+
+var mongoSettings = new MongoDbSettings
+{
+    ConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING"),
+    DatabaseName = Environment.GetEnvironmentVariable("MONGO_DATABASE_NAME"),
+    LogsCollectionName = Environment.GetEnvironmentVariable("MONGO_LOGS_COLLECTION_NAME") ?? "Logs"
+};
+
+builder.Services.AddSingleton(mongoSettings);
+builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoSettings.ConnectionString));
+; // Aqui a gnt tá criando um singleton do mongo client para usar em toda a aplicação 
 
 // !!!!! Injenções de dependência !!!!!
 
@@ -94,6 +108,7 @@ builder.Services.AddScoped<ILocatarioService, LocatarioService>();
 builder.Services.AddScoped<IColaboradorService, ColaboradorService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IHashingPasswordService, HashingPasswordService>();
+builder.Services.AddScoped<ApplicationLog>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
