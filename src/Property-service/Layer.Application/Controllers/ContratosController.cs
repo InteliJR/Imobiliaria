@@ -7,6 +7,7 @@ using property_management.Models;
 
 //TODO:
     //Para que o service de notificação funcione corretamente, preciso do email dos usuários. Isto é, consultar uma outra tabela do nosso banco de dados para fazer um 'inner join where usuario id = usuario id'
+    // FALTOU TESTAR O ENVIO DE NOTIFICAÇÃO, MAS APARENTEMENTE NÃO TEM ERROS DE CÓDIGO NO MEU CÓDIGO PORRA
 
 namespace property_management.Controllers
 {
