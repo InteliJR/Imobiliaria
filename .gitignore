@@ -4,6 +4,16 @@
 # Production
 /build
 
+.vs/
+
+/vs
+
+vs*
+
+.vs*
+
+slnx.sqlite
+
 # Generated files
 .docusaurus
 .cache-loader
