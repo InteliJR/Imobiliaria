@@ -71,7 +71,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddHangfire(config =>
 {
-    config.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+    config.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new Hangfire.PostgreSql.PostgreSqlStorageOptions
+    {
+        InvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.FromSeconds(15),
+        DistributedLockTimeout = TimeSpan.FromMinutes(10),
+    });
 });
 
 builder.Services.AddHangfireServer();
