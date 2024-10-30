@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using property_management.Models;
 
 //TODO:
-    //Para a criação de um contrato, precisamos criar uma rota conectada ao firebase para enviar arquivos que estão relacionados a esse contrato e inserir alguma coisa que relacione esse documento a determinado contrato
+    //Para que o service de notificação funcione corretamente, preciso do email dos usuários. Isto é, consultar uma outra tabela do nosso banco de dados para fazer um 'inner join where usuario id = usuario id'
 
 namespace property_management.Controllers
 {
