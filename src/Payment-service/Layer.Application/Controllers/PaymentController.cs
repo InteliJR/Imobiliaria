@@ -31,6 +31,7 @@ namespace Layer.Application.Controllers
 
         // GET: api/payment
         [HttpGet("listarpagamentos")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<ActionResult<IEnumerable<Payment>>> GetAllPayments()
         {
             var payments = await _paymentService.GetAllPaymentsAsync();
@@ -39,6 +40,7 @@ namespace Layer.Application.Controllers
 
         // GET: api/payment/{id}
         [HttpGet("pagamentos/{id}")]
+        [Authorize(Policy = "AllRoles")]
         public async Task<ActionResult<Payment>> GetPaymentById(int id)
         {
             var payment = await _paymentService.GetPaymentByIdAsync(id);
@@ -51,6 +53,7 @@ namespace Layer.Application.Controllers
 
         // POST: api/payment
         [HttpPost("criarpagamentos")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<Payment>> AddPayment([FromBody] CreatePaymentDTO paymentDto)
         {
             if (!ModelState.IsValid)
@@ -78,6 +81,7 @@ namespace Layer.Application.Controllers
 
         // PUT: api/payment/{id}
         [HttpPut("atualizarpagamento/{id}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> UpdatePayment(int id, [FromBody] CreatePaymentDTO paymentDto)
         {
             if (!ModelState.IsValid)
@@ -109,6 +113,7 @@ namespace Layer.Application.Controllers
         }
         // DELETE: api/payment/{id}
         [HttpDelete("excluirpagamento/{id}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeletePayment(int id)
         {
             var payment = await _paymentService.GetPaymentByIdAsync(id);
