@@ -5,16 +5,12 @@ interface CardProps {
   line1: string;
   line2: string;
   line3: string;
-  imageUrl: string;
+  status: 'Aberto' | 'Fechado'; // Certifique-se de que status está definido aqui
 }
 
-const Card: React.FC<CardProps> = ({ title, line1, line2, line3, imageUrl }) => {
+const Card: React.FC<CardProps> = ({ title, line1, line2, line3, status }) => {
   return (
-    <div className="flex flex-row-reverse shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden h-[120px]">
-      {/* Imagem do Card */}
-      <div className="w-1/4">
-        <img src={imageUrl} alt={title} className="h-full w-full object-cover rounded-r" />
-      </div>
+    <div className="flex border border-neutral-300 shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden h-[120px]">
       
       {/* Conteúdo do Card */}
       <div className="w-3/4 p-4 text-[#363430]">
@@ -28,6 +24,11 @@ const Card: React.FC<CardProps> = ({ title, line1, line2, line3, imageUrl }) => 
         <p className="text-normal-text">
           <span className="text-[#76726A]">Início:</span> {line3}
         </p>
+      </div>
+      
+      {/* Status do Card */}
+      <div className="w-1/4 flex items-start text-form-label p-4 text-[#76726A] italic justify-center">
+        {status}
       </div>
     </div>
   );
