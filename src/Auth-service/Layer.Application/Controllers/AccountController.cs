@@ -39,7 +39,7 @@ namespace Layer.Application.Controllers
 
             var token = _tokenService.GenerateToken(user);
 
-            return Ok(token);
+            return Ok(new { token });
         }
         
         [Authorize]
