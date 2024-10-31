@@ -18,5 +18,7 @@ namespace Layer.Infrastructure.Database
         public DbSet<Contratos> Contratos { get; set; }
 
         public DbSet<Usuarios> Usuarios { get; }
+
+        public DbSet<Chamados> Chamados { get; set; }
     }
 }

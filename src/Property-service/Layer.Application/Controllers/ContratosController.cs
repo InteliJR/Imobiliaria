@@ -5,10 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using property_management.Models;
 
-//TODO:
-    //Para que o service de notificação funcione corretamente, preciso do email dos usuários. Isto é, consultar uma outra tabela do nosso banco de dados para fazer um 'inner join where usuario id = usuario id'
-    // FALTOU TESTAR O ENVIO DE NOTIFICAÇÃO, MAS APARENTEMENTE NÃO TEM ERROS DE CÓDIGO NO MEU CÓDIGO PORRA
-
 namespace property_management.Controllers
 {
     [ApiController]
@@ -42,49 +38,6 @@ namespace property_management.Controllers
         {
             var contratos = await _contratoService.GetAllAsync();
             return Ok(contratos);
-        }
-
-        [HttpPost("CriarUmNovoContrato")]
-        public async Task<IActionResult> AddContrato([FromForm] NewContratos newContrato, IFormFile file, string emailLocador, string emailLocatario)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var contrato = new Contratos
-            {
-                LocadorId = newContrato.LocadorId,
-                LocatarioId = newContrato.LocatarioId,
-                ImovelId = newContrato.ImovelId,
-                ValorAluguel = newContrato.ValorAluguel,
-                Iptu = newContrato.Iptu,
-                TaxaAdm = newContrato.TaxaAdm,
-                DataInicio = newContrato.DataInicio,
-                DataEncerramento = newContrato.DataEncerramento,
-                TipoGarantia = newContrato.TipoGarantia,
-                CondicoesEspeciais = newContrato.CondicoesEspeciais,
-                Status = newContrato.Status,
-                DataPagamento = newContrato.DataPagamento,
-                DataRescisao = newContrato.DataRescisao,
-                Renovado = newContrato.Renovado,
-                DataEncerramentoRenovacao = newContrato.DataEncerramentoRenovacao,
-                ValorReajuste = newContrato.ValorReajuste
-            };
-
-            var novoContrato = await _contratoService.AddAsync(contrato, file);
-
-            string contractDetails = $"Contrato ID: {novoContrato.ContratoId}, Valor do Aluguel: {novoContrato.ValorAluguel}, Início: {novoContrato.DataInicio}, Término do contrato: {novoContrato.DataEncerramento}";
-
-            string locadorUserType = "Locador";
-
-            await _emailSender.SendEmailAsync(emailLocador, locadorUserType, contractDetails);
-            
-            string locatarioUserType = "Locatário";
-
-            await _emailSender.SendEmailAsync(emailLocatario, locatarioUserType, contractDetails);
-
-            return Ok(novoContrato);
         }
 
         [HttpPost("CriarContratoComMultiplosArquivos")]

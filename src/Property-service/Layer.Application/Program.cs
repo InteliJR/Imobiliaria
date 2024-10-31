@@ -15,8 +15,22 @@ using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Carregar variáveis de ambiente do arquivo .env
-Env.Load();
+// Carregar variáveis de ambiente do arquivo .
+var env = builder.Environment.EnvironmentName;
+
+if (env == "Development")
+{
+    Env.Load(".env.development");
+}
+else if (env == "Production")
+{
+    Env.Load(".env.production");
+}
+else
+{
+    Env.Load();  // Caso você tenha um `.env` padrão
+}
+
 
 // Sobrepor os valores das variáveis no appsettings.json com as variáveis do ambiente
 builder.Configuration.AddEnvironmentVariables();
@@ -62,6 +76,7 @@ else
 builder.Services.AddScoped<IimoveisRepository, ImoveisService>();
 builder.Services.AddScoped<IContratosRepository, ContratoService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
+builder.Services.AddScoped<IChamadosRepository, ChamadosService>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
