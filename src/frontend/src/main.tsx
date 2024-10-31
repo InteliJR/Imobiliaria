@@ -17,6 +17,7 @@ import LandingMobile from './mobile/pages/Landing';
 import LoginMobile from './mobile/pages/Login';
 import VisualizarImoveis from './mobile/pages/VisualizarImoveis';
 import VisualizarChamados from './mobile/pages/VisualizarChamados';
+import VisualizarUsuarios from './mobile/pages/VisualizarUsuarios';
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -29,6 +30,7 @@ const Root = () => {
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
         <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
         <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
+        <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
       </Routes>
     </BrowserRouter>
   );
