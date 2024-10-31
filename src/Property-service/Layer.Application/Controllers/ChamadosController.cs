@@ -21,5 +21,53 @@ namespace property_management.Controllers
             var chamados = await _chamadosService.GetAllAsync();
             return Ok(chamados);
         }
+
+        // GET: api/chamados/{id}
+        [HttpGet("PegarChamadosPorId/{id}")]
+        public async Task<ActionResult<Chamados>> GetById(int id)
+        {
+            var chamado = await _chamadosService.GetByIdAsync(id);
+            if (chamado == null)
+            {
+                return NotFound();
+            }
+            return Ok(chamado);
+        }
+
+        [HttpPost("CriarUmNovoChamado")]
+        public async Task<ActionResult<Chamados>> Create(Chamados chamado)
+        {
+            var newChamado = await _chamadosService.AddAsync(chamado);
+            return CreatedAtAction(nameof(GetById), new { id = newChamado.IdChamado }, newChamado);
+        }
+
+        // PUT: api/chamados/{id}
+        [HttpPut("AtualizarUmChamado/{id}")]
+        public async Task<IActionResult> Update(int id, Chamados chamado)
+        {
+            if (id != chamado.IdChamado)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            var result = await _chamadosService.UpdateAsync(chamado);
+            if (result == 0)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
+        // DELETE: api/chamados/{id}
+        [HttpDelete("DeletarUmChamado/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _chamadosService.DeleteAsync(id);
+            if (result == 0)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }
