@@ -1,5 +1,6 @@
 ﻿using Layer.Domain.Entites;
 using Layer.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace property_management.Controllers
@@ -16,6 +17,7 @@ namespace property_management.Controllers
         }
 
         [HttpGet("PegarTodosOsChamados")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<ActionResult<IEnumerable<Chamados>>> GetAll()
         {
             var chamados = await _chamadosService.GetAllAsync();
@@ -24,6 +26,7 @@ namespace property_management.Controllers
 
         // GET: api/chamados/{id}
         [HttpGet("PegarChamadosPorId/{id}")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<ActionResult<Chamados>> GetById(int id)
         {
             var chamado = await _chamadosService.GetByIdAsync(id);
@@ -35,6 +38,7 @@ namespace property_management.Controllers
         }
 
         [HttpPost("CriarUmNovoChamado")]
+        [Authorize(Policy = "AdminORLocatario")]
         public async Task<ActionResult<Chamados>> Create(Chamados chamado)
         {
             var newChamado = await _chamadosService.AddAsync(chamado);
@@ -43,6 +47,7 @@ namespace property_management.Controllers
 
         // PUT: api/chamados/{id}
         [HttpPut("AtualizarUmChamado/{id}")]
+        [Authorize(Policy = "AdminORLocatario")]
         public async Task<IActionResult> Update(int id, Chamados chamado)
         {
             if (id != chamado.IdChamado)
@@ -60,6 +65,7 @@ namespace property_management.Controllers
 
         // DELETE: api/chamados/{id}
         [HttpDelete("DeletarUmChamado/{id}")]
+        [Authorize(Policy = "AdminORLocatario")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _chamadosService.DeleteAsync(id);

@@ -1,6 +1,8 @@
 ﻿using Layer.Domain.Entites;
+using Layer.Domain.Enums;
 using Layer.Domain.Interfaces;
 using Layer.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using property_management.Models;
@@ -23,6 +25,7 @@ namespace property_management.Controllers
         }
 
         [HttpGet("PegarContratoPorId/{id}")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetContrato(int id)
         {
             var contrato = await _contratoService.GetByIdAsync(id);
@@ -34,6 +37,7 @@ namespace property_management.Controllers
         }
 
         [HttpGet("PegarTodosOsContratos")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetAllContratos()
         {
             var contratos = await _contratoService.GetAllAsync();
@@ -41,6 +45,7 @@ namespace property_management.Controllers
         }
 
         [HttpPost("CriarContratoComMultiplosArquivos")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> AddContratoWithMultipleFiles([FromForm] NewContratos newContrato, IFormFileCollection files, string emailLocador, string emailLocatario)
         {
             if (!ModelState.IsValid)
@@ -84,6 +89,7 @@ namespace property_management.Controllers
         }
 
         [HttpPut("AtualizarContrato/{id}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> UpdateContrato(int id, [FromBody] Contratos novocontrato)
         {
             if (!ModelState.IsValid)
@@ -123,6 +129,7 @@ namespace property_management.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteContrato(int id)
         {
             throw new NotImplementedException();
