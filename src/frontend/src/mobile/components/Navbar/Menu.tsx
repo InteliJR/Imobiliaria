@@ -1,55 +1,61 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 interface MenuProps {
   userType: string;
   toggleMenu: () => void;
-  isOpen: boolean; // Add isOpen to the props
+  isOpen: boolean;
 }
 
 const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
+  const navigate = useNavigate(); // Get the navigate function
+
+  const handleMenuItemClick = (path: string) => {
+    navigate(path);
+    toggleMenu();
+  };
+
   const renderMenuItems = () => {
     switch (userType) {
       case 'Administrador':
         return (
           <ul className="text-center space-y-8 text-2xl">
-            <li>Home</li>
-            <li>Dashboard Administrativo Financeiro</li>
-            <li>Gestão de Usuários</li>
-            <li>Lista de chamados</li>
-            <li>Cadastrar imóveis</li>
-            <li>Adicionar Contrato</li>
-            <li>Notificação Modal</li>
-            <li>Perfil</li>
+            <li onClick={() => handleMenuItemClick('/dashboard')}>Dashboard Financeiro</li>
+            <li onClick={() => handleMenuItemClick('/visualizar-usuarios')}>Lista de usuários</li>
+            <li onClick={() => handleMenuItemClick('/visualizar-chamados')}>Lista de chamados</li>
+            <li onClick={() => handleMenuItemClick('/visualizar-imoveis')}>Lista de imóveis</li>
+            <li onClick={() => handleMenuItemClick('/perfil')}>Perfil</li>
+            <li onClick={() => handleMenuItemClick('/login')}>Sair</li>
           </ul>
         );
       case 'Jurídico':
         return (
           <ul className="text-center space-y-8 text-2xl">
-            <li>Dashboard Financeiro</li>
-            <li>Lista Imóveis</li>
-            <li>Documentos relacionado as locações</li>
+            <li onClick={() => handleMenuItemClick('/dashboard-financeiro')}>Dashboard Financeiro</li>
+            <li onClick={() => handleMenuItemClick('/lista-imoveis')}>Lista Imóveis</li>
+            <li onClick={() => handleMenuItemClick('/documentos-locacoes')}>Documentos relacionado as locações</li>
           </ul>
         );
       case 'Locador':
         return (
           <ul className="text-center space-y-8 text-2xl">
-            <li>Home</li>
-            <li>Perfil</li>
-            <li>Visualizar Imóveis</li>
-            <li>Dashboard Financeiro</li>
-            <li>Documentos das locações</li>
-            <li>Redirecionamento pro zipzops</li>
+            <li onClick={() => handleMenuItemClick('/home')}>Home</li>
+            <li onClick={() => handleMenuItemClick('/perfil')}>Perfil</li>
+            <li onClick={() => handleMenuItemClick('/visualizar-imoveis')}>Visualizar Imóveis</li>
+            <li onClick={() => handleMenuItemClick('/dashboard-financeiro')}>Dashboard Financeiro</li>
+            <li onClick={() => handleMenuItemClick('/documentos-locacoes')}>Documentos das locações</li>
+            <li onClick={() => handleMenuItemClick('/zipzops')}>Redirecionamento pro zipzops</li>
           </ul>
         );
       case 'Locatário':
         return (
           <ul className="text-center space-y-8 text-2xl">
-            <li>Home</li>
-            <li>Perfil</li>
-            <li>Abertura de chamados</li>
-            <li>Visualizar Imóveis</li>
-            <li>Dashboard Financeiro</li>
-            <li>Documentos das locações</li>
+            <li onClick={() => handleMenuItemClick('/home')}>Home</li>
+            <li onClick={() => handleMenuItemClick('/perfil')}>Perfil</li>
+            <li onClick={() => handleMenuItemClick('/abertura-chamados')}>Abertura de chamados</li>
+            <li onClick={() => handleMenuItemClick('/visualizar-imoveis')}>Visualizar Imóveis</li>
+            <li onClick={() => handleMenuItemClick('/dashboard-financeiro')}>Dashboard Financeiro</li>
+            <li onClick={() => handleMenuItemClick('/documentos-locacoes')}>Documentos das locações</li>
           </ul>
         );
       default:

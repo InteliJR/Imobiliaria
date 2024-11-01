@@ -1,8 +1,17 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavbarLogin from '../components/Navbar/NavbarLogin';
 import Footer from '../components/Footer/FooterBig';
 import FormField from '../components/Form/FormField';
 
 export default function Login() {
+  const navigate = useNavigate();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent the default form submission
+    navigate('/dashboard'); // Redirect to the /dashboard route
+  };
+
   return (
     <div className="bg-[#F0F0F0] flex flex-col min-h-screen">
       {/* Navbar */}
@@ -14,13 +23,12 @@ export default function Login() {
           {/* Form */}
           <h2 className="text-start text-title font-strong mb-10">Login</h2>
 
-          <form className="">
-            <div className='mb-6'>
-              <FormField placeholder="Email" label="Email:"/>
-              
+          <form className="" onSubmit={handleSubmit}>
+            <div className="mb-6">
+              <FormField placeholder="Email" label="Email:" />
             </div>
-            <div className='mb-10'>
-              <FormField placeholder="Password" label="Senha:"/>
+            <div className="mb-10">
+              <FormField type="password" placeholder="Password" label="Senha:" />
             </div>
             {/* Submit Button */}
             <button

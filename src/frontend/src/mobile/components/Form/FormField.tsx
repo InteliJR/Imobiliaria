@@ -2,23 +2,24 @@ import React, { useState } from 'react';
 
 interface FormFieldProps {
   label: string;
-  placeholder?: string; // Tornando o placeholder opcional
+  placeholder?: string;
+  type?: string; // Adding an optional type prop
 }
 
-const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '' }) => {
+const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', type = 'text' }) => {
   const [value, setValue] = useState<string>('');
 
   return (
     <div className="flex flex-col">
-      {/* Label com fonte de 13px e margem inferior de 5px */}
+      {/* Label with font size 13px and margin bottom 5px */}
       <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">
         {label}
       </label>
       <input
-        type="text"
+        type={type} // Apply the type prop here
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder={placeholder} // Usando o placeholder se ele estiver definido
+        placeholder={placeholder} // Use the placeholder if defined
         className={`h-10 flex-grow ${
           value ? 'bg-transparent border border-black' : 'bg-[#D9D9D9]'
         } focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
