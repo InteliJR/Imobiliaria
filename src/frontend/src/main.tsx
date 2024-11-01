@@ -26,8 +26,8 @@ const Root = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={isDesktop ? <App /> : <AppMobile />} />
-        <Route path="/landing" element={isDesktop ? <Landing /> : <LandingMobile />} />
+        <Route path="/app" element={isDesktop ? <App /> : <AppMobile />} />
+        <Route path="/" element={isDesktop ? <Landing /> : <LandingMobile />} />
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
         <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
         <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
