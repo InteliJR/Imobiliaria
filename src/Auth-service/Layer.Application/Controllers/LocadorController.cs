@@ -37,7 +37,8 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> GetLocadorByEmail([FromQuery] string email)
         {
             var locador = await _locadorService.GetLocadorByEmail(email);
-            return Ok(locador);
+
+            if (locador == null) { return BadRequest("Locador não encontrado."); } else { return Ok(locador); }
         }
 
         [HttpPost("AdicionarNovoLocador")]
@@ -97,8 +98,15 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = "AdminORLocador")]
         public async Task<IActionResult> GetLocadorByUserId([FromQuery] int userId)
         {
+            try
+            {
             var locador = await _locadorService.GetLocadorByUserId(userId);
             return Ok(locador);
+        }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("PegarLocadorPorLocadorID")]
@@ -106,7 +114,8 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> GetLocadorByLocadorID([FromQuery] int locadorID)
         {
             var locador = await _locadorService.GetLocadorByLocadorID(locadorID);
-            return Ok(locador);
+
+            if (locador == null) { return BadRequest("Locador não encontrado."); } else { return Ok(locador); }
         }
 
         [HttpPost("AtualizarLocador")]
