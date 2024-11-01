@@ -100,9 +100,9 @@ namespace Layer.Application.Controllers
         {
             try
             {
-                var locador = await _locadorService.GetLocadorByUserId(userId);
-                return Ok(locador);
-            }
+            var locador = await _locadorService.GetLocadorByUserId(userId);
+            return Ok(locador);
+        }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);

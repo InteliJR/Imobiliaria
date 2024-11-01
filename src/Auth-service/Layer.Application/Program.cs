@@ -233,9 +233,9 @@ RecurringJob.AddOrUpdate<HangfireJobsHelper>(
 
 if (env == "Development")
 {
-    app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 }
-
+    
 app.UseRouting();
 
 app.UseAuthentication();
