@@ -11,6 +11,8 @@ using Layer.Domain.Entites;
 using Layer.Domain.Enums;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using MongoDB.Driver;
+using Layer.Domain.Entities;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,13 @@ else
 }
 
 
+var mongoSettings = new MongoDbSettings
+{
+    ConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING"),
+    DatabaseName = Environment.GetEnvironmentVariable("MONGO_DATABASE_NAME"),
+    LogsCollectionName = Environment.GetEnvironmentVariable("MONGO_LOGS_COLLECTION_NAME") ?? "Logs"
+};
+
 // Sobrepor os valores das variáveis no appsettings.json com as variáveis do ambiente
 builder.Configuration.AddEnvironmentVariables();
 
@@ -49,6 +58,9 @@ string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "imobiliar
 
 // Definir a variável de ambiente GOOGLE_APPLICATION_CREDENTIALS
 Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
+
+
+
 
 // Verificar se a variável de ambiente FIREBASE_CREDENTIALS_PATH foi configurada corretamente
 var firebaseCredentialsPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
@@ -73,6 +85,8 @@ else
     Console.WriteLine("Error: Firebase credentials file not found or environment variable not set.");
 }
 
+builder.Services.AddSingleton(mongoSettings);
+builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoSettings.ConnectionString));
 builder.Services.AddScoped<IimoveisRepository, ImoveisService>();
 builder.Services.AddScoped<IContratosRepository, ContratoService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
