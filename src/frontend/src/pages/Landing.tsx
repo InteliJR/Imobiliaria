@@ -3,8 +3,24 @@ import Footer from "../components/Footer/FooterBig";
 import WelcomeBanner from "../components/Landing/WelcomeBanner";
 import FeaturesSection from "../components/Landing/FeaturesSection";
 import logoSimplified from "../assets/landingPage/logoSimplified.svg";
+import axiosInstance from "../services/axiosConfig";
+import { getServiceUrl } from "../services/apiService";
 
 export default function Landing() {
+
+  // Chamar uma rota só pra testar o axios
+  const testAxios = async () => {
+    try {
+      const response = await axiosInstance.post(getServiceUrl('authService', '/Account/WhoAmI'));
+      console.log(response.data);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
+  testAxios();
+
+  
   return (
     <div>
       <Navbar showLoginButton={true} />
