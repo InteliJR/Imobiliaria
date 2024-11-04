@@ -195,9 +195,6 @@ if (app.Environment.IsDevelopment())
 //     app.UseHsts(); // HSTS apenas em produção
 // }
 
-app.UseHttpsRedirection();
-app.UseHsts(); // HSTS apenas em produção
-
 // Configurar o HangFire na aplicacao
 
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
