@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../services/axiosConfig';
 import { getServiceUrl } from '../services/apiService';
+import { jwtDecode } from 'jwt-decode'; 
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -34,7 +35,11 @@ export default function Login() {
             // console.log(response.data);
 
             const token = response.data.token;
+            const decodedToken: any = jwtDecode(token);
+            const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
+            const role = decodedToken[roleClaim];
             sessionStorage.setItem('jwtToken', token);
+            sessionStorage.setItem('userRole', role);
 
             // Redirecionar o usuário após o login bem-sucedido
             navigate('/landing');
