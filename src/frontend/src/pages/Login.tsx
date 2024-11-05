@@ -46,7 +46,7 @@ export default function Login() {
 
     // Usuário já é direcionado para a landing page se já estiver logado
     useEffect(() => {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       if (token) {
           navigate('/landing'); // Redirecionar para /landing se já estiver logado
       }
