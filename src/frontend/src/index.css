@@ -25,7 +25,6 @@
   input,
   select,
   textarea,
-  img,
   .card,
   .container {
     @apply rounded;

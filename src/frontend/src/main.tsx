@@ -1,23 +1,48 @@
+
 // main.tsx or main.js (depending on your setup)
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useMediaQuery } from 'react-responsive';
 import  App  from './App'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import './index.css'
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+// Import desktop components and pages
+import App from './desktop/App';
+import Landing from './desktop/pages/Landing';
+import Login from './desktop/pages/Login';
+
+// Import mobile components and pages
+import AppMobile from './mobile/App';
+import LandingMobile from './mobile/pages/Landing';
+import LoginMobile from './mobile/pages/Login';
+import VisualizarImoveis from './mobile/pages/VisualizarImoveis';
+import VisualizarChamados from './mobile/pages/VisualizarChamados';
+import VisualizarUsuarios from './mobile/pages/VisualizarUsuarios';
+
+const Root = () => {
+  const isDesktop = useMediaQuery({ minWidth: 1024 });
+
+  return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={isDesktop ? <App /> : <AppMobile />} />
+        <Route path="/landing" element={isDesktop ? <Landing /> : <LandingMobile />} />
+        <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
         <Route path="/profile/:id" element={<Profile />} />
-
+        <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
+        <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
+        <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
       </Routes>
     </BrowserRouter>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <Root />
   </React.StrictMode>
-)
+);
