@@ -3,6 +3,8 @@ import Footer from '../components/Footer/FooterBig';
 import FormField from '../components/Form/FormField';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../services/axiosConfig';
+import { getServiceUrl } from '../services/apiService';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -14,26 +16,31 @@ export default function Login() {
         event.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8080/Account/Login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ Email: email, Senha: senha })
+            // const response = await fetch('http://localhost:8080/Account/Login', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({ Email: email, Senha: senha })
+            // });
+
+            // Novo metodo
+
+            const response = await axiosInstance.post(getServiceUrl('authService', '/Account/Login'), {
+                Email: email,
+                Senha: senha
             });
 
-            if (response.ok) {
-                const token = await response.json();
-                localStorage.setItem('token', token);
-                // Redirecionar o usuário ou atualizar o estado da aplicação
-                navigate('/landing'); // Redirecionar para /landing
-            } else {
-                const errorMsg = await response.text();
-                setError(errorMsg);
-            }
-        } catch (error) {
-            console.error('Erro ao fazer login:', error);
-            setError('Erro ao conectar-se ao servidor');
+            // console.log(response.data);
+
+            const token = response.data.token;
+            sessionStorage.setItem('jwtToken', token);
+
+            // Redirecionar o usuário após o login bem-sucedido
+            navigate('/landing');
+        } catch (error: any) {
+            // axios retorna erros no `response`
+            setError(error.response?.data?.message || 'Erro ao fazer login');
         }
     };
 
