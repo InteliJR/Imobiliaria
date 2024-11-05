@@ -1,3 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* src/index.css */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@font-face {
+  font-family: 'Object Sans';
+  src: url('/fonts/ObjectSans-Regular.woff2') format('woff2'),
+       url('/fonts/ObjectSans-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Object Sans';
+  src: url('/fonts/ObjectSans-Strong.woff2') format('woff2'),
+       url('/fonts/ObjectSans-Strong.woff') format('woff');
+  font-weight: 800; /* Assuming 'Strong' corresponds to 800 */
+  font-style: normal;
+}
+
+@layer base {
+  /* Apply border-radius 4px to specific elements */
+  button,
+  input,
+  select,
+  textarea,
+  img,
+  .card,
+  .container {
+    @apply rounded;
+  }
+}
+
+.main-custom { /* classe padrão para elementos main  */
+  @apply flex flex-col gap-4 px-4 py-6 overflow-hidden bg-gray-200;
+}
+
