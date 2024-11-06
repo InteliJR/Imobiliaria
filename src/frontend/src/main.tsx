@@ -16,6 +16,7 @@ import AppMobile from './mobile/App';
 import LandingMobile from './mobile/pages/Landing';
 import LoginMobile from './mobile/pages/Login';
 import VisualizarImoveis from './mobile/pages/VisualizarImoveis';
+import CreateProperty from './desktop/pages/CreateProperty';
 import VisualizarChamados from './mobile/pages/VisualizarChamados';
 import VisualizarUsuarios from './mobile/pages/VisualizarUsuarios';
 
@@ -28,7 +29,10 @@ const Root = () => {
         <Route path="/" element={isDesktop ? <App /> : <AppMobile />} />
         <Route path="/landing" element={isDesktop ? <Landing /> : <LandingMobile />} />
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
-        <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
+
+        <Route path="/imoveis" element={<VisualizarImoveis />} />
+        <Route path="/imoveis/criar" element={<CreateProperty />} />
+
         <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
         <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
       </Routes>
