@@ -63,6 +63,9 @@ namespace Layer.Application.Controllers
             };
 
             var newUser = await _userService.InsertNewUser(user, true);
+
+            await _applicationLog.LogAsync($"Adicao de novo usuário, com o email {user.Email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(newUser);
         }
 
@@ -109,6 +112,9 @@ namespace Layer.Application.Controllers
 
             await _userService.DeleteUser(email);
 
+
+            await _applicationLog.LogAsync($"Exclusão de usuário com o email {email}", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok("Usuário deletado com sucesso.");
         }
 
@@ -118,6 +124,8 @@ namespace Layer.Application.Controllers
         {
 
             await _userService.InactivateUser(email);
+
+            await _applicationLog.LogAsync($"Inativação usuário, com o email {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok("Usuário inativado com sucesso.");
         }
@@ -149,6 +157,8 @@ namespace Layer.Application.Controllers
             var user = userLocador.Item1;
             var locadorCretead = userLocador.Item2;
 
+            await _applicationLog.LogAsync($"Criação de usuario Locador {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(new { user, locador });
         }
 
@@ -177,6 +187,8 @@ namespace Layer.Application.Controllers
             var user = userLocatario.Item1;
             var locatarioCretead = userLocatario.Item2;
 
+            await _applicationLog.LogAsync($"Criação de usuario Locatario {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(new { user, locatario });
         }
 
@@ -197,6 +209,8 @@ namespace Layer.Application.Controllers
             // Forçar desserialização do objeto para devolver
             var user = userColaborador.Item1;
             var colaboradorCretead = userColaborador.Item2;
+
+            await _applicationLog.LogAsync($"Criação de usuario Admin {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(new { user, colaboradorCretead });
         }
@@ -219,6 +233,8 @@ namespace Layer.Application.Controllers
             var user = userColaborador.Item1;
             var colaboradorCretead = userColaborador.Item2;
 
+            await _applicationLog.LogAsync($"Criação de usuario Judiciario {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(new { user, colaboradorCretead });
         }
 
@@ -235,6 +251,7 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
             var newPassword = await _userService.UserForgotPassword(email);
+            await _applicationLog.LogAsync($"Usuario com {email}, redefinou a senha ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return Ok(newPassword);
         }
 
@@ -243,6 +260,9 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> ChangePassword([FromQuery] string email, [PasswordPropertyText]  string oldPassword, [PasswordPropertyText]  string newPassword)
         {
             var newPass = await _userService.ChangePassword(email, oldPassword, newPassword);
+
+            await _applicationLog.LogAsync($"Usuario com {email} alterou sua senha", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            
             return Ok(newPass);
         }
 

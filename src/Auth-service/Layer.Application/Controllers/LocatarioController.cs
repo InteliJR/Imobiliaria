@@ -7,6 +7,15 @@ using Layer.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Layer.Domain.Enums;
+using Layer.Infrastructure.Database;
+using Microsoft.AspNetCore.Authorization;
+using Layer.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
+using Layer.Infrastructure.Database;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+
+
 
 namespace Layer.Application.Controllers
 {
@@ -18,11 +27,13 @@ namespace Layer.Application.Controllers
 
         private readonly ILocatarioService _locatarioService;
         private readonly IUserService _userService;
+        private readonly ApplicationLog _applicationLog;
 
-        public LocatarioController(ILocatarioService LocatarioService, IUserService userService)
+        public LocatarioController(ILocatarioService LocatarioService, IUserService userService, ApplicationLog applicationLog)
         {
             _locatarioService = LocatarioService;
             _userService = userService;
+            _applicationLog = applicationLog;
         }
 
         [HttpGet("PegarTodosLocatarios")]
@@ -82,6 +93,10 @@ namespace Layer.Application.Controllers
             };
 
             var newLocatario = await _locatarioService.InsertNewLocatario(locatarioNew);
+
+            await _applicationLog.LogAsync($"Criação de Locatario com {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
+
             return Ok(newLocatario);
         }
 
@@ -151,6 +166,8 @@ namespace Layer.Application.Controllers
 
             var updatedLocatario = await _locatarioService.UpdateLocatario(locatario);
 
+            await _applicationLog.LogAsync($"Atualização de Locatario com CPF {CPF}", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(updatedLocatario);
         }
 
@@ -159,6 +176,7 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> DeleteLocatario([FromBody] string CPF)
         {
             var locatario = await _locatarioService.DeleteLocatario(CPF);
+            await _applicationLog.LogAsync($"Deletar locatario com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return Ok(locatario);
         }
 
