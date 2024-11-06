@@ -6,10 +6,10 @@ import logoSimplified from "../../assets/landingPage/logoSimplified.svg";
 
 export default function Landing() {
   return (
-    <div>
+    <main className="main-custom">
       <Navbar showLoginButton={true} />
 
-      <main className="main-custom">
+      <section className="section-custom">
         <WelcomeBanner />
 
         <FeaturesSection />
@@ -34,9 +34,9 @@ export default function Landing() {
         >
           Entrar
         </button>
-      </main>
+      </section>
 
       <Footer />
-    </div>
+    </main>
   );
 }

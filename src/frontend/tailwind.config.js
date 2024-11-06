@@ -7,10 +7,12 @@ export default {
   theme: {
     borderRadius: {
       DEFAULT: '0.25rem', // 4px
-      // ... other borderRadius settings
     },
     extend: {
       colors: {
+        'neutral-100': '#e4e4e2',
+        'neutral-600': '#76726A',
+        'neutral-900': '#363430',
         'neutral-black': '#1F1E1C',
         'yellow-middle': '#F2B705',
       },
