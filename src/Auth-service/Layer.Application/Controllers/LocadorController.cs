@@ -88,7 +88,7 @@ namespace Layer.Application.Controllers
 
             var newLocador = await _locadorService.InsertNewLocador(locadorNew);
 
-            await _applicationLog.LogAsync($"Criar Locatario com email {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            await _applicationLog.LogAsync($"Criar Locatario com email {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(newLocador);
         }
@@ -169,7 +169,7 @@ namespace Layer.Application.Controllers
 
             var updatedLocador = await _locadorService.UpdateLocador(locador);
 
-            await _applicationLog.LogAsync($"Atualizar Locador com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            await _applicationLog.LogAsync($"Atualizar Locador com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(updatedLocador);
         }
@@ -180,7 +180,7 @@ namespace Layer.Application.Controllers
         {
             var locador = await _locadorService.DeleteLocador(CPF);
 
-            await _applicationLog.LogAsync($"Deletar Locador com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            await _applicationLog.LogAsync($"Deletar Locador com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(locador);
         }

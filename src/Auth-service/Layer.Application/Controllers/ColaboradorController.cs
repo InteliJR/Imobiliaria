@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Layer.Domain.Enums;
+using Layer.Infrastructure.Database;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Layer.Application.Controllers
 {
@@ -16,11 +18,13 @@ namespace Layer.Application.Controllers
     {
         private readonly IColaboradorService _colaboradorService;
         private readonly IUserService _userService;
+        private readonly ApplicationLog _applicationLog;
 
-        public ColaboradorController(IColaboradorService colaboradorService, IUserService userService)
+        public ColaboradorController(IColaboradorService colaboradorService, IUserService userService, ApplicationLog applicationLog)
         {
             _colaboradorService = colaboradorService;
             _userService = userService;
+            _applicationLog = applicationLog;
         }
 
         [HttpGet("PegarTodosColaboradores")]
@@ -64,6 +68,9 @@ namespace Layer.Application.Controllers
             };
 
             var colaboradorCreated = await _colaboradorService.InsertNewColaborador(colaborador);
+
+            await _applicationLog.LogAsync($"Adicionar colaborador com {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(newColaborador);
         }
 
@@ -94,6 +101,8 @@ namespace Layer.Application.Controllers
 
             var updatedColaborador = await _colaboradorService.UpdateColaborador(colaborador);
 
+            await _applicationLog.LogAsync($"Atualizar colaborador com {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(updatedColaborador);
         }
 
@@ -103,7 +112,9 @@ namespace Layer.Application.Controllers
         {
 
             await _colaboradorService.DeleteColaborador(email);
-            
+
+            await _applicationLog.LogAsync($"Deletar colaborador com {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok("Colaborador deletado com sucesso.");
         }
 
