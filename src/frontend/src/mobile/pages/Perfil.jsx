@@ -1,18 +1,16 @@
 import Navbar from "../components/Navbar/Navbar";
-import Voltar from "../components/Voltar";
 import Footer from "../components/Footer/FooterSmall";
+import Voltar from "../components/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
 import Botao from "../components/botoes/Botao";
 import BotaoAlterarSenha from "../components/botoes/BotaoAlterarSenha";
 
 export default function Perfil() {
   const profileEdit = () => {
-    alert("profileEdit");
     navigate('/perfil/editar'); // Navega para a página de edição de perfil
 };
 
 const passwordEdit = () => {
-    alert("passwordEdit");
     navigate('/perfil/alterar-senha'); // Navega para a página de alteração de senha
   };
 
@@ -24,14 +22,14 @@ const passwordEdit = () => {
         <Voltar />
 
         <div>
-          <h1 className="font-sans text-title font-strong">Nome do Usuário</h1>
-          <h2 className="font-sans text-sm text-gray-700">Tipo de usuário</h2>
+          <h1 className="text-title font-strong">Nome do Usuário</h1>
+          <h2 className="text-sm text-gray-700">Tipo de usuário</h2>
         </div>
 
         <Botao label="Editar Perfil" onClick={profileEdit} />
 
-        <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded-md">
-          <h1 className="my-2 font-sans font-strong font-title">Informações Pessoais</h1>
+        <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
+          <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
 
           <VisualizarItem
             label="E-mail"

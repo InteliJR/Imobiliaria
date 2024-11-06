@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface BotaoProps {
   label: string;
@@ -9,7 +9,7 @@ const Botao: React.FC<BotaoProps> = ({ label, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className="w-full bg-neutral-900 hover:bg-neutral-black hover:shadow-xl text-neutral-100 py-3 px-4 rounded-md font-sans text-lg shadow-sm transition duration-300"
+      className="w-full bg-neutral-900 hover:bg-neutral-black hover:shadow-xl text-neutral-100 py-3 px-4 rounded-lg font-sans text-lg shadow-sm transition duration-300"
     >
       {label}
     </button>

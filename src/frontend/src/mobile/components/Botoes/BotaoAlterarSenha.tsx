@@ -1,4 +1,5 @@
 import React from "react";
+import { RiLockPasswordLine } from "react-icons/ri";
 
 interface BotaoAlterarSenhaProps {
   label: string;
@@ -12,9 +13,12 @@ const BotaoAlterarSenha: React.FC<BotaoAlterarSenhaProps> = ({
   return (
     <button
       onClick={onClick}
-      className="w-full border-2 border-neutral-900 hover:border-neutral-black hover:shadow-xl  py-3 px-4 rounded-md  shadow-sm transition duration-300"
+      className="flex w-full items-center border-2 border-neutral-500 hover:border-neutral-700 hover:shadow-xl py-3 px-4 rounded-lg shadow-sm transition duration-300"
     >
-      <p className="text-neutral-900 font-sans text-lg border-2 text-left">{label}</p>
+      <RiLockPasswordLine size={25} className="text-neutral-500 mr-2"/>
+      <p className="text-neutral-900 font-sans text-lg border-2 text-left">
+        {label}
+      </p>
     </button>
   );
 };
