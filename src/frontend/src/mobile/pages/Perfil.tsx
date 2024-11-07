@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
@@ -6,12 +7,14 @@ import Botao from "../components/botoes/Botao";
 import BotaoAlterarSenha from "../components/botoes/BotaoAlterarSenha";
 
 export default function Perfil() {
-  const profileEdit = () => {
-    navigate('/perfil/editar'); // Navega para a página de edição de perfil
-};
+  const navigate = useNavigate(); // Obtendo a função navigate
 
-const passwordEdit = () => {
-    navigate('/perfil/alterar-senha'); // Navega para a página de alteração de senha
+  const profileEdit = () => {
+    navigate("/perfil/editar"); // Navega para a página de edição de perfil
+  };
+
+  const passwordEdit = () => {
+    navigate("/perfil/alterar-senha"); // Navega para a página de alteração de senha
   };
 
   return (
