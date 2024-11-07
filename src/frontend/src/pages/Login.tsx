@@ -34,6 +34,8 @@ export default function Login() {
 
             // console.log(response.data);
 
+            // Obtem e decodifica o token jwt para obter a role do user
+            // Armazena o role do user no SessionStorage 
             const token = response.data.token;
             const decodedToken: any = jwtDecode(token);
             const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
@@ -41,19 +43,19 @@ export default function Login() {
             sessionStorage.setItem('jwtToken', token);
             sessionStorage.setItem('userRole', role);
 
-            // Redirecionar o usuário após o login bem-sucedido
-            navigate('/landing');
+            // Redirecionar o usuário para home ou dashboard após o login bem-sucedido 
+            navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
         } catch (error: any) {
             // axios retorna erros no `response`
             setError(error.response?.data?.message || 'Erro ao fazer login');
         }
     };
 
-    // Usuário já é direcionado para a landing page se já estiver logado
+    // Usuário já é direcionado para home ou dashboard se já estiver logado
     useEffect(() => {
       const token = sessionStorage.getItem('token');
       if (token) {
-          navigate('/landing'); // Redirecionar para /landing se já estiver logado
+          navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
       }
   }, []);
 
