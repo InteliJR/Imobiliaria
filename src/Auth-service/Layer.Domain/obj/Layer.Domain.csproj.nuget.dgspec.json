@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj": {}
+    "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj": {
+    "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj",
         "projectName": "Layer.Domain",
-        "projectPath": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj",
+        "projectPath": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\Layer.Domain.csproj",
         "packagesPath": "C:\\Users\\Inteli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Inteli\\Desktop\\Desktop\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\obj\\",
+        "outputPath": "C:\\Users\\Inteli\\Documents\\GitHub\\Imobiliaria\\src\\Auth-service\\Layer.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Inteli\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -45,6 +45,60 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Hangfire": {
+              "target": "Package",
+              "version": "[1.8.14, )"
+            },
+            "Hangfire.PostgreSql": {
+              "target": "Package",
+              "version": "[1.20.10, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.8.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "MongoDB.Driver.Core": {
+              "target": "Package",
+              "version": "[2.30.0, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Swashbuckle.AspNetCore.Swagger": {
+              "target": "Package",
+              "version": "[6.7.3, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerGen": {
+              "target": "Package",
+              "version": "[6.7.3, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerUI": {
+              "target": "Package",
+              "version": "[6.7.3, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "System.Security.Claims": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
