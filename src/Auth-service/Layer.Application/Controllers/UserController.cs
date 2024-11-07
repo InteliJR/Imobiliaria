@@ -262,7 +262,7 @@ namespace Layer.Application.Controllers
             var newPass = await _userService.ChangePassword(email, oldPassword, newPassword);
 
             await _applicationLog.LogAsync($"Usuario com {email} alterou sua senha", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
-
+            
             return Ok(newPass);
         }
 
