@@ -1,10 +1,14 @@
-// main.tsx or main.js
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useMediaQuery } from 'react-responsive';
 
-import './index.css';
+// main.tsx or main.js (depending on your setup)
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useMediaQuery } from 'react-responsive';
+import  App  from './App'
+import Landing from './pages/Landing'
+import Login from './pages/Login'
+import Profile from './pages/Profile'
+import './index.css'
 
 // Import desktop components and pages
 import App from './desktop/App';
@@ -29,6 +33,7 @@ const Root = () => {
         <Route path="/" element={isDesktop ? <App /> : <AppMobile />} />
         <Route path="/landing" element={isDesktop ? <Landing /> : <LandingMobile />} />
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
+        <Route path="/profile/:id" element={<Profile />} />
         <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
         <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
         <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
