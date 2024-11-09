@@ -3,7 +3,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Definir o diretório de trabalho
 WORKDIR /source
-    
 
 # Copiar arquivos de solução e de projeto
 COPY *.sln ./
@@ -36,20 +35,17 @@ WORKDIR /app
 # Copiar a saída da compilação da etapa anterior
 COPY --from=build /app .
 
-# Copiar o arquivo .env do diretório Layer.Application para o diretório de trabalho do container
-# COPY Layer.Application/.env.production .env.production
+# Copiar o arquivo .env para o diretório de trabalho do container
+COPY Layer.Application/.env .env
 
 # Expor a porta que a aplicação vai utilizar
 EXPOSE 8080
 
-# Definir a variável de ambiente para especificar a URL e a porta
+# Definir a URL e a porta
 ENV ASPNETCORE_URLS=http://+:8080
 
-ENV DISABLE_HTTPS_REDIRECTION=true
-
-# Env de produção
+# Setar ambiente de produção
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-# Iniciar a aplicação
-# CMD ["bash", "-c", "export $(cat .env | xargs) && dotnet Layer.Application.dll"]
-CMD ["dotnet", "Layer.Application.dll"]
+# Iniciar a aplicação e carregar variáveis do arquivo .env
+CMD ["bash", "-c", "export $(cat .env | xargs) && dotnet Layer.Application.dll"]
