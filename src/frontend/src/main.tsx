@@ -14,6 +14,7 @@ import './index.css'
 import App from './desktop/App';
 import Landing from './desktop/pages/Landing';
 import Login from './desktop/pages/Login';
+import NotFound from './desktop/pages/NotFound';
 
 // Import mobile components and pages
 import AppMobile from './mobile/App';
@@ -36,6 +37,8 @@ const Root = () => {
         <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
         <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
         <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
