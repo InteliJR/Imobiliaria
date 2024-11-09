@@ -236,13 +236,6 @@ if (env == "Development")
     app.UseHttpsRedirection();
 }
 
-// Se tiver em prod pular isso
-
-if (env == "Development")
-{
-    app.UseHttpsRedirection();
-}
-
 app.UseRouting();
 
 app.UseAuthentication();

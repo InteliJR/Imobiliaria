@@ -143,7 +143,7 @@ namespace Layer.Services.Services
 
                 if (locador == null)
                 {
-                    return null;
+                    throw new Exception("Locador não encontrado.");
                 }
 
                 return locador;

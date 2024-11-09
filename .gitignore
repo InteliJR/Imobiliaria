@@ -34,19 +34,9 @@ slnx.sqlite
 .env.development
 .env.production
 
-src/Auth-service/Layer.Application/obj/
-src/Auth-service/Layer.Services/obj/
-
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-**/bin/
-
-src/Auth-service/Layer.Application/bin/
-
-
-**/obj/
 
 # Created by https://www.toptal.com/developers/gitignore/api/aspnetcore
 # Edit at https://www.toptal.com/developers/gitignore?templates=aspnetcore
@@ -344,4 +334,4 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react
 
-src/Auth-service/Layer.Application/obj/Layer.Application.csproj.nuget.g.props
+
