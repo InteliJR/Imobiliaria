@@ -1,42 +1,45 @@
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/FooterBig";
 import WelcomeBanner from "../components/Landing/WelcomeBanner";
 import FeaturesSection from "../components/Landing/FeaturesSection";
 import logoSimplified from "../../assets/landingPage/logoSimplified.svg";
+import Botao from "../components/botoes/Botao";
 
 export default function Landing() {
+  const navigate = useNavigate();
+
   return (
-    <div>
+    <main className="main-custom">
       <Navbar showLoginButton={true} />
 
-      <main className="main-custom">
+      <section className="section-custom">
         <WelcomeBanner />
-
         <FeaturesSection />
 
-        <div className="relative"> {/* Div para criar um container relativo e posicionar a logo simplificada (absolute)  */}
-          <p className="text-right leading-tight">
+        {/* Div contêiner para o parágrafo e a imagem */}
+        <div className="relative">
+          <p className="text-right leading-tight z-10 relative">
             A plataforma que <span className="font-bold">centraliza</span> toda
             a relação entre locador e locatário, simplificando a gestão de
             imóveis, contratos e pagamentos em um só lugar
           </p>
-
-          <img // Logo que fica espalhada pela tela
+          <img
             src={logoSimplified}
             className="w-16 absolute -bottom-6 -left-6 z-0 -rotate-45 opacity-75"
             alt="Logotipo simplificado da K.K. Administradora"
           />
         </div>
 
-        <button
-          className="w-full h-10 z-10 bg-gray-600 rounded-md"
-          aria-label="Entrar na plataforma"
-        >
-          Entrar
-        </button>
-      </main>
+        <Botao
+          label="Entrar"
+          onClick={() => {
+            navigate("/login");
+          }}
+        />
+      </section>
 
       <Footer />
-    </div>
+    </main>
   );
 }

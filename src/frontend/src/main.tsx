@@ -11,15 +11,19 @@ import Profile from './pages/Profile'
 import './index.css'
 
 // Import desktop components and pages
-import App from './desktop/App';
 import Landing from './desktop/pages/Landing';
 import Login from './desktop/pages/Login';
+import Perfil from './desktop/pages/Perfil';
+import AlterarSenha from './desktop/pages/AlterarSenha';
+import EditarPerfil from './mobile/pages/EditarPerfil';
 import NotFound from './desktop/pages/NotFound';
 
 // Import mobile components and pages
-import AppMobile from './mobile/App';
 import LandingMobile from './mobile/pages/Landing';
 import LoginMobile from './mobile/pages/Login';
+import PerfilMobile from './mobile/pages/Perfil';
+import EditarPerfilMobile from './mobile/pages/EditarPerfil';
+import AlterarSenhaMobile from './mobile/pages/AlterarSenha';
 import VisualizarImoveis from './mobile/pages/VisualizarImoveis';
 import VisualizarChamados from './mobile/pages/VisualizarChamados';
 import VisualizarUsuarios from './mobile/pages/VisualizarUsuarios';
@@ -30,9 +34,11 @@ const Root = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={isDesktop ? <App /> : <AppMobile />} />
-        <Route path="/landing" element={isDesktop ? <Landing /> : <LandingMobile />} />
+        <Route path="/" element={isDesktop ? <Landing /> : <LandingMobile />} />
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
+        <Route path="/perfil" element={isDesktop ? <Perfil /> : <PerfilMobile />} />
+        <Route path="/perfil/editar" element={isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />} />
+        <Route path="/perfil/alterar-senha" element={isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile/>} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
         <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
