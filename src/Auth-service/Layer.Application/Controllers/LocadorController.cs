@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Layer.Domain.Enums;
+using System.IdentityModel.Tokens.Jwt;
+using Layer.Infrastructure.Database;
 
 namespace Layer.Application.Controllers
 {
@@ -17,11 +19,13 @@ namespace Layer.Application.Controllers
 
         private readonly ILocadorService _locadorService;
         private readonly IUserService _userService;
+        private readonly ApplicationLog _applicationLog;
 
-        public LocadorController(ILocadorService locadorService, IUserService userService)
+        public LocadorController(ILocadorService locadorService, IUserService userService, ApplicationLog applicationLog)
         {
             _locadorService = locadorService;
             _userService = userService;
+            _applicationLog = applicationLog;
         }
 
         [HttpGet("PegarTodosLocadores")]
@@ -37,12 +41,13 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> GetLocadorByEmail([FromQuery] string email)
         {
             var locador = await _locadorService.GetLocadorByEmail(email);
-            return Ok(locador);
+
+            if (locador == null) { return BadRequest("Locador não encontrado."); } else { return Ok(locador); }
         }
 
         [HttpPost("AdicionarNovoLocador")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> AddNewLocador([Required] [EmailAddress] string email, [FromBody] NewLocadorModel locador)
+        public async Task<IActionResult> AddNewLocador([Required][EmailAddress] string email, [FromBody] NewLocadorModel locador)
         {
             if (!ModelState.IsValid)
             {
@@ -82,6 +87,9 @@ namespace Layer.Application.Controllers
             };
 
             var newLocador = await _locadorService.InsertNewLocador(locadorNew);
+
+            await _applicationLog.LogAsync($"Criar Locatario com email {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(newLocador);
         }
 
@@ -97,8 +105,15 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = "AdminORLocador")]
         public async Task<IActionResult> GetLocadorByUserId([FromQuery] int userId)
         {
-            var locador = await _locadorService.GetLocadorByUserId(userId);
-            return Ok(locador);
+            try
+            {
+                var locador = await _locadorService.GetLocadorByUserId(userId);
+                return Ok(locador);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("PegarLocadorPorLocadorID")]
@@ -106,7 +121,8 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> GetLocadorByLocadorID([FromQuery] int locadorID)
         {
             var locador = await _locadorService.GetLocadorByLocadorID(locadorID);
-            return Ok(locador);
+
+            if (locador == null) { return BadRequest("Locador não encontrado."); } else { return Ok(locador); }
         }
 
         [HttpPost("AtualizarLocador")]
@@ -136,22 +152,24 @@ namespace Layer.Application.Controllers
 
             if (!string.IsNullOrEmpty(locadorToUpdate.CPF))
                 locador.CPF = locadorToUpdate.CPF;
-            if(!string.IsNullOrEmpty(locadorToUpdate.Nacionalidade))
+            if (!string.IsNullOrEmpty(locadorToUpdate.Nacionalidade))
                 locador.Nacionalidade = locadorToUpdate.Nacionalidade;
-            if(!string.IsNullOrEmpty(locadorToUpdate.NumeroTelefone))
+            if (!string.IsNullOrEmpty(locadorToUpdate.NumeroTelefone))
                 locador.NumeroTelefone = locadorToUpdate.NumeroTelefone;
-            if(!string.IsNullOrEmpty(locadorToUpdate.NomeCompletoLocador))
+            if (!string.IsNullOrEmpty(locadorToUpdate.NomeCompletoLocador))
                 locador.NomeCompletoLocador = locadorToUpdate.NomeCompletoLocador;
-            if(!string.IsNullOrEmpty(locadorToUpdate.CNPJ))
+            if (!string.IsNullOrEmpty(locadorToUpdate.CNPJ))
                 locador.CNPJ = locadorToUpdate.CNPJ;
-            if(!string.IsNullOrEmpty(locadorToUpdate.Endereco))
+            if (!string.IsNullOrEmpty(locadorToUpdate.Endereco))
                 locador.Endereco = locadorToUpdate.Endereco;
-            if(!string.IsNullOrEmpty(locadorToUpdate.Passaporte))
+            if (!string.IsNullOrEmpty(locadorToUpdate.Passaporte))
                 locador.Passaporte = locadorToUpdate.Passaporte;
-            if(!string.IsNullOrEmpty(locadorToUpdate.RG))
+            if (!string.IsNullOrEmpty(locadorToUpdate.RG))
                 locador.RG = locadorToUpdate.RG;
 
             var updatedLocador = await _locadorService.UpdateLocador(locador);
+
+            await _applicationLog.LogAsync($"Atualizar Locador com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(updatedLocador);
         }
@@ -161,6 +179,9 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> DeleteLocador([FromBody] string CPF)
         {
             var locador = await _locadorService.DeleteLocador(CPF);
+
+            await _applicationLog.LogAsync($"Deletar Locador com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(locador);
         }
 
@@ -170,7 +191,7 @@ namespace Layer.Application.Controllers
         {
             var roleClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;
 
-            if(roleClaim != null && roleClaim == "Locador")
+            if (roleClaim != null && roleClaim == "Locador")
             {
                 var locadorIdClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleID").Value;
 

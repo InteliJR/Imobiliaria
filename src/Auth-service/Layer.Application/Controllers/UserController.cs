@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using Layer.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Layer.Infrastructure.Database;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+
+
 
 namespace Layer.Application.Controllers
 {
@@ -16,11 +21,13 @@ namespace Layer.Application.Controllers
     {
         // Chamar o serviço de usuário
         private readonly IUserService _userService;
+        private readonly ApplicationLog _applicationLog;
 
         // Construtor
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ApplicationLog applicationLog)
         {
             _userService = userService;
+            _applicationLog = applicationLog;
         }
 
         // Rota de pagar todos os usuários
@@ -28,6 +35,10 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllUsers()
         {
+            // Registra a ação no log
+
+            await _applicationLog.LogAsync("PegarTodosUsuarios", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             var users = await _userService.GetUsuariosAsync();
             return Ok(users);
         }
@@ -52,6 +63,9 @@ namespace Layer.Application.Controllers
             };
 
             var newUser = await _userService.InsertNewUser(user, true);
+
+            await _applicationLog.LogAsync($"Adicao de novo usuário, com o email {user.Email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(newUser);
         }
 
@@ -93,10 +107,13 @@ namespace Layer.Application.Controllers
 
         [HttpDelete("DeletarUsuario")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> DeleteUser([FromQuery] [EmailAddress] string email)
+        public async Task<IActionResult> DeleteUser([FromQuery][EmailAddress] string email)
         {
 
             await _userService.DeleteUser(email);
+
+
+            await _applicationLog.LogAsync($"Exclusão de usuário com o email {email}", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok("Usuário deletado com sucesso.");
         }
@@ -107,6 +124,8 @@ namespace Layer.Application.Controllers
         {
 
             await _userService.InactivateUser(email);
+
+            await _applicationLog.LogAsync($"Inativação usuário, com o email {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok("Usuário inativado com sucesso.");
         }
@@ -138,6 +157,8 @@ namespace Layer.Application.Controllers
             var user = userLocador.Item1;
             var locadorCretead = userLocador.Item2;
 
+            await _applicationLog.LogAsync($"Criação de usuario Locador {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(new { user, locador });
         }
 
@@ -166,6 +187,8 @@ namespace Layer.Application.Controllers
             var user = userLocatario.Item1;
             var locatarioCretead = userLocatario.Item2;
 
+            await _applicationLog.LogAsync($"Criação de usuario Locatario {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(new { user, locatario });
         }
 
@@ -186,6 +209,8 @@ namespace Layer.Application.Controllers
             // Forçar desserialização do objeto para devolver
             var user = userColaborador.Item1;
             var colaboradorCretead = userColaborador.Item2;
+
+            await _applicationLog.LogAsync($"Criação de usuario Admin {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(new { user, colaboradorCretead });
         }
@@ -208,6 +233,8 @@ namespace Layer.Application.Controllers
             var user = userColaborador.Item1;
             var colaboradorCretead = userColaborador.Item2;
 
+            await _applicationLog.LogAsync($"Criação de usuario Judiciario {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(new { user, colaboradorCretead });
         }
 
@@ -224,14 +251,18 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
             var newPassword = await _userService.UserForgotPassword(email);
+            await _applicationLog.LogAsync($"Usuario com {email}, redefinou a senha ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return Ok(newPassword);
         }
 
         [HttpPost("AlterarSenhaUsuario")]
         [Authorize(Policy = "AllRoles")]
-        public async Task<IActionResult> ChangePassword([FromQuery] string email, [PasswordPropertyText]  string oldPassword, [PasswordPropertyText]  string newPassword)
+        public async Task<IActionResult> ChangePassword([FromQuery] string email, [PasswordPropertyText] string oldPassword, [PasswordPropertyText] string newPassword)
         {
             var newPass = await _userService.ChangePassword(email, oldPassword, newPassword);
+
+            await _applicationLog.LogAsync($"Usuario com {email} alterou sua senha", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(newPass);
         }
 
