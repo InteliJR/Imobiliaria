@@ -1,10 +1,14 @@
-// main.tsx or main.js
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useMediaQuery } from 'react-responsive';
 
-import './index.css';
+// main.tsx or main.js (depending on your setup)
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useMediaQuery } from 'react-responsive';
+import  App  from './App'
+import Landing from './pages/Landing'
+import Login from './pages/Login'
+import Profile from './pages/Profile'
+import './index.css'
 
 // Import desktop components and pages
 import Landing from './desktop/pages/Landing';
@@ -12,6 +16,7 @@ import Login from './desktop/pages/Login';
 import Perfil from './desktop/pages/Perfil';
 import AlterarSenha from './desktop/pages/AlterarSenha';
 import EditarPerfil from './mobile/pages/EditarPerfil';
+import NotFound from './desktop/pages/NotFound';
 
 // Import mobile components and pages
 import LandingMobile from './mobile/pages/Landing';
@@ -34,9 +39,12 @@ const Root = () => {
         <Route path="/perfil" element={isDesktop ? <Perfil /> : <PerfilMobile />} />
         <Route path="/perfil/editar" element={isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />} />
         <Route path="/perfil/alterar-senha" element={isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile/>} />
+        <Route path="/profile/:id" element={<Profile />} />
         <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
         <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
         <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
