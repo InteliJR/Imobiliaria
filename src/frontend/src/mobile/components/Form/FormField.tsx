@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 interface FormFieldProps {
   label: string;
   placeholder?: string;
+  initialValue?: string; 
   onChange: (value: string) => void;
   isPassword?: boolean;
 }
 
-const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', onChange, isPassword = false }) => {
-  const [value, setValue] = useState<string>('');
+const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', initialValue = '', onChange, isPassword = false }) => {
+  const [value, setValue] = useState<string>(initialValue); // Usa initialValue como valor inicial
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    setValue(initialValue); // Define o valor inicial na montagem do componente
+  }, [initialValue]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -18,7 +23,6 @@ const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', onChange
     onChange(newValue);
   };
 
-  // Alterna entre o tipo "password" e "text"
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -29,11 +33,11 @@ const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', onChange
         {label}
       </label>
       <input
-        type={isPassword && !isPasswordVisible ? "password" : "text"} // Altera o tipo com base no estado
+        type={isPassword && !isPasswordVisible ? "password" : "text"}
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className={`h-10 flex-grow pr-10 tracking-wider ${ // Ajusta o padding para espaço do ícone
+        className={`h-10 flex-grow pr-10 tracking-wider ${
           value ? 'bg-gray-100 border border-black' : 'bg-[#D9D9D9]'
         } focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
       />
