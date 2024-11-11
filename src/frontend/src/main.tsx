@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 import './index.css'
+import Profile from './pages/Profile'
 
 // Import desktop components and pages
 import Landing from './desktop/pages/Landing';
