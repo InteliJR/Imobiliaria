@@ -14,13 +14,21 @@ export default function Login() {
           {/* Form */}
           <h2 className="text-start text-title font-strong mb-10">Login</h2>
 
-          <form className="">
+          <form>
             <div className='mb-6'>
-              <FormField placeholder="Email" label="Email:"/>
-              
+              <FormField 
+                placeholder="Email" 
+                label="Email:" 
+                onChange={() => {}} // Função onChange vazia
+              />
             </div>
             <div className='mb-10'>
-              <FormField placeholder="Password" label="Senha:"/>
+              <FormField 
+                placeholder="Password" 
+                label="Senha:" 
+                isPassword={true} 
+                onChange={() => {}} // Função onChange vazia
+              />
             </div>
             {/* Submit Button */}
             <button

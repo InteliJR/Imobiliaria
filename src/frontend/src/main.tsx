@@ -4,10 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
-import  App  from './App'
-import Landing from './pages/Landing'
-import Login from './pages/Login'
-import Profile from './pages/Profile'
+import Profile from './mobile/pages/Profile'
 import './index.css'
 
 // Import desktop components and pages

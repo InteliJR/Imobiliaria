@@ -4,7 +4,7 @@ import Footer from "../components/Footer/FooterBig";
 import WelcomeBanner from "../components/Landing/WelcomeBanner";
 import FeaturesSection from "../components/Landing/FeaturesSection";
 import logoSimplified from "../../assets/landingPage/logoSimplified.svg";
-import Botao from "../components/botoes/Botao";
+import Botao from "../components/Botoes/Botao";
 
 export default function Landing() {
   const navigate = useNavigate();

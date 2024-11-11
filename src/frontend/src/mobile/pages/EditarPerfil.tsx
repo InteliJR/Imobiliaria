@@ -4,7 +4,7 @@ import Footer from "../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import FormField from "../components/Form/FormField";
 import ModalConfirmacao from "../components/ModalConfirmacao";
-import Botao from "../components/botoes/Botao";
+import Botao from "../components/Botoes/Botao";
 
 export default function EditarPerfil() {
   // Estado do formulário para armazenar dados do usuário
@@ -26,7 +26,8 @@ export default function EditarPerfil() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const handleInputChange = (field, value) => {
+  // Tipagem explícita para os parâmetros 'field' e 'value'
+  const handleInputChange = (field: keyof typeof userData, value: string) => {
     setUserData((prevData) => ({
       ...prevData,
       [field]: value,
