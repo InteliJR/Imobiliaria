@@ -4,10 +4,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
-import  App  from './App'
-import Landing from './pages/Landing'
-import Login from './pages/Login'
-import Profile from './pages/Profile'
 import './index.css'
 
 // Import desktop components and pages
@@ -15,8 +11,9 @@ import Landing from './desktop/pages/Landing';
 import Login from './desktop/pages/Login';
 import Perfil from './desktop/pages/Perfil';
 import AlterarSenha from './desktop/pages/AlterarSenha';
-import EditarPerfil from './mobile/pages/EditarPerfil';
+import EditarPerfil from './desktop/pages/EditarPerfil';
 import NotFound from './desktop/pages/NotFound';
+import Chamado from './desktop/pages/Chamado'; // Visualizar um chamado
 
 // Import mobile components and pages
 import LandingMobile from './mobile/pages/Landing';
@@ -25,7 +22,8 @@ import PerfilMobile from './mobile/pages/Perfil';
 import EditarPerfilMobile from './mobile/pages/EditarPerfil';
 import AlterarSenhaMobile from './mobile/pages/AlterarSenha';
 import VisualizarImoveis from './mobile/pages/VisualizarImoveis';
-import VisualizarChamados from './mobile/pages/VisualizarChamados';
+import VisualizarChamados from './mobile/pages/VisualizarChamados'; // Visualizar lista de chamados
+import ChamadoMobile from './mobile/pages/Chamado'; // Visualizar um chamado
 import VisualizarUsuarios from './mobile/pages/VisualizarUsuarios';
 
 const Root = () => {
@@ -39,9 +37,10 @@ const Root = () => {
         <Route path="/perfil" element={isDesktop ? <Perfil /> : <PerfilMobile />} />
         <Route path="/perfil/editar" element={isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />} />
         <Route path="/perfil/alterar-senha" element={isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile/>} />
-        <Route path="/profile/:id" element={<Profile />} />
+        {/* <Route path="/profile/:id" element={<Profile />} /> */}
         <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
         <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
+        <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile/>} />
         <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
 
         <Route path="*" element={<NotFound />} />
