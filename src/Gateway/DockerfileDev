@@ -1,0 +1,9 @@
+FROM nginx:alpine
+
+COPY nginxDev.conf /etc/nginx/nginxDev.conf
+
+EXPOSE 8093
+EXPOSE 8094
+
+# Inciar o nginx com config personalizada
+CMD ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/nginxDev.conf"]
