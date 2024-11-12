@@ -25,7 +25,6 @@
   input,
   select,
   textarea,
-  img,
   .card,
   .container {
     @apply rounded;
@@ -33,6 +32,10 @@
 }
 
 .main-custom { /* classe padrão para elementos main  */
-  @apply flex flex-col gap-4 px-4 py-6 overflow-hidden bg-gray-200;
+  @apply flex flex-col min-h-screen;
+}
+
+.section-custom { /* classe padrão para elementos main  */
+  @apply flex-grow flex flex-col gap-4 px-4 py-6 overflow-hidden bg-gray-200;
 }
 

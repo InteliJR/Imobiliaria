@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importa o useNavigate
-import Menu from '../Menu'; // Ajuste o caminho se necessário
+import Menu from './Menu'; // Ajuste o caminho se necessário
 
 interface NavbarProps {
   showLoginButton?: boolean; // Prop opcional para exibir o botão "Entrar"
