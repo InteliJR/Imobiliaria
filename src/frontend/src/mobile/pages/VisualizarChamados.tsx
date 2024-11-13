@@ -53,6 +53,7 @@ export default function MainPage() {
                             return (
                                 <Card 
                                     key={index} 
+                                    id={index + 1} // Adiciona o id para cada chamado
                                     title={`Chamado ${index + 1}`}
                                     line1="Lucas Matheus Nunes"
                                     line2="Bubuntantã"
