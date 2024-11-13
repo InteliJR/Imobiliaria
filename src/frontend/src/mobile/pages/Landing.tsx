@@ -9,6 +9,8 @@ import Botao from "../components/Botoes/Botao";
 export default function Landing() {
   const navigate = useNavigate();
 
+  console.log("h")
+
   return (
     <main className="main-custom">
       <Navbar showLoginButton={true} />
