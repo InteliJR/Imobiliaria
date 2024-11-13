@@ -121,6 +121,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(nameof(Roles.Locatario), policy => policy.RequireRole(nameof(Roles.Locatario)));
 });
 
+builder.Services.AddHostedService<PaymentReminderService>();
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
