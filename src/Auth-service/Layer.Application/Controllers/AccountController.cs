@@ -24,8 +24,10 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginModel loginModel) {
-            if (!ModelState.IsValid) {
+        public async Task<IActionResult> Login([FromBody] UserLoginModel loginModel)
+        {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
             }
 
@@ -33,7 +35,8 @@ namespace Layer.Application.Controllers
 
             // Verificar hash da senha
 
-            if (user == null || !(await _hashingPasswordService.VerifyPassword(loginModel.Senha, user.Senha))) {
+            if (user == null || !(await _hashingPasswordService.VerifyPassword(loginModel.Senha, user.Senha)))
+            {
                 return BadRequest("Usuário ou senha inválidos");
             }
 
@@ -41,10 +44,11 @@ namespace Layer.Application.Controllers
 
             return Ok(token);
         }
-        
+
         [Authorize]
         [HttpPost("WhoAmI")]
-        public async Task<IActionResult> WhoAmI() {
+        public async Task<IActionResult> WhoAmI()
+        {
             // Puxar Email do usuário logado
             var email = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 

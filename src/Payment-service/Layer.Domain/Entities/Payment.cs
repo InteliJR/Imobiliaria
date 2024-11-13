@@ -25,8 +25,8 @@ namespace Layer.Domain.Entities
         [Column("data")]
         public DateTime Data { get; set; }
 
-        [Column("pagante")]
-        [MaxLength(100)]
+        [Column("locatarioid")]
+        public int LocatarioId { get; set; } // Chave estrangeira para a tabela de locatarios
         public string Pagante { get; set; } 
 
         [Column("metodo_pagamento")]

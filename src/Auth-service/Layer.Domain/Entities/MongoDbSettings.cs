@@ -13,3 +13,4 @@ namespace Layer.Domain.Entities
         public string LogsCollectionName { get; set; } = "Logs";
     }
 }
+

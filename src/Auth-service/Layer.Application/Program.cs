@@ -227,15 +227,19 @@ RecurringJob.AddOrUpdate<HangfireJobsHelper>(
     "verificar-usuarios-inativos",
     x => x.VerificarUsuariosInativos(),
     Cron.DayInterval(15));
-    //Cron.Minutely);
+//Cron.Minutely);
 
 // Se tiver em prod pular isso
 
 if (env == "Development")
 {
+    app.UseHttpsRedirection();
+}
+
+if (env == "Development")
+{
 app.UseHttpsRedirection();
 }
-    
 app.UseRouting();
 
 app.UseAuthentication();
