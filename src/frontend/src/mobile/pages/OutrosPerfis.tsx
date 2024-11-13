@@ -13,7 +13,7 @@ export default function Perfil() {
   const navigate = useNavigate(); // Obtendo a função navigate
 
   const profileEdit = () => {
-    navigate("/perfil/editar"); // Navega para a página de edição de perfil
+    navigate("/perfil/editar/:id"); // Navega para a página de edição de perfil passando o id do usuário em questão
   };
 
   const showModal = () => {
@@ -22,7 +22,7 @@ export default function Perfil() {
 
   const handleConfirm = () => {
     setIsModalVisible(false);
-    console.log("Restar senha deste usuário")
+    console.log("Resetar senha deste usuário");
     // Lógica de integração com o back
   };
 
@@ -38,22 +38,21 @@ export default function Perfil() {
       <section className="section-custom">
         <Voltar />
 
-        <div>
-          <h1 className="text-title font-strong">Nome do Usuário</h1>
-          <h2 className="text-sm text-gray-700">Tipo de usuário</h2>
-        </div>
+        <h1 className="text-title font-strong mb-2">Nome do Usuário</h1>
 
         <Botao label="Editar Perfil" onClick={profileEdit} />
 
         <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
           <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
 
+          <VisualizarItem label="Tipo do usuário" informacao="Comum" />
           <VisualizarItem
             label="E-mail"
             informacao="emailDoUsuario@gmail.com"
           />
           <VisualizarItem label="Telefone" informacao="(11) 12345-6789" />
           <VisualizarItem label="Data de Criação" informacao="25/09/2024" />
+          <VisualizarItem label="Senha" informacao="senhaDoUsuario4321" />
         </div>
 
         <BotaoAlterarSenha label="Resetar Senha" onClick={showModal} />
