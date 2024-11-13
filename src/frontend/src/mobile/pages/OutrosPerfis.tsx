@@ -4,8 +4,8 @@ import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
-import Botao from "../components/botoes/Botao";
-import BotaoAlterarSenha from "../components/botoes/BotaoAlterarSenha";
+import Botao from "../components/Botoes/Botao";
+import BotaoAlterarSenha from "../components/Botoes/BotaoAlterarSenha";
 import ModalConfirmacao from "../components/ModalConfirmacao";
 
 export default function Perfil() {
