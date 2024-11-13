@@ -115,6 +115,11 @@ namespace Layer.Application.Controllers
                 return BadRequest(ex.Message);
             }
         }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet("PegarLocadorPorLocadorID")]
         [Authorize(Policy = "AdminORLocador")]

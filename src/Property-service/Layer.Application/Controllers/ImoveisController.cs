@@ -24,7 +24,7 @@ namespace Layer.Application.Controllers
 
         // Rota de pagar todos os imóveis
         [HttpGet("PegarTodosImoveis")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetAllImoveis()
         {
             var imoveis = await _imoveisService.GetImoveisAsync();
@@ -32,6 +32,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("CriarUmNovoImovel")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> PostImoveis([FromBody] NewImoveis newImovel)
         {
             if (!ModelState.IsValid)
@@ -54,7 +55,9 @@ namespace Layer.Application.Controllers
             var novoImovel = await _imoveisService.PostImoveisAsync(imovel);
             return Ok(novoImovel);
         }
+
         [HttpPut("AtualizarImovel/{id}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> UpdateImovel(int id, [FromBody] UpdateImoveis updatedImovel)
         {
             if (!ModelState.IsValid)
@@ -83,6 +86,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarImovelPorId/{id}")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetImovelById(int id)
         {
             var imovel = await _imoveisService.GetByIdImoveisAsync(id);
@@ -94,6 +98,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpDelete("DeletarImovel/{id}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteImovel(int id)
         {
             var imovel = await _imoveisService.GetByIdImoveisAsync(id);

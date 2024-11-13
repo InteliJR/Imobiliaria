@@ -21,12 +21,14 @@ namespace Layer.Services.Services
         private readonly AppDbContext _dbcontext;
         private readonly IEmailSender _emailSender;
         private readonly IHashingPasswordService hashingPasswordService;
+        private readonly ApplicationLog _applicationLog;
 
-        public UserService(AppDbContext dbcontext, IEmailSender emailSender, IHashingPasswordService hashingPasswordService)
+        public UserService(AppDbContext dbcontext, IEmailSender emailSender, IHashingPasswordService hashingPasswordService, ApplicationLog applicationLog)
         {
             _dbcontext = dbcontext;
             _emailSender = emailSender;
             this.hashingPasswordService = hashingPasswordService;
+            _applicationLog = applicationLog;
         }
 
         private static string RandomString(int length)
