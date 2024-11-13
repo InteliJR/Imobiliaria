@@ -90,12 +90,14 @@ namespace property_management.Controllers
 
         [HttpPut("AtualizarContrato/{id}")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> UpdateContrato(int id, [FromBody] Contratos novocontrato)
+        public async Task<IActionResult> UpdateContrato([FromBody] Contratos novocontrato)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            var id = novocontrato.ContratoId;
 
             var contrato = await _contratoService.GetByIdAsync(id);
 
@@ -105,9 +107,6 @@ namespace property_management.Controllers
             }
 
             // Atualizando os campos do contrato existente com os valores do novo contrato
-            contrato.LocadorId = novocontrato.LocadorId;
-            contrato.LocatarioId = novocontrato.LocatarioId;
-            contrato.ImovelId = novocontrato.ImovelId;
             contrato.ValorAluguel = novocontrato.ValorAluguel;
             contrato.Iptu = novocontrato.Iptu;
             contrato.TaxaAdm = novocontrato.TaxaAdm;

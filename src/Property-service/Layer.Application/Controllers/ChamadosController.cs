@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace property_management.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ChamadosController : ControllerBase
     {
         private readonly IChamadosRepository _chamadosService;
