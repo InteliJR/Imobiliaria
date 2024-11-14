@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Layer.Domain.DTO;
 using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
+using Layer.Domain.Enums;
 
 namespace Layer.Application.Controllers
 {

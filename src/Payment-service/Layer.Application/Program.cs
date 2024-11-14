@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using Layer.Domain.Interfaces;
+using Layer.Domain.Enums;
 using Layer.Services;
 using Layer.Services.Services;
 using Layer.Infrastructure.Database;
@@ -44,6 +45,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Registrar o serviço de pagamentos (IPaymentService / PaymentService)
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 
 // Injeção de dependências de outros serviços
 builder.Services.AddScoped<IUserService, UserService>();
@@ -53,17 +55,12 @@ builder.Services.AddScoped<CountryService>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
-({
-    options.AddPolicy(nameof(Roles.Admin), policy => policy.RequireRole(nameof(Roles.Admin)));
-    options.AddPolicy(nameof(Roles.Locador), policy => policy.RequireRole(nameof(Roles.Locador)));
-    options.AddPolicy(nameof(Roles.Locatario), policy => policy.RequireRole(nameof(Roles.Locatario)));
-    options.AddPolicy(nameof(Roles.Judiciario), policy => policy.RequireRole(nameof(Roles.Judiciario)));
-    options.AddPolicy("AllRoles", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locador), nameof(Roles.Locatario), nameof(Roles.Judiciario)));
-    options.AddPolicy("LocadorORLocatario", policy => policy.RequireRole(nameof(Roles.Locador), nameof(Roles.Locatario)));
-    options.AddPolicy("AdminORJudiciario", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Judiciario)));
-    options.AddPolicy("AdminORLocador", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locador)));
-    options.AddPolicy("AdminORLocatario", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locatario)));
-});
+{
+    SecretKey = Environment.GetEnvironmentVariable("JwtSettings__SecretKey"),
+    ExpiryMinutes = int.Parse(Environment.GetEnvironmentVariable("JwtSettings__ExpiryMinutes")),
+    Issuer = Environment.GetEnvironmentVariable("JwtSettings__Issuer"),
+    Audience = Environment.GetEnvironmentVariable("JwtSettings__Audience")
+};
 builder.Services.AddSingleton(jwtSettings);
 
 // Configura autenticação JWT
@@ -114,11 +111,18 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Configurar roles para o JWT
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(nameof(Roles.Admin), policy => policy.RequireRole(nameof(Roles.Admin)));
     options.AddPolicy(nameof(Roles.Locador), policy => policy.RequireRole(nameof(Roles.Locador)));
     options.AddPolicy(nameof(Roles.Locatario), policy => policy.RequireRole(nameof(Roles.Locatario)));
+    options.AddPolicy(nameof(Roles.Judiciario), policy => policy.RequireRole(nameof(Roles.Judiciario)));
+    options.AddPolicy("AllRoles", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locador), nameof(Roles.Locatario), nameof(Roles.Judiciario)));
+    options.AddPolicy("LocadorORLocatario", policy => policy.RequireRole(nameof(Roles.Locador), nameof(Roles.Locatario)));
+    options.AddPolicy("AdminORJudiciario", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Judiciario)));
+    options.AddPolicy("AdminORLocador", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locador)));
+    options.AddPolicy("AdminORLocatario", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locatario)));
 });
 
 builder.Services.AddHostedService<PaymentReminderService>();

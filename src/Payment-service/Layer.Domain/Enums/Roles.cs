@@ -10,7 +10,8 @@ namespace Layer.Domain.Enums
     {
         Admin,
         Locador,
-        Locatario
+        Locatario,
+        Judiciario
     }
 
 }
