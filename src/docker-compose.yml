@@ -14,16 +14,30 @@ services:
       - ./Auth-service/Layer.Application/.env.production
     networks:
       - app-network
-  frontend:
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "83:80"
+  #   networks:
+  #     - app-network
+  #   depends_on:
+  #     - auth-service
+  mongodb:
     build:
-      context: ./frontend
+      context: ./logging-mongodb
       dockerfile: Dockerfile
+    container_name: mongodb-auth
+    restart: unless-stopped
     ports:
-      - "83:80"
-    networks:
-      - app-network
-    depends_on:
-      - auth-service
+      - "27017:27017"
+    env_file:
+      - ./logging-mongodb/.env  # Certifique-se de que o .env está em UTF-8 sem BOM
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    command: ["--auth"]
 
 networks:
   app-network:
