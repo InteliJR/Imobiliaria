@@ -8,7 +8,7 @@ using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
 using Layer.Domain.Enums;
 using Layer.Services.Services;
-
+using Layer.Infrastructure.Database;
 namespace Layer.Application.Controllers
 {
     [ApiController]
@@ -32,7 +32,6 @@ namespace Layer.Application.Controllers
         public async Task<ActionResult<IEnumerable<Payment>>> GetAllPayments()
         {
             var payments = await _paymentService.GetAllPaymentsAsync();
-            _applicationLog.LogInformation("List of payments retrieved.");
             return Ok(payments);
         }
 
