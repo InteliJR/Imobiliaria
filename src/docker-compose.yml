@@ -34,6 +34,8 @@ services:
       - "27017:27017"
     env_file:
       - ./logging-mongodb/.env  # Certifique-se de que o .env está em UTF-8 sem BOM
+    networks:
+      - app-network
     # environment:
     #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
     #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
