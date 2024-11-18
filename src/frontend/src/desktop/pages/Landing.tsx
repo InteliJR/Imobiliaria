@@ -11,14 +11,14 @@ export default function Landing() {
       <section className="section-custom">
         <div className="flex items-center justify-center h-96 w-screen -ml-4 -mt-6 bg-green-500">
           <img src="" alt="" />
-          <div className="bg-gray-100 h-40 w-1 rounded" />
+          <div className="bg-gray-100 h-52 w-1 rounded" />
           <img src="" alt="" />
         </div>
 
-        <FeaturesSection />
 
-        <div className="flex justify-center w-full">
-          <p className="text-right leading-tight my-4 max-w-2xl">
+        <div className="flex justify-center items-center w-full gap-4 my-4">
+        <FeaturesSection />
+          <p className="w-[52rem] 2xl:w-[120rem] text-right leading-tight max-w-2xl">
             A plataforma que <span className="font-bold">centraliza</span>
             toda a relação entre locador e locatário, simplificando a gestão de
             imóveis, contratos e pagamentos em um só lugar
