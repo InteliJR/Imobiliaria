@@ -7,8 +7,7 @@ using Layer.Domain.DTO;
 using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
 using Layer.Domain.Enums;
-using Layer.Services.Services;
-using Layer.Infrastructure.Database;
+
 namespace Layer.Application.Controllers
 {
     [ApiController]

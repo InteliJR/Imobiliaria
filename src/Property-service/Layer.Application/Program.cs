@@ -54,7 +54,7 @@ builder.Configuration.AddEnvironmentVariables();
 //Console.WriteLine("Created Cloud Firestore client with project ID: {0}", project);
 
 // Definir o caminho do arquivo de credenciais Firebase corretamente
-string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json");
+string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json");
 
 // Definir a variável de ambiente GOOGLE_APPLICATION_CREDENTIALS
 Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);

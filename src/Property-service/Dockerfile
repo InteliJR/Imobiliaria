@@ -1,10 +1,10 @@
 # Etapa 1: Imagem base para build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-# Definir o diretório de trabalho
+# Definir o diretï¿½rio de trabalho
 WORKDIR /source
 
-# Copiar arquivos de solução e de projeto
+# Copiar arquivos de soluï¿½ï¿½o e de projeto
 COPY *.sln ./
 COPY "Layer.Application/*.csproj" "./Layer.Application/"
 COPY "Layer.Domain/*.csproj" "./Layer.Domain/"
@@ -14,10 +14,10 @@ COPY "Layer.Services/*.csproj" "./Layer.Services/"
 # Limpar o cache de pacotes do NuGet
 RUN dotnet nuget locals all --clear
 
-# Restaurar dependências
+# Restaurar dependï¿½ncias
 RUN dotnet restore "./Layer.Application/Layer.Application.csproj" --force
 
-# Copiar o restante do código fonte
+# Copiar o restante do cï¿½digo fonte
 COPY . .
 
 # Compilar o projeto em modo Release
@@ -29,21 +29,23 @@ RUN dotnet publish "./Layer.Application/Layer.Application.csproj" -c Release -o 
 # Etapa 2: Imagem base para runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
-# Definir o diretório de trabalho no container
+# Definir o diretï¿½rio de trabalho no container
 WORKDIR /app
 
-# Copiar a saída da compilação da etapa anterior
+# Copiar a saï¿½da da compilaï¿½ï¿½o da etapa anterior
 COPY --from=build /app .
 
 # Copiar o arquivo .env e o arquivo de credenciais do Firebase
-COPY "./Layer.Application/.env" .env
-COPY "./Layer.Application/imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json" /app
+COPY "./Layer.Application/.env.production" .env.production
+COPY "./Layer.Application/administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json" /app
 
-# Definir a variável de ambiente para o caminho do arquivo de credenciais do Firebase
-ENV GOOGLE_APPLICATION_CREDENTIALS="/app/imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json"
+# Definir a variï¿½vel de ambiente para o caminho do arquivo de credenciais do Firebase
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json"
 
-# Expor a porta que a aplicação vai utilizar
-EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8081
 
-# Iniciar a aplicação e carregar variáveis de ambiente
+# Expor a porta que a aplicaï¿½ï¿½o vai utilizar
+EXPOSE 8081
+
+# Iniciar a aplicaï¿½ï¿½o e carregar variï¿½veis de ambiente
 CMD ["bash", "-c", "export $(cat .env | xargs) && dotnet Layer.Application.dll"]
