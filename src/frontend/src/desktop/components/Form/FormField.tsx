@@ -11,7 +11,7 @@ const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '' }) => {
   return (
     <div className="flex flex-col">
       {/* Label com fonte de 13px e margem inferior de 5px */}
-      <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">
+      <label className="block text-neutral-600">
         {label}
       </label>
       <input
@@ -19,9 +19,7 @@ const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '' }) => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder} // Usando o placeholder se ele estiver definido
-        className={`h-10 flex-grow ${
-          value ? 'bg-transparent border' : 'bg-[#D9D9D9]'
-        } focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
+        className="h-10 flex-grow mt-1 block w-full border border-neutral-200 rounded-md  px-2 text-form-label shadow-sm focus:border-neutral-300"
       />
     </div>
   );

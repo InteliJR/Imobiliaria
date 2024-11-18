@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FormField from '../components/Form/FormField';
 import Navbar from '../../mobile/components/Navbar/Navbar';
+import Footer from '../../mobile/components/Footer/FooterSmall';
 
 export default function CreateProperty() {
   const [propertyType, setPropertyType] = useState("Kitnet");
@@ -41,7 +42,7 @@ export default function CreateProperty() {
                         <select
                         value={propertyType}
                         onChange={(e) => setPropertyType(e.target.value)}
-                        className="mt-1 block w-full border-neutral-600 rounded-md shadow-sm focus:border-yellow-darker focus:ring-yellow-darker"
+                        className="h-10 w-full flex-grow bg-transparent border border-neutral-200 focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded"
                         >
                         <option>Kitnet</option>
                         <option>Apartamento</option>
@@ -76,25 +77,27 @@ export default function CreateProperty() {
                     </div>
 
                     <div>
-                        <label className="block text-gray-700 font-medium">Descrição</label>
+                        <label className="block text-neutral-600 font-medium">Descrição</label>
                         <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-brown-500 focus:ring-brown-500"
+                        className="mt-1 block w-full border border-neutral-200 px-2 py-2 text-form-label rounded-md shadow-sm focus:border-brown-500 focus:ring-brown-500"
                         rows="3"
                         ></textarea>
                     </div>
-
-                    <button
-                        type="submit"
-                        className="w-full py-2 px-4 bg-yellow-darker text-white rounded-md hover:bg-yellow-dark transition duration-300 focus:outline-none focus:bg-yellow-dark"
-                    >
-                        Confirmar
-                    </button>
+                    <div className="w-full max-w-xl py-6 bg-white rounded-lg space-y-6">
+                        <button
+                            type="submit"
+                            className="w-full py-2 px-4 bg-yellow-darker text-white rounded-md hover:bg-yellow-dark transition duration-300 focus:outline-none focus:bg-yellow-dark mt-4"
+                        >
+                            Confirmar
+                        </button>
+                    </div>
                     </form>
                 </div>
             </div>
         </div>
+        <Footer />
     </div>
   );
 }

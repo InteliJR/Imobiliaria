@@ -19,6 +19,8 @@ export default {
         'neutral-900': '#363430',
         'neutral-600': '#76726A',
         'neutral-300': '#B2AFA9',
+        'neutral-200': '#C5C3BF',
+        
       },
       fontFamily: {
         sans: ['Object Sans', 'sans-serif'], // Custom font
