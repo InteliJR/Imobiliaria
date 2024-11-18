@@ -40,10 +40,10 @@ COPY --from=build /app .
 COPY Layer.Application/.env.production .env.production
 
 # Expor a porta que a aplicação vai utilizar
-EXPOSE 8080
+EXPOSE 8082
 
-# Definir a variável de ambiente para especificar a URL e a porta
-ENV ASPNETCORE_URLS=http://+:8080
+# Definir a URL e a porta
+ENV ASPNETCORE_URLS=http://+:8082
 
 ENV DISABLE_HTTPS_REDIRECTION=true
 

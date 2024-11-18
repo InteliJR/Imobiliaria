@@ -236,6 +236,10 @@ if (env == "Development")
     app.UseHttpsRedirection();
 }
 
+if (env == "Development")
+{
+app.UseHttpsRedirection();
+}
 app.UseRouting();
 
 app.UseAuthentication();

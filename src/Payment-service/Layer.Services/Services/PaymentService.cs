@@ -66,5 +66,10 @@ namespace Layer.Services.Services
                 throw new Exception("Payment not found.");
             }
         }
+        public async Task<IEnumerable<Payment>> GetPaymentsDueByDateAsync(DateTime dueDate)
+        {
+            return await _context.Pagamentos.Where(p => p.Data.Date == dueDate.Date).ToListAsync();
+        }
+
     }
 }

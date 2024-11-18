@@ -36,7 +36,6 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             // Registra a ação no log
-
             await _applicationLog.LogAsync("PegarTodosUsuarios", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             var users = await _userService.GetUsuariosAsync();

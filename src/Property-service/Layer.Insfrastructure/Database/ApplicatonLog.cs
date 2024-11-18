@@ -30,10 +30,5 @@ namespace Layer.Infrastructure.Database
 
             await _logCollection.InsertOneAsync(logEntry);
         }
-
-        public async Task<List<Log>> GetAllLogs()
-        {
-            return await _logCollection.Find(_ => true).ToListAsync();
-        }
     }
 }

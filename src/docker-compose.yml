@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   auth-service:
     build:
@@ -14,32 +12,73 @@ services:
       - ./Auth-service/Layer.Application/.env.production
     networks:
       - app-network
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "83:80"
-  #   networks:
-  #     - app-network
-  #   depends_on:
-  #     - auth-service
+    
+  frontend:
+   build:
+     context: ./frontend
+     dockerfile: Dockerfile
+   ports:
+     - "83:80"
+   networks:
+     - app-network
+   depends_on:
+     - auth-service
   mongodb:
     build:
-      context: ./logging-mongodb
+        context: ./logging-mongodb
+        dockerfile: Dockerfile
+      container_name: mongodb-auth
+      restart: unless-stopped
+      ports:
+        - "27017:27017"
+      env_file:
+        - ./logging-mongodb/.env  # Certifique-se de que o .env está em UTF-8 sem BOM
+      networks:
+        - app-network
+      command: ["--auth"]
+  
+  property-service:
+    build:
+      context: ./Property-service
       dockerfile: Dockerfile
-    container_name: mongodb-auth
-    restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8081
     env_file:
-      - ./logging-mongodb/.env  # Certifique-se de que o .env está em UTF-8 sem BOM
+      - ./Property-service/Layer.Application/.env.production
     networks:
       - app-network
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-    #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    command: ["--auth"]
+  payment-service:
+    build:
+      context: ./Payment-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8082
+    env_file:
+      - ./Payment-service/Layer.Application/.env
+    networks:
+      - app-network
+  frontend:
+    depends_on:
+      - auth-service
+  gateway:
+    build: 
+      context: ./Gateway
+      dockerfile: DockerfileDev
+    ports:
+      - "8093:8093"
+      - "8094:8094"
+    depends_on:
+      - auth-service
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 networks:
   app-network:
