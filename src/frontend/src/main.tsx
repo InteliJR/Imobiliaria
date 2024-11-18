@@ -37,10 +37,10 @@ const Root = () => {
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
 
         <Route path="/imoveis" element={<VisualizarImoveis />} />
-        <Route path="/imoveis/criar" element={isDesktop ? <CreateProperty /> : <CreateProperty />} />
+        <Route path="/imoveis/criar" element={isDesktop ? <CreateProperty /> : <CreatePropertyMobile />} />
 
         <Route path="/chamados" element={<VisualizarChamados />} />
-        <Route path="/chamados/criar" element={isDesktop ? <CreateTicket /> : <CreateTicket />} />
+        <Route path="/chamados/criar" element={isDesktop ? <CreateTicket /> : <CreateTicketMobile />} />
 
         <Route path="/usuarios" element={<VisualizarUsuarios />} />
         <Route path="/usuarios/criar" element={isDesktop ? <CreateUser /> : <CreateUserMobile />} />
