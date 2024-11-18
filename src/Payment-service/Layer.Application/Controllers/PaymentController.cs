@@ -11,16 +11,18 @@ using Layer.Domain.Enums;
 namespace Layer.Application.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationLog _applicationLog;
 
-        public PaymentController(IPaymentService paymentService, IEmailSender emailSender)
+        public PaymentController(IPaymentService paymentService, IEmailSender emailSender, ApplicationLog applicationLog)
         {
             _paymentService = paymentService;
             _emailSender = emailSender;
+            _applicationLog = applicationLog;
         }
 
         // GET: api/payment/listarpagamentos
@@ -40,12 +42,14 @@ namespace Layer.Application.Controllers
             var payment = await _paymentService.GetPaymentByIdAsync(id);
             if (payment == null)
             {
+                _applicationLog.LogWarning($"Payment with ID {id} not found.");
                 return NotFound();
             }
+            _applicationLog.LogInformation($"Payment with ID {id} retrieved.");
             return Ok(payment);
         }
 
-        // POST: api/payment/criarpagamentos
+        // POST: api/payment/criar-pagamentos
         [HttpPost("criar-pagamentos")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<Payment>> AddPayment([FromBody] CreatePaymentDTO paymentDto)
@@ -55,7 +59,6 @@ namespace Layer.Application.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Mapeamento manual do DTO para a entidade Payment
             var payment = new Payment
             {
                 ContratoId = paymentDto.ContratoId,
@@ -70,10 +73,11 @@ namespace Layer.Application.Controllers
             };
 
             await _paymentService.AddPaymentAsync(payment);
+            _applicationLog.LogInformation("New payment created.");
             return CreatedAtAction(nameof(GetPaymentById), new { id = payment.PaymentId }, payment);
         }
 
-        // PUT: api/payment/atualizarpagamento/{id}
+        // PUT: api/payment/atualizar-pagamento/{id}
         [HttpPut("atualizar-pagamento/{id}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> UpdatePayment(int id, [FromBody] CreatePaymentDTO paymentDto)
@@ -83,14 +87,13 @@ namespace Layer.Application.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Buscar o pagamento existente
             var existingPayment = await _paymentService.GetPaymentByIdAsync(id);
             if (existingPayment == null)
             {
+                _applicationLog.LogWarning($"Payment with ID {id} not found for update.");
                 return NotFound();
             }
 
-            // Atualizar as propriedades permitidas
             existingPayment.ContratoId = paymentDto.ContratoId;
             existingPayment.Valor = paymentDto.Valor;
             existingPayment.Data = paymentDto.Data;
@@ -102,10 +105,11 @@ namespace Layer.Application.Controllers
             existingPayment.ValorMulta = paymentDto.ValorMulta;
 
             await _paymentService.UpdatePaymentAsync(existingPayment);
+            _applicationLog.LogInformation($"Payment with ID {id} updated.");
             return NoContent();
         }
 
-        // DELETE: api/payment/excluirpagamento/{id}
+        // DELETE: api/payment/excluir-pagamento/{id}
         [HttpDelete("excluir-pagamento/{id}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeletePayment(int id)
@@ -113,10 +117,12 @@ namespace Layer.Application.Controllers
             var payment = await _paymentService.GetPaymentByIdAsync(id);
             if (payment == null)
             {
+                _applicationLog.LogWarning($"Payment with ID {id} not found for deletion.");
                 return NotFound();
             }
 
             await _paymentService.DeletePaymentAsync(id);
+            _applicationLog.LogInformation($"Payment with ID {id} deleted.");
             return NoContent();
         }
 
@@ -128,6 +134,7 @@ namespace Layer.Application.Controllers
             var pagamento = await _paymentService.GetPaymentByIdAsync(pagamentoId);
             if (pagamento == null)
             {
+                _applicationLog.LogWarning($"Payment with ID {pagamentoId} not found for reminder.");
                 return NotFound("Pagamento não encontrado.");
             }
 
@@ -141,6 +148,7 @@ namespace Layer.Application.Controllers
                 <p>Atenciosamente,<br/>Equipe KK Imobiliária</p>";
 
             var result = await _emailSender.SendEmailAsync(emailDestinatario, subject, body);
+            _applicationLog.LogInformation($"Payment reminder sent to {emailDestinatario} for payment ID {pagamentoId}.");
             return Ok(result);
         }
     }
