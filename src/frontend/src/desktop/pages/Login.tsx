@@ -3,7 +3,7 @@
 export default function Login() {
   return (
     <div>
-      sefefeefef
+      página de login desktop
     </div>
   )
 }

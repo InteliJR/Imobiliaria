@@ -2,7 +2,7 @@ import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
 
 export default function Footer() {
     return (
-        <div>
+        <footer className='z-10'>
             <div className='bg-neutral-black flex flex-col py-10 gap-x-8'>
                 <div className='flex justify-around items-center px-12'>
                     <div className='flex flex-col '>
@@ -38,6 +38,6 @@ export default function Footer() {
                     Todos os Direitos Reservados.
                 </p>
             </div>      
-        </div>
+        </footer>
     )
 }

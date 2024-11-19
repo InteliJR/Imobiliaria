@@ -6,7 +6,7 @@ export default function FeaturesSection() {
       className="w-full h-14 lg:h-24 flex justify-center mt-4 z-10 bg-no-repeat bg-cover overflow-hidden"
       style={{
         backgroundImage: `url(${houseBg})`,
-        backgroundPosition: "center calc(100% + 70px)",
+        backgroundPosition: "center calc(100% + 50px)",
         borderRadius: window.innerWidth < 1024 ? "0.25rem" : ".75rem", // Adição de arredondamento direto por aqui porque por tailwind não estava sendo aplicado.
       }} // Definindo o background com style
     >

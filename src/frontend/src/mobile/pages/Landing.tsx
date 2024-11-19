@@ -22,7 +22,7 @@ export default function Landing() {
           <div className="relative">
             <div className="relative z-10">
               <p className="text-right leading-tight my-4">
-                A plataforma que <span className="font-bold">centraliza</span>
+                A plataforma que <span className="font-bold">centraliza </span>
                 toda a relação entre locador e locatário, simplificando a gestão
                 de imóveis, contratos e pagamentos em um só lugar
               </p>
