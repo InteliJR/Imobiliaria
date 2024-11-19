@@ -27,15 +27,15 @@ services:
     build:
         context: ./logging-mongodb
         dockerfile: Dockerfile
-      container_name: mongodb-auth
-      restart: unless-stopped
-      ports:
-        - "27017:27017"
-      env_file:
-        - ./logging-mongodb/.env  # Certifique-se de que o .env está em UTF-8 sem BOM
-      networks:
-        - app-network
-      command: ["--auth"]
+    container_name: mongodb-auth
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./logging-mongodb/.env  # Certifique-se de que o .env está em UTF-8 sem BOM
+    networks:
+      - app-network
+    command: ["--auth"]
   
   property-service:
     build:
@@ -63,9 +63,6 @@ services:
       - ./Payment-service/Layer.Application/.env
     networks:
       - app-network
-  frontend:
-    depends_on:
-      - auth-service
   gateway:
     build: 
       context: ./Gateway
