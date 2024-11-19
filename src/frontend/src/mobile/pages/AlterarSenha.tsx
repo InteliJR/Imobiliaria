@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
-import Footer from "../components/Footer/FooterSmall";
+import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import FormField from "../components/Form/FormField";
-import Botao from "../components/Botoes/Botao";
+import Botao from "../../components/Botoes/Botao";
 import ModalConfirmacao from "../components/ModalConfirmacao";
 
 export default function Senha() {
