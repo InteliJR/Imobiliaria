@@ -16,6 +16,9 @@ import AlterarSenha from './desktop/pages/AlterarSenha';
 import EditarPerfil from './desktop/pages/EditarPerfil';
 import NotFound from './desktop/pages/NotFound';
 import Chamado from './desktop/pages/Chamado'; // Visualizar um chamado
+import VisualizarImoveis from './desktop/pages/VisualizarImoveis';
+import VisualizarChamados from './desktop/pages/VisualizarChamados';
+import VisualizarUsuarios from './desktop/pages/VisualizarUsuarios';
 
 // Import mobile components and pages
 import LandingMobile from './mobile/pages/Landing';
@@ -24,10 +27,11 @@ import PerfilMobile from './mobile/pages/Perfil';
 import OutrosPerfisMobile from './mobile/pages/OutrosPerfis';
 import EditarPerfilMobile from './mobile/pages/EditarPerfil';
 import AlterarSenhaMobile from './mobile/pages/AlterarSenha';
-import VisualizarImoveis from './mobile/pages/VisualizarImoveis';
-import VisualizarChamados from './mobile/pages/VisualizarChamados'; // Visualizar lista de chamados
+import VisualizarImoveisMobile from './mobile/pages/VisualizarImoveis';
+import VisualizarChamadosMobile from './mobile/pages/VisualizarChamados'; // Visualizar lista de chamados
 import ChamadoMobile from './mobile/pages/Chamado'; // Visualizar um chamado
-import VisualizarUsuarios from './mobile/pages/VisualizarUsuarios';
+import VisualizarUsuariosMobile from './mobile/pages/VisualizarUsuarios';
+import Dashboard from './mobile/pages/Dashboard';
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -42,10 +46,11 @@ const Root = () => {
         <Route path="/perfil/editar" element={isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />} />
         <Route path="/perfil/alterar-senha" element={isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile/>} />
         {/* <Route path="/profile/:id" element={<Profile />} /> */}
-        <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
-        <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
+        <Route path="/visualizar-imoveis" element={isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile/>} />
+        <Route path="/visualizar-chamados" element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile/>} />
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile/>} />
-        <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
+        <Route path="/visualizar-usuarios" element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile/>} />
+        <Route path="/dash" element={<Dashboard />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
