@@ -60,7 +60,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8082
     env_file:
-      - ./Payment-service/Layer.Application/.env
+      - ./Payment-service/Layer.Application/.env.production
     networks:
       - app-network
   gateway:
