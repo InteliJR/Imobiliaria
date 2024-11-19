@@ -1,3 +1,57 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* src/index.css */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@font-face {
+  font-family: 'ObjectSans';
+  src: url('./assets/fonts/ObjectSansRegular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ObjectSans';
+  src: url('./assets/fonts/ObjectSansSlanted.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'ObjectSans';
+  src: url('./assets/fonts/ObjectSansHeavy.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ObjectSans';
+  src: url('./assets/fonts/ObjectSansHeavySlanted.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+html {
+  font-family: 'ObjectSans', sans-serif;
+}
+
+@layer base {
+  /* Apply border-radius 4px to specific elements */
+  button,
+  input,
+  select,
+  textarea,
+  .card,
+  .container {
+    @apply rounded;
+  }
+}
+
+.main-custom { /* classe padrão para elementos main  */
+  @apply flex flex-col min-h-screen;
+}
+
+.section-custom { /* classe padrão para elementos main  */
+  @apply flex-grow flex flex-col gap-4 px-4 py-6 overflow-hidden bg-gray-200;
+}
+

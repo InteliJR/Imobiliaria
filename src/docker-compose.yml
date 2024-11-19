@@ -12,7 +12,7 @@ services:
       - ./Auth-service/Layer.Application/.env.production
     networks:
       - app-network
-    
+   
   frontend:
    build:
      context: ./frontend
@@ -76,7 +76,6 @@ services:
       - app-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
 networks:
   app-network:
     driver: bridge
