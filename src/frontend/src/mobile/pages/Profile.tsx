@@ -1,5 +1,5 @@
 import NavbarLogin from '../components/Navbar/NavbarLogin';
-import Footer from '../components/Footer/FooterSmall';
+import Footer from '../../components/Footer/FooterSmall';
 import ProfileField from '../components/ProfileField';
 
 export default function Profile () {

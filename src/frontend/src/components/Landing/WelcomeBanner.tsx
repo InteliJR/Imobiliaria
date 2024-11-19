@@ -1,7 +1,7 @@
-import logo from "../../../assets/landingPage/logo.svg";
-import houseUp from "../../../assets/landingPage/houseUp.png";
-import logoSimplified from "../../../assets/landingPage/logoSimplified.svg";
-import houseDown from "../../../assets/landingPage/houseDown.png";
+import logo from "../../assets/landingPage/mobile/logo.svg";
+import houseUp from "../../assets/landingPage/mobile/houseUp.png";
+import logoSimplified from "../../assets/landingPage/logoSimplified.svg";
+import houseDown from "../../assets/landingPage/mobile/houseDown.png";
 
 export default function WelcomeBanner() {
   return (

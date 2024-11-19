@@ -4,19 +4,35 @@
 @import "tailwindcss/utilities";
 
 @font-face {
-  font-family: 'Object Sans';
-  src: url('/fonts/ObjectSans-Regular.woff2') format('woff2'),
-       url('/fonts/ObjectSans-Regular.woff') format('woff');
-  font-weight: 400;
+  font-family: 'ObjectSans';
+  src: url('./assets/fonts/ObjectSansRegular.otf') format('opentype');
+  font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Object Sans';
-  src: url('/fonts/ObjectSans-Strong.woff2') format('woff2'),
-       url('/fonts/ObjectSans-Strong.woff') format('woff');
-  font-weight: 800; /* Assuming 'Strong' corresponds to 800 */
+  font-family: 'ObjectSans';
+  src: url('./assets/fonts/ObjectSansSlanted.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'ObjectSans';
+  src: url('./assets/fonts/ObjectSansHeavy.otf') format('opentype');
+  font-weight: bold;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'ObjectSans';
+  src: url('./assets/fonts/ObjectSansHeavySlanted.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+html {
+  font-family: 'ObjectSans', sans-serif;
 }
 
 @layer base {
