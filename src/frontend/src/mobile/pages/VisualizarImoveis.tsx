@@ -6,9 +6,9 @@ import FilterIcon from '/Filter.svg';
 import Voltar from '../components/Voltar';
 
 export default function MainPage() {
+
     return (
         <div className="flex flex-col bg-[#F0F0F0] gap-y-5 min-h-screen">
-        
             <Navbar />
             <main className='px-4 gap-y-5 mt-4 flex flex-col'>
                 <Voltar />
@@ -26,7 +26,10 @@ export default function MainPage() {
                         {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
                         <div className="flex w-full gap-2 items-end">
                             <div className="w-full">
-                                <FormField label="Buscar imóvel" />
+                                <FormField 
+                                    label="Buscar imóvel" 
+                                    onChange={() => {}} // Função onChange vazia
+                                />
                             </div>
                             <button
                                 type="submit"
