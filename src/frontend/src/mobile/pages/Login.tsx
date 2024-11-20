@@ -4,7 +4,6 @@ import FormField from '../components/Form/FormField';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../services/axiosConfig';
-import { getServiceUrl } from '../../services/apiService';
 import { jwtDecode } from 'jwt-decode'; 
 
 export default function Login() {
@@ -27,9 +26,9 @@ export default function Login() {
 
             // Novo metodo
 
-            const response = await axiosInstance.post(getServiceUrl('authService', '/Account/Login'), {
+            const response = await axiosInstance.post('/auth/Account/Login', {
                 Email: email,
-                Senha: senha
+                Senha: senha,
             });
 
             // console.log(response.data);
@@ -76,17 +75,17 @@ export default function Login() {
                             <FormField 
                                 placeholder="Email" 
                                 label="Email:" 
-                                value={email} 
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                                // value={email} 
+                                onChange={setEmail}
                             />
                         </div>
                         <div className='mb-10'>
                             <FormField 
                                 placeholder="Senha" 
                                 label="Senha:" 
-                                type="password" 
-                                value={senha} 
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
+                                // type="password" 
+                                // value={senha} 
+                                onChange={setSenha}
                             />
                         </div>
                         {/* Submit Button */}

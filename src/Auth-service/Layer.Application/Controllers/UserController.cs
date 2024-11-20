@@ -256,8 +256,17 @@ namespace Layer.Application.Controllers
 
         [HttpPost("AlterarSenhaUsuario")]
         [Authorize(Policy = "AllRoles")]
-        public async Task<IActionResult> ChangePassword([FromQuery] string email, [PasswordPropertyText] string oldPassword, [PasswordPropertyText] string newPassword)
+        public async Task<IActionResult> ChangePassword([PasswordPropertyText] string oldPassword, [PasswordPropertyText] string newPassword)
         {
+            
+            var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value
+                ?? throw new ArgumentNullException("Email não encontrado.");
+                
+            if(email == null)
+            {
+                return BadRequest("Email não encontrado.");
+            }
+
             var newPass = await _userService.ChangePassword(email, oldPassword, newPassword);
 
             await _applicationLog.LogAsync($"Usuario com {email} alterou sua senha", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
