@@ -16,6 +16,9 @@ import AlterarSenha from './desktop/pages/AlterarSenha';
 import EditarPerfil from './desktop/pages/EditarPerfil';
 import NotFound from './desktop/pages/NotFound';
 import Chamado from './desktop/pages/Chamado'; // Visualizar um chamado
+import VisualizarImoveis from './desktop/pages/VisualizarImoveis';
+import VisualizarChamados from './desktop/pages/VisualizarChamados';
+import VisualizarUsuarios from './desktop/pages/VisualizarUsuarios';
 
 // Import mobile components and pages
 import LandingMobile from './mobile/pages/Landing';
@@ -59,6 +62,13 @@ const Root = () => {
         <Route path="/perfil/:id" element={isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />} />
         <Route path="/perfil/editar" element={isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />} />
         <Route path="/perfil/alterar-senha" element={isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile/>} />
+
+        {/* <Route path="/profile/:id" element={<Profile />} /> */}
+        <Route path="/visualizar-imoveis" element={isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile/>} />
+        <Route path="/visualizar-chamados" element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile/>} />
+        <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile/>} />
+        <Route path="/visualizar-usuarios" element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile/>} />
+        <Route path="/dash" element={<Dashboard />} />
 
 
         <Route path="*" element={<NotFound />} />

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import FeaturesSection from "../../components/Landing/FeaturesSection";
+import FeaturesSection from "../components/FeatureSection";
 import Navbar from "../../mobile/components/Navbar/Navbar";
-import Footer from "../../components/Footer/FooterBig";
-import Botao from "../../components/Botoes/Botao";
+import Footer from "../components/FooterBig";
+import Botao from "../components/Botao";
 
 // Importações das imagens
 import whiteLogo from "../../assets/landingPage/desktop/whiteLogo.svg";
@@ -127,4 +127,7 @@ export default function Landing() {
       <Footer />
     </main>
   );
+
 }
+
+

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../services/axiosConfig';
 import { getServiceUrl } from '../../services/apiService';
-import { jwtDecode } from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -17,25 +17,12 @@ export default function Login() {
         event.preventDefault();
 
         try {
-            // const response = await fetch('http://localhost:8080/Account/Login', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({ Email: email, Senha: senha })
-            // });
-
-            // Novo metodo
-
             const response = await axiosInstance.post(getServiceUrl('authService', '/Account/Login'), {
                 Email: email,
                 Senha: senha
             });
 
-            // console.log(response.data);
-
-            // Obtem e decodifica o token jwt para obter a role do user
-            // Armazena o role do user no SessionStorage 
+            // Obtém e decodifica o token JWT para obter a role do usuário
             const token = response.data.token;
             const decodedToken: any = jwtDecode(token);
             const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
@@ -46,19 +33,18 @@ export default function Login() {
             // Redirecionar o usuário para home ou dashboard após o login bem-sucedido 
             navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
         } catch (error: any) {
-            // axios retorna erros no `response`
+            // Axios retorna erros no `response`
             setError(error.response?.data?.message || 'Erro ao fazer login');
         }
     };
 
     // Usuário já é direcionado para home ou dashboard se já estiver logado
     useEffect(() => {
-      const token = sessionStorage.getItem('token');
-      if (token) {
-          navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
-      }
-  }, []);
-
+        const token = sessionStorage.getItem('jwtToken');
+        if (token) {
+            navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
+        }
+    }, []);
 
     return (
         <div className="bg-[#F0F0F0] flex flex-col min-h-screen">
@@ -77,16 +63,16 @@ export default function Login() {
                                 placeholder="Email" 
                                 label="Email:" 
                                 value={email} 
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                                onChange={setEmail}
                             />
                         </div>
                         <div className='mb-10'>
                             <FormField 
                                 placeholder="Senha" 
                                 label="Senha:" 
-                                type="password" 
                                 value={senha} 
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
+                                onChange={setSenha}
+                                isPassword={true}
                             />
                         </div>
                         {/* Submit Button */}
