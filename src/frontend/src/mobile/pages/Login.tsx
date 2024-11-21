@@ -1,5 +1,5 @@
 import NavbarLogin from '../components/Navbar/NavbarLogin';
-import Footer from '../components/Footer/FooterBig';
+import Footer from '../../components/Footer/FooterBig';
 import FormField from '../components/Form/FormField';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

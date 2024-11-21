@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar/Navbar";
-import Footer from "../components/Footer/FooterSmall";
+import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
 

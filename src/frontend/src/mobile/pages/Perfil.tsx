@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
-import Footer from "../components/Footer/FooterSmall";
+import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
-import Botao from "../components/Botoes/Botao";
-import BotaoAlterarSenha from "../components/Botoes/BotaoAlterarSenha";
+import Botao from "../../components/Botoes/Botao";
+import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
 
 export default function Perfil() {
   const navigate = useNavigate(); // Obtendo a função navigate

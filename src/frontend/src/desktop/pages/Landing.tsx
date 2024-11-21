@@ -127,4 +127,7 @@ export default function Landing() {
       <Footer />
     </main>
   );
+
 }
+
+

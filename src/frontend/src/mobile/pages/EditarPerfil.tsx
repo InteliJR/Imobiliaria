@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
-import Footer from "../components/Footer/FooterSmall";
+import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import FormField from "../components/Form/FormField";
 import ModalConfirmacao from "../components/ModalConfirmacao";
-import Botao from "../components/Botoes/Botao";
+import Botao from "../../components/Botoes/Botao";
 
 export default function EditarPerfil() {
   // Estado do formulário para armazenar dados do usuário
