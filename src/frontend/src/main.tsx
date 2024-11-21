@@ -25,9 +25,16 @@ import OutrosPerfisMobile from './mobile/pages/OutrosPerfis';
 import EditarPerfilMobile from './mobile/pages/EditarPerfil';
 import AlterarSenhaMobile from './mobile/pages/AlterarSenha';
 import VisualizarImoveis from './mobile/pages/VisualizarImoveis';
-import VisualizarChamados from './mobile/pages/VisualizarChamados'; // Visualizar lista de chamados
+import CreateProperty from './desktop/pages/CreateProperty';
+import VisualizarChamados from './mobile/pages/VisualizarChamados';
 import ChamadoMobile from './mobile/pages/Chamado'; // Visualizar um chamado
 import VisualizarUsuarios from './mobile/pages/VisualizarUsuarios';
+import CreateUser from './desktop/pages/CreateUser';
+import CreateTicket from './desktop/pages/CreateTicket';
+import CreatePropertyMobile from './mobile/pages/CreateProperty';
+import CreateUserMobile from './mobile/pages/CreateUser';
+import CreateTicketMobile from './mobile/pages/CreateTicket';
+
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -37,17 +44,25 @@ const Root = () => {
       <Routes>
         <Route path="/" element={isDesktop ? <Landing /> : <LandingMobile />} />
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
+
+        <Route path="/imoveis" element={<VisualizarImoveis />} />
+        <Route path="/imoveis/criar" element={isDesktop ? <CreateProperty /> : <CreatePropertyMobile />} />
+
+        <Route path="/chamados" element={<VisualizarChamados />} />
+        <Route path="/chamados/criar" element={isDesktop ? <CreateTicket /> : <CreateTicketMobile />} />
+        <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile/>} />
+        
+        <Route path="/usuarios" element={<VisualizarUsuarios />} />
+        <Route path="/usuarios/criar" element={isDesktop ? <CreateUser /> : <CreateUserMobile />} />
+
         <Route path="/perfil" element={isDesktop ? <Perfil /> : <PerfilMobile />} />
         <Route path="/perfil/:id" element={isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />} />
         <Route path="/perfil/editar" element={isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />} />
         <Route path="/perfil/alterar-senha" element={isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile/>} />
-        {/* <Route path="/profile/:id" element={<Profile />} /> */}
-        <Route path="/visualizar-imoveis" element={<VisualizarImoveis />} />
-        <Route path="/visualizar-chamados" element={<VisualizarChamados />} />
-        <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile/>} />
-        <Route path="/visualizar-usuarios" element={<VisualizarUsuarios />} />
+
 
         <Route path="*" element={<NotFound />} />
+
       </Routes>
     </BrowserRouter>
   );
