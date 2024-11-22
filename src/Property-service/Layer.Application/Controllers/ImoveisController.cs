@@ -58,7 +58,7 @@ namespace Layer.Application.Controllers
 
             var novoImovel = await _imoveisService.PostImoveisAsync(imovel);
 
-            await _applicationLog.LogAsync($"Criação de Locatario com id {novoImovel.id} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            await _applicationLog.LogAsync($"Criação de Imóvel com id: {novoImovel.ImovelId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(novoImovel);
         }
@@ -89,6 +89,9 @@ namespace Layer.Application.Controllers
             imovel.Complemento = updatedImovel.Complemento;
 
             _imoveisService.UpdateImoveisAsync(id, imovel);
+
+            await _applicationLog.LogAsync($"Atualização de Imóvel com id: {imovel.ImovelId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(imovel);
         }
 
@@ -116,6 +119,9 @@ namespace Layer.Application.Controllers
             }
 
             await _imoveisService.DeleteImoveisAsync(id);
+
+            await _applicationLog.LogAsync($"Imóvel Deletado com id: {imovel.ImovelId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return NoContent();
         }
     }
