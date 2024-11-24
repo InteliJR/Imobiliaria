@@ -13,16 +13,16 @@ services:
     networks:
       - app-network
    
-  frontend:
-   build:
-     context: ./frontend
-     dockerfile: Dockerfile
-   ports:
-     - "83:80"
-   networks:
-     - app-network
-   depends_on:
-     - auth-service
+  # frontend:
+  #  build:
+  #    context: ./frontend
+  #    dockerfile: Dockerfile
+  #  ports:
+  #    - "83:80"
+  #  networks:
+  #    - app-network
+  #  depends_on:
+  #    - auth-service
   mongodb:
     build:
         context: ./logging-mongodb
