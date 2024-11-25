@@ -128,7 +128,7 @@ namespace Layer.Application.Controllers
 
         [HttpPost("AtualizarLocador")]
         [Authorize(Policy = "AdminORLocador")]
-        public async Task<IActionResult> UpdateLocador(string CPF, [FromBody] UpdateLocadorModel locadorToUpdate)
+        public async Task<IActionResult> UpdateLocador([FromBody] UpdateLocadorModel locadorToUpdate)
         {
             if (!ModelState.IsValid)
             {
@@ -140,7 +140,13 @@ namespace Layer.Application.Controllers
                 return BadRequest("Locador não encontrado.");
             }
 
-            var userID = await _userService.GetUserByCPF(CPF);
+            var userID = new User();
+
+            var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?? throw new ArgumentNullException("Email não encontrado.");
+
+            userID = await _userService.GetUserByEmail(email);
+
+            Console.WriteLine(userID);
 
             if (userID == null)
             {
@@ -170,7 +176,7 @@ namespace Layer.Application.Controllers
 
             var updatedLocador = await _locadorService.UpdateLocador(locador);
 
-            await _applicationLog.LogAsync($"Atualizar Locador com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            await _applicationLog.LogAsync($"Atualizar Locador com email {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(updatedLocador);
         }

@@ -43,7 +43,7 @@ export default function Login() {
             sessionStorage.setItem('userRole', role);
 
             // Redirecionar o usuário para home ou dashboard após o login bem-sucedido 
-            navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
+            navigate('/'); // Trocar '/landing' por 'home' ou 'dashboard'
         } catch (error: any) {
             // axios retorna erros no `response`
             setError(error.response?.data?.message || 'Erro ao fazer login');

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Route, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
@@ -21,6 +21,7 @@ export default function Perfil() {
     CNPJ: null,
     email: null,
     dataCriacao: null,
+    role: null
   });
 
   const profileEdit = () => {
@@ -54,6 +55,7 @@ export default function Perfil() {
             CNPJ: null,
             email: UserInfo.email,
             dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'), // formatar para dd/mm/yyyy
+            role: UserInfo.role
             });
           } else{
             setUserData({
@@ -67,6 +69,7 @@ export default function Perfil() {
               CNPJ: UserInfo.cnpj,
               email: UserInfo.email,
               dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'),
+              role: UserInfo.role
             })
           }
 
@@ -90,8 +93,8 @@ export default function Perfil() {
         <Voltar />
 
         <div>
-          <h1 className="text-title font-strong">Nome do Usuário</h1>
-          <h2 className="text-sm text-gray-700">Tipo de usuário</h2>
+          <h1 className="text-title font-strong">{userData.nome || " "}</h1>
+          <h2 className="text-sm text-gray-700">{userData.role || " "}</h2>
         </div>
 
         <Botao label="Editar Perfil" onClick={profileEdit} />

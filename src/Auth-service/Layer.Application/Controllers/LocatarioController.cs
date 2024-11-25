@@ -138,13 +138,16 @@ namespace Layer.Application.Controllers
                 return BadRequest("Locatario não encontrado.");
             }
 
-            var userID = await _userService.GetUserByCPF(CPF);
+            var userID = new User();
 
-            if (userID == null)
-            {
-                return BadRequest("Usuário não encontrado.");
+            if(CPF == null){
+                var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?? throw new ArgumentNullException("Email não encontrado.");
+
+                userID = await _userService.GetUserByEmail(email);
+            } else{
+                userID = await _userService.GetUserByCPF(CPF);
             }
-
+            
             var locatario = await _locatarioService.GetLocatarioByUserId(userID.UsuarioId);
 
             // Atualizar apenas os campos que foram preenchidos

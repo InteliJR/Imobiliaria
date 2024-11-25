@@ -85,15 +85,23 @@ namespace Layer.Application.Controllers
 
             // Pegar o id do colaborador pelo email e atualizar
 
-            var colaborador = await _colaboradorService.GetColaboradorByEmail(email);
+            var colaborador = new Colaborador();
+
+            if(email == null){
+                email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?? throw new ArgumentNullException("Email não encontrado.");
+
+                colaborador = await _colaboradorService.GetColaboradorByEmail(email);
+            } else{
+                colaborador = await _colaboradorService.GetColaboradorByEmail(email);
+
+            }
+
 
             if (colaborador == null)
             {
                 return BadRequest("Colaborador não encontrado.");
             }
 
-            if (!string.IsNullOrEmpty(Convert.ToString(colaboradorToUpdate.UsuarioId)))
-                colaborador.UsuarioId = colaboradorToUpdate.UsuarioId;
             if (!string.IsNullOrEmpty(colaboradorToUpdate.NomeCompleto))
                 colaborador.NomeCompleto = colaboradorToUpdate.NomeCompleto;
             if (!string.IsNullOrEmpty(colaboradorToUpdate.TipoColaborador))
