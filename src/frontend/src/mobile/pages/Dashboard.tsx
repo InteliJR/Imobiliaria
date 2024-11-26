@@ -1,6 +1,6 @@
 import { useState } from 'react'; // Added import
 import Navbar from '../components/Navbar/Navbar';
-import Footer from '../components/Footer/FooterSmall';
+import Footer from '../../components/Footer/FooterSmall';
 // Removed unused import of Card
 import FormField from '../components/Form/FormField';
 import FilterIcon from '/Filter.svg';

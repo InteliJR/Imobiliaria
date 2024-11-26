@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import FormField from '../components/Form/FormField';
 import Navbar from '../../mobile/components/Navbar/Navbar';
-import Footer from '../../mobile/components/Footer/FooterSmall';
+import Footer from '../../components/Footer/FooterSmall';
 
 export default function CreateTicket() {
   const [property, setProperty] = useState("");

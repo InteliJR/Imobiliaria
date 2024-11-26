@@ -1,5 +1,5 @@
 import NavbarLogin from '../../mobile/components/Navbar/NavbarLogin';
-import Footer from '../../mobile/components/Footer/FooterSmall';
+import Footer from '../../components/Footer/FooterSmall';
 import FormField from '../../mobile/components/Form/FormField';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
