@@ -19,7 +19,7 @@ namespace Layer.Domain.Interfaces
 
         Task<User> GetUserByCPF(string cpf);
 
-        Task<User> GetUsserById(int userId);
+        Task<User> GetUserById(int userId);
 
         Task<User> UpdateUser(User userToUpdate);
 

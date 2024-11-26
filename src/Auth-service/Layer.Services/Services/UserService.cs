@@ -119,7 +119,7 @@ namespace Layer.Services.Services
 
         }
 
-        public async Task<User> GetUsserById(int userId)
+        public async Task<User> GetUserById(int userId)
         {
             return await _dbcontext.Usuarios.FirstOrDefaultAsync(x => x.UsuarioId == userId);
         }

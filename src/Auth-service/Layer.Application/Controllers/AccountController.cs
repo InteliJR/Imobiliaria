@@ -160,5 +160,14 @@ namespace Layer.Application.Controllers
             }
 
         }
+
+        // [HttpGet("PegarUsuario")]
+        // [Authorize(Policy = nameof(Roles.Admin))]
+        // public async Task<IActionResult> PegarUsuario(int id)
+        // {
+        //     var user = await _userService.GetUserById(id);
+
+            
+        // }
     }
 }

@@ -127,8 +127,63 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("AtualizarLocador")]
-        [Authorize(Policy = "AdminORLocador")]
+        [Authorize(Policy = nameof(Roles.Locador))]
         public async Task<IActionResult> UpdateLocador([FromBody] UpdateLocadorModel locadorToUpdate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (locadorToUpdate == null)
+            {
+                return BadRequest("Locador não encontrado.");
+            }
+
+            var userID = new User();
+
+            var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?? throw new ArgumentNullException("Email não encontrado.");
+
+            userID = await _userService.GetUserByEmail(email);
+
+            Console.WriteLine(userID);
+
+            if (userID == null)
+            {
+                return BadRequest("Usuário não encontrado.");
+            }
+
+            var locador = await _locadorService.GetLocadorByUserId(userID.UsuarioId);
+
+            // Atualizar apenas os campos que foram preenchidos
+
+            if (!string.IsNullOrEmpty(locadorToUpdate.CPF))
+                locador.CPF = locadorToUpdate.CPF;
+            if (!string.IsNullOrEmpty(locadorToUpdate.Nacionalidade))
+                locador.Nacionalidade = locadorToUpdate.Nacionalidade;
+            if (!string.IsNullOrEmpty(locadorToUpdate.NumeroTelefone))
+                locador.NumeroTelefone = locadorToUpdate.NumeroTelefone;
+            if (!string.IsNullOrEmpty(locadorToUpdate.NomeCompletoLocador))
+                locador.NomeCompletoLocador = locadorToUpdate.NomeCompletoLocador;
+            if (!string.IsNullOrEmpty(locadorToUpdate.CNPJ))
+                locador.CNPJ = locadorToUpdate.CNPJ;
+            if (!string.IsNullOrEmpty(locadorToUpdate.Endereco))
+                locador.Endereco = locadorToUpdate.Endereco;
+            if (!string.IsNullOrEmpty(locadorToUpdate.Passaporte))
+                locador.Passaporte = locadorToUpdate.Passaporte;
+            if (!string.IsNullOrEmpty(locadorToUpdate.RG))
+                locador.RG = locadorToUpdate.RG;
+
+            var updatedLocador = await _locadorService.UpdateLocador(locador);
+
+            await _applicationLog.LogAsync($"Atualizar Locador com email {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
+            return Ok(updatedLocador);
+        }
+
+        [HttpPut("AtualizarOutroLocador")]
+        [Authorize(Policy = nameof(Roles.Admin))]
+        public async Task<IActionResult> UpdateAnotherLocador([FromBody] UpdateLocadorModel locadorToUpdate)
         {
             if (!ModelState.IsValid)
             {

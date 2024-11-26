@@ -22,12 +22,101 @@ namespace Layer.Application.Controllers
         // Chamar o serviço de usuário
         private readonly IUserService _userService;
         private readonly ApplicationLog _applicationLog;
+        private readonly ILocadorService _locadorService;
+        private readonly ILocatarioService _locatarioService;
+        private readonly IColaboradorService _colaboradorService;
 
         // Construtor
-        public UserController(IUserService userService, ApplicationLog applicationLog)
+        public UserController(IUserService userService, ApplicationLog applicationLog, ILocadorService locadorService, ILocatarioService locatarioService, IColaboradorService colaboradorService)
         {
             _userService = userService;
             _applicationLog = applicationLog;
+            _locadorService = locadorService;
+            _locatarioService = locatarioService;
+            _colaboradorService = colaboradorService;
+        }
+
+        [HttpGet("PegarUsuario")]
+        [Authorize(Policy = nameof(Roles.Admin))]
+        public async Task<IActionResult> GetCompleteUser(int userId)
+        {
+            var user = await _userService.GetUserById(userId);
+
+            if (user == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            // Verificar qual o tipo de usuário
+
+            if (user.TipoUsuario == Roles.Locador.ToString())
+            {
+                var locador = await _locadorService.GetLocadorByEmail(user.Email);
+                
+                var noColaborador = new NoColaboradorUserModel {
+                    UsuarioId = user.UsuarioId,
+                    RoleId = locador.LocadorId,
+                    Role = Roles.Locador.ToString(),
+                    Nome = locador.NomeCompletoLocador,
+                    CPF = locador.CPF,
+                    Telefone = locador.NumeroTelefone,
+                    Nacionalidade = locador.Nacionalidade,
+                    Endereco = locador.Endereco,
+                    CNPJ = locador.CNPJ,
+                    Passaporte = locador.Passaporte,
+                    RG = locador.RG,
+                    Email = user.Email,
+                    Ativo = user.Ativo,
+                    DataCriacao = user.DataRegistro
+                };
+
+                return Ok(noColaborador);
+            }
+            else if (user.TipoUsuario == Roles.Locatario.ToString())
+            {
+                var locatario = await _locatarioService.GetLocatarioByEmail(user.Email);
+
+                var noColaborador = new NoColaboradorUserModel {
+                    UsuarioId = user.UsuarioId,
+                    RoleId = locatario.LocatarioId,
+                    Role = Roles.Locatario.ToString(),
+                    Nome = locatario.NomeCompletoLocatario,
+                    CPF = locatario.CPF,
+                    Telefone = locatario.NumeroTelefone,
+                    Nacionalidade = locatario.Nacionalidade,
+                    Endereco = locatario.Endereco,
+                    CNPJ = locatario.CNPJ,
+                    Passaporte = locatario.Passaporte,
+                    RG = locatario.RG,
+                    Email = user.Email,
+                    Ativo = user.Ativo,
+                    DataCriacao = user.DataRegistro
+                };
+
+                return Ok(noColaborador);
+            }
+            else if (user.TipoUsuario == Roles.Admin.ToString() || user.TipoUsuario == Roles.Judiciario.ToString())
+            {
+                var colaborador = await _colaboradorService.GetColaboradorByEmail(user.Email);
+                
+                var colaboradorResult = new ColaboradorUserModel {
+                    UsuarioId = user.UsuarioId,
+                    ColaboradorIdId = colaborador.ColaboradorId,
+                    Role = Roles.Admin.ToString(),
+                    Nome = colaborador.NomeCompleto,
+                    TipoColaborador = colaborador.TipoColaborador,
+                    Email = user.Email,
+                    Ativo = user.Ativo,
+                    DataCriacao = user.DataRegistro
+                };
+
+                return Ok(colaboradorResult);
+
+            } else
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
         }
 
         // Rota de pagar todos os usuários
