@@ -44,33 +44,36 @@ export default function Perfil() {
         const UserInfo = response.data;
 
         if(UserInfo.role == "Admin" || UserInfo.role == "Judiciario"){
-            setUserData({
-            nome: UserInfo.nome,
-            telefone: null,
-            nacionalidade: UserInfo.national,
-            cpf: null,
-            rg: null,
-            passaporte: null,
-            endereço: null,
-            CNPJ: null,
-            email: UserInfo.email,
-            dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'), // formatar para dd/mm/yyyy
-            role: UserInfo.role
-            });
+
+          const notApplicable = "Não aplicável";
+          
+          setUserData({
+          nome: UserInfo.nome,
+          telefone: notApplicable,
+          nacionalidade: notApplicable,
+          cpf: notApplicable,
+          rg: notApplicable,
+          passaporte: notApplicable,
+          endereço: notApplicable,
+          CNPJ: notApplicable,
+          email: UserInfo.email,
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'), // formatar para dd/mm/yyyy
+          role: UserInfo.role
+          });
           } else{
-            setUserData({
-              nome: UserInfo.nome,
-              telefone: UserInfo.telefone,
-              nacionalidade: UserInfo.nacionalidade,
-              cpf: UserInfo.cpf,
-              rg: UserInfo.rg,
-              passaporte: UserInfo.passaporte,
-              endereço: UserInfo.endereco,
-              CNPJ: UserInfo.cnpj,
-              email: UserInfo.email,
-              dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'),
-              role: UserInfo.role
-            })
+          setUserData({
+            nome: UserInfo.nome,
+            telefone: UserInfo.telefone,
+            nacionalidade: UserInfo.nacionalidade,
+            cpf: UserInfo.cpf,
+            rg: UserInfo.rg,
+            passaporte: UserInfo.passaporte,
+            endereço: UserInfo.endereco,
+            CNPJ: UserInfo.cnpj,
+            email: UserInfo.email,
+            dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'),
+            role: UserInfo.role
+          })
           }
 
 
