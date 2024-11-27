@@ -1,6 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
 using Layer.Domain.Interfaces;
-using Layer.Domain.Enums;
 using Layer.Services;
 using Layer.Services.Services;
 using Layer.Infrastructure.Database;
@@ -75,7 +74,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<CountryService>();
-builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
+builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddSingleton<ApplicationLog>();
 
 // Configura JWT settings

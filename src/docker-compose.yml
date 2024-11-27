@@ -13,16 +13,16 @@ services:
     networks:
       - app-network
    
-  frontend:
-   build:
-     context: ./frontend
-     dockerfile: Dockerfile
-   ports:
-     - "83:80"
-   networks:
-     - app-network
-   depends_on:
-     - auth-service
+  # frontend:
+  #  build:
+  #    context: ./frontend
+  #    dockerfile: Dockerfile
+  #  ports:
+  #    - "83:80"
+  #  networks:
+  #    - app-network
+  #  depends_on:
+  #    - auth-service
      
   mongodb:
     build:
@@ -51,19 +51,19 @@ services:
       - ./Property-service/Layer.Application/.env.production
     networks:
       - app-network
-  # payment-service:
-  #   build:
-  #     context: ./Payment-service
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8082:8082"
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Production
-  #     - ASPNETCORE_URLS=http://+:8082
-  #   env_file:
-  #     - ./Payment-service/Layer.Application/.env.production
-  #   networks:
-  #     - app-network
+  payment-service:
+    build:
+      context: ./Payment-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8082
+    env_file:
+      - ./Payment-service/Layer.Application/.env.production
+    networks:
+      - app-network
   gateway:
     build: 
       context: ./Gateway
