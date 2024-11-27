@@ -64,6 +64,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
 );
 
+builder.Services.AddSingleton(mongoSettings);
+builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoSettings.ConnectionString));
+
 // Registrar o serviço de pagamentos (IPaymentService / PaymentService)
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
