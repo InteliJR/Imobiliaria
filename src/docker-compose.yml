@@ -12,17 +12,18 @@ services:
       - ./Auth-service/Layer.Application/.env.production
     networks:
       - app-network
-    
-  # frontend:
-  #  build:
-  #    context: ./frontend
-  #    dockerfile: Dockerfile
-  #  ports:
-  #    - "83:80"
-  #  networks:
-  #    - app-network
-  #  depends_on:
-  #    - auth-service
+   
+  frontend:
+   build:
+     context: ./frontend
+     dockerfile: Dockerfile
+   ports:
+     - "83:80"
+   networks:
+     - app-network
+   depends_on:
+     - auth-service
+     
   mongodb:
     build:
         context: ./logging-mongodb
@@ -76,7 +77,6 @@ services:
       - app-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
 networks:
   app-network:
     driver: bridge

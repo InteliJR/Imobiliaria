@@ -17,5 +17,5 @@
     COPY --from=build /app/dist /usr/share/nginx/html
 
     EXPOSE 83
-
     CMD ["nginx", "-g", "daemon off;"]
+
