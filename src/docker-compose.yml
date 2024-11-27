@@ -23,6 +23,7 @@ services:
      - app-network
    depends_on:
      - auth-service
+     
   mongodb:
     build:
         context: ./logging-mongodb
