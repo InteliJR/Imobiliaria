@@ -5,12 +5,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../services/axiosConfig';
 import { getServiceUrl } from '../../services/apiService';
+import { showErrorToast } from '../../utils/toastMessage';
 import { jwtDecode } from 'jwt-decode';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -34,7 +34,7 @@ export default function Login() {
             navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
         } catch (error: any) {
             // Axios retorna erros no `response`
-            setError(error.response?.data?.message || 'Erro ao fazer login');
+            showErrorToast(error.response?.data?.message || 'Erro ao fazer login');
         }
     };
 
@@ -83,7 +83,6 @@ export default function Login() {
                             Login
                         </button>
                     </form>
-                    {error && <p className="text-red-500 mt-4">{error}</p>}
                 </div>
             </div>
 

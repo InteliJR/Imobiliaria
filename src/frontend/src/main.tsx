@@ -3,8 +3,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 
 // Import desktop components and pages
@@ -117,6 +117,7 @@ const Root = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+
       <ToastContainer />
     </BrowserRouter>
   );
