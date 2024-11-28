@@ -46,10 +46,7 @@ const Root = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={isDesktop ? <Landing /> : <LandingMobile />} />
-        <Route
-          path="/login"
-          element={isDesktop ? <Login /> : <LoginMobile />}
-        />
+        <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
 
         <Route path="/imoveis" element={<VisualizarImoveis />} />
         <Route
@@ -62,25 +59,13 @@ const Root = () => {
           path="/chamados/criar"
           element={isDesktop ? <CreateTicket /> : <CreateTicketMobile />}
         />
-        <Route
-          path="/chamado/:id"
-          element={isDesktop ? <Chamado /> : <ChamadoMobile />}
-        />
+        <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
 
         <Route path="/usuarios" element={<VisualizarUsuarios />} />
-        <Route
-          path="/usuarios/criar"
-          element={isDesktop ? <CreateUser /> : <CreateUserMobile />}
-        />
+        <Route path="/usuarios/criar" element={isDesktop ? <CreateUser /> : <CreateUserMobile />} />
 
-        <Route
-          path="/perfil"
-          element={isDesktop ? <Perfil /> : <PerfilMobile />}
-        />
-        <Route
-          path="/perfil/:id"
-          element={isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />}
-        />
+        <Route path="/perfil" element={isDesktop ? <Perfil /> : <PerfilMobile />} />
+        <Route path="/perfil/:id" element={isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />} />
         <Route
           path="/perfil/editar"
           element={isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />}
@@ -93,25 +78,16 @@ const Root = () => {
         {/* <Route path="/profile/:id" element={<Profile />} /> */}
         <Route
           path="/visualizar-imoveis"
-          element={
-            isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />
-          }
+          element={isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
         />
         <Route
           path="/visualizar-chamados"
-          element={
-            isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />
-          }
+          element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
         />
-        <Route
-          path="/chamado/:id"
-          element={isDesktop ? <Chamado /> : <ChamadoMobile />}
-        />
+        <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
         <Route
           path="/visualizar-usuarios"
-          element={
-            isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />
-          }
+          element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
         />
         <Route path="/dash" element={<Dashboard />} />
 

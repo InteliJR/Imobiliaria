@@ -5,7 +5,7 @@ import Dashboard from '../components/Dashboard';
 import Chamados from '../components/Chamados';
 import Navbar from '../../mobile/components/Navbar/NavbarLogin';
 
-export default function VisualizarImoveis() {
+export default function VisualizarChamados() {
   const navigate = useNavigate();
 
   return (

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import FormField from '../components/Form/FormField';
-import Navbar from '../../mobile/components/Navbar/Navbar';
-import Footer from '../../components/Footer/FooterSmall';
+import React, { useState } from "react";
+import FormField from "../components/Form/FormField";
+import Navbar from "../../mobile/components/Navbar/Navbar";
+import Footer from "../../components/Footer/FooterSmall";
+import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 
 export default function CreateTicket() {
   const [property, setProperty] = useState("");
@@ -12,12 +13,22 @@ export default function CreateTicket() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log({
-      property,
-      ticketType,
-      title,
-      description,
-    });
+    try {
+      console.log({
+        property,
+        ticketType,
+        title,
+        description,
+      });
+
+      // Requisição...
+
+      showSuccessToast(response?.data?.message || "Chamado aberto com sucesso!");
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
   };
 
   return (

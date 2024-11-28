@@ -18,7 +18,7 @@ export default function Login() {
       navigate("/visualizar-imoveis");
     } catch (error: any) {
       showErrorToast(
-        error.response?.data?.message || "Erro ao se conectar com o servidor."
+        error?.response?.data?.message || "Erro ao se conectar com o servidor."
       );
     }
   };

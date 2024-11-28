@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import FeaturesSection from "../components/FeatureSection";
+import FeaturesSection from "../../components/Landing/FeaturesSection";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../components/FooterBig";
 import Botao from "../components/Botao";
