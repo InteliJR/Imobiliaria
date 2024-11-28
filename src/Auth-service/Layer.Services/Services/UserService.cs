@@ -262,7 +262,7 @@ namespace Layer.Services.Services
 
             // Enviar email com a senha aleatória
 
-            await _emailSender.SendEmailAsync(email, password);
+            await _emailSender.SendEmailAsync(email, password, "NovoUsuario");
 
             // Hashing da senha
 
@@ -333,7 +333,7 @@ namespace Layer.Services.Services
 
             // Enviar email com a senha aleatória
 
-            await _emailSender.SendEmailAsync(email, password);
+            await _emailSender.SendEmailAsync(email, password, "NovoUsuario");
 
             // Hashing da senha
             
@@ -423,7 +423,7 @@ namespace Layer.Services.Services
 
                 // Enviar email com a senha aleatória
 
-                await _emailSender.SendEmailAsync(email, password);
+                await _emailSender.SendEmailAsync(email, password, "RecuperarSenha");
 
                 // Hashing da senha
 
@@ -504,7 +504,7 @@ namespace Layer.Services.Services
 
                 // Enviar email com a senha aleatória
 
-                await _emailSender.SendEmailAsync(email, password);
+                await _emailSender.SendEmailAsync(email, password, "NovoUsuario");
 
                 // Hashing da senha
 
