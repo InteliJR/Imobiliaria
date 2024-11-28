@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "./CardImovel";
 import FormField from "../../mobile/components/Form/FormField";
@@ -7,20 +8,21 @@ import { showErrorToast } from "../../utils/toastMessage";
 export default function Imoveis() {
   const navigate = useNavigate();
 
-  const fetchProperties = (e) => {
-    e.preventDefault();
-
+  const fetchProperties = () => {
     try {
-      console.log("traz os imóveis");
+      console.log("Traz os imóveis");
 
       // Requisição...
-
     } catch (error) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
     }
   };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
 
   return (
     <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">

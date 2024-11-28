@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
@@ -7,10 +7,27 @@ import VisualizarItem from "../components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
 import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 
 export default function Perfil() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate(); // Obtendo a função navigate
+
+  const fetchProfile = () => {
+    try {
+      console.log("Traz o perfil deste usuário em questão");
+
+      // Requisição...
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const profileEdit = () => {
     navigate("/perfil/editar/:id"); // Navega para a página de edição de perfil passando o id do usuário em questão
@@ -21,9 +38,19 @@ export default function Perfil() {
   };
 
   const handleConfirm = () => {
-    setIsModalVisible(false);
-    console.log("Resetar senha deste usuário");
-    // Lógica de integração com o back
+    try {
+      console.log("Perfil salvo com sucesso:", userData);
+
+      setIsModalVisible(false); // fecha o modal
+
+      // Requisição...
+
+      showSuccessToast(response?.data?.message || "Senha resetada com sucesso.");
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
   };
 
   // Função chamada ao cancelar a ação no modal
@@ -46,10 +73,7 @@ export default function Perfil() {
           <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
 
           <VisualizarItem label="Tipo do usuário" informacao="Comum" />
-          <VisualizarItem
-            label="E-mail"
-            informacao="emailDoUsuario@gmail.com"
-          />
+          <VisualizarItem label="E-mail" informacao="emailDoUsuario@gmail.com" />
           <VisualizarItem label="Telefone" informacao="(11) 12345-6789" />
           <VisualizarItem label="Data de Criação" informacao="25/09/2024" />
           <VisualizarItem label="Senha" informacao="senhaDoUsuario4321" />

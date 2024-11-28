@@ -1,11 +1,29 @@
+import { useEffect } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Chamados/Card";
 import FormField from "../components/Form/FormField";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../components/Voltar";
+import { showErrorToast } from "../../utils/toastMessage";
 
 export default function MainPage() {
+  const fetchTickets = () => {
+    try {
+      console.log("Traz os chamados");
+
+      // Requisição...
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
+  };
+
+  useEffect(() => {
+    fetchTickets();
+  }, []);
+
   return (
     <div className="flex flex-col bg-[#F0F0F0] gap-y-5 min-h-screen">
       <Navbar />

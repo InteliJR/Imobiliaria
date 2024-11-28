@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -11,34 +11,48 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-} from 'recharts';
+} from "recharts";
 
 export default function MainPage() {
   const pieData = [
-    { name: 'Residencial', valor: 400 },
-    { name: 'Comercial', valor: 300 },
-    { name: 'Industrial', valor: 300 },
-    { name: 'Terrenos', valor: 200 },
+    { name: "Residencial", valor: 400 },
+    { name: "Comercial", valor: 300 },
+    { name: "Industrial", valor: 300 },
+    { name: "Terrenos", valor: 200 },
   ];
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   const lineData = [
-    { month: 'Jan', valor: 4000 },
-    { month: 'Feb', valor: 3000 },
-    { month: 'Mar', valor: 2000 },
-    { month: 'Apr', valor: 2780 },
-    { month: 'May', valor: 1890 },
-    { month: 'Jun', valor: 2390 },
-    { month: 'Jul', valor: 3490 },
+    { month: "Jan", valor: 4000 },
+    { month: "Feb", valor: 3000 },
+    { month: "Mar", valor: 2000 },
+    { month: "Apr", valor: 2780 },
+    { month: "May", valor: 1890 },
+    { month: "Jun", valor: 2390 },
+    { month: "Jul", valor: 3490 },
   ];
+
+  const fetchData = () => {
+    try {
+      console.log("traz os dados dos gráficos");
+
+      // Requisição...
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="flex flex-col bg-[#F0F0F0] p-4">
       <main className="flex-1">
-        <h2 className="text-3xl font-bold text-neutral-800 mb-6">
-          Monitoramento Financeiro
-        </h2>
+        <h2 className="text-3xl font-bold text-neutral-800 mb-6">Monitoramento Financeiro</h2>
 
         {/* Grid Principal */}
         <section className="grid grid-cols-12 gap-6">
@@ -59,10 +73,7 @@ export default function MainPage() {
                     label
                   >
                     {pieData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -77,21 +88,13 @@ export default function MainPage() {
             <h3 className="text-lg font-semibold mb-4">Faturamento Mensal</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={lineData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
+                <LineChart data={lineData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="valor"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                  />
+                  <Line type="monotone" dataKey="valor" stroke="#8884d8" activeDot={{ r: 8 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

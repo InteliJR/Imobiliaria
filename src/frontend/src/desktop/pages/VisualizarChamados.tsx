@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaClipboardList, FaUsers } from 'react-icons/fa'; // Importing icons
 import Dashboard from '../components/Dashboard';

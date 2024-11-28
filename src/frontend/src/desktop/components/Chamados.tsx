@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProblemCard from "../components/CardChamado";
 import FormField from "../../mobile/components/Form/FormField";
@@ -7,20 +8,21 @@ import { showErrorToast } from "../../utils/toastMessage";
 export default function ChamadosComponent() {
   const navigate = useNavigate();
 
-  const fetchTickets = (e) => {
-    e.preventDefault();
-
+  const fetchTickets = () => {
     try {
-      console.log("traz os chamados");
+      console.log("Traz os chamados");
 
       // Requisição...
-
     } catch (error) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
     }
   };
+
+  useEffect(() => {
+    fetchTickets();
+  }, []);
 
   return (
     <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">

@@ -5,6 +5,7 @@ import Voltar from "../components/Voltar";
 import FormField from "../components/Form/FormField";
 import Botao from "../../components/Botoes/Botao";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 
 export default function Senha() {
   const [senhaAntiga, setSenhaAntiga] = useState("");
@@ -19,13 +20,23 @@ export default function Senha() {
 
   // Função chamada ao confirmar a ação no modal
   const handleConfirm = () => {
-    setIsModalVisible(false);
-    console.log("Senha alterada com sucesso:", {
-      senhaAntiga,
-      novaSenha,
-      confirmarSenha,
-    });
-    // Lógica de integração com o back
+    try {
+      console.log("Senha alterada com sucesso:", {
+        senhaAntiga,
+        novaSenha,
+        confirmarSenha,
+      });
+      
+      setIsModalVisible(false); // fecha o modal
+
+      // Requisição...
+
+      showSuccessToast(response?.data?.message || "Senha alterada com sucesso.");
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
   };
 
   // Função chamada ao cancelar a ação no modal

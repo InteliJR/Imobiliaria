@@ -2,8 +2,23 @@ import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
+import { showErrorToast } from "../../utils/toastMessage";
 
-export default function Perfil() {
+export default function Chamado() {
+  const fetchUser = (e) => {
+    e.preventDefault();
+
+    try {
+      console.log("traz o chamado");
+
+      // Requisição...
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
+  };
+
   return (
     <main className="main-custom">
       <Navbar />

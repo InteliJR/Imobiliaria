@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
@@ -5,9 +6,26 @@ import Voltar from "../components/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
 import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
+import { showErrorToast } from "../../utils/toastMessage";
 
 export default function Perfil() {
   const navigate = useNavigate(); // Obtendo a função navigate
+
+  const fetchProfile = () => {
+    try {
+      console.log("Traz o perfil do usuário logado");
+
+      // Requisição...
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const profileEdit = () => {
     navigate("/perfil/editar"); // Navega para a página de edição de perfil
@@ -34,10 +52,7 @@ export default function Perfil() {
         <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
           <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
 
-          <VisualizarItem
-            label="E-mail"
-            informacao="emailDoUsuario@gmail.com"
-          />
+          <VisualizarItem label="E-mail" informacao="emailDoUsuario@gmail.com" />
           <VisualizarItem label="Telefone" informacao="(11) 12345-6789" />
           <VisualizarItem label="Data de Criação" informacao="25/09/2024" />
         </div>

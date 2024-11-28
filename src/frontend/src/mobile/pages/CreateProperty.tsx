@@ -1,19 +1,30 @@
-import React, { useState } from 'react';
-import FormField from '../components/Form/FormField';
-import Navbar from '../components/Navbar/Navbar';
+import React, { useState } from "react";
+import FormField from "../components/Form/FormField";
+import Navbar from "../components/Navbar/Navbar";
+import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 
 export default function CreatePropertyMobile() {
-  const [propertyType, setPropertyType] = useState('Kitnet');
-  const [description, setDescription] = useState('');
-  const [value, setValue] = useState<string>('');
-
+  const [propertyType, setPropertyType] = useState("Kitnet");
+  const [description, setDescription] = useState("");
+  const [value, setValue] = useState<string>("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({
+
+    try {
+      console.log({
         propertyType,
         description,
-    });
+      });
+
+      // Requisição...
+
+      showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
   };
 
   return (
@@ -26,13 +37,15 @@ export default function CreatePropertyMobile() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Tipo do Imóvel */}
               <div>
-                <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">Tipo do Imóvel</label>
+                <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">
+                  Tipo do Imóvel
+                </label>
                 <select
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    className={`h-10 flex-grow ${
-                    value ? 'bg-transparent border border-black' : 'bg-[#D9D9D9]'
-                    } w-full focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  className={`h-10 flex-grow ${
+                    value ? "bg-transparent border border-black" : "bg-[#D9D9D9]"
+                  } w-full focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
                 >
                   <option>Kitnet</option>
                   <option>Apartamento</option>
@@ -49,19 +62,21 @@ export default function CreatePropertyMobile() {
               <FormField label="Aluguel (R$)" type="text" placeholder="Valor do aluguel" />
               <FormField label="Condomínio (R$)" type="text" placeholder="Valor do condomínio" />
 
-                {/* Descrição */}
-                <div>
-                    <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">Descrição</label>
-                    <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className={`h-20 flex-grow ${
-                            description ? 'bg-transparent border border-black' : 'bg-[#D9D9D9]'
-                        } w-full focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
-                        rows="3"
-                        placeholder="Descrição do imóvel"
-                    ></textarea>
-                </div>
+              {/* Descrição */}
+              <div>
+                <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">
+                  Descrição
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className={`h-20 flex-grow ${
+                    description ? "bg-transparent border border-black" : "bg-[#D9D9D9]"
+                  } w-full focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
+                  rows="3"
+                  placeholder="Descrição do imóvel"
+                ></textarea>
+              </div>
 
               {/* Botão Confirmar */}
               <button

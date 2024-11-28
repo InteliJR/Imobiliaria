@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LandlordCard from "./CardUsuario";
 import FormField from "../../mobile/components/Form/FormField";
@@ -7,11 +8,9 @@ import { showErrorToast } from "../../utils/toastMessage";
 export default function ChamadosComponent() {
   const navigate = useNavigate();
 
-  const fetchUsers = (e) => {
-    e.preventDefault();
-
+  const fetchUsers = () => {
     try {
-      console.log("traz os usuários");
+      console.log("Traz os usuários");
 
       // Requisição...
     } catch (error) {
@@ -20,6 +19,10 @@ export default function ChamadosComponent() {
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
     <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">

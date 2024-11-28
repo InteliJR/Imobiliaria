@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
