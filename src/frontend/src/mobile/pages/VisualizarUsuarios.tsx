@@ -1,11 +1,12 @@
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Usuarios/Card";
-import FormField from "../components/Form/FormField";
+import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../components/Voltar";
 import { useState, useEffect } from "react";
 import axiosInstance from "../../services/axiosConfig";
+
 
 export default function MainPage() {
   const [userData, setUserData] = useState({
@@ -16,90 +17,34 @@ export default function MainPage() {
     desde: null,
   });
   const [data, setData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const getAllInfo = async () => {
     try {
-      const response = await axiosInstance.get(`auth/User/PegarTodosUsuarios`);
-      console.log(response.data);
+      const responseAuth = await axiosInstance.get(`auth/User/PegarTodosUsuarios`);
+      const responseProperty = await axiosInstance.get(`property/Imoveis/PegarTodosImoveis`);
+      
+      const combinedData = responseAuth.data.map((user: { imovelId: number, role: string }) => {
+        if (user.role === "Admin" || user.role === "Judiciario") {
+          return { ...user, endereco: null, descricao: null, valorImovel: null };
+        }
+        const imovel = responseProperty.data.find((imovel: { imovelId: number }) => imovel.imovelId === user.imovelId);
+        return imovel ? { ...user, ...imovel } : null;
+      }).filter((item: any) => item !== null);
+      
+      combinedData.forEach((item: any) => {
+        item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
+      });
 
-      const response2 = await axiosInstance.get(`property/Imoveis/PegarTodosImoveis`);
-
-      console.log(response2.data);
-
-      // Resposta PegarTodosUsuarios
-      // {
-      //   "usuarioId": 2,
-      //   "roleId": 1,
-      //   "role": "Admin",
-      //   "nome": "Lucas Legal",
-      //   "cpf": null,
-      //   "telefone": null,
-      //   "nacionalidade": null,
-      //   "endereco": null,
-      //   "cnpj": null,
-      //   "passaporte": null,
-      //   "rg": null,
-      //   "email": "hilewok988@acroins.com",
-      //   "ativo": true,
-      //   "dataCriacao": "2024-10-30T21:08:48.006427",
-      //   "imovelId": 0
-      // }
-
-      // Resposta PegarTodosImoveis
-        //       bairro
-        // : 
-        // "Centro"
-        // cep
-        // : 
-        // "01234-567"
-        // complemento
-        // : 
-        // "Apto 301"
-        // condominio
-        // : 
-        // 500
-        // descricao
-        // : 
-        // "Apartamento bem localizado"
-        // endereco
-        // : 
-        // "Rua das Flores, 100"
-        // imovelId
-        // : 
-        // 11
-        // tipoImovel
-        // : 
-        // "Apartamento"
-        // valorImovel
-        // : 
-        // 300000
-
-        // Unir os dois arrays
-
-        const combinedData = response.data
-          .map((user: { imovelId: number, role: string }) => {
-            if (user.role === "Admin" || user.role === "Judiciario") {
-              return { ...user, endereco: null, descricao: null, valorImovel: null };
-            }
-            const imovel = response2.data.find((imovel: { imovelId: number }) => imovel.imovelId === user.imovelId);
-            return imovel ? { ...user, ...imovel } : null;
-          }).filter((item: any) => item !== null);
-        
-        // Formatar a dataCriacao para data e só ano e mes
-        combinedData.forEach((item: any) => {
-          item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
-        });
-        
-        setData(combinedData);
-        
-        console.log("Resultado foda");
-        console.log(combinedData);
-
+      // TODO: Pegar info de numero de imóveis
+      
+      setData(combinedData);
+      setFilteredData(combinedData); // Inicialmente não tem filtros então exibe todos os usuários
     } catch (error) {
       console.error(error);
     }
-  }
-
+  };
+  
   useEffect(() => {
     getAllInfo();
   }, []);
@@ -122,12 +67,19 @@ export default function MainPage() {
           <form className="grid grid-cols-1 gap-4">
             {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
             <div className="flex w-full gap-2 items-end">
-              <div className="w-full">
-                <FormField
+                <div className="w-full">
+                <FormFieldFilter
                   label="Buscar usuário"
-                  onChange={() => {}} // Função onChange vazia
+                  onFilter={(searchTerm) => {
+                    console.log(searchTerm);
+                    const filtered = data.filter(user =>
+                      user.nome.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                    setFilteredData(filtered);
+                  }}
                 />
-              </div>
+                </div>
+                {/* TODO: Colocar outra tela com detalhes de filtro, podendo filtrar de outras maneiras */}
               <button
                 type="submit"
                 className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
@@ -145,20 +97,20 @@ export default function MainPage() {
           <h2 className="text-2xl font-semibold">Resultados</h2>
           <div className="h-[1px] bg-black"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {data.map((user, index) => {
-                const status: "Locador" | "Locatário" | "Admin" | "Judiciario" =
+            {filteredData.map((user, index) => {
+              const status: "Locador" | "Locatário" | "Admin" | "Judiciario" =
                 user.role === "Admin" ? "Admin" : user.role === "Judiciario" ? "Judiciario" : index % 2 === 0 ? "Locador" : "Locatário";
-              return (
-              <Card
-                key={index}
-                id={user.usuarioId}
-                title={user.nome}
-                line1={user.nImoveis}
-                line2={user.endereco}
-                line3={user.dataCriacao}
-                status={status}
-              />
-              );
+                return (
+                <Card
+                  key={index}
+                  id={user.usuarioId}
+                  title={user.nome || "Nome não disponível"}
+                  line1={user.nImoveis || "Número de imóveis não disponível"}
+                  line2={user.endereco || "Endereço não disponível"}
+                  line3={user.dataCriacao || "Data de criação não disponível"}
+                  status={status}
+                />
+                );
             })}
           </div>
         </section>

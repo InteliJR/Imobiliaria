@@ -34,10 +34,16 @@ export default function Perfil() {
     setIsModalVisible(true);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async() => {
     setIsModalVisible(false);
-    console.log("Resetar senha deste usuário");
     // Lógica de integração com o back
+
+    //AlterarSenhaUsuario
+
+    const response = await axiosInstance.post(`auth/User/RedefinirSenhaUsuario?email=${userData.email}`);
+
+    console.log(response.data);
+
   };
 
   // Função chamada ao cancelar a ação no modal
@@ -61,15 +67,18 @@ export default function Perfil() {
       const UserInfo = response.data;
 
       if(UserInfo.role == "Admin" || UserInfo.role == "Judiciario"){
+          
+        const notApplicable = "Não aplicável";
+
           setUserData({
           nome: UserInfo.nome,
-          telefone: null,
+          telefone: notApplicable,
           nacionalidade: UserInfo.national,
-          cpf: null,
-          rg: null,
-          passaporte: null,
-          endereço: null,
-          CNPJ: null,
+          cpf: notApplicable,
+          rg: notApplicable,
+          passaporte: notApplicable,
+          endereço: notApplicable,
+          CNPJ: notApplicable,
           email: UserInfo.email,
           dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'), // formatar para dd/mm/yyyy
           role: UserInfo.role
@@ -119,6 +128,12 @@ export default function Perfil() {
             informacao={userData.email}
           />
           <VisualizarItem label="Telefone" informacao={userData.telefone} />
+          <VisualizarItem label="Nacionalidade" informacao={userData.nacionalidade} />
+          <VisualizarItem label="CPF" informacao={userData.cpf} />
+          <VisualizarItem label="RG" informacao={userData.rg} />
+          <VisualizarItem label="Passaporte" informacao={userData.passaporte} />
+          <VisualizarItem label="Endereço" informacao={userData.endereço} />
+          <VisualizarItem label="CNPJ" informacao={userData.CNPJ} />
           <VisualizarItem label="Data de Criação" informacao={userData.dataCriacao} />
         </div>
 

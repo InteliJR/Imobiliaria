@@ -39,8 +39,8 @@ export default function Login() {
             const decodedToken: any = jwtDecode(token);
             const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
             const role = decodedToken[roleClaim];
-            sessionStorage.setItem('jwtToken', token);
-            sessionStorage.setItem('userRole', role);
+            localStorage.setItem('jwtToken', token);
+            localStorage.setItem('userRole', role);
 
             // Redirecionar o usuário para home ou dashboard após o login bem-sucedido 
             navigate('/'); // Trocar '/landing' por 'home' ou 'dashboard'

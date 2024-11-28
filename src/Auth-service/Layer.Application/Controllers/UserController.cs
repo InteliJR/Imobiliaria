@@ -366,7 +366,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("RedefinirSenhaUsuario")]
-        [Authorize(Policy = "AllRoles")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
             var newPassword = await _userService.UserForgotPassword(email);
