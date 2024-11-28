@@ -11,6 +11,8 @@ namespace Layer.Domain.Interfaces
     {
         Task<List<User>> GetUsuariosAsync();
 
+        Task<List<UserDetailsModel>> GetAllUsersWithDetailsAsync();
+
         Task<User> InsertNewUser(User user, bool generatePassword);
 
         Task<bool> UserExist(User user);

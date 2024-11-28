@@ -18,6 +18,6 @@ namespace Layer.Application.Models
         public string Email { get; set; }
         public bool Ativo { get; set; }
         public DateTime DataCriacao { get; set; }
-
+        public int? ImovelId { get; set; }
     }
 }

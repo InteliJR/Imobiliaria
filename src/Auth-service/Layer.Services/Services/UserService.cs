@@ -42,6 +42,57 @@ namespace Layer.Services.Services
             return new string(chars.ToArray());
         }
 
+        public async Task<List<UserDetailsModel>> GetAllUsersWithDetailsAsync()
+        {
+            var users = await _dbcontext.Usuarios
+                .Include(u => u.Locador)
+                .Include(u => u.Locatario)
+                .Include(u => u.Colaborador)
+                .Select(u => new UserDetailsModel
+                {
+                    UsuarioId = u.UsuarioId,
+                    Email = u.Email,
+                    TipoUsuario = u.TipoUsuario,
+                    Ativo = u.Ativo,
+                    DataRegistro = u.DataRegistro,
+                    Locador = u.Locador == null ? null : new LocadorDetails
+                    {
+                        LocadorId = u.Locador.LocadorId,
+                        NomeCompletoLocador = u.Locador.NomeCompletoLocador,
+                        CPF = u.Locador.CPF,
+                        CNPJ = u.Locador.CNPJ,
+                        Telefone = u.Locador.NumeroTelefone,
+                        Nacionalidade = u.Locador.Nacionalidade,
+                        Endereco = u.Locador.Endereco,
+                        RG = u.Locador.RG,
+                        ImovelId = u.Locador.ImovelId
+                    },
+                    Locatario = u.Locatario == null ? null : new LocatarioDetails
+                    {
+                        LocatarioId = u.Locatario.LocatarioId,
+                        NomeCompletoLocatario = u.Locatario.NomeCompletoLocatario,
+                        CPF = u.Locatario.CPF,
+                        CNPJ = u.Locatario.CNPJ,
+                        Telefone = u.Locatario.NumeroTelefone,
+                        Nacionalidade = u.Locatario.Nacionalidade,
+                        Endereco = u.Locatario.Endereco,
+                        RG = u.Locatario.RG,
+                        Passaporte = u.Locatario.Passaporte,
+                        ImovelId = u.Locatario.ImovelId
+                    },
+                    Colaborador = u.Colaborador == null ? null : new ColaboradorDetails
+                    {
+                        ColaboradorId = u.Colaborador.ColaboradorId,
+                        NomeCompleto = u.Colaborador.NomeCompleto
+                    }
+                })
+                .ToListAsync();
+
+            return users;
+        }
+
+
+
         public async Task<List<User>> GetUsuariosAsync()
         {
             try

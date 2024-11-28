@@ -67,7 +67,8 @@ namespace Layer.Application.Controllers
                     RG = locador.RG,
                     Email = user.Email,
                     Ativo = user.Ativo,
-                    DataCriacao = user.DataRegistro
+                    DataCriacao = user.DataRegistro,
+                    ImovelId = locador.ImovelId
                 };
 
                 return Ok(noColaborador);
@@ -90,7 +91,8 @@ namespace Layer.Application.Controllers
                     RG = locatario.RG,
                     Email = user.Email,
                     Ativo = user.Ativo,
-                    DataCriacao = user.DataRegistro
+                    DataCriacao = user.DataRegistro,
+                    ImovelId = locatario.ImovelId
                 };
 
                 return Ok(noColaborador);
@@ -119,17 +121,46 @@ namespace Layer.Application.Controllers
 
         }
 
-        // Rota de pagar todos os usuários
         [HttpGet("PegarTodosUsuarios")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> GetAllUsers()
         {
-            // Registra a ação no log
-            await _applicationLog.LogAsync("PegarTodosUsuarios", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            try
+            {
+                var users = await _userService.GetAllUsersWithDetailsAsync();
 
-            var users = await _userService.GetUsuariosAsync();
-            return Ok(users);
+                var result = users.Select(user => new NoColaboradorUserModel
+                {
+                    UsuarioId = user.UsuarioId,
+                    RoleId = user.Locador?.LocadorId ?? 
+                            user.Locatario?.LocatarioId ?? 
+                            user.Colaborador?.ColaboradorId ?? 0,
+                    Role = user.TipoUsuario,
+                    Nome = user.Locador?.NomeCompletoLocador ??
+                        user.Locatario?.NomeCompletoLocatario ??
+                        user.Colaborador?.NomeCompleto,
+                    CPF = user.Locador?.CPF ?? user.Locatario?.CPF,
+                    Telefone = user.Locador?.Telefone,
+                    Nacionalidade = user.Locador?.Nacionalidade,
+                    Endereco = user.Locador?.Endereco,
+                    CNPJ = user.Locador?.CNPJ,
+                    Passaporte = user.Locatario?.Passaporte,
+                    RG = user.Locador?.RG,
+                    Email = user.Email,
+                    Ativo = user.Ativo,
+                    DataCriacao = user.DataRegistro,
+                    ImovelId = user.Locador?.ImovelId ?? user.Locatario?.ImovelId ?? 0
+                }).ToList();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                await _applicationLog.LogAsync("Erro em GetAllUsers", ex.Message, ex.StackTrace);
+                return StatusCode(500, "Ocorreu um erro ao processar a solicitação.");
+            }
         }
+
 
         [HttpPost("AdicionarNovoUsuario")]
         [Authorize(Policy = nameof(Roles.Admin))]
