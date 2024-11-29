@@ -1,5 +1,5 @@
 const getTokenData = () => {
-    const token = sessionStorage.getItem('jwtToken');
+    const token = localStorage.getItem('jwtToken');
     if (!token) {
         return null;
     }
