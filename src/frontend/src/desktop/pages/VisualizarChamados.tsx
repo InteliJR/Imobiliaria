@@ -1,11 +1,10 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaClipboardList, FaUsers } from 'react-icons/fa'; // Importing icons
 import Dashboard from '../components/Dashboard';
 import Chamados from '../components/Chamados';
 import Navbar from '../../mobile/components/Navbar/NavbarLogin';
 
-export default function VisualizarImoveis() {
+export default function VisualizarChamados() {
   const navigate = useNavigate();
 
   return (

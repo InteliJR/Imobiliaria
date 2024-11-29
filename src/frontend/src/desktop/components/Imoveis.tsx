@@ -1,8 +1,29 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "./CardImovel";
 import FormField from "../../mobile/components/Form/FormField";
 import FilterIcon from "/Filter.svg";
+import { showErrorToast } from "../../utils/toastMessage";
 
-export default function ChamadosComponent() {
+export default function Imoveis() {
+  const navigate = useNavigate();
+
+  const fetchProperties = () => {
+    try {
+      console.log("Traz os imóveis");
+
+      // Requisição...
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
   return (
     <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">
       {/* Header */}
@@ -11,6 +32,7 @@ export default function ChamadosComponent() {
         <button
           type="button"
           className="h-10 px-6 bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50 text-sm font-medium rounded"
+          onClick={() => navigate("/imoveis/criar")}
         >
           Adicionar
         </button>

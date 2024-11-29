@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FormField from '../components/Form/FormField';
 import Navbar from '../components/Navbar/Navbar';
+import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 
 export default function AddUser() {
   const [userType, setUserType] = useState("Administrador");
@@ -21,23 +22,33 @@ export default function AddUser() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({
-      userType,
-      fullName,
-      email,
-      phone,
-      rg,
-      cpf,
-      passport,
-      cep,
-      address,
-      number,
-      complement,
-      neighborhood,
-      city,
-      state,
-      nationality,
-    });
+    try {
+      console.log({
+        userType,
+        fullName,
+        email,
+        phone,
+        rg,
+        cpf,
+        passport,
+        cep,
+        address,
+        number,
+        complement,
+        neighborhood,
+        city,
+        state,
+        nationality,
+      });
+
+      // Requisição...
+
+      showSuccessToast(response?.data?.message || "Usuário criado com sucesso.");
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
   };
 
   return (
