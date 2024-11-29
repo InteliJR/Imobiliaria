@@ -126,7 +126,7 @@ namespace Layer.Application.Controllers
             if (locador == null) { return BadRequest("Locador não encontrado."); } else { return Ok(locador); }
         }
 
-        [HttpPost("AtualizarLocador")]
+        [HttpPut("AtualizarLocador")]
         [Authorize(Policy = nameof(Roles.Locador))]
         public async Task<IActionResult> UpdateLocador([FromBody] UpdateLocadorModel locadorToUpdate)
         {
@@ -178,7 +178,7 @@ namespace Layer.Application.Controllers
 
             await _applicationLog.LogAsync($"Atualizar Locador com email {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
-            return Ok(updatedLocador);
+            return Ok();
         }
 
         [HttpPut("AtualizarOutroLocador")]

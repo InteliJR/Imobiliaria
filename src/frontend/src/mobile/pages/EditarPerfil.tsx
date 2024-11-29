@@ -29,6 +29,7 @@ export default function EditarPerfil() {
   const navigate = useNavigate();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [disabledFields, setDisabledFields] = useState<string[]>([]);
 
   // Tipagem explícita para os parâmetros 'field' e 'value'
   const handleInputChange = (field: keyof typeof userData, value: string) => {
@@ -90,7 +91,7 @@ export default function EditarPerfil() {
         });
 
       } else if(role == "Locador"){
-         responseUpdate = await axiosInstance.post(`auth/Locador/AtualizarLocador`, {
+         responseUpdate = await axiosInstance.put(`auth/Locador/AtualizarLocador`, {
           email: userData.email,
           cpf: userData.cpf,
           nacionalidade: userData.nacionalidade,
@@ -102,7 +103,7 @@ export default function EditarPerfil() {
           rg: userData.rg,
         });
       } else if(role == "Locatario"){
-        responseUpdate = await axiosInstance.post(`auth/Locatario/AtualizarLocatario`, {
+        responseUpdate = await axiosInstance.put(`auth/Locatario/AtualizarLocatario`, {
           email: userData.email,
           cpf: userData.cpf,
           nacionalidade: userData.nacionalidade,
@@ -157,7 +158,11 @@ export default function EditarPerfil() {
             email: UserInfo.email,
             dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'), // formatar para dd/mm/yyyy
             });
-          } else{
+
+            // Definir campos desabilitados
+            setDisabledFields(["telefone", "cpf", "rg", "passaporte", "endereço", "CNPJ", "nacionalidade"]);
+
+          } else {
             setUserData({
               nome: UserInfo.nome,
               telefone: UserInfo.telefone,
@@ -196,11 +201,13 @@ export default function EditarPerfil() {
             label="Nome"
             initialValue={userData.nome}
             onChange={(value) => handleInputChange("nome", value)}
+            // disabled={disabledFields.includes("nome")}
           />
           <FormField
             label="Telefone"
             initialValue={userData.telefone}
             onChange={(value) => handleInputChange("telefone", value)}
+            disabled={disabledFields.includes("telefone")}
           />
           <FormField
             label="Nacionalidade"
@@ -211,27 +218,33 @@ export default function EditarPerfil() {
             label="CPF"
             initialValue={userData.cpf}
             onChange={(value) => handleInputChange("cpf", value)}
+            disabled={disabledFields.includes("cpf")}
           />
           <FormField
             label="RG"
             initialValue={userData.rg}
             onChange={(value) => handleInputChange("rg", value)}
+            disabled={disabledFields.includes("rg")}
           />
           <FormField
             label="Passaporte"
             initialValue={userData.passaporte}
             onChange={(value) => handleInputChange("passaporte", value)}
+            disabled={disabledFields.includes("passaporte")}
           />
           <FormField
             label="Endereço"
             initialValue={userData.endereço}
-            onChange={(value) => handleInputChange("Endereço", value)}
+            onChange={(value) => handleInputChange("endereço", value)}
+            disabled={disabledFields.includes("endereço")}
           />
           <FormField
             label="CNPJ"
             initialValue={userData.CNPJ}
             onChange={(value) => handleInputChange("CNPJ", value)}
+            disabled={disabledFields.includes("CNPJ")}
           />
+
         </form>
 
         {resultMessage && <p className="text-black-500 mt-4">{resultMessage}</p>}

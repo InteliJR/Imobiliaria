@@ -167,7 +167,7 @@ namespace Layer.Application.Controllers
 
             await _applicationLog.LogAsync($"Atualização de Locatario com email {email}", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
-            return Ok(updatedLocatario);
+            return Ok();
         }
 
         [HttpPut("AtualizarOutroLocatario")]
