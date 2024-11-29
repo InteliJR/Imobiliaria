@@ -91,6 +91,7 @@ builder.Services.AddScoped<IimoveisRepository, ImoveisService>();
 builder.Services.AddScoped<IContratosRepository, ContratoService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IChamadosRepository, ChamadosService>();
+builder.Services.AddScoped<ApplicationLog>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings

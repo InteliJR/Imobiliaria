@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using property_management.Models;
+using System.Security.Claims;
+using Layer.Infrastructure.Database;
 
 namespace property_management.Controllers
 {
@@ -16,12 +18,14 @@ namespace property_management.Controllers
         private readonly IContratosRepository _contratoService;
         private readonly IimoveisRepository _imoveisService;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationLog _applicationLog;
 
-        public ContratosController(IContratosRepository contratoService, IimoveisRepository imoveisService, IEmailSender emailSender)
+        public ContratosController(IContratosRepository contratoService, IimoveisRepository imoveisService, IEmailSender emailSender, ApplicationLog applicationLog)
         {
             _contratoService = contratoService;
             _imoveisService = imoveisService;
             _emailSender = emailSender;
+            _applicationLog = applicationLog;
         }
 
         [HttpGet("PegarContratoPorId/{id}")]
@@ -85,6 +89,8 @@ namespace property_management.Controllers
 
             await _emailSender.SendEmailAsync(emailLocatario, locatarioUserType, contractDetails);
 
+            await _applicationLog.LogAsync($"Criação de contrato com id: {novoContrato.ContratoId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(novoContrato);
         }
 
@@ -124,10 +130,12 @@ namespace property_management.Controllers
             // Salvando as alterações no banco de dados
             var result = await _contratoService.UpdateAsync(id, contrato);
 
+            await _applicationLog.LogAsync($"Atualização de contrato com id: {contrato.ContratoId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(contrato);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeletarContrato/{id}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteContrato(int id)
         {

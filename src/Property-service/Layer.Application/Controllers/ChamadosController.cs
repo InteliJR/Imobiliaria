@@ -2,6 +2,8 @@
 using Layer.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Layer.Infrastructure.Database;
 
 namespace property_management.Controllers
 {
@@ -10,10 +12,12 @@ namespace property_management.Controllers
     public class ChamadosController : ControllerBase
     {
         private readonly IChamadosRepository _chamadosService;
+        private readonly ApplicationLog _applicationLog;
 
-        public ChamadosController(IChamadosRepository chamadosService)
+        public ChamadosController(IChamadosRepository chamadosService, ApplicationLog applicationLog)
         {
             _chamadosService = chamadosService;
+            _applicationLog = applicationLog;
         }
 
         [HttpGet("PegarTodosOsChamados")]
@@ -42,6 +46,9 @@ namespace property_management.Controllers
         public async Task<ActionResult<Chamados>> Create(Chamados chamado)
         {
             var newChamado = await _chamadosService.AddAsync(chamado);
+
+            await _applicationLog.LogAsync($"Criação de chamado com id: {newChamado.IdChamado} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return CreatedAtAction(nameof(GetById), new { id = newChamado.IdChamado }, newChamado);
         }
 
@@ -60,6 +67,9 @@ namespace property_management.Controllers
             {
                 return NotFound();
             }
+
+            await _applicationLog.LogAsync($"Atualização de chamado com id: {chamado.IdChamado} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return NoContent();
         }
 
@@ -73,6 +83,9 @@ namespace property_management.Controllers
             {
                 return NotFound();
             }
+
+            await _applicationLog.LogAsync($"Chamado Deletado com id: {id} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return NoContent();
         }
     }
