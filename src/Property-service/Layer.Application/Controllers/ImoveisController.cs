@@ -53,7 +53,9 @@ namespace Layer.Application.Controllers
                 Bairro = newImovel.Bairro,
                 Descricao = newImovel.Descricao,
                 Endereco = newImovel.Endereco,
-                Complemento = newImovel.Complemento
+                Complemento = newImovel.Complemento,
+                LocatarioId = newImovel.LocatarioId,
+                LocadorId = newImovel.LocadorId
             };
 
             var novoImovel = await _imoveisService.PostImoveisAsync(imovel);
@@ -87,6 +89,8 @@ namespace Layer.Application.Controllers
             imovel.Descricao = updatedImovel.Descricao;
             imovel.Endereco = updatedImovel.Endereco;
             imovel.Complemento = updatedImovel.Complemento;
+            imovel.LocatarioId = updatedImovel.LocatarioId;
+            imovel.LocadorId = updatedImovel.LocadorId;
 
             _imoveisService.UpdateImoveisAsync(id, imovel);
 

@@ -86,7 +86,6 @@ namespace Layer.Application.Controllers
                     Email = user.Email,
                     Ativo = user.Ativo,
                     DataCriacao = user.DataRegistro,
-                    ImovelId = locador.ImovelId
                 };
 
                 return Ok(noColaborador);

@@ -46,9 +46,6 @@ namespace Layer.Domain.Entities
         [MaxLength(18)]
         public string? CNPJ { get; set; }
 
-        [Column("imovelid")]
-        public int? ImovelId { get; set; }
-
         // Propriedade de navegação para User
         [ForeignKey("UsuarioId")]
         public User User { get; set; }

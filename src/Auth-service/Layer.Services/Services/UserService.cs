@@ -65,7 +65,6 @@ namespace Layer.Services.Services
                         Nacionalidade = u.Locador.Nacionalidade,
                         Endereco = u.Locador.Endereco,
                         RG = u.Locador.RG,
-                        ImovelId = u.Locador.ImovelId
                     },
                     Locatario = u.Locatario == null ? null : new LocatarioDetails
                     {
@@ -78,7 +77,6 @@ namespace Layer.Services.Services
                         Endereco = u.Locatario.Endereco,
                         RG = u.Locatario.RG,
                         Passaporte = u.Locatario.Passaporte,
-                        ImovelId = u.Locatario.ImovelId
                     },
                     Colaborador = u.Colaborador == null ? null : new ColaboradorDetails
                     {
@@ -291,7 +289,6 @@ namespace Layer.Services.Services
                 var locadorNew = new Locador
                 {
                     UsuarioId = userCreated.UsuarioId,
-                    ImovelId = locador.ImovelId,
                     PessoaJuridica = locador.PessoaJuridica,
                     CPF = locador.CPF,
                     Nacionalidade = locador.Nacionalidade,
@@ -368,7 +365,6 @@ namespace Layer.Services.Services
             var locatarioNew = new Locatario
             {
                 UsuarioId = userCreated.UsuarioId,
-                ImovelId = locatario.ImovelId,
                 CPF = locatario.CPF,
                 Nacionalidade = locatario.Nacionalidade,
                 NumeroTelefone = locatario.NumeroTelefone,

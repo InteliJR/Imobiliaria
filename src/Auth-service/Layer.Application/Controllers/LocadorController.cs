@@ -74,7 +74,6 @@ namespace Layer.Application.Controllers
             var locadorNew = new Locador
             {
                 UsuarioId = userID.UsuarioId,
-                ImovelId = locador.ImovelId,
                 PessoaJuridica = false,
                 CPF = locador.CPF,
                 Nacionalidade = locador.Nacionalidade,

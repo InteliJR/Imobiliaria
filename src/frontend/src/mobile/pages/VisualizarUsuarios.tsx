@@ -21,29 +21,43 @@ export default function MainPage() {
 
   const getAllInfo = async () => {
     try {
-      const responseAuth = await axiosInstance.get(`auth/User/PegarTodosUsuarios`);
-      const responseProperty = await axiosInstance.get(`property/Imoveis/PegarTodosImoveis`);
-      
-      const combinedData = responseAuth.data.map((user: { imovelId: number, role: string }) => {
-        if (user.role === "Admin" || user.role === "Judiciario") {
-          return { ...user, endereco: null, descricao: null, valorImovel: null };
-        }
-        const imovel = responseProperty.data.find((imovel: { imovelId: number }) => imovel.imovelId === user.imovelId);
-        return imovel ? { ...user, ...imovel } : null;
-      }).filter((item: any) => item !== null);
-      
-      combinedData.forEach((item: any) => {
-        item.dataCriacao = new Date(item.dataCriacao).toLocaleDateString();
+      const responseAuth = await axiosInstance.get('auth/User/PegarTodosUsuarios');
+      const responseProperty = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
+  
+      if (!responseAuth.data || !responseProperty.data) {
+        console.error("Dados de resposta inválidos");
+        return;
+      }
+  
+      // Você pode manter ou ajustar o filtro de usuários conforme necessário
+      const usersWithRelevantRoles = responseAuth.data;
+  
+      const combinedData = usersWithRelevantRoles.map((user) => {
+        // Filtrar imóveis relacionados ao usuário usando roleId
+        const imoveis = responseProperty.data.filter((imovel) => {
+          const isLocador = Number(imovel.locadorId) === Number(user.roleId);
+          const isLocatario = Number(imovel.locatarioId) === Number(user.roleId);
+          return isLocador || isLocatario;
+        });
+  
+        console.log(`Usuário: ${user.nome}, Imóveis encontrados:`, imoveis);
+  
+        return {
+          ...user,
+          nImoveis: imoveis.length,
+          imoveis,
+        };
       });
-
-      // TODO: Pegar info de numero de imóveis
-      
+  
       setData(combinedData);
-      setFilteredData(combinedData); // Inicialmente não tem filtros então exibe todos os usuários
+      setFilteredData(combinedData); // Inicialmente exibir todos os usuários
+      console.log("Dados combinados:", combinedData);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao obter informações de usuários ou imóveis:", error.message);
     }
   };
+  
+  
   
   useEffect(() => {
     getAllInfo();
@@ -98,8 +112,13 @@ export default function MainPage() {
           <div className="h-[1px] bg-black"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredData.map((user, index) => {
-              const status: "Locador" | "Locatário" | "Admin" | "Judiciario" =
-                user.role === "Admin" ? "Admin" : user.role === "Judiciario" ? "Judiciario" : index % 2 === 0 ? "Locador" : "Locatário";
+              const roleLower = user.role.toLowerCase();
+              const status = roleLower === "admin" ? "Admin" :
+                   roleLower === "judiciario" ? "Judiciario" :
+                   roleLower === "locador" ? "Locador" :
+                   roleLower === "locatario" ? "Locatário" :
+                   "Desconhecido";
+                   
                 return (
                 <Card
                   key={index}
