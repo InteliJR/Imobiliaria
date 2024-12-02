@@ -7,9 +7,10 @@ interface FormFieldProps {
   initialValue?: string; 
   onChange: (value: string) => void;
   isPassword?: boolean;
-}
+  disabled?: boolean; // Nova propriedade
+  }
 
-const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', initialValue = '', onChange, isPassword = false }) => {
+const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', initialValue = '', onChange, isPassword = false, disabled = false }) => {
   const [value, setValue] = useState<string>(initialValue); // Usa initialValue como valor inicial
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
@@ -37,6 +38,7 @@ const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', initialV
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
+        disabled={disabled} // Aqui aplicamos o controle
         className={`h-10 flex-grow pr-10 tracking-wider ${
           value ? 'bg-gray-100 border border-black' : 'bg-[#D9D9D9]'
         } focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}

@@ -23,6 +23,29 @@ namespace Layer.Infrastructure.Database
 
         public DbSet<Colaborador> Colaboradores { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Relacionamento 1:1 entre User e Locador
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Locador)
+                .WithOne(l => l.User)
+                .HasForeignKey<Locador>(l => l.UsuarioId);
+
+            // Relacionamento 1:1 entre User e Locatario
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Locatario)
+                .WithOne(l => l.User)
+                .HasForeignKey<Locatario>(l => l.UsuarioId);
+
+            // Relacionamento 1:1 entre User e Colaborador
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Colaborador)
+                .WithOne(c => c.User)
+                .HasForeignKey<Colaborador>(c => c.UsuarioId);
+
+            base.OnModelCreating(modelBuilder);
+        }
+
     }
 
 }
