@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Layer.Domain.Entities
 {
-    [Table("locatarios")]
+[Table("locatarios")]
     public class Locatario
     {
         [Key]
@@ -48,5 +48,10 @@ namespace Layer.Domain.Entities
 
         [Column("imovelid")]
         public int? ImovelId { get; set; }
+
+        // Propriedade de navegação para User
+        [ForeignKey("UsuarioId")]
+        public User User { get; set; }
     }
+
 }

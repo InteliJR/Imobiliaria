@@ -76,7 +76,7 @@ namespace Layer.Application.Controllers
 
         [HttpPut("AtualizarColaborador")]
         [Authorize(Policy = "AdminORJudiciario")]
-        public async Task<IActionResult> UpdateColaborador([FromQuery] string email, [FromBody] UpdateColaboradorModel colaboradorToUpdate)
+        public async Task<IActionResult> UpdateColaborador([FromBody] UpdateColaboradorModel colaboradorToUpdate)
         {
             if (!ModelState.IsValid)
             {
@@ -85,15 +85,18 @@ namespace Layer.Application.Controllers
 
             // Pegar o id do colaborador pelo email e atualizar
 
-            var colaborador = await _colaboradorService.GetColaboradorByEmail(email);
+            var colaborador = new Colaborador();
+
+            var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?? throw new ArgumentNullException("Email não encontrado.");
+
+            colaborador = await _colaboradorService.GetColaboradorByEmail(email);
+
 
             if (colaborador == null)
             {
                 return BadRequest("Colaborador não encontrado.");
             }
 
-            if (!string.IsNullOrEmpty(Convert.ToString(colaboradorToUpdate.UsuarioId)))
-                colaborador.UsuarioId = colaboradorToUpdate.UsuarioId;
             if (!string.IsNullOrEmpty(colaboradorToUpdate.NomeCompleto))
                 colaborador.NomeCompleto = colaboradorToUpdate.NomeCompleto;
             if (!string.IsNullOrEmpty(colaboradorToUpdate.TipoColaborador))
@@ -103,7 +106,40 @@ namespace Layer.Application.Controllers
 
             await _applicationLog.LogAsync($"Atualizar colaborador com {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
-            return Ok(updatedColaborador);
+            return Ok();
+        }
+
+        [HttpPut("AtualizarOutroColaborador")]
+        [Authorize(Policy = "AdminORJudiciario")]
+        public async Task<IActionResult> UpdateColaborador([FromQuery] string email, [FromBody] UpdateColaboradorModel colaboradorToUpdate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Pegar o id do colaborador pelo email e atualizar
+
+            var colaborador = new Colaborador();
+
+            colaborador = await _colaboradorService.GetColaboradorByEmail(email);
+
+
+            if (colaborador == null)
+            {
+                return BadRequest("Colaborador não encontrado.");
+            }
+
+            if (!string.IsNullOrEmpty(colaboradorToUpdate.NomeCompleto))
+                colaborador.NomeCompleto = colaboradorToUpdate.NomeCompleto;
+            if (!string.IsNullOrEmpty(colaboradorToUpdate.TipoColaborador))
+                colaborador.TipoColaborador = colaboradorToUpdate.TipoColaborador;
+
+            var updatedColaborador = await _colaboradorService.UpdateColaborador(colaborador);
+
+            await _applicationLog.LogAsync($"Atualizar colaborador com {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
+            return Ok();
         }
 
         [HttpDelete("DeletarColaborador")]

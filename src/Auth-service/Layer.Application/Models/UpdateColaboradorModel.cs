@@ -5,8 +5,6 @@ namespace Layer.Application.Models
 {
     public class UpdateColaboradorModel
     {
-        public int? UsuarioId { get; set; }
-
         [MaxLength(100)]
         public string? NomeCompleto { get; set; }
 

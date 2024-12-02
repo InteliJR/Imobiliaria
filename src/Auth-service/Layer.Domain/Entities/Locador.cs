@@ -51,5 +51,9 @@ namespace Layer.Domain.Entities
         [Column("rg")]
         [MaxLength(20)]
         public string? RG { get; set; }
+
+        [ForeignKey("UsuarioId")]
+        public User User { get; set; }
     }
+
 }
