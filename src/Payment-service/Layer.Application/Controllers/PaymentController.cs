@@ -7,6 +7,9 @@ using Layer.Domain.DTO;
 using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
 using Layer.Domain.Enums;
+using Layer.Infrastructure.Database;
+using System.Security.Claims;
+
 
 namespace Layer.Application.Controllers
 {
@@ -42,10 +45,10 @@ namespace Layer.Application.Controllers
             var payment = await _paymentService.GetPaymentByIdAsync(id);
             if (payment == null)
             {
-                _applicationLog.LogWarning($"Payment with ID {id} not found.");
+                _applicationLog.LogAsync($"Payment with ID {id} not found.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
                 return NotFound();
             }
-            _applicationLog.LogInformation($"Payment with ID {id} retrieved.");
+            _applicationLog.LogAsync($"Payment with ID {id} retrieved.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return Ok(payment);
         }
 
@@ -73,7 +76,7 @@ namespace Layer.Application.Controllers
             };
 
             await _paymentService.AddPaymentAsync(payment);
-            _applicationLog.LogInformation("New payment created.");
+            _applicationLog.LogAsync("New payment created.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return CreatedAtAction(nameof(GetPaymentById), new { id = payment.PaymentId }, payment);
         }
 
@@ -90,7 +93,7 @@ namespace Layer.Application.Controllers
             var existingPayment = await _paymentService.GetPaymentByIdAsync(id);
             if (existingPayment == null)
             {
-                _applicationLog.LogWarning($"Payment with ID {id} not found for update.");
+                _applicationLog.LogAsync($"Payment with ID {id} not found for update.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
                 return NotFound();
             }
 
@@ -105,7 +108,7 @@ namespace Layer.Application.Controllers
             existingPayment.ValorMulta = paymentDto.ValorMulta;
 
             await _paymentService.UpdatePaymentAsync(existingPayment);
-            _applicationLog.LogInformation($"Payment with ID {id} updated.");
+            _applicationLog.LogAsync($"Payment with ID {id} updated.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return NoContent();
         }
 
@@ -117,12 +120,12 @@ namespace Layer.Application.Controllers
             var payment = await _paymentService.GetPaymentByIdAsync(id);
             if (payment == null)
             {
-                _applicationLog.LogWarning($"Payment with ID {id} not found for deletion.");
+                _applicationLog.LogAsync($"Payment with ID {id} not found for deletion.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
                 return NotFound();
             }
 
             await _paymentService.DeletePaymentAsync(id);
-            _applicationLog.LogInformation($"Payment with ID {id} deleted.");
+            _applicationLog.LogAsync($"Payment with ID {id} deleted.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return NoContent();
         }
 
@@ -134,7 +137,7 @@ namespace Layer.Application.Controllers
             var pagamento = await _paymentService.GetPaymentByIdAsync(pagamentoId);
             if (pagamento == null)
             {
-                _applicationLog.LogWarning($"Payment with ID {pagamentoId} not found for reminder.");
+                _applicationLog.LogAsync($"Payment with ID {pagamentoId} not found for reminder.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
                 return NotFound("Pagamento não encontrado.");
             }
 
@@ -148,7 +151,7 @@ namespace Layer.Application.Controllers
                 <p>Atenciosamente,<br/>Equipe KK Imobiliária</p>";
 
             var result = await _emailSender.SendEmailAsync(emailDestinatario, subject, body);
-            _applicationLog.LogInformation($"Payment reminder sent to {emailDestinatario} for payment ID {pagamentoId}.");
+            _applicationLog.LogAsync($"Payment reminder sent to {emailDestinatario} for payment ID {pagamentoId}.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return Ok(result);
         }
     }

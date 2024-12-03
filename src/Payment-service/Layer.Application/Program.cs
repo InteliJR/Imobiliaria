@@ -1,6 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
 using Layer.Domain.Interfaces;
-using Layer.Domain.Enums;
 using Layer.Services;
 using Layer.Services.Services;
 using Layer.Infrastructure.Database;
@@ -65,6 +64,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
 );
 
+builder.Services.AddSingleton(mongoSettings);
+builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoSettings.ConnectionString));
+
 // Registrar o serviço de pagamentos (IPaymentService / PaymentService)
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
@@ -75,7 +77,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<CountryService>();
-builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
+builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddSingleton<ApplicationLog>();
 
 // Configura JWT settings

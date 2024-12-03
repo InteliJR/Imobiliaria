@@ -44,10 +44,10 @@ COPY "./Layer.Application/.env.production" .env.production
 # Definir a vari�vel de ambiente para o caminho do arquivo de credenciais do Firebase
 # ENV GOOGLE_APPLICATION_CREDENTIALS="/app/administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json"
 
-ENV ASPNETCORE_URLS=http://+:8081
+ENV ASPNETCORE_URLS=http://+:8083
 
 # Expor a porta que a aplica��o vai utilizar
-EXPOSE 8081
+EXPOSE 8083
 
 # Iniciar a aplica��o e carregar vari�veis de ambiente
 CMD ["bash", "-c", "export $(cat .env | xargs) && dotnet Layer.Application.dll"]
