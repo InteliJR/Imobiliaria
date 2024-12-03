@@ -43,14 +43,15 @@ services:
       context: ./Property-service
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "8083:8083"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8081
+      - ASPNETCORE_URLS=http://+:8083
     env_file:
       - ./Property-service/Layer.Application/.env.production
     networks:
       - app-network
+
   payment-service:
     build:
       context: ./Payment-service
@@ -64,6 +65,7 @@ services:
       - ./Payment-service/Layer.Application/.env.production
     networks:
       - app-network
+
   gateway:
     build: 
       context: ./Gateway
@@ -73,6 +75,8 @@ services:
       - "8094:8094"
     depends_on:
       - auth-service
+      - property-service
+      - payment-service
     networks:
       - app-network
     extra_hosts:
