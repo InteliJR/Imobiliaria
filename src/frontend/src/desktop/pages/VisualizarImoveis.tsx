@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHome, FaClipboardList, FaUsers } from "react-icons/fa"; // Importing icons
 import Dashboard from "../components/Dashboard";
 import Imoveis from "../components/Imoveis";
-import Navbar from "../../mobile/components/Navbar/NavbarLogin";
+import Navbar from "../../mobile/components/Navbar/NavBar";
 
 export default function VisualizarImoveis() {
   const navigate = useNavigate();

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaHome, FaClipboardList, FaUsers } from 'react-icons/fa'; // Importing icons
 import Dashboard from '../components/Dashboard';
 import Usuarios from '../components/Usuarios';
-import Navbar from '../../mobile/components/Navbar/NavbarLogin';
+import Navbar from '../../mobile/components/Navbar/NavBar';
 
 export default function VisualizarUsuarios() {
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import NavbarLogin from "../../mobile/components/Navbar/NavbarLogin";
+import Navbar from "../../mobile/components/Navbar/NavBar";
 import Footer from "../../components/Footer/FooterBig";
 import FormField from "../../mobile/components/Form/FormField";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export default function Login() {
   return (
     <div className="bg-[#F0F0F0] flex flex-col min-h-screen">
       {/* Navbar */}
-      <NavbarLogin />
+      <Navbar showMenu={false}/>
 
       {/* Main Content */}
       <div className="flex-grow flex flex-col justify-center items-center px-4">

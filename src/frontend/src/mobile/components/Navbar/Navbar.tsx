@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa o useNavigate
-import Menu from './Menu'; // Ajuste o caminho se necessário
+import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importa o useNavigate
+import { GiHamburgerMenu } from "react-icons/gi";
+import Menu from "./Menu"; // Ajuste o caminho se necessário
 
 interface NavbarProps {
   showLoginButton?: boolean; // Prop opcional para exibir o botão "Entrar"
+  showMenu?: boolean; // Prop opcional para exibir o menu
 }
 
-export default function Navbar({ showLoginButton = false }: NavbarProps) { // Usar a prop com valor padrão
+export default function Navbar({
+  showLoginButton = false,
+  showMenu = true,
+}: NavbarProps) {
+  // Usar a prop com valor padrão
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate(); // Inicializa o useNavigate
 
@@ -15,10 +21,10 @@ export default function Navbar({ showLoginButton = false }: NavbarProps) { // Us
   };
 
   // Exemplo de tipo de usuário, você obteria isso dinamicamente em seu aplicativo
-  const userType = 'Administrador'; 
+  const userType = "Administrador";
 
   const handleLoginClick = () => {
-    navigate('/login'); // Redireciona para a página de Login
+    navigate("/login"); // Redireciona para a página de Login
   };
 
   return (
@@ -29,21 +35,24 @@ export default function Navbar({ showLoginButton = false }: NavbarProps) { // Us
         </div>
         <div>
           {showLoginButton ? (
-            <button className="text-white cursor-pointer" onClick={handleLoginClick}>Entrar</button> // Chama a função de redirecionamento
-          ) : (
-            <button onClick={toggleMenu} className="focus:outline-none">
-              <img 
-                src="/Menu.svg" 
-                alt="Menu" 
-                className={`transition-transform duration-300 ${isOpen ? 'rotate-90' : ''}`} 
-              />
+            <button
+              className="text-white cursor-pointer"
+              onClick={handleLoginClick}
+            >
+              Entrar
             </button>
-          )}
+          ) : showMenu ? (
+            <button onClick={toggleMenu} className="focus:outline-none">
+              <GiHamburgerMenu size={35} className="text-[#fefefe] hover:text-[#ccc] transition-all duration-300 ease-in-out"/>
+            </button>
+          ) : null}
         </div>
       </div>
 
       {/* Menu hamburguer em tela cheia */}
-      {isOpen && <Menu userType={userType} toggleMenu={toggleMenu} isOpen={isOpen} />}
+      {isOpen && (
+        <Menu userType={userType} toggleMenu={toggleMenu} isOpen={isOpen} />
+      )}
     </div>
   );
 }
