@@ -8,8 +8,6 @@ namespace Layer.Application.Models
         [MaxLength(255)]
         public string CPF { get; set; }
 
-        public int? ImovelId { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string Nacionalidade { get; set; }

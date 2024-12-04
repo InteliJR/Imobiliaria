@@ -68,7 +68,6 @@ namespace Layer.Application.Controllers
                     Email = user.Email,
                     Ativo = user.Ativo,
                     DataCriacao = user.DataRegistro,
-                    ImovelId = locador.ImovelId
                 };
 
                 return Ok(noColaborador);
@@ -92,7 +91,6 @@ namespace Layer.Application.Controllers
                     Email = user.Email,
                     Ativo = user.Ativo,
                     DataCriacao = user.DataRegistro,
-                    ImovelId = locatario.ImovelId
                 };
 
                 return Ok(noColaborador);
@@ -149,7 +147,6 @@ namespace Layer.Application.Controllers
                     Email = user.Email,
                     Ativo = user.Ativo,
                     DataCriacao = user.DataRegistro,
-                    ImovelId = user.Locador?.ImovelId ?? user.Locatario?.ImovelId ?? 0
                 }).ToList();
 
                 return Ok(result);
@@ -257,7 +254,6 @@ namespace Layer.Application.Controllers
             var locadorNew = new Locador
             {
                 UsuarioId = null,
-                ImovelId = locador.ImovelId,
                 PessoaJuridica = false,
                 CPF = locador.CPF,
                 Nacionalidade = locador.Nacionalidade,
@@ -289,7 +285,6 @@ namespace Layer.Application.Controllers
             var locatarioNew = new Locatario
             {
                 UsuarioId = null,
-                ImovelId = locatario.ImovelId,
                 CPF = locatario.CPF,
                 Nacionalidade = locatario.Nacionalidade,
                 NumeroTelefone = locatario.NumeroTelefone,

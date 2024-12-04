@@ -14,9 +14,6 @@ namespace Layer.Domain.Entities
         [Column("usuarioid")]
         public int? UsuarioId { get; set; }
 
-        [Column("imovelid")]
-        public int? ImovelId { get; set; }
-
         [Column("pessoa_juridica")]
         public bool? PessoaJuridica { get; set; }
 

@@ -22,7 +22,6 @@ namespace Layer.Domain.Entities
         public string Nacionalidade { get; set; }
         public string Endereco { get; set; }
         public string RG { get; set; }
-        public int? ImovelId { get; set; }
     }
 
     public class LocatarioDetails
@@ -36,8 +35,6 @@ namespace Layer.Domain.Entities
         public string Nacionalidade { get; set; }
         public string Endereco { get; set; }
         public string RG { get; set; }
-        public int? ImovelId { get; set; }
-
     }
 
     public class ColaboradorDetails

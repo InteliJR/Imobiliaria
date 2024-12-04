@@ -81,7 +81,6 @@ namespace Layer.Application.Controllers
             var locatarioNew = new Locatario
             {
                 UsuarioId = userID.UsuarioId,
-                ImovelId = locatario.ImovelId,
                 CPF = locatario.CPF,
                 Nacionalidade = locatario.Nacionalidade,
                 NumeroTelefone = locatario.NumeroTelefone,
