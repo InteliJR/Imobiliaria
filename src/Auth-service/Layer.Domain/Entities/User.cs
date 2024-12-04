@@ -36,5 +36,14 @@ namespace Layer.Domain.Entities
         [Column("data_atualizacao")]
         public DateTime DataAtualizacao { get; set; }
 
+        // Relacionamento com Locador
+        public Locador Locador { get; set; }
+
+        // Relacionamento com Locatario
+        public Locatario Locatario { get; set; }
+
+        // Relacionamento com Colaborador
+        public Colaborador Colaborador { get; set; }
+
     }
 }

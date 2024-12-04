@@ -42,5 +42,11 @@ namespace Layer.Domain.Entities
         [Column("complemento")]
         [MaxLength(255)]
         public string Complemento { get; set; }
+
+        [Column("locatarioid")]
+        public int? LocatarioId { get; set; }
+
+        [Column("locadorid")]
+        public int? LocadorId { get; set; }
     }
 }

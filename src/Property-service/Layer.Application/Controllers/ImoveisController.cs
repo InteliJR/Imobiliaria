@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Layer.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Layer.Infrastructure.Database;
+using System.Security.Claims;
 
 namespace Layer.Application.Controllers
 {
@@ -13,18 +15,20 @@ namespace Layer.Application.Controllers
     [Route("[controller]")]
     public class ImoveisController : Controller
     {
-        // Chamar o serviço de usuário
+        // Chamar o serviço de usuário e o serviço de log
         private readonly IimoveisRepository _imoveisService;
+        private readonly ApplicationLog _applicationLog;
 
         // Construtor
-        public ImoveisController(IimoveisRepository imovelService)
+        public ImoveisController(IimoveisRepository imovelService, ApplicationLog applicationLog)
         {
             _imoveisService = imovelService;
+            _applicationLog = applicationLog;
         }
 
-        // Rota de pagar todos os imóveis
+        // Rota de pegar todos os imóveis
         [HttpGet("PegarTodosImoveis")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetAllImoveis()
         {
             var imoveis = await _imoveisService.GetImoveisAsync();
@@ -32,6 +36,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpPost("CriarUmNovoImovel")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> PostImoveis([FromBody] NewImoveis newImovel)
         {
             if (!ModelState.IsValid)
@@ -48,13 +53,20 @@ namespace Layer.Application.Controllers
                 Bairro = newImovel.Bairro,
                 Descricao = newImovel.Descricao,
                 Endereco = newImovel.Endereco,
-                Complemento = newImovel.Complemento
+                Complemento = newImovel.Complemento,
+                LocatarioId = newImovel.LocatarioId,
+                LocadorId = newImovel.LocadorId
             };
 
             var novoImovel = await _imoveisService.PostImoveisAsync(imovel);
+
+            await _applicationLog.LogAsync($"Criação de Imóvel com id: {novoImovel.ImovelId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(novoImovel);
         }
+
         [HttpPut("AtualizarImovel/{id}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> UpdateImovel(int id, [FromBody] UpdateImoveis updatedImovel)
         {
             if (!ModelState.IsValid)
@@ -77,12 +89,18 @@ namespace Layer.Application.Controllers
             imovel.Descricao = updatedImovel.Descricao;
             imovel.Endereco = updatedImovel.Endereco;
             imovel.Complemento = updatedImovel.Complemento;
+            imovel.LocatarioId = updatedImovel.LocatarioId;
+            imovel.LocadorId = updatedImovel.LocadorId;
 
             _imoveisService.UpdateImoveisAsync(id, imovel);
+
+            await _applicationLog.LogAsync($"Atualização de Imóvel com id: {imovel.ImovelId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return Ok(imovel);
         }
 
         [HttpGet("PegarImovelPorId/{id}")]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetImovelById(int id)
         {
             var imovel = await _imoveisService.GetByIdImoveisAsync(id);
@@ -94,6 +112,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpDelete("DeletarImovel/{id}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteImovel(int id)
         {
             var imovel = await _imoveisService.GetByIdImoveisAsync(id);
@@ -104,6 +123,9 @@ namespace Layer.Application.Controllers
             }
 
             await _imoveisService.DeleteImoveisAsync(id);
+
+            await _applicationLog.LogAsync($"Imóvel Deletado com id: {imovel.ImovelId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
             return NoContent();
         }
     }

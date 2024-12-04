@@ -14,14 +14,36 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Layer.Infrastructure.ServicesExternal;
 using Layer.Infrastructure.ServicesInternal;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Carregar variáveis de ambiente do arquivo .env
-Env.Load();
+var env = builder.Environment.EnvironmentName;
+
+if (env == "Development")
+{
+    Env.Load(".env.development");
+}
+else if (env == "Production")
+{
+    Env.Load(".env.production");
+}
+else
+{
+    Env.Load();  // Caso você tenha um `.env` padrão
+}
 
 // Sobrepor os valores das variáveis no appsettings.json com as variáveis do ambiente
 builder.Configuration.AddEnvironmentVariables();
+
+var mongoSettings = new MongoDbSettings
+{
+    ConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING"),
+    DatabaseName = Environment.GetEnvironmentVariable("MONGO_DATABASE_NAME"),
+    LogsCollectionName = Environment.GetEnvironmentVariable("MONGO_LOGS_COLLECTION_NAME") ?? "Logs"
+};
+
 
 builder.Services.AddHttpClient();
 
@@ -42,14 +64,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
 );
 
+builder.Services.AddSingleton(mongoSettings);
+builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoSettings.ConnectionString));
+
 // Registrar o serviço de pagamentos (IPaymentService / PaymentService)
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IEmailSender, EmailSenderService>();
+builder.Services.AddHostedService<PaymentReminderService>();
 
 // Injeção de dependências de outros serviços
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<CountryService>();
+builder.Services.AddScoped<IEmailSender, EmailSenderService>();
+builder.Services.AddSingleton<ApplicationLog>();
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
@@ -109,12 +138,20 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Configurar roles para o JWT
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(nameof(Roles.Admin), policy => policy.RequireRole(nameof(Roles.Admin)));
     options.AddPolicy(nameof(Roles.Locador), policy => policy.RequireRole(nameof(Roles.Locador)));
     options.AddPolicy(nameof(Roles.Locatario), policy => policy.RequireRole(nameof(Roles.Locatario)));
+    options.AddPolicy(nameof(Roles.Judiciario), policy => policy.RequireRole(nameof(Roles.Judiciario)));
+    options.AddPolicy("AllRoles", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locador), nameof(Roles.Locatario), nameof(Roles.Judiciario)));
+    options.AddPolicy("LocadorORLocatario", policy => policy.RequireRole(nameof(Roles.Locador), nameof(Roles.Locatario)));
+    options.AddPolicy("AdminORJudiciario", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Judiciario)));
+    options.AddPolicy("AdminORLocador", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locador)));
+    options.AddPolicy("AdminORLocatario", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.Locatario)));
 });
+
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -137,6 +174,16 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+}
+
+if (env == "Development")
+{
+    app.UseHttpsRedirection();
+}
+
+if (env == "Development")
+{
+app.UseHttpsRedirection();
 }
 
 app.UseHttpsRedirection();

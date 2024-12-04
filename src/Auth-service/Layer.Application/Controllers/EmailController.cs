@@ -22,11 +22,11 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> SendEmail([FromQuery] string emailRecipient, [FromQuery] string mensage)
         {
-            await _emailService.SendEmailAsync(emailRecipient, mensage);
+            await _emailService.SendEmailAsync(emailRecipient, mensage, "NovoUsuario");
             return Ok();
         }
 
 
-       
+
     }
 }

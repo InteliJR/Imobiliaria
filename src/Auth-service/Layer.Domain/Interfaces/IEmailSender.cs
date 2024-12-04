@@ -8,6 +8,6 @@ namespace Layer.Domain.Interfaces
 {
     public interface IEmailSender
     {
-        Task <string> SendEmailAsync (string emailRecipient, string mensage);
+        Task <string> SendEmailAsync (string emailRecipient, string mensage, string caseType);
     }
 }

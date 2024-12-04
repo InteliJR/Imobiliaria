@@ -8,6 +8,7 @@ import { getServiceUrl } from '../../services/apiService';
 import { showErrorToast } from '../../utils/toastMessage';
 import { jwtDecode } from 'jwt-decode';
 
+
 export default function Login() {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -17,9 +18,19 @@ export default function Login() {
         event.preventDefault();
 
         try {
-            const response = await axiosInstance.post(getServiceUrl('authService', '/Account/Login'), {
+            // const response = await fetch('http://localhost:8080/Account/Login', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({ Email: email, Senha: senha })
+            // });
+
+            // Novo metodo
+
+            const response = await axiosInstance.post('/auth/Account/Login', {
                 Email: email,
-                Senha: senha
+                Senha: senha,
             });
 
             // Obtém e decodifica o token JWT para obter a role do usuário
@@ -27,11 +38,11 @@ export default function Login() {
             const decodedToken: any = jwtDecode(token);
             const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
             const role = decodedToken[roleClaim];
-            sessionStorage.setItem('jwtToken', token);
-            sessionStorage.setItem('userRole', role);
+            localStorage.setItem('jwtToken', token);
+            localStorage.setItem('userRole', role);
 
             // Redirecionar o usuário para home ou dashboard após o login bem-sucedido 
-            navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
+            navigate('/'); // Trocar '/landing' por 'home' ou 'dashboard'
         } catch (error: any) {
             // Axios retorna erros no `response`
             showErrorToast(error.response?.data?.message || 'Erro ao fazer login');
@@ -62,7 +73,7 @@ export default function Login() {
                             <FormField 
                                 placeholder="Email" 
                                 label="Email:" 
-                                value={email} 
+                                // value={email} 
                                 onChange={setEmail}
                             />
                         </div>
@@ -70,9 +81,10 @@ export default function Login() {
                             <FormField 
                                 placeholder="Senha" 
                                 label="Senha:" 
-                                value={senha} 
-                                onChange={setSenha}
                                 isPassword={true}
+                                // type="password" 
+                                // value={senha} 
+                                onChange={setSenha}
                             />
                         </div>
                         {/* Submit Button */}
