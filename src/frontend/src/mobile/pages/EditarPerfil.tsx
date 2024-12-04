@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import FormField from "../components/Form/FormField";
 import ModalConfirmacao from "../components/ModalConfirmacao";
 import Botao from "../../components/Botoes/Botao";
+import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import getTokenData from "../../services/tokenConfig";
 import { useNavigate } from "react-router-dom";
@@ -119,6 +120,7 @@ export default function EditarPerfil() {
 
       if (responseUpdate && responseUpdate.status === 200) {
         setResultMessage("Perfil atualizado com sucesso");
+        showSuccessToast(response?.data?.message || "Perfil alterado com sucesso.");
         console.log("Perfil atualizado com sucesso");
         navigate("/perfil");
       } else{
@@ -128,10 +130,9 @@ export default function EditarPerfil() {
 
 
     } catch(erro: any){
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
       console.log(erro);
     }
-
-
   };
 
   const handleCancel = () => setIsModalVisible(false);

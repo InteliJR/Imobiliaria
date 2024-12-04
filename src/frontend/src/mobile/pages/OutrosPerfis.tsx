@@ -7,6 +7,7 @@ import VisualizarItem from "../components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
 import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
 export default function Perfil() {
@@ -26,6 +27,22 @@ export default function Perfil() {
     role: null,
   });
 
+  const fetchProfile = () => {
+    try {
+      console.log("Traz o perfil deste usuário em questão");
+
+      // Requisição...
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
   const profileEdit = () => {
     navigate("/perfil/editar/:id"); // Navega para a página de edição de perfil passando o id do usuário em questão
   };
@@ -41,6 +58,8 @@ export default function Perfil() {
     //AlterarSenhaUsuario
 
     const response = await axiosInstance.post(`auth/User/RedefinirSenhaUsuario?email=${userData.email}`);
+    
+    showSuccessToast(response?.data?.message || "Senha resetada com sucesso.");
 
     console.log(response.data);
 

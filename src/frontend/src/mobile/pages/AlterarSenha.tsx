@@ -5,6 +5,7 @@ import Voltar from "../components/Voltar";
 import FormField from "../components/Form/FormField";
 import Botao from "../../components/Botoes/Botao";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
 export default function Senha() {
@@ -47,7 +48,11 @@ export default function Senha() {
       console.log(response.data);
 
       setResult("Senha alterada com sucesso");
+      showSuccessToast(response?.data?.message || "Senha alterada com sucesso.");
+      
     } catch(erro: any){
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+
       console.log(erro.response?.data?.message || "Erro ao alterar a senha");
       setResult(erro.response?.data?.message || "Erro ao alterar a senha");
     }

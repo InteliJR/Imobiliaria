@@ -1,27 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 interface FormFieldProps {
   label: string;
   placeholder?: string;
-  initialValue?: string; 
+  value: string; 
   onChange: (value: string) => void;
   isPassword?: boolean;
   disabled?: boolean; // Nova propriedade
   }
 
+
 const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', initialValue = '', onChange, isPassword = false, disabled = false }) => {
   const [value, setValue] = useState<string>(initialValue); // Usa initialValue como valor inicial
+
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    setValue(initialValue); // Define o valor inicial na montagem do componente
-  }, [initialValue]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setValue(newValue);
-    onChange(newValue);
+    onChange(e.target.value);
   };
 
   const togglePasswordVisibility = () => {

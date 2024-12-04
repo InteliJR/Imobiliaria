@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Route, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
@@ -5,6 +7,7 @@ import Voltar from "../components/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
 import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
+import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useState, useEffect } from "react";
 
@@ -23,6 +26,22 @@ export default function Perfil() {
     dataCriacao: null,
     role: null
   });
+
+  const fetchProfile = () => {
+    try {
+      console.log("Traz o perfil do usuário logado");
+
+      // Requisição...
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const profileEdit = () => {
     navigate("/perfil/editar"); // Navega para a página de edição de perfil

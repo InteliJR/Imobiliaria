@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Usuarios/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../components/Voltar";
+import { showErrorToast } from "../../utils/toastMessage";
 import { useState, useEffect } from "react";
 import axiosInstance from "../../services/axiosConfig";
 
@@ -53,6 +55,7 @@ export default function MainPage() {
       setFilteredData(combinedData); // Inicialmente exibir todos os usuários
       console.log("Dados combinados:", combinedData);
     } catch (error) {
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
       console.error("Erro ao obter informações de usuários ou imóveis:", error.message);
     }
   };

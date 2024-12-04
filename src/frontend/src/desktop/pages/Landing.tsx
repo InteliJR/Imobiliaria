@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FeaturesSection from "../../components/Landing/FeaturesSection";
 import Navbar from "../../mobile/components/Navbar/Navbar";
-import Footer from "../../components/Footer/FooterBig";
-import Botao from "../../components/Botoes/Botao";
+import Footer from "../components/FooterBig";
+import Botao from "../components/Botao";
 
 // Importações das imagens
 import whiteLogo from "../../assets/landingPage/desktop/whiteLogo.svg";
@@ -70,7 +70,7 @@ export default function Landing() {
           </p>
         </div>
 
-        <div className="flex flex-col items-center justify-center w-full mb-8">
+        <div className="flex flex-col items-center justify-center w-full mb-8 mt-4">
           <div className="flex max-w-5xl items-center justify-center relative mb-5 z-10">
             <p className="text-right w-1/2 z-10">
               Nós transformamos toda a sua experiência de gestão e aluguel de
@@ -97,7 +97,7 @@ export default function Landing() {
             />
           </div>
 
-          <p className="max-w-2xl text-center z-10">
+          <p className="max-w-2xl text-center z-10 mt-5">
             <span className="underline">Simplifique</span> sua gestão com a <span className="font-bold">K.K. Administradora</span> e transforme a
             forma como você cuida dos seus imóveis!
           </p>
@@ -113,13 +113,13 @@ export default function Landing() {
         <img
           // Imagem deecorativa 
           src={logoSimplified}
-          className="w-32 absolute -bottom-20 left-1 z-0 -rotate-45 opacity-75"
+          className="w-32 absolute -bottom-20 left-1 z-0 -rotate-45 opacity-50"
           alt="Logotipo simplificado da K.K. Administradora"
         />
         <img
           // Imagem deecorativa 
           src={logoSimplified}
-          className="w-24 absolute bottom-10 right-16 z-0 rotate-12 opacity-75 -scale-x-100"
+          className="w-20 absolute bottom-10 right-16 z-0 rotate-12 opacity-75 -scale-x-100"
           alt="Logotipo simplificado da K.K. Administradora"
         />
       </section>
@@ -127,4 +127,7 @@ export default function Landing() {
       <Footer />
     </main>
   );
+
 }
+
+

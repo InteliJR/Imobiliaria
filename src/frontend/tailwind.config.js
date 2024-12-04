@@ -21,9 +21,10 @@ export default {
         "yellow-dark": "#BF7E04",
         "yellow-darker": "#593202",
 
-        "neutral-900": "#363430",
-        "neutral-600": "#76726A",
-        "neutral-300": "#B2AFA9",
+        'neutral-900': '#363430',
+        'neutral-600': '#76726A',
+        'neutral-300': '#B2AFA9',
+        'neutral-200': '#C5C3BF',
       },
       fontFamily: {
         sans: ["ObjectSans", "sans-serif"], // Define ObjectSans como fonte padrão para textos sans-serif.
