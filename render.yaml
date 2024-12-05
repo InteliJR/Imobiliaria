@@ -35,10 +35,6 @@ services:
         value: Imobiliaria
       - key: MONGO_INITDB_ROOT_PASSWORD
         value: C4c42024
-    disk:
-      name: mongodb-data
-      mountPath: /data/db
-      sizeGB: 1
 
 # Grupos de variáveis de ambiente
 envVarGroups:
