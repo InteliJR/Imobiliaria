@@ -1,19 +1,91 @@
-# This is a basic example Blueprint for a Django web service and
-# the PostgreSQL database it connects to.
-services:
-  - type: web # A Python web service named django-app running on a free instance
-    plan: free
-    name: django-app
-    runtime: python
-    repo: https://github.com/render-examples/django.git
-    buildCommand: "./build.sh"
-    startCommand: "python -m gunicorn mysite.asgi:application -k uvicorn.workers.UvicornWorker"
-    envVars:
-      - key: DATABASE_URL # Sets DATABASE_URL to the connection string of the django-app-db database
-        fromDatabase:
-          name: django-app-db
-          property: connectionString
+# Configuração do arquivo render.yaml para o projeto da Imobiliaria
 
-databases:
-  - name: django-app-db # A PostgreSQL database named django-app-db running on a free instance
+services:
+  # Serviço do Gateway Nginx
+  - type: web
     plan: free
+    runtime: docker
+    name: gateway
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/Gateway
+    dockerfilePath: ./src/Gateway/Dockerfile
+    envVars:
+      - fromGroup: production-env # Carrega as variáveis comuns do grupo
+
+  # Serviço de autenticação (auth-service)
+  - type: web
+    plan: free
+    runtime: docker
+    name: auth-service
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/Auth-service/
+    dockerfilePath: ./src/Auth-service/Dockerfile
+    envVars:
+      - fromGroup: production-env
+
+  # Serviço de pagamentos (payment-service)
+  - type: web
+    plan: free
+    runtime: docker
+    name: payment-service
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/Payment-service/
+    dockerfilePath: ./src/Payment-service/Dockerfile
+    envVars:
+      - fromGroup: production-env
+
+  # Serviço de propriedades (property-service)
+  - type: web
+    plan: free
+    runtime: docker
+    name: property-service
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/Property-service/
+    dockerfilePath: ./src/Property-service/Dockerfile
+    envVars:
+      - fromGroup: production-env
+
+  # Banco de Dados MongoDB
+  - type: pserv
+    plan: free
+    runtime: docker
+    name: mongodb
+    repo: https://github.com/InteliJR/Imobiliaria
+    rootDir: ./src/logging-mongodb/
+    dockerfilePath: ./src/logging-mongodb/Dockerfile
+    envVars:
+      - key: MONGO_INITDB_ROOT_USERNAME
+        value: Imobiliaria
+      - key: MONGO_INITDB_ROOT_PASSWORD
+        value: C4c42024
+    disk:
+      name: mongodb-data
+      mountPath: /data/db
+      sizeGB: 1
+
+# Grupos de variáveis de ambiente
+envVarGroups:
+  - name: production-env
+    envVars:
+      # Configurações do banco de dados
+      - key: ConnectionStrings__DefaultConnection
+        value: User Id=maricarmosan01;Password=N8ebCmZg2l8emJj6V71PfsCVMOJm7cLk;Server=dpg-csce4p08fa8c73fv6b00-a.virginia-postgres.render.com;Port=5432;Database=imobiliaria_database;Pooling=true;MinPoolSize=5;MaxPoolSize=100;KeepAlive=30;CommandTimeout=60;
+      
+      # Configurações do MongoDB
+      - key: MONGO_CONNECTION_STRING
+        value: mongodb://Imobiliaria:C4c42024@mongodb:27017/?authSource=admin
+      - key: MONGO_DATABASE_NAME
+        value: AuthServiceDb
+      - key: MONGO_LOGS_COLLECTION_NAME
+        value: Logs
+      
+      # Configurações do JWT
+      - key: JwtSettings__SecretKey
+        value: da/PtLNn1uz22BIZKKYxlRpYZDQx5BmE7PYB9Yu+HOs=
+      - key: JwtSettings__ExpiryMinutes
+        value: "60"
+      - key: JwtSettings__Issuer
+        value: AuthService
+      - key: JwtSettings__Audience
+        value: Services
+
