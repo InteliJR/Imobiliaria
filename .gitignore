@@ -13,7 +13,6 @@ vs*
 .vs*
 
 slnx.sqlite
-
 # Generated files
 .docusaurus
 .cache-loader
@@ -23,14 +22,6 @@ slnx.sqlite
 .env
 
 slnx.sqlite
-
-
-# Misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 .env.development
 .env.production
 
