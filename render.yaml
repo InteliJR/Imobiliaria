@@ -11,6 +11,9 @@ services:
     dockerfilePath: ./src/Gateway/Dockerfile
     envVars:
       - fromGroup: production-env # Carrega as variáveis comuns do grupo
+    scaling:
+      minInstances: 1
+      maxInstances: 2
 
   # Serviço de autenticação (auth-service)
   - type: web
@@ -22,36 +25,16 @@ services:
     dockerfilePath: ./src/Auth-service/Dockerfile
     envVars:
       - fromGroup: production-env
-
-  # Serviço de pagamentos (payment-service)
-  - type: web
-    plan: free
-    runtime: docker
-    name: payment-service
-    repo: https://github.com/InteliJR/Imobiliaria 
-    rootDir: ./src/Payment-service/
-    dockerfilePath: ./src/Payment-service/Dockerfile
-    envVars:
-      - fromGroup: production-env
-
-  # Serviço de propriedades (property-service)
-  - type: web
-    plan: free
-    runtime: docker
-    name: property-service
-    repo: https://github.com/InteliJR/Imobiliaria 
-    rootDir: ./src/Property-service/
-    dockerfilePath: ./src/Property-service/Dockerfile
-    envVars:
-      - fromGroup: production-env
+    scaling:
+      minInstances: 1
+      maxInstances: 3
 
   # Banco de Dados MongoDB
   - type: pserv
     plan: free
     runtime: docker
     name: mongodb
-    repo: https://github.com/InteliJR/Imobiliaria
-    rootDir: ./src/logging-mongodb/
+    repo: https://github.com/InteliJR/Imobiliaria 
     dockerfilePath: ./src/logging-mongodb/Dockerfile
     envVars:
       - key: MONGO_INITDB_ROOT_USERNAME
