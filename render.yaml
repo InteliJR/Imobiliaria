@@ -22,6 +22,28 @@ services:
     dockerfilePath: ./Auth-service/Dockerfile
     envVars:
       - fromGroup: production-env
+  
+  # Serviço de autenticação (payment-service)
+  - type: web
+    plan: free
+    runtime: docker
+    name: payment-service
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/Payment-service/
+    dockerfilePath: ./
+    envVars:
+      - fromGroup: production-env
+
+  # Serviço de autenticação (property-service)
+  - type: web
+    plan: free
+    runtime: docker
+    name: property-service
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/Property-service/
+    dockerfilePath: ./
+    envVars:
+      - fromGroup: production-env
 
   # Banco de Dados MongoDB
   - type: pserv
