@@ -11,8 +11,8 @@ interface FormFieldProps {
   }
 
 
-const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', initialValue = '', onChange, isPassword = false, disabled = false }) => {
-  const [value, setValue] = useState<string>(initialValue); // Usa initialValue como valor inicial
+const FormField: React.FC<FormFieldProps> = ({ label, placeholder = '', onChange, isPassword = false, disabled = false }) => {
+  const [value, setValue] = useState<string>(); // Usa initialValue como valor inicial
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 

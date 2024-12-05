@@ -73,19 +73,22 @@ export default function Login() {
                             <FormField 
                                 placeholder="Email" 
                                 label="Email:" 
-                                // value={email} 
-                                onChange={setEmail}
+                                value={email} 
+                                onChange={(val) => setEmail(val)}
+                                disabled={false}
                             />
+
                         </div>
                         <div className='mb-10'>
                             <FormField 
                                 placeholder="Senha" 
                                 label="Senha:" 
                                 isPassword={true}
-                                // type="password" 
-                                // value={senha} 
-                                onChange={setSenha}
+                                value={senha} 
+                                onChange={(val) => setSenha(val)}
+                                disabled={false}
                             />
+
                         </div>
                         {/* Submit Button */}
                         <button
