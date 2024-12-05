@@ -30,7 +30,7 @@ services:
     name: payment-service
     repo: https://github.com/InteliJR/Imobiliaria 
     rootDir: ./src/Payment-service/
-    dockerfilePath: ./
+    dockerfilePath: ./Dockerfile
     envVars:
       - fromGroup: production-env
 
@@ -41,7 +41,7 @@ services:
     name: property-service
     repo: https://github.com/InteliJR/Imobiliaria 
     rootDir: ./src/Property-service/
-    dockerfilePath: ./
+    dockerfilePath: ./Dockerfile
     envVars:
       - fromGroup: production-env
 
