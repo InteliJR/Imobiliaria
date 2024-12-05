@@ -28,7 +28,7 @@ if (env == "Development")
 }
 else if (env == "Production")
 {
-    Env.Load(".env.production");
+    Env.Load("etc/secrets/.env.production");
 }
 else
 {
