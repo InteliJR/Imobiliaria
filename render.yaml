@@ -7,8 +7,8 @@ services:
     runtime: docker
     name: gateway
     repo: https://github.com/InteliJR/Imobiliaria 
-    rootDir: ./src/Gateway
-    dockerfilePath: ./src/Gateway/Dockerfile
+    rootDir: ./src/
+    dockerfilePath: ./Gateway/Dockerfile
     envVars:
       - fromGroup: production-env # Carrega as variáveis comuns do grupo
 
@@ -18,8 +18,8 @@ services:
     runtime: docker
     name: auth-service
     repo: https://github.com/InteliJR/Imobiliaria 
-    rootDir: ./src/Auth-service/
-    dockerfilePath: ./src/Auth-service/Dockerfile
+    rootDir: ./src/
+    dockerfilePath: ./Auth-service/Dockerfile
     envVars:
       - fromGroup: production-env
 
