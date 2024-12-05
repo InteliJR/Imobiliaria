@@ -45,6 +45,18 @@ namespace property_management.Controllers
         [Authorize(Policy = "AdminORLocatario")]
         public async Task<ActionResult<Chamados>> Create(Chamados chamado)
         {
+            chamado.DataSolicitacao = chamado.DataSolicitacao.ToUniversalTime();
+
+            if (chamado.DataInicio.HasValue)
+            {
+              chamado.DataInicio = chamado.DataInicio.Value.ToUniversalTime();
+            }
+
+            if (chamado.DataFim.HasValue)
+            {
+              chamado.DataFim = chamado.DataFim.Value.ToUniversalTime();
+            }
+
             var newChamado = await _chamadosService.AddAsync(chamado);
 
             await _applicationLog.LogAsync($"Criação de chamado com id: {newChamado.IdChamado} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
