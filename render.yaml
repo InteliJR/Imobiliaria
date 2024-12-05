@@ -25,7 +25,7 @@ services:
 
   # Banco de Dados MongoDB
   - type: pserv
-    plan: free
+    plan: starter
     runtime: docker
     name: mongodb
     repo: https://github.com/InteliJR/Imobiliaria 
