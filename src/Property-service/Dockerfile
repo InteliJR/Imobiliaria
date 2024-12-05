@@ -38,7 +38,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 # Copiar o arquivo .env e o arquivo de credenciais do Firebase
-COPY "./Layer.Application/.env.production" .env.production
+# COPY "./Layer.Application/.env.production" .env.production
 # COPY "./Layer.Application/administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json" /app
 
 # Definir a vari�vel de ambiente para o caminho do arquivo de credenciais do Firebase
