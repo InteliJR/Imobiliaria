@@ -11,9 +11,6 @@ services:
     dockerfilePath: ./src/Gateway/Dockerfile
     envVars:
       - fromGroup: production-env # Carrega as variáveis comuns do grupo
-    scaling:
-      minInstances: 1
-      maxInstances: 2
 
   # Serviço de autenticação (auth-service)
   - type: web
@@ -25,9 +22,6 @@ services:
     dockerfilePath: ./src/Auth-service/Dockerfile
     envVars:
       - fromGroup: production-env
-    scaling:
-      minInstances: 1
-      maxInstances: 3
 
   # Banco de Dados MongoDB
   - type: pserv
