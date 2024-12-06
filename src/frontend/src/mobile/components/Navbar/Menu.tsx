@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
 import { BiLogOut } from "react-icons/bi";
+import { RiLogoutBoxRLine } from "react-icons/ri";
 
 interface MenuProps {
   userType: string;
@@ -12,31 +13,39 @@ interface MenuProps {
 const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
   const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({
-    transform: "translateX(-100%)",
+    transform: isDesktop ? "translateX(100%)" : "translateX(-100%)",
     transition: "transform 0.5s ease-in-out",
   });
-
   const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen && !isClosing) {
       setMenuStyle({
-        transform: "translateX(0)",
+        transform: isDesktop ? "translateX(0)" : "translateX(0)",
         transition: "transform 0.5s ease-in-out",
       });
     } else if (isClosing) {
       setMenuStyle({
-        transform: "translateX(-100%)",
+        transform: isDesktop ? "translateX(100%)" : "translateX(-100%)",
         transition: "transform 0.5s ease-in-out",
       });
     } else {
       setMenuStyle({
-        transform: "translateX(-100%)",
+        transform: isDesktop ? "translateX(100%)" : "translateX(-100%)",
         transition: "none",
       });
     }
-  }, [isOpen, isClosing]);
+  }, [isOpen, isClosing, isDesktop]);
 
   const handleClickOutside = (event: React.MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -57,8 +66,7 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
   };
 
   const handleLogout = () => {
-    // lógica de logout
-    console.log("sair da conta")
+    console.log("sair da conta");
     navigate("/");
   };
 
@@ -272,21 +280,26 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
       <nav
         ref={menuRef}
         style={menuStyle}
-        className="flex flex-col justify-between bg-neutral-black text-[#fefefe] h-full w-[60%] shadow-2xl rounded-r-lg"
+        className={`fixed ${
+          isDesktop ? "inset-y-0 right-0" : "inset-y-0 left-0"
+        } flex flex-col justify-between bg-neutral-black text-[#fefefe] h-full w-2/5 shadow-2xl rounded-lg lg:w-80`}
       >
-        <ul className="flex flex-col justify-between text-center text-xl  mt-3">
+        <ul className="flex flex-col justify-between text-center text-xl mt-3">
           {renderMenuItems()}
         </ul>
-        <div className="flex items-center w-full h-16">
+        <div className="flex items-center w-full h-16 lg:flex-row-reverse">
           <button
             onClick={handleLogout}
             className="flex items-center justify-center flex-1 hover:-translate-y-1 transition-all duration-200 ease-in-out"
             title="Sair da Conta"
           >
+          {isDesktop ? (
+            <RiLogoutBoxRLine color="#fefefe" size={30} />
+          ) : (
             <BiLogOut color="#fefefe" size={35} />
+          )}
           </button>
 
-          {/* linha vertical decorativa */}
           <div className="w-px h-4/5 bg-[#fefefe] drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]" />
 
           <button
@@ -294,7 +307,11 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             className="flex items-center justify-center flex-1 hover:-translate-y-1 transition-all duration-200 ease-in-out"
             title="Fechar Menu"
           >
-            <MdClose color="#fefefe" size={35} />
+            {isDesktop ? (
+              <MdClose color="#fefefe" size={35} />
+            ) : (
+              <MdClose color="#fefefe" size={35} />
+            )}
           </button>
         </div>
       </nav>
