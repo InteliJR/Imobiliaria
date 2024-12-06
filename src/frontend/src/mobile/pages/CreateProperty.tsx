@@ -1,26 +1,53 @@
 import React, { useState } from "react";
-import FormField from "../components/Form/FormField";
+import FormField from "../../desktop/components/Form/FormField";
 import Navbar from "../components/Navbar/Navbar";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
+import axiosInstance from "../../services/axiosConfig";
+import { getServiceUrl } from "../../services/apiService";
 
 export default function CreatePropertyMobile() {
   const [propertyType, setPropertyType] = useState("Kitnet");
+  const [cep, setCep] = useState("");
+  const [address, setAddress] = useState("");
+  const [complement, setComplement] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
+  const [rent, setRent] = useState("");
+  const [condoFee, setCondoFee] = useState("");
   const [description, setDescription] = useState("");
-  const [value, setValue] = useState<string>("");
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
       console.log({
         propertyType,
-        description,
+        cep,
+        address,
+        complement,
+        neighborhood,
+        rent,
+        condoFee,
+        description
       });
 
       // Requisição...
+    const response = await axiosInstance.post(getServiceUrl('propertyService', '/Imoveis/CriarUmNovoImovel'), {
+      TipoImovel: propertyType,
+      Cep: cep,
+      Condominio: condoFee,
+      ValorImovel: rent,
+      Bairro: neighborhood,
+      Descricao: description,
+      Endereco: address,
+      Complemento: complement
+      // LocatarioId: locatarioId || null, // Esses campos precisam ser adicionados  
+      // LocadorId: locadorId || null
+    });
+
 
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
@@ -41,11 +68,9 @@ export default function CreatePropertyMobile() {
                   Tipo do Imóvel
                 </label>
                 <select
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  className={`h-10 flex-grow ${
-                    value ? "bg-transparent border border-black" : "bg-[#D9D9D9]"
-                  } w-full focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                  className="h-10 w-full flex-grow bg-transparent border border-neutral-200 focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded"
                 >
                   <option>Kitnet</option>
                   <option>Apartamento</option>
@@ -54,13 +79,61 @@ export default function CreatePropertyMobile() {
                 </select>
               </div>
 
-              {/* Campos de Formulário */}
-              <FormField label="CEP" type="text" placeholder="CEP do imóvel" />
-              <FormField label="Endereço" type="text" placeholder="Endereço do imóvel" />
-              <FormField label="Complemento" type="text" placeholder="Complemento do imóvel" />
-              <FormField label="Bairro" type="text" placeholder="Bairro do imóvel" />
-              <FormField label="Aluguel (R$)" type="text" placeholder="Valor do aluguel" />
-              <FormField label="Condomínio (R$)" type="text" placeholder="Valor do condomínio" />
+              <div>
+                <FormField
+                  label="CEP"
+                  placeholder="Digite o CEP"
+                  value={cep}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCep(e.target.value)}
+                />
+              </div>
+
+
+              <div>
+              <FormField
+                  label="Endereço"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </div>
+
+              <div>
+              <FormField
+                  label="Complemento"
+                  placeholder="Digite o complemento"
+                  value={complement}
+                  onChange={(e) => setComplement(e.target.value)}
+                />
+              </div>
+
+              <div>
+              <FormField
+                  label="Bairro"
+                  placeholder="Bairro do imóvel"
+                  value={neighborhood}
+                  onChange={(e) => setNeighborhood(e.target.value)}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <FormField
+                  label="Aluguel (R$)"
+                  placeholder=""
+                  value={rent}
+                  onChange={(e) => setRent(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <FormField 
+                  label="Condomínio (R$)"
+                  placeholder=""
+                  value={condoFee}
+                  onChange={(e) => setCondoFee(e.target.value)}
+                  />
+                </div>
+              </div>
 
               {/* Descrição */}
               <div>
