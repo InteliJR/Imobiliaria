@@ -37,7 +37,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 # Copiar o arquivo .env do diretório Layer.Application para o diretório de trabalho do container
-COPY Layer.Application/.env.production .env.production
+# COPY Layer.Application/.env.production .env.production
 
 # Expor a porta que a aplicação vai utilizar
 EXPOSE 8080

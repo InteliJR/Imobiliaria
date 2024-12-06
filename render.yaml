@@ -1,0 +1,59 @@
+# Configuração do arquivo render.yaml para o projeto da Imobiliaria
+
+services:
+  # Serviço do Gateway Nginx
+  - type: web
+    plan: free
+    runtime: docker
+    name: gateway
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/
+    dockerfilePath: ./Gateway/Dockerfile
+    envVars:
+      - fromGroup: production-env # Carrega as variáveis comuns do grupo
+
+  # Serviço de autenticação (auth-service)
+  - type: web
+    plan: free
+    runtime: docker
+    name: auth-service
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/
+    dockerfilePath: ./Auth-service/Dockerfile
+    envVars:
+      - fromGroup: production-env
+  
+  # Serviço de autenticação (payment-service)
+  - type: web
+    plan: free
+    runtime: docker
+    name: payment-service
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/Payment-service/
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - fromGroup: production-env
+
+  # Serviço de autenticação (property-service)
+  - type: web
+    plan: free
+    runtime: docker
+    name: property-service
+    repo: https://github.com/InteliJR/Imobiliaria 
+    rootDir: ./src/Property-service/
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - fromGroup: production-env
+
+  # Banco de Dados MongoDB
+  - type: pserv
+    plan: starter
+    runtime: docker
+    name: mongodb
+    repo: https://github.com/InteliJR/Imobiliaria 
+    dockerfilePath: ./src/logging-mongodb/Dockerfile
+    envVars:
+      - key: MONGO_INITDB_ROOT_USERNAME
+        value: Imobiliaria
+      - key: MONGO_INITDB_ROOT_PASSWORD
+        value: C4c42024

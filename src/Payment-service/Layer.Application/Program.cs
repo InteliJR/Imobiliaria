@@ -31,7 +31,8 @@ else if (env == "Production")
 }
 else
 {
-    Env.Load();  // Caso você tenha um `.env` padrão
+    // Env.Load();  // Caso você tenha um `.env` padrão
+    Env.Load("etc/secrets/.env.production");
 }
 
 // Sobrepor os valores das variáveis no appsettings.json com as variáveis do ambiente
