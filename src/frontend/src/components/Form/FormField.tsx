@@ -2,7 +2,7 @@ import React from 'react';
 
 interface FormFieldProps {
   label: string;
-  placeholder: string;
+  placeholder?: string;
   type?: string; // Tipo opcional para suportar 'password', 'text', etc.
   value?: string; // Valor controlado
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Manipulador de evento onChange
