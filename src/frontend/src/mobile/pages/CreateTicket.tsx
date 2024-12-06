@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Navbar from '../components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import FormField from '../components/Form/FormField';
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 

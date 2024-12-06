@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"; // Added import
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import { showErrorToast } from "../../utils/toastMessage";
 // Removed unused import of Card

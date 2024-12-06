@@ -21,7 +21,7 @@ export default function Navbar({
   };
 
   // Exemplo de tipo de usuário, você obteria isso dinamicamente em seu aplicativo
-  const userType = "Administrador";
+  const userType = "tenant";
 
   const handleLoginClick = () => {
     navigate("/login"); // Redireciona para a página de Login

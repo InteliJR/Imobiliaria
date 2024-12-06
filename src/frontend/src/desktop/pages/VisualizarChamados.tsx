@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaClipboardList, FaUsers } from 'react-icons/fa'; // Importing icons
-import Dashboard from '../components/Dashboard';
+import Dashboard from '../components/dashboard';
 import Chamados from '../components/Chamados';
-import Navbar from '../../mobile/components/Navbar/NavBar';
+import Navbar from '../../components/Navbar/NavBar';
 
 export default function VisualizarChamados() {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export default function VisualizarChamados() {
         </button>
         <button
           className='relative group flex items-center gap-2 px-4 py-2 text-neutral-800 rounded-md overflow-hidden'
-          onClick={() => navigate('/visualizar-usuarios')}
+          onClick={() => navigate('/usuarios')}
         >
           <span className="absolute inset-0 -m-2 bg-neutral-400 z-0 scale-0 group-hover:scale-100 transition-transform"></span>
           <FaUsers className="z-10" />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../../mobile/components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 
 const NotFound = () => (
     <div>

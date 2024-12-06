@@ -37,7 +37,7 @@ import CreateTicket from "./desktop/pages/CreateTicket";
 import CreatePropertyMobile from "./mobile/pages/CreateProperty";
 import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
-import Dashboard from "./mobile/pages/Dashboard";
+import Dashboard from "./mobile/pages/dashboard";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -86,10 +86,10 @@ const Root = () => {
         />
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
         <Route
-          path="/visualizar-usuarios"
+          path="/usuarios"
           element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
         />
-        <Route path="/dash" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

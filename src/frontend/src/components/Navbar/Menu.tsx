@@ -75,9 +75,18 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
     handleToggleMenu();
   };
 
+  /*
+    Tipos de usuários:
+
+    - admin (administrador)
+    - legal (jurídico)
+    - lessor (locador)
+    - tenant (locatário)
+  */
+
   const renderMenuItems = () => {
     switch (userType) {
-      case "Administrador":
+      case "admin":
         return (
           <>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
@@ -99,25 +108,33 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/gestao-usuarios")}
+                onClick={() => redirect("/usuarios")}
               >
-                Gestão de Usuários
+                Usuários
               </button>
             </li>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/lista-chamados")}
+                onClick={() => redirect("/usuarios/criar")}
               >
-                Lista de chamados
+                Novo Usuário
               </button>
             </li>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/cadastrar-imoveis")}
+                onClick={() => redirect("/chamados")}
               >
-                Cadastrar imóvel
+                Chamados
+              </button>
+            </li>
+            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+              <button
+                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
+                onClick={() => redirect("/imoveis/criar")}
+              >
+                Cadastrar Imóvel
               </button>
             </li>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
@@ -138,23 +155,31 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             </li>
           </>
         );
-      case "Jurídico":
+      case "legal":
         return (
           <>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/dashboard-financeiro")}
+                onClick={() => redirect("/home")}
               >
-                Dashboard Financeiro
+                Início
               </button>
             </li>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/lista-imoveis")}
+                onClick={() => redirect("/dashboard")}
               >
-                Lista de Imóveis
+                Dashboard
+              </button>
+            </li>
+            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+              <button
+                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
+                onClick={() => redirect("/imoveis")}
+              >
+                Imóveis
               </button>
             </li>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
@@ -165,9 +190,17 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
                 Documentos
               </button>
             </li>
+            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+              <button
+                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
+                onClick={() => redirect("/perfil")}
+              >
+                Perfil
+              </button>
+            </li>
           </>
         );
-      case "Locador":
+      case "lessor":
         return (
           <>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
@@ -181,38 +214,38 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
+                onClick={() => redirect("/imoveis")}
+              >
+                Imóveis
+              </button>
+            </li>
+            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+              <button
+                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
+                onClick={() => redirect("/dashboard")}
+              >
+                Dashboard
+              </button>
+            </li>
+            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+              <button
+                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
+                onClick={() => redirect("/documentos")}
+              >
+                Documentos
+              </button>
+            </li>
+            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+              <button
+                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
                 onClick={() => redirect("/perfil")}
               >
                 Perfil
               </button>
             </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
-              <button
-                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/visualizar-imoveis")}
-              >
-                Visualizar Imóveis
-              </button>
-            </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
-              <button
-                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/dashboard-financeiro")}
-              >
-                Dashboard Financeiro
-              </button>
-            </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
-              <button
-                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/documentos-locacao")}
-              >
-                Documentos das locações
-              </button>
-            </li>
           </>
         );
-      case "Locatário":
+      case "tenant":
         return (
           <>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
@@ -226,15 +259,7 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/perfil")}
-              >
-                Perfil
-              </button>
-            </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
-              <button
-                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/abertura-chamados")}
+                onClick={() => redirect("/chamados/criar")}
               >
                 Abrir chamado
               </button>
@@ -242,15 +267,15 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/visualizar-imoveis")}
+                onClick={() => redirect("/imoveis")}
               >
-                Visualizar Imóveis
+                Imóveis
               </button>
             </li>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/dashboard-financeiro")}
+                onClick={() => redirect("/dashboard")}
               >
                 Dashboard
               </button>
@@ -261,6 +286,14 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
                 onClick={() => redirect("/documentos-locacao")}
               >
                 Documentos
+              </button>
+            </li>
+            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+              <button
+                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
+                onClick={() => redirect("/perfil")}
+              >
+                Perfil
               </button>
             </li>
           </>
@@ -293,11 +326,11 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             className="flex items-center justify-center flex-1 hover:-translate-y-1 transition-all duration-200 ease-in-out"
             title="Sair da Conta"
           >
-          {isDesktop ? (
-            <RiLogoutBoxRLine color="#fefefe" size={30} />
-          ) : (
-            <BiLogOut color="#fefefe" size={35} />
-          )}
+            {isDesktop ? (
+              <RiLogoutBoxRLine color="#fefefe" size={30} />
+            ) : (
+              <BiLogOut color="#fefefe" size={35} />
+            )}
           </button>
 
           <div className="w-px h-4/5 bg-[#fefefe] drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]" />

@@ -1,4 +1,4 @@
-import Navbar from "../../mobile/components/Navbar/NavBar";
+import Navbar from "../../components/Navbar/NavBar";
 import Footer from "../../components/Footer/FooterBig";
 import FormField from "../../mobile/components/Form/FormField";
 import { useState } from "react";

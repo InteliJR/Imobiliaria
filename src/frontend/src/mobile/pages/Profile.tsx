@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar/NavBar';
+import Navbar from '../../components/Navbar/NavBar';
 import Footer from '../../components/Footer/FooterSmall';
 import ProfileField from '../components/ProfileField';
 

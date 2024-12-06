@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar/NavBar';
+import Navbar from '../../components/Navbar/NavBar';
 import Footer from '../../components/Footer/FooterBig';
 import FormField from '../components/Form/FormField';
 import { useState, useEffect } from 'react';

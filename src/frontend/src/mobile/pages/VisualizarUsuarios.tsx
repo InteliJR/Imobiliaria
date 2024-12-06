@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Usuarios/Card";
 import FormField from "../components/Form/FormField";
