@@ -13,7 +13,7 @@ export default function MainPage() {
       console.log("Traz os imóveis");
 
       // Requisição...
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
@@ -46,6 +46,7 @@ export default function MainPage() {
                 <FormField
                   label="Buscar imóvel"
                   onChange={() => {}} // Função onChange vazia
+                  value={''}
                 />
               </div>
               <button

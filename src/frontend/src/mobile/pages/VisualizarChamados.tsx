@@ -13,7 +13,7 @@ export default function MainPage() {
       console.log("Traz os chamados");
 
       // Requisição...
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
@@ -43,7 +43,7 @@ export default function MainPage() {
             {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
             <div className="flex w-full gap-2 items-end">
               <div className="w-full">
-                <FormField label="Buscar chamado" onChange={() => {}} />
+                <FormField label="Buscar chamado" onChange={() => {}} value={''} />
               </div>
               <button
                 type="submit"

@@ -14,7 +14,7 @@ export default function MainPage() {
       console.log("traz os dados dos gráficos");
 
       // Requisição...
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");

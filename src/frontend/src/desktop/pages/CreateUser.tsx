@@ -3,6 +3,7 @@ import FormField from "../components/Form/FormField";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
+import { AxiosError } from "axios";
 
 export default function AddClient() {
   const [userType, setUserType] = useState("Administrador");
@@ -21,7 +22,7 @@ export default function AddClient() {
   const [state, setState] = useState("");
   const [nationality, setNationality] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -44,12 +45,12 @@ export default function AddClient() {
       });
 
       // Requisição...
-
-      showSuccessToast(response?.data?.message || "Usuário criado com sucesso.");
+      showSuccessToast("Usuário criado com sucesso.");
     } catch (error) {
       console.error(error);
-
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      if (error instanceof AxiosError) {
+        showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      }
     }
   };
 

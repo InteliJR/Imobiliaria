@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
@@ -10,24 +10,45 @@ export default function CreateTicket() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!property || !title || !description) {
+      showErrorToast("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
     try {
-      console.log({
-        property,
-        ticketType,
-        title,
-        description,
+      const response = await fetch('Chamados/CriarUmNovoChamado', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          property,
+          ticketType,
+          title,
+          description,
+        }),
       });
 
-      // Requisição...
+      const data = await response.json();
 
-      showSuccessToast(response?.data?.message || "Chamado aberto com sucesso!");
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao criar chamado');
+      }
+
+      showSuccessToast(data.message || "Chamado aberto com sucesso!");
+      setProperty("");
+      setTicketType("Manutenção");
+      setTitle("");
+      setDescription("");
+      
     } catch (error) {
-      console.error(error);
-
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      console.error('Error creating ticket:', error);
+      showErrorToast(
+        error instanceof Error ? error.message : "Erro ao se conectar com o servidor."
+      );
     }
   };
 
@@ -86,7 +107,7 @@ export default function CreateTicket() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Descreva o problema ou solicitação"
                   className="mt-1 block w-full border border-neutral-200 px-2 py-2 text-form-label rounded-md shadow-sm focus:border-brown-500 focus:ring-brown-500"
-                  rows="7"
+                  rows={7}
                 ></textarea>
               </div>
 

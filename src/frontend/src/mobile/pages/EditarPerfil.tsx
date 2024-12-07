@@ -13,7 +13,18 @@ import { useNavigate } from "react-router-dom";
 export default function EditarPerfil() {
   // Estado do formulário para armazenar dados do usuário
   const [resultMessage, setResultMessage] = useState("");
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<{
+    nome: string | null;
+    telefone: string | null;
+    nacionalidade: string | null;
+    cpf: string | null;
+    rg: string | null;
+    passaporte: string | null;
+    endereço: string | null;
+    CNPJ: string | null;
+    email: string | null;
+    dataCriacao: string | null;
+  }>({
     nome: null,
     telefone: null,
     nacionalidade: null,
@@ -120,7 +131,7 @@ export default function EditarPerfil() {
 
       if (responseUpdate && responseUpdate.status === 200) {
         setResultMessage("Perfil atualizado com sucesso");
-        showSuccessToast(response?.data?.message || "Perfil alterado com sucesso.");
+        showSuccessToast(responseUpdate?.data?.message || "Perfil alterado com sucesso.");
         console.log("Perfil atualizado com sucesso");
         navigate("/perfil");
       } else{
@@ -129,9 +140,9 @@ export default function EditarPerfil() {
       }
 
 
-    } catch(erro: any){
+    } catch(error: any){
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
-      console.log(erro);
+      console.log(error);
     }
   };
 
@@ -200,48 +211,48 @@ export default function EditarPerfil() {
         <form className="flex flex-col gap-4 mb-4">
           <FormField
             label="Nome"
-            initialValue={userData.nome}
+            value={userData.nome || ''}
             onChange={(value) => handleInputChange("nome", value)}
             // disabled={disabledFields.includes("nome")}
           />
           <FormField
             label="Telefone"
-            initialValue={userData.telefone}
+            value={userData.telefone || ''}
             onChange={(value) => handleInputChange("telefone", value)}
             disabled={disabledFields.includes("telefone")}
           />
           <FormField
             label="Nacionalidade"
-            initialValue={userData.nacionalidade}
+            value={userData.nacionalidade || ''}
             onChange={(value) => handleInputChange("nacionalidade", value)}
           />
           <FormField
             label="CPF"
-            initialValue={userData.cpf}
+            value={userData.cpf || ''}
             onChange={(value) => handleInputChange("cpf", value)}
             disabled={disabledFields.includes("cpf")}
           />
           <FormField
             label="RG"
-            initialValue={userData.rg}
+            value={userData.rg || ''}
             onChange={(value) => handleInputChange("rg", value)}
             disabled={disabledFields.includes("rg")}
           />
           <FormField
             label="Passaporte"
-            initialValue={userData.passaporte}
+            value={userData.passaporte || ''}
             onChange={(value) => handleInputChange("passaporte", value)}
             disabled={disabledFields.includes("passaporte")}
           />
           <FormField
             label="Endereço"
-            initialValue={userData.endereço}
+            value={userData.endereço || ''}
             onChange={(value) => handleInputChange("endereço", value)}
             disabled={disabledFields.includes("endereço")}
           />
           <FormField
             label="CNPJ"
-            initialValue={userData.CNPJ}
+            value={userData.CNPJ || ''}
             onChange={(value) => handleInputChange("CNPJ", value)}
             disabled={disabledFields.includes("CNPJ")}
           />

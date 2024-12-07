@@ -146,7 +146,7 @@ export default function CreatePropertyMobile() {
                   className={`h-20 flex-grow ${
                     description ? "bg-transparent border border-black" : "bg-[#D9D9D9]"
                   } w-full focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
-                  rows="3"
+                  rows={3}
                   placeholder="Descrição do imóvel"
                 ></textarea>
               </div>

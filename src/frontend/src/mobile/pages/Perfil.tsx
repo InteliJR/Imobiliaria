@@ -1,5 +1,5 @@
 
-import { Route, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
@@ -12,7 +12,19 @@ import { useState, useEffect } from "react";
 
 export default function Perfil() {
   const navigate = useNavigate(); // Obtendo a função navigate
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<{
+    nome: string | null;
+    telefone: string | null;
+    nacionalidade: string | null;
+    cpf: string | null;
+    rg: string | null;
+    passaporte: string | null;
+    endereço: string | null;
+    CNPJ: string | null;
+    email: string | null;
+    dataCriacao: string | null;
+    role: string | null;
+  }>({
     nome: null,
     telefone: null,
     nacionalidade: null,
@@ -31,7 +43,7 @@ export default function Perfil() {
       console.log("Traz o perfil do usuário logado");
 
       // Requisição...
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");

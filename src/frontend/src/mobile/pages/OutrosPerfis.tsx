@@ -13,7 +13,19 @@ import axiosInstance from "../../services/axiosConfig";
 export default function Perfil() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate(); // Obtendo a função navigate
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<{
+    nome: string | null;
+    telefone: string | null;
+    nacionalidade: string | null;
+    cpf: string | null;
+    rg: string | null;
+    passaporte: string | null;
+    endereço: string | null;
+    CNPJ: string | null;
+    email: string | null;
+    dataCriacao: string | null;
+    role: string | null;
+  }>({
     nome: null,
     telefone: null,
     nacionalidade: null,
@@ -32,7 +44,7 @@ export default function Perfil() {
       console.log("Traz o perfil deste usuário em questão");
 
       // Requisição...
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
@@ -141,19 +153,19 @@ export default function Perfil() {
         <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
           <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
 
-          <VisualizarItem label="Tipo do usuário" informacao={userData.role} />
+          <VisualizarItem label="Tipo do usuário" informacao={userData.role || ''} />
           <VisualizarItem
             label="E-mail"
-            informacao={userData.email}
+            informacao={userData.email || ''}
           />
-          <VisualizarItem label="Telefone" informacao={userData.telefone} />
-          <VisualizarItem label="Nacionalidade" informacao={userData.nacionalidade} />
-          <VisualizarItem label="CPF" informacao={userData.cpf} />
-          <VisualizarItem label="RG" informacao={userData.rg} />
-          <VisualizarItem label="Passaporte" informacao={userData.passaporte} />
-          <VisualizarItem label="Endereço" informacao={userData.endereço} />
-          <VisualizarItem label="CNPJ" informacao={userData.CNPJ} />
-          <VisualizarItem label="Data de Criação" informacao={userData.dataCriacao} />
+          <VisualizarItem label="Telefone" informacao={userData.telefone || ''} />
+          <VisualizarItem label="Nacionalidade" informacao={userData.nacionalidade || ''} />
+          <VisualizarItem label="CPF" informacao={userData.cpf || ''} />
+          <VisualizarItem label="RG" informacao={userData.rg || ''} />
+          <VisualizarItem label="Passaporte" informacao={userData.passaporte || ''} />
+          <VisualizarItem label="Endereço" informacao={userData.endereço || ''} />
+          <VisualizarItem label="CNPJ" informacao={userData.CNPJ || ''} />
+          <VisualizarItem label="Data de Criação" informacao={userData.dataCriacao || ''} />
         </div>
 
         <BotaoAlterarSenha label="Resetar Senha" onClick={showModal} />

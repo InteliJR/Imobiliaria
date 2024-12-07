@@ -4,7 +4,7 @@ import Card from "./CardImovel";
 import FormField from "../../mobile/components/Form/FormField";
 import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
-
+import { AxiosError } from "axios";
 export default function Imoveis() {
   const navigate = useNavigate();
 
@@ -14,9 +14,13 @@ export default function Imoveis() {
 
       // Requisição...
     } catch (error) {
-      console.error(error);
+     console.error(error);
 
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      if (error instanceof AxiosError) {
+        showErrorToast(error.response?.data?.message || "Erro ao se conectar com o servidor.");
+      } else {
+          showErrorToast("Erro ao se conectar com o servidor.");
+      } 
     }
   };
 
@@ -41,7 +45,7 @@ export default function Imoveis() {
       {/* Formulário */}
       <form className="flex items-end gap-4 mb-6">
         <div className="flex-grow">
-          <FormField label="Buscar imóvel" onChange={() => {}} />
+          <FormField label="Buscar imóvel" value="" onChange={() => {}} />
         </div>
         <button
           type="submit"

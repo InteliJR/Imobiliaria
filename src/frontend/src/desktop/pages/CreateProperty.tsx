@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
@@ -139,7 +139,7 @@ export default function CreateProperty() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="mt-1 block w-full border border-neutral-200 px-2 py-2 text-form-label rounded-md shadow-sm focus:border-brown-500 focus:ring-brown-500"
-                  rows="3"
+                  rows={3}
                 ></textarea>
                 
               </div>

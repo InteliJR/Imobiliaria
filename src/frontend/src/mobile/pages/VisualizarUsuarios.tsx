@@ -10,13 +10,6 @@ import axiosInstance from "../../services/axiosConfig";
 
 
 export default function MainPage() {
-  const [userData, setUserData] = useState({
-    nome: null,
-    telefone: null,
-    nImoveis: null,
-    role: null,
-    desde: null,
-  });
   const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
 
@@ -33,9 +26,9 @@ export default function MainPage() {
       // Você pode manter ou ajustar o filtro de usuários conforme necessário
       const usersWithRelevantRoles = responseAuth.data;
   
-      const combinedData = usersWithRelevantRoles.map((user) => {
+      const combinedData = usersWithRelevantRoles.map((user: any) => {
         // Filtrar imóveis relacionados ao usuário usando roleId
-        const imoveis = responseProperty.data.filter((imovel) => {
+        const imoveis = responseProperty.data.filter((imovel: any) => {
           const isLocador = Number(imovel.locadorId) === Number(user.roleId);
           const isLocatario = Number(imovel.locatarioId) === Number(user.roleId);
           return isLocador || isLocatario;
@@ -53,7 +46,7 @@ export default function MainPage() {
       setData(combinedData);
       setFilteredData(combinedData); // Inicialmente exibir todos os usuários
       console.log("Dados combinados:", combinedData);
-    } catch (error) {
+    } catch (error: any) {
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
       console.error("Erro ao obter informações de usuários ou imóveis:", error.message);
     }
@@ -129,7 +122,7 @@ export default function MainPage() {
                   line1={user.nImoveis || "Número de imóveis não disponível"}
                   line2={user.endereco || "Endereço não disponível"}
                   line3={user.dataCriacao || "Data de criação não disponível"}
-                  status={status}
+                  status={status as "Locador" | "Locatário"}
                 />
                 );
             })}
