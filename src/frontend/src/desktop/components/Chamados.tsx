@@ -47,7 +47,7 @@ export default function ChamadosComponent() {
       {/* Formulário */}
       <form className="flex items-end gap-4 mb-6">
         <div className="flex-grow">
-          <FormField label="Buscar chamado" onChange={() => {}} />
+          <FormField label="Buscar chamado" value="" onChange={() => {}} />
         </div>
         <button
           type="submit"
