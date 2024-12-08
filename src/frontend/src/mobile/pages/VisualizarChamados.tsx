@@ -6,21 +6,64 @@ import FormField from "../components/Form/FormField";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../components/Voltar";
 import { showErrorToast } from "../../utils/toastMessage";
+import axiosInstance from "../../services/axiosConfig";
 
 export default function MainPage() {
-  const [ticket, setTicket] = useState({
-    chamadoId : null,
-  });
+  interface Ticket {
+    chamadoId: number;
+    title: string;
+    solicitor: string;
+    address: string;
+    date: string;
+    open: boolean;
+  }
 
-  const fetchTickets = () => {
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+
+  const fetchTickets = async () => {
     try {
-      console.log("Traz os chamados");
+
+      const chamadosResponse = await axiosInstance.get('property/Chamados/PegarTodosOsChamados');
+      const usersResponse = await axiosInstance.get('auth/User/PegarTodosUsuarios');
+      const propertiesResponse = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
+
+      if (!chamadosResponse.data || !usersResponse.data || !propertiesResponse.data) {
+        console.error("Dados de resposta inválidos");
+        return;
+      }
+
+      console.log("Chamados:", chamadosResponse.data);
+      console.log("Usuários:", usersResponse.data);
+      console.log("Imóveis:", propertiesResponse.data);
+
+      const chamados = chamadosResponse.data;
+      const users = usersResponse.data;
+      const properties = propertiesResponse.data;
+
+      // Mesclando os dados
+      const mergedData = chamados.map((chamado: { solicitanteId: any; idImovel: any; idChamado: any; titulo: any; dataSolicitacao: any; status: any; }) => {
+        const user = users.find((u: { usuarioId: any; }) => u.usuarioId === chamado.solicitanteId) || {};
+        const property = properties.find((p: { imovelId: any; }) => p.imovelId === chamado.idImovel) || {};
+
+        return {
+          chamadoId: chamado.idChamado,
+          title: chamado.titulo || 'Título não informado',
+          solicitor: user.nome || 'Usuário desconhecido',
+          address: property.endereco || 'Endereço desconhecido',
+          date: chamado.dataSolicitacao || 'Data não informada',
+          open: chamado.status === 'Aberto' ? true : false,
+        };
+      });
+
+      setTickets(mergedData);
+
+      console.log("Dados mesclados:", mergedData);
 
       // Requisição...
     } catch (error) {
       console.error(error);
 
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      showErrorToast("Erro ao se conectar com o servidor.");
     }
   };
 
@@ -47,7 +90,7 @@ export default function MainPage() {
             {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
             <div className="flex w-full gap-2 items-end">
               <div className="w-full">
-                <FormField label="Buscar chamado" onChange={() => {}} />
+                <FormField label="Buscar chamado" onChange={() => { } } value={""} />
               </div>
               <button
                 type="submit"
@@ -66,21 +109,17 @@ export default function MainPage() {
           <h2 className="text-2xl font-semibold">Resultados</h2>
           <div className="h-[1px] bg-black"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }, (_, index) => {
-              const status: "Aberto" | "Fechado" =
-                index % 2 === 0 ? "Aberto" : "Fechado";
-              return (
-                <Card
-                  key={index}
-                  id={index + 1} // Adiciona o id para cada chamado
-                  title={`Chamado ${index + 1}`}
-                  line1="Lucas Matheus Nunes"
-                  line2="Bubuntantã"
-                  line3="07/01/2024"
-                  status={status}
-                />
-              );
-            })}
+            {tickets.map((ticket) => (
+              <Card
+                key={ticket.chamadoId} // Usar o idChamado real como chave
+                id={ticket.chamadoId} // Passar o idChamado real como número
+                title={ticket.title} // Título com o id real
+                line1={ticket.solicitor} // Nome do solicitante
+                line2={ticket.address} // Endereço do imóvel
+                line3={new Date(ticket.date).toLocaleDateString("pt-BR")} // Data formatada
+                status={ticket.open ? "Aberto" : "Fechado"} // Status com base no campo `open`
+              />
+            ))}
           </div>
         </section>
       </main>

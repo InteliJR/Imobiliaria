@@ -37,10 +37,10 @@ const Card: React.FC<CardProps> = ({
       <div className="w-3/4 p-4 text-[#363430]">
         <h3 className="text-form-label mb-2 text-[#363430]">{title}</h3>
         <p className="text-normal-text mb-1">
-          <span className="text-[#76726A]">Locatário:</span> {line1}
+          <span className="text-[#76726A]">Criado por:</span> {line1}
         </p>
         <p className="text-normal-text mb-1">
-          <span className="text-[#76726A]">Imóvel:</span> {line2}
+          <span className="text-[#76726A]">Endereço:</span> {line2}
         </p>
         <p className="text-normal-text">
           <span className="text-[#76726A]">Início:</span> {line3}
