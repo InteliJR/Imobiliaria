@@ -57,11 +57,9 @@ namespace Layer.Services.Services
             }
 
             // Atualizando os campos
-            existingChamado.NomeSolicitante = chamado.NomeSolicitante;
-            existingChamado.ContatoSolicitante = chamado.ContatoSolicitante;
-            existingChamado.NomeLocador = chamado.NomeLocador;
-            existingChamado.ContatoLocador = chamado.ContatoLocador;
+            existingChamado.SolicitanteId = chamado.SolicitanteId;
             existingChamado.IdImovel = chamado.IdImovel;
+            existingChamado.Titulo = chamado.Titulo;
             existingChamado.DataSolicitacao = chamado.DataSolicitacao;
             existingChamado.DataInicio = chamado.DataInicio;
             existingChamado.DataFim = chamado.DataFim;

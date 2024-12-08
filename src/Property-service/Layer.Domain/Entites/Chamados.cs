@@ -15,28 +15,15 @@ namespace Layer.Domain.Entites
         [Column("id_chamado")]
         public int IdChamado { get; set; }  // Identificador único do chamado
 
+        [Column("titulo")]
+        public string Titulo { get; set; }  // Título do chamado
+
         [Column("imovelid")]
         public int IdImovel { get; set; }  // Chave estrangeira para a tabela de imóveis
 
-        [Column("nome_solicitante")]
+        [Column("solicitanteid")]
         [MaxLength(255)]
-        public string NomeSolicitante { get; set; }  // Nome do locatário que abriu o chamado
-
-        [Column("contato_solicitante")]
-        [MaxLength(20)]
-        public string ContatoSolicitante { get; set; }  // Contato do locatário
-
-        [Column("nome_locador")]
-        [MaxLength(255)]
-        public string NomeLocador { get; set; }  // Nome do locador (proprietário)
-
-        [Column("contato_locador")]
-        [MaxLength(20)]
-        public string ContatoLocador { get; set; }  // Contato do locador
-
-        [Column("endereco_imovel")]
-        [MaxLength(255)]
-        public string EnderecoImovel { get; set; }  // Endereço do imóvel
+        public int SolicitanteId { get; set; }  // Nome do locatário que abriu o chamado
 
         [Column("data_solicitacao")]
         public DateTime DataSolicitacao { get; set; }  // Data da abertura do chamado

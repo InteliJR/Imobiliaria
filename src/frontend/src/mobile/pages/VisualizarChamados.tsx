@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Chamados/Card";
@@ -8,6 +8,10 @@ import Voltar from "../components/Voltar";
 import { showErrorToast } from "../../utils/toastMessage";
 
 export default function MainPage() {
+  const [ticket, setTicket] = useState({
+    chamadoId : null,
+  });
+
   const fetchTickets = () => {
     try {
       console.log("Traz os chamados");
