@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ProblemCard from "../components/CardChamado";
-import FormField from "../../mobile/components/Form/FormField";
+import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
@@ -19,6 +19,7 @@ export default function ChamadosComponent() {
 
   const navigate = useNavigate();
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const fetchTickets = async () => {
     try {
@@ -32,16 +33,18 @@ export default function ChamadosComponent() {
         return;
       }
 
-      console.log("Chamados:", chamadosResponse.data);
-      console.log("Usuários:", usersResponse.data);
-      console.log("Imóveis:", propertiesResponse.data);
+      // console.log("Chamados:", chamadosResponse.data);
+      // console.log("Usuários:", usersResponse.data);
+      // console.log("Imóveis:", propertiesResponse.data);
 
       const chamados = chamadosResponse.data;
       const users = usersResponse.data;
       const properties = propertiesResponse.data;
 
       // Mesclando os dados
-      const mergedData = chamados.map((chamado: { solicitanteId: any; idImovel: any; idChamado: any; titulo: any; dataSolicitacao: any; status: any; description: any }) => {
+      const mergedData = chamados.map((chamado: {
+        descricao: string; solicitanteId: any; idImovel: any; idChamado: any; titulo: any; dataSolicitacao: any; status: any; description: any 
+}) => {
         const user = users.find((u: { usuarioId: any; }) => u.usuarioId === chamado.solicitanteId) || {};
         const property = properties.find((p: { imovelId: any; }) => p.imovelId === chamado.idImovel) || {};
 
@@ -57,8 +60,9 @@ export default function ChamadosComponent() {
       });
 
       setTickets(mergedData);
+      setFilteredData(mergedData)
 
-      console.log("Dados mesclados:", mergedData);
+      // console.log("Dados mesclados:", mergedData);
 
       // Requisição...
     } catch (error) {
@@ -89,7 +93,18 @@ export default function ChamadosComponent() {
       {/* Formulário */}
       <form className="flex items-end gap-4 mb-6">
         <div className="flex-grow">
-          <FormField label="Buscar chamado" onChange={() => {}} />
+          <div className="w-full">
+            <FormFieldFilter
+                label="Buscar chamado"
+                onFilter={(searchTerm) => {
+                  // console.log(searchTerm);
+                  const filtered = tickets.filter(chamados =>
+                    chamados.title.toLowerCase().includes(searchTerm.toLowerCase())
+                  );
+                  setFilteredData(filtered);
+                }}
+              />
+            </div>
         </div>
         <button
           type="submit"
@@ -105,7 +120,7 @@ export default function ChamadosComponent() {
         <h2 className="text-2xl font-semibold">Resultados</h2>
         <div className="h-[1px] bg-neutral-400 mb-4"></div>
         <div className="flex flex-col gap-6">
-            {tickets.map((ticket) => (
+            {filteredData.map((ticket) => (
             <ProblemCard
               key={ticket.chamadoId}
               id={ticket.chamadoId}
@@ -113,8 +128,8 @@ export default function ChamadosComponent() {
               creator={ticket.solicitor}
               contact={ticket.address}
               description={ticket.description}
-              date={ticket.date}
-              time=""
+              date={ticket.date.split('T')[0]}
+              time={ticket.date.split('T')[1].split('.')[0]}
             />
             ))}
         </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Chamados/Card";
-import FormField from "../components/Form/FormField";
+import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../components/Voltar";
 import { showErrorToast } from "../../utils/toastMessage";
@@ -19,6 +19,7 @@ export default function MainPage() {
   }
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const fetchTickets = async () => {
     try {
@@ -32,9 +33,9 @@ export default function MainPage() {
         return;
       }
 
-      console.log("Chamados:", chamadosResponse.data);
-      console.log("Usuários:", usersResponse.data);
-      console.log("Imóveis:", propertiesResponse.data);
+      // console.log("Chamados:", chamadosResponse.data);
+      // console.log("Usuários:", usersResponse.data);
+      // console.log("Imóveis:", propertiesResponse.data);
 
       const chamados = chamadosResponse.data;
       const users = usersResponse.data;
@@ -56,8 +57,9 @@ export default function MainPage() {
       });
 
       setTickets(mergedData);
+      setFilteredData(mergedData)
 
-      console.log("Dados mesclados:", mergedData);
+      // console.log("Dados mesclados:", mergedData);
 
       // Requisição...
     } catch (error) {
@@ -90,7 +92,16 @@ export default function MainPage() {
             {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
             <div className="flex w-full gap-2 items-end">
               <div className="w-full">
-                <FormField label="Buscar chamado" onChange={() => { } } value={""} />
+              <FormFieldFilter
+                  label="Buscar chamado"
+                  onFilter={(searchTerm) => {
+                    // console.log(searchTerm);
+                    const filtered = tickets.filter(chamados =>
+                      chamados.title.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                    setFilteredData(filtered);
+                  }}
+                />
               </div>
               <button
                 type="submit"
@@ -109,7 +120,7 @@ export default function MainPage() {
           <h2 className="text-2xl font-semibold">Resultados</h2>
           <div className="h-[1px] bg-black"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tickets.map((ticket) => (
+            {filteredData.map((ticket) => (
               <Card
                 key={ticket.chamadoId} // Usar o idChamado real como chave
                 id={ticket.chamadoId} // Passar o idChamado real como número
