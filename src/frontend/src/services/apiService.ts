@@ -1,7 +1,7 @@
 
 const services = {
-    authService: 'http://localhost:8093/auth',
-    propertyService: 'http://localhost:8093/property'
+    authService: 'https://gateway-2ev7.onrender.com/auth',
+    propertyService: 'https://gateway-2ev7.onrender.com/property'
 };
 
 export const getServiceUrl = (serviceName: keyof typeof services, path: string): string => {
