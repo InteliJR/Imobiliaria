@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
+import axiosInstance from '../../services/axiosConfig.ts';
+import { getServiceUrl } from "../../services/apiService.ts";
 
 export default function CreateProperty() {
   const [propertyType, setPropertyType] = useState("Kitnet");
@@ -14,7 +16,7 @@ export default function CreateProperty() {
   const [condoFee, setCondoFee] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     
     try {
@@ -26,13 +28,26 @@ export default function CreateProperty() {
           neighborhood,
           rent,
           condoFee,
-          description,
+          description
         });
 
         // Requisição...
-  
+        const response = await axiosInstance.post(getServiceUrl('propertyService', '/Imoveis/CriarUmNovoImovel'), {
+          TipoImovel: propertyType,
+          Cep: cep,
+          Condominio: condoFee,
+          ValorImovel: rent,
+          Bairro: neighborhood,
+          Descricao: description,
+          Endereco: address,
+          Complemento: complement
+          // LocatarioId: locatarioId || null, // Esses campos precisam ser adicionados  
+          // LocadorId: locadorId || null
+        });
+
+
         showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
   
         showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
@@ -62,27 +77,59 @@ export default function CreateProperty() {
               </div>
 
               <div>
-                <FormField label="CEP" />
+                <FormField
+                  label="CEP"
+                  placeholder="Digite o CEP"
+                  value={cep}
+                  onChange={(e) => setCep(e.target.value)}
+                />
+              </div>
+
+
+              <div>
+              <FormField
+                  label="Endereço"
+                  placeholder="Digite o endereço"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
               </div>
 
               <div>
-                <FormField label="Endereço" />
+              <FormField
+                  label="Complemento"
+                  placeholder="Digite o complemento"
+                  value={complement}
+                  onChange={(e) => setComplement(e.target.value)}
+                />
               </div>
 
               <div>
-                <FormField label="Complemento" />
-              </div>
-
-              <div>
-                <FormField label="Bairro" />
+              <FormField
+                  label="Bairro"
+                  placeholder="Bairro do imóvel"
+                  value={neighborhood}
+                  onChange={(e) => setNeighborhood(e.target.value)}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <FormField label="Aluguel (R$)" />
+                  <FormField
+                  label="Aluguel (R$)"
+                  placeholder=""
+                  value={rent}
+                  onChange={(e) => setRent(e.target.value)}
+                  />
                 </div>
+
                 <div>
-                  <FormField label="Condomínio (R$)" />
+                  <FormField 
+                  label="Condomínio (R$)"
+                  placeholder=""
+                  value={condoFee}
+                  onChange={(e) => setCondoFee(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -92,8 +139,9 @@ export default function CreateProperty() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="mt-1 block w-full border border-neutral-200 px-2 py-2 text-form-label rounded-md shadow-sm focus:border-brown-500 focus:ring-brown-500"
-                  rows="3"
+                  rows={3}
                 ></textarea>
+                
               </div>
               <div className="w-full max-w-xl py-6 bg-white rounded-lg space-y-6">
                 <button

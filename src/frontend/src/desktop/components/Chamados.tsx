@@ -4,6 +4,7 @@ import ProblemCard from "../components/CardChamado";
 import FormField from "../../mobile/components/Form/FormField";
 import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
+import { AxiosError } from "axios";
 
 export default function ChamadosComponent() {
   const navigate = useNavigate();
@@ -16,7 +17,12 @@ export default function ChamadosComponent() {
     } catch (error) {
       console.error(error);
 
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      if (error instanceof AxiosError) {
+        showErrorToast(error.response?.data?.message || "Erro ao se conectar com o servidor.");
+      } else {
+          showErrorToast("Erro ao se conectar com o servidor.");
+      }
+      
     }
   };
 
@@ -41,7 +47,7 @@ export default function ChamadosComponent() {
       {/* Formulário */}
       <form className="flex items-end gap-4 mb-6">
         <div className="flex-grow">
-          <FormField label="Buscar chamado" onChange={() => {}} />
+          <FormField label="Buscar chamado" value="" onChange={() => {}} />
         </div>
         <button
           type="submit"
