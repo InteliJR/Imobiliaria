@@ -9,7 +9,7 @@ export default function CreateTicket() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     try {
@@ -22,8 +22,8 @@ export default function CreateTicket() {
 
       // Requisição...
 
-      showSuccessToast(response?.data?.message || "Chamado criado com sucesso!");
-    } catch (error) {
+      showSuccessToast("Chamado criado com sucesso!");
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
@@ -79,7 +79,12 @@ export default function CreateTicket() {
               </div>
 
               {/* Campo de Título */}
-              <FormField label="Título" type="text" placeholder="Título do chamado" value={title} onChange={(e) => setTitle(e.target.value)} />
+              <FormField 
+                label="Título" 
+                value={title} 
+                onChange={setTitle} 
+                placeholder="Título do chamado" 
+              />
 
               {/* Campo de Descrição */}
               <div>
@@ -90,7 +95,7 @@ export default function CreateTicket() {
                   className={`h-20 w-full ${
                     description ? 'bg-transparent border border-black' : 'bg-[#D9D9D9]'
                   } focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
-                  rows="10"
+                  rows={10}
                   placeholder="Descreva o problema ou solicitação"
                 ></textarea>
               </div>
