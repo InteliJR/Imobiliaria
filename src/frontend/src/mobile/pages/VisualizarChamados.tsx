@@ -62,7 +62,7 @@ export default function MainPage() {
       // console.log("Dados mesclados:", mergedData);
 
       // Requisição...
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast("Erro ao se conectar com o servidor.");

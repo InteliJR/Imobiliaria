@@ -4,7 +4,6 @@ import FormField from '../components/Form/FormField';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../services/axiosConfig';
-import { getServiceUrl } from '../../services/apiService';
 import { showErrorToast } from '../../utils/toastMessage';
 import { jwtDecode } from 'jwt-decode';
 

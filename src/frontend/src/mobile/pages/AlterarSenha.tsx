@@ -50,11 +50,11 @@ export default function Senha() {
       setResult("Senha alterada com sucesso");
       showSuccessToast(response?.data?.message || "Senha alterada com sucesso.");
       
-    } catch(erro: any){
+    } catch(error: any){
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
 
-      console.log(erro.response?.data?.message || "Erro ao alterar a senha");
-      setResult(erro.response?.data?.message || "Erro ao alterar a senha");
+      console.log(error?.response?.data?.message || "Erro ao alterar a senha");
+      setResult(error?.response?.data?.message || "Erro ao alterar a senha");
     }
   };
 
@@ -73,12 +73,19 @@ export default function Senha() {
         <form className="flex flex-col gap-4 mb-4">
           <FormField
             label="Senha Antiga"
+            value={senhaAntiga}
             onChange={setSenhaAntiga}
             isPassword
           />
-          <FormField label="Nova Senha" onChange={setNovaSenha} isPassword />
+          <FormField 
+            label="Nova Senha" 
+            value={novaSenha}
+            onChange={setNovaSenha} 
+            isPassword 
+          />
           <FormField
             label="Confirmar Nova Senha"
+            value={confirmarSenha}
             onChange={setConfirmarSenha}
             isPassword
           />
