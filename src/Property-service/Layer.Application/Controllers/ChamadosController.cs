@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Layer.Infrastructure.Database;
+using property_management.Models;
 
 namespace property_management.Controllers
 {
@@ -43,25 +44,39 @@ namespace property_management.Controllers
 
         [HttpPost("CriarUmNovoChamado")]
         [Authorize(Policy = "AdminORLocatario")]
-        public async Task<ActionResult<Chamados>> Create(Chamados chamado)
+        public async Task<ActionResult<NewChamado>> Create(NewChamado newChamado)
         {
-            chamado.DataSolicitacao = chamado.DataSolicitacao.ToUniversalTime();
+            newChamado.DataSolicitacao = newChamado.DataSolicitacao.ToUniversalTime();
 
-            if (chamado.DataInicio.HasValue)
+            // if (chamado.DataInicio.HasValue)
+            // {
+            //   chamado.DataInicio = chamado.DataInicio.Value.ToUniversalTime();
+            // }
+
+            // if (chamado.DataFim.HasValue)
+            // {
+            //   chamado.DataFim = chamado.DataFim.Value.ToUniversalTime();
+            // }
+
+            // Montar o objeto chamado
+            var chamado = new Chamados
             {
-              chamado.DataInicio = chamado.DataInicio.Value.ToUniversalTime();
-            }
+                Titulo = newChamado.Titulo,
+                SolicitanteId = newChamado.SolicitanteId,
+                DataSolicitacao = newChamado.DataSolicitacao,
+                DataInicio = null,
+                DataFim = null,
+                Descricao = newChamado.Descricao,
+                TipoChamado = newChamado.TipoChamado,
+                Status = newChamado.Status,
+                IdImovel = newChamado.IdImovel // Atribuindo o IdImovel do NewChamado
+            };
 
-            if (chamado.DataFim.HasValue)
-            {
-              chamado.DataFim = chamado.DataFim.Value.ToUniversalTime();
-            }
+            var createdChamado = await _chamadosService.AddAsync(chamado);
 
-            var newChamado = await _chamadosService.AddAsync(chamado);
+            await _applicationLog.LogAsync($"Criação de chamado com id: {createdChamado.IdChamado} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
-            await _applicationLog.LogAsync($"Criação de chamado com id: {newChamado.IdChamado} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
-
-            return CreatedAtAction(nameof(GetById), new { id = newChamado.IdChamado }, newChamado);
+            return CreatedAtAction(nameof(GetById), new { id = createdChamado.IdChamado }, createdChamado);
         }
 
         // PUT: api/chamados/{id}
