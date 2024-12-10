@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
+import axiosInstance from "../../services/axiosConfig";
+import getTokenData from "../../services/tokenConfig";
 
 export default function CreateTicket() {
   const [property, setProperty] = useState("");
-  const [ticketType, setTicketType] = useState("Manutenção");
+  const [ticketType, setTicketType] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [houseNames, setHouseNames] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,31 +22,39 @@ export default function CreateTicket() {
     }
 
     try {
-      const response = await fetch('Chamados/CriarUmNovoChamado', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          property,
-          ticketType,
-          title,
-          description,
-        }),
-      });
 
-      const data = await response.json();
+      // /Chamados/CriarUmNovoChamado
+      // {
+      //   "idImovel": 0,
+      //   "titulo": "string",
+      //   "solicitanteId": 0,
+      //   "dataSolicitacao": "2024-12-10T03:02:45.474Z",
+      //   "descricao": "string",
+      //   "tipoChamado": "string",
+      //   "status": "string"
+      // }
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao criar chamado');
-      }
 
-      showSuccessToast(data.message || "Chamado aberto com sucesso!");
-      setProperty("");
-      setTicketType("Manutenção");
-      setTitle("");
-      setDescription("");
-      
+      const tokenData = getTokenData();
+
+      console.log(tokenData.UserID);
+
+      const data = {
+        idImovel: parseInt(property),
+        titulo: title,
+        solicitanteId: parseInt(tokenData.UserID),
+        dataSolicitacao: new Date().toISOString(),
+        descricao: description,
+        tipoChamado: ticketType,
+      };
+
+
+      const response = await axiosInstance.post('property/Chamados/CriarUmNovoChamado', data);
+
+      console.log(response.data);
+
+      showSuccessToast("Chamado aberto com sucesso!");
+
     } catch (error) {
       console.error('Error creating ticket:', error);
       showErrorToast(
@@ -51,6 +62,41 @@ export default function CreateTicket() {
       );
     }
   };
+
+  const allHousesNames = async () => {
+
+    try{
+
+      const imoveisResponse = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
+
+      const imoveis = imoveisResponse.data;
+
+      console.log(imoveis)
+      
+
+      const houseNamesArray = imoveis.map((imovel: { endereco: any; }) => imovel.endereco);
+      setHouseNames(houseNamesArray.join("; "));
+
+    console.log(houseNamesArray);
+    const houseDictionary = imoveis.reduce((acc: { [key: string]: string }, imovel: { imovelId: string; endereco: string }) => {
+      acc[imovel.imovelId] = imovel.endereco;
+      return acc;
+    }, {});
+
+    console.log(houseDictionary);
+
+    setHouseNames(houseDictionary)
+    
+    } catch(error){
+      console.error('Error getting the houses:', error);
+
+    }
+  }
+
+  useEffect(() => {
+    allHousesNames();
+  }, []);
+
 
   return (
     <div>
@@ -67,10 +113,10 @@ export default function CreateTicket() {
                   onChange={(e) => setProperty(e.target.value)}
                   className="h-10 w-full flex-grow bg-transparent border border-neutral-200 focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded"
                 >
-                  <option value="">Selecione um imóvel</option>
-                  <option value="imovel1">Apartamento 101</option>
-                  <option value="imovel2">Casa Verde</option>
-                  <option value="imovel3">Sala Comercial</option>
+                  <option value="" disabled>Selecione um imóvel</option>
+                    {Object.entries(houseNames).map(([id, address]) => (
+                    <option key={id} value={id}>{address}</option>
+                    ))}
                 </select>
               </div>
 
@@ -82,6 +128,9 @@ export default function CreateTicket() {
                   onChange={(e) => setTicketType(e.target.value)}
                   className="h-10 w-full flex-grow bg-transparent border border-neutral-200 focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded"
                 >
+                  <option value="" disabled>
+                    Selecione o tipo de chamado
+                  </option>
                   <option>Manutenção</option>
                   <option>Financeiro</option>
                   <option>Administrativo</option>

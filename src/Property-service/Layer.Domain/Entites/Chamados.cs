@@ -22,7 +22,6 @@ namespace Layer.Domain.Entites
         public int IdImovel { get; set; }  // Chave estrangeira para a tabela de imóveis
 
         [Column("solicitanteid")]
-        [MaxLength(255)]
         public int SolicitanteId { get; set; }  // Nome do locatário que abriu o chamado
 
         [Column("data_solicitacao")]
