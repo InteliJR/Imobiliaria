@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import FormField from "../../desktop/components/Form/FormField";
 import Navbar from "../components/Navbar/Navbar";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { getServiceUrl } from "../../services/apiService";
+import debounce from "lodash.debounce";
 
 export default function CreatePropertyMobile() {
   const [propertyType, setPropertyType] = useState("Kitnet");
@@ -14,7 +15,10 @@ export default function CreatePropertyMobile() {
   const [rent, setRent] = useState("");
   const [condoFee, setCondoFee] = useState("");
   const [description, setDescription] = useState("");
-
+  const [query, setQuery] = useState(""); // Para a busca
+  const [results, setResults] = useState([]); // Resultados da consulta
+  const [isLoading, setIsLoading] = useState(false); // Estado de carregamento
+  const [locadorId, setLocadorId] = useState(null); // Armazena o ID do locador selecionado
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -28,37 +32,71 @@ export default function CreatePropertyMobile() {
         neighborhood,
         rent,
         condoFee,
-        description
+        description,
+        locadorId,
       });
 
-      // Requisição...
-    const response = await axiosInstance.post(getServiceUrl('propertyService', '/Imoveis/CriarUmNovoImovel'), {
-      TipoImovel: propertyType,
-      Cep: cep,
-      Condominio: condoFee,
-      ValorImovel: rent,
-      Bairro: neighborhood,
-      Descricao: description,
-      Endereco: address,
-      Complemento: complement
-      // LocatarioId: locatarioId || null, // Esses campos precisam ser adicionados  
-      // LocadorId: locadorId || null
-    });
-
+      const response = await axiosInstance.post(
+        getServiceUrl("propertyService", "/Imoveis/CriarUmNovoImovel"),
+        {
+          TipoImovel: propertyType,
+          Cep: cep,
+          Condominio: condoFee,
+          ValorImovel: rent,
+          Bairro: neighborhood,
+          Descricao: description,
+          Endereco: address,
+          Complemento: complement,
+          LocadorId: locadorId || null, // Adiciona o LocadorId no envio
+        }
+      );
 
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
     } catch (error: any) {
       console.error(error);
 
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      showErrorToast(
+        error?.response?.data?.message || "Erro ao se conectar com o servidor."
+      );
     }
   };
+
+  // Função de busca no backend com debounce
+  const fetchResults = useCallback(
+    debounce(async (searchTerm) => {
+      if (!searchTerm) {
+        setResults([]);
+        return;
+      }
+      setIsLoading(true);
+      try {
+        // adicionar requisição dos locadores correspondentes ao termo buscado.
+        // const response = await axiosInstance.get(
+        //   getServiceUrl("userService", "/Locadores/Buscar"), // Endpoint para buscar locadores
+        //   { params: { query: searchTerm } }
+        // );
+        // setResults(response.data || []);
+      } catch (error) {
+        console.error("Erro ao buscar locadores:", error);
+        showErrorToast("Erro ao buscar resultados.");
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300), // debounce (delay)
+    []
+  );
+
+  useEffect(() => {
+    fetchResults(query);
+  }, [query, fetchResults]);
 
   return (
     <div>
       <Navbar />
       <div className="mx-10 mt-10">
-        <h1 className="text-xl font-bold text-yellow-darker mb-6">Criar Imóvel</h1>
+        <h1 className="text-xl font-bold text-yellow-darker mb-2">
+          Criar Imóvel
+        </h1>
         <div className="min-h-screen flex flex-col items-center justify-center">
           <div className="w-full max-w-xl py-6 bg-white rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -84,13 +122,14 @@ export default function CreatePropertyMobile() {
                   label="CEP"
                   placeholder="Digite o CEP"
                   value={cep}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCep(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setCep(e.target.value)
+                  }
                 />
               </div>
 
-
               <div>
-              <FormField
+                <FormField
                   label="Endereço"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
@@ -98,7 +137,7 @@ export default function CreatePropertyMobile() {
               </div>
 
               <div>
-              <FormField
+                <FormField
                   label="Complemento"
                   placeholder="Digite o complemento"
                   value={complement}
@@ -107,7 +146,7 @@ export default function CreatePropertyMobile() {
               </div>
 
               <div>
-              <FormField
+                <FormField
                   label="Bairro"
                   placeholder="Bairro do imóvel"
                   value={neighborhood}
@@ -118,21 +157,50 @@ export default function CreatePropertyMobile() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <FormField
-                  label="Aluguel (R$)"
-                  placeholder=""
-                  value={rent}
-                  onChange={(e) => setRent(e.target.value)}
+                    label="Aluguel (R$)"
+                    placeholder=""
+                    value={rent}
+                    onChange={(e) => setRent(e.target.value)}
                   />
                 </div>
 
                 <div>
-                  <FormField 
-                  label="Condomínio (R$)"
-                  placeholder=""
-                  value={condoFee}
-                  onChange={(e) => setCondoFee(e.target.value)}
+                  <FormField
+                    label="Condomínio (R$)"
+                    placeholder=""
+                    value={condoFee}
+                    onChange={(e) => setCondoFee(e.target.value)}
                   />
                 </div>
+              </div>
+
+              {/* Locador*/}
+              <div>
+                <FormField
+                  label="Pesquisar Locadores"
+                  placeholder="Digite para buscar"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+                {isLoading && (
+                  <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
+                )}
+                {results.length > 0 && (
+                  <ul className="border border-neutral-200 rounded mt-2">
+                    {results.map((locador: any) => (
+                      <li
+                        key={locador.id}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          setQuery(locador.nome); // Atualiza o campo de texto com o nome do locador
+                          setLocadorId(locador.id); // Define o ID do locador selecionado
+                        }}
+                      >
+                        {locador.nome}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               {/* Descrição */}
@@ -143,11 +211,8 @@ export default function CreatePropertyMobile() {
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className={`h-20 flex-grow ${
-                    description ? "bg-transparent border border-black" : "bg-[#D9D9D9]"
-                  } w-full focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
+                  className={`h-20 flex-grow bg-transparent border border-black w-full focus:outline-none p-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
                   rows={3}
-                  placeholder="Descrição do imóvel"
                 ></textarea>
               </div>
 
