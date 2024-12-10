@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Layer.Domain.Entities;
 
+using Layer.Domain.Entites;
+using Microsoft.AspNetCore.Http;
+
 namespace Layer.Domain.Interfaces
 {
     public interface IimoveisRepository
@@ -13,6 +16,7 @@ namespace Layer.Domain.Interfaces
         Task<Imoveis> GetByIdImoveisAsync(int id);
         Task<Imoveis> PostImoveisAsync(Imoveis imovel);
         Task<int> UpdateImoveisAsync(int id, Imoveis imovel);
+        Task<Imoveis> AddImoveisWithPhotosAsync(Imoveis imovel, IFormFileCollection files);
         Task<int> DeleteImoveisAsync(int id);
     }
 }

@@ -12,5 +12,6 @@
         public string Complemento { get; set; }
         public int? LocatarioId { get; set; }
         public int? LocadorId { get; set; }
+        public IFormFile? Fotos { get; set; }
     }
 }

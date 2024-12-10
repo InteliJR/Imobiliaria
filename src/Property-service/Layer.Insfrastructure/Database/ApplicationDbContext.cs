@@ -13,7 +13,6 @@ namespace Layer.Infrastructure.Database
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        // Mapear a tabela de imoveis
         public DbSet<Imoveis> Imoveis { get; set; }
         public DbSet<Contratos> Contratos { get; set; }
         public DbSet<Chamados> Chamados { get; set; }
