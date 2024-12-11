@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { useEffect } from "react";
 import {
   PieChart,
@@ -12,6 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { showErrorToast } from "../../utils/toastMessage";
 
 export default function MainPage() {
   const pieData = [
@@ -41,7 +43,11 @@ export default function MainPage() {
     } catch (error) {
       console.error(error);
 
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      if (error instanceof AxiosError) {
+        showErrorToast(error.response?.data?.message || "Erro ao se conectar com o servidor.");
+      } else {
+          showErrorToast("Erro ao se conectar com o servidor.");
+      }
     }
   };
 
@@ -73,7 +79,7 @@ export default function MainPage() {
                     label
                   >
                     {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip />

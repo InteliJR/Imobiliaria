@@ -4,7 +4,6 @@ import FormField from '../components/Form/FormField';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../services/axiosConfig';
-import { getServiceUrl } from '../../services/apiService';
 import { showErrorToast } from '../../utils/toastMessage';
 import { jwtDecode } from 'jwt-decode';
 
@@ -17,21 +16,21 @@ export default function Login() {
         event.preventDefault();
 
         try {
-            const response = await axiosInstance.post(getServiceUrl('authService', '/Account/Login'), {
+            const response = await axiosInstance.post('auth/Account/Login', {
                 Email: email,
-                Senha: senha
+                Senha: senha,
             });
 
             // Obtém e decodifica o token JWT para obter a role do usuário
             const token = response.data.token;
             const decodedToken: any = jwtDecode(token);
-            const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
-            const role = decodedToken[roleClaim];
-            sessionStorage.setItem('jwtToken', token);
-            sessionStorage.setItem('userRole', role);
+            const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'; // Era usado para impedir visualização de rotas protegidas
+            const role = decodedToken[roleClaim]; // Era usado para impedir visualização de rotas protegidas
+            localStorage.setItem('jwtToken', token);
+            localStorage.setItem('userRole', role); // Era usado para impedir visualização de rotas protegidas
 
             // Redirecionar o usuário para home ou dashboard após o login bem-sucedido 
-            navigate('/landing'); // Trocar '/landing' por 'home' ou 'dashboard'
+            navigate('/'); // Trocar '/landing' por 'home' ou 'dashboard'
         } catch (error: any) {
             // Axios retorna erros no `response`
             showErrorToast(error.response?.data?.message || 'Erro ao fazer login');
@@ -63,17 +62,21 @@ export default function Login() {
                                 placeholder="Email" 
                                 label="Email:" 
                                 value={email} 
-                                onChange={setEmail}
+                                onChange={(val) => setEmail(val)}
+                                disabled={false}
                             />
+
                         </div>
                         <div className='mb-10'>
                             <FormField 
                                 placeholder="Senha" 
                                 label="Senha:" 
-                                value={senha} 
-                                onChange={setSenha}
                                 isPassword={true}
+                                value={senha} 
+                                onChange={(val) => setSenha(val)}
+                                disabled={false}
                             />
+
                         </div>
                         {/* Submit Button */}
                         <button

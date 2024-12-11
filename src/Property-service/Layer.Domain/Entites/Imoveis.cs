@@ -14,6 +14,9 @@ namespace Layer.Domain.Entities
         [Column("imovelid")] // Nome da coluna no banco de dados
         public int ImovelId { get; set; }
 
+        [Column("fotos")]
+        public string Fotos { get; set; }
+
         [Column("tipo_imovel")]
         [MaxLength(255)] // Mesmo limite de 'varchar' no banco de dados, pode ajustar
         public string TipoImovel { get; set; }
@@ -42,5 +45,11 @@ namespace Layer.Domain.Entities
         [Column("complemento")]
         [MaxLength(255)]
         public string Complemento { get; set; }
+
+        [Column("locatarioid")]
+        public int? LocatarioId { get; set; }
+
+        [Column("locadorid")]
+        public int? LocadorId { get; set; }
     }
 }

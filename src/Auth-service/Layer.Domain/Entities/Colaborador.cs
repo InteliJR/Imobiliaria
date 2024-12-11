@@ -22,5 +22,9 @@ namespace Layer.Domain.Entities
         [Column("tipo_colaborador")]
         [MaxLength(50)]
         public string TipoColaborador { get; set; }  // Pode ser opcional
+
+        [ForeignKey("UsuarioId")]
+        public User User { get; set; }
     }
+
 }

@@ -4,7 +4,7 @@ import LandlordCard from "./CardUsuario";
 import FormField from "../../mobile/components/Form/FormField";
 import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
-
+import { AxiosError } from "axios";
 export default function ChamadosComponent() {
   const navigate = useNavigate();
 
@@ -13,11 +13,17 @@ export default function ChamadosComponent() {
       console.log("Traz os usuários");
 
       // Requisição...
-    } catch (error) {
+     } catch (error) {
       console.error(error);
 
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      if (error instanceof AxiosError) {
+        showErrorToast(error.response?.data?.message || "Erro ao se conectar com o servidor.");
+      } else {
+          showErrorToast("Erro ao se conectar com o servidor.");
+      }
+      
     }
+
   };
 
   useEffect(() => {
@@ -41,7 +47,7 @@ export default function ChamadosComponent() {
       {/* Formulário */}
       <form className="flex items-end gap-4 mb-6">
         <div className="flex-grow">
-          <FormField label="Buscar usuário" onChange={() => {}} />
+          <FormField label="Buscar usuário" value="" onChange={() => {}} />
         </div>
         <button
           type="submit"

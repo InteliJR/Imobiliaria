@@ -1,34 +1,100 @@
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import Navbar from '../../components/Navbar/Navbar';
 import FormField from '../components/Form/FormField';
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
+import axiosInstance from "../../services/axiosConfig";
+import getTokenData from "../../services/tokenConfig";
 
 export default function CreateTicket() {
   const [property, setProperty] = useState('');
-  const [type, setType] = useState('');
+  const [ticketType, setTicketType] = useState("");
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [houseNames, setHouseNames] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
+    if (!property || !title || !description) {
+      showErrorToast("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
     try {
-      console.log({
-        property,
-        type,
-        title,
-        description,
-      });
 
-      // Requisição...
+      // /Chamados/CriarUmNovoChamado
+      // {
+      //   "idImovel": 0,
+      //   "titulo": "string",
+      //   "solicitanteId": 0,
+      //   "dataSolicitacao": "2024-12-10T03:02:45.474Z",
+      //   "descricao": "string",
+      //   "tipoChamado": "string",
+      //   "status": "string"
+      // }
 
-      showSuccessToast(response?.data?.message || "Chamado criado com sucesso!");
+
+      const tokenData = getTokenData();
+
+      console.log(tokenData.UserID);
+
+      const data = {
+        idImovel: parseInt(property),
+        titulo: title,
+        solicitanteId: parseInt(tokenData.UserID),
+        dataSolicitacao: new Date().toISOString(),
+        descricao: description,
+        tipoChamado: ticketType,
+      };
+
+
+      const response = await axiosInstance.post('property/Chamados/CriarUmNovoChamado', data);
+
+      console.log(response.data);
+
+      showSuccessToast("Chamado aberto com sucesso!");
+
     } catch (error) {
-      console.error(error);
-
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      console.error('Error creating ticket:', error);
+      showErrorToast(
+        error instanceof Error ? error.message : "Erro ao se conectar com o servidor."
+      );
     }
   };
+
+  const allHousesNames = async () => {
+
+    try{
+
+      const imoveisResponse = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
+
+      const imoveis = imoveisResponse.data;
+
+      console.log(imoveis)
+      
+
+      const houseNamesArray = imoveis.map((imovel: { endereco: any; }) => imovel.endereco);
+      setHouseNames(houseNamesArray.join("; "));
+
+    console.log(houseNamesArray);
+    const houseDictionary = imoveis.reduce((acc: { [key: string]: string }, imovel: { imovelId: string; endereco: string }) => {
+      acc[imovel.imovelId] = imovel.endereco;
+      return acc;
+    }, {});
+
+    console.log(houseDictionary);
+
+    setHouseNames(houseDictionary)
+    
+    } catch(error){
+      console.error('Error getting the houses:', error);
+
+    }
+  }
+
+  useEffect(() => {
+    allHousesNames();
+  }, []);
 
   return (
     <div>
@@ -52,9 +118,10 @@ export default function CreateTicket() {
                   <option value="" disabled>
                     Selecione um imóvel
                   </option>
-                  <option>Rua Nossa Senhora de Fátima, 80</option>
-                  <option>Rua Nossa Senhora de Sabará, 50</option>
-                  <option>Rua Nossa Senhora das Graças, 156</option>
+                  <option value="">Selecione um imóvel</option>
+                    {Object.entries(houseNames).map(([id, address]) => (
+                    <option key={id} value={id}>{address}</option>
+                    ))}
                 </select>
               </div>
 
@@ -62,24 +129,29 @@ export default function CreateTicket() {
               <div>
                 <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">Tipo</label>
                 <select
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
+                  value={ticketType}
+                  onChange={(e) => setTicketType(e.target.value)}
                   className={`h-10 w-full ${
-                    type ? 'bg-transparent border border-black' : 'bg-[#D9D9D9]'
+                    ticketType ? 'bg-transparent border border-black' : 'bg-[#D9D9D9]'
                   } focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
                 >
                   <option value="" disabled>
                     Selecione o tipo de chamado
                   </option>
-                  <option>Manutenção Corretiva</option>
-                  <option>Manutenção Preditiva</option>
-                  <option>Vizinhança</option>
+                  <option>Manutenção</option>
                   <option>Financeiro</option>
+                  <option>Administrativo</option>
+                  <option>Outros</option>
                 </select>
               </div>
 
               {/* Campo de Título */}
-              <FormField label="Título" type="text" placeholder="Título do chamado" value={title} onChange={(e) => setTitle(e.target.value)} />
+              <FormField 
+                label="Título" 
+                value={title} 
+                onChange={setTitle} 
+                placeholder="Título do chamado" 
+              />
 
               {/* Campo de Descrição */}
               <div>
@@ -90,7 +162,7 @@ export default function CreateTicket() {
                   className={`h-20 w-full ${
                     description ? 'bg-transparent border border-black' : 'bg-[#D9D9D9]'
                   } focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded`}
-                  rows="10"
+                  rows={10}
                   placeholder="Descreva o problema ou solicitação"
                 ></textarea>
               </div>

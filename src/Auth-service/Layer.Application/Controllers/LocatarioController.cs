@@ -7,6 +7,15 @@ using Layer.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Layer.Domain.Enums;
+using Layer.Infrastructure.Database;
+using Microsoft.AspNetCore.Authorization;
+using Layer.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
+using Layer.Infrastructure.Database;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+
+
 
 namespace Layer.Application.Controllers
 {
@@ -18,11 +27,13 @@ namespace Layer.Application.Controllers
 
         private readonly ILocatarioService _locatarioService;
         private readonly IUserService _userService;
+        private readonly ApplicationLog _applicationLog;
 
-        public LocatarioController(ILocatarioService LocatarioService, IUserService userService)
+        public LocatarioController(ILocatarioService LocatarioService, IUserService userService, ApplicationLog applicationLog)
         {
             _locatarioService = LocatarioService;
             _userService = userService;
+            _applicationLog = applicationLog;
         }
 
         [HttpGet("PegarTodosLocatarios")]
@@ -43,7 +54,7 @@ namespace Layer.Application.Controllers
 
         [HttpPost("AdicionarNovoLocatario")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> AddNewLocatario([Required] [EmailAddress] string email, [FromBody] NewLocatarioModel locatario)
+        public async Task<IActionResult> AddNewLocatario([Required][EmailAddress] string email, [FromBody] NewLocatarioModel locatario)
         {
             if (!ModelState.IsValid)
             {
@@ -70,7 +81,6 @@ namespace Layer.Application.Controllers
             var locatarioNew = new Locatario
             {
                 UsuarioId = userID.UsuarioId,
-                ImovelId = locatario.ImovelId,
                 CPF = locatario.CPF,
                 Nacionalidade = locatario.Nacionalidade,
                 NumeroTelefone = locatario.NumeroTelefone,
@@ -82,6 +92,10 @@ namespace Layer.Application.Controllers
             };
 
             var newLocatario = await _locatarioService.InsertNewLocatario(locatarioNew);
+
+            await _applicationLog.LogAsync($"Criação de Locatario com {email} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
+
             return Ok(newLocatario);
         }
 
@@ -102,16 +116,16 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarLocatarioPorLocatarioID")]
-        [Authorize (Policy = "AdminORLocatario")]
+        [Authorize(Policy = "AdminORLocatario")]
         public async Task<IActionResult> GetLocatarioByLocatarioID([FromQuery] int LocatarioID)
         {
             var locatario = await _locatarioService.GetLocatarioByLocatarioID(LocatarioID);
             return Ok(locatario);
         }
 
-        [HttpPost("AtualizarLocatario")]
-        [Authorize (Policy = "AdminORLocatario")]
-        public async Task<IActionResult> UpdateLocatario(string CPF, [FromBody] UpdateLocatarioModel LocatarioToUpdate)
+        [HttpPut("AtualizarLocatario")]
+        [Authorize(Policy = nameof(Roles.Locatario))]
+        public async Task<IActionResult> UpdateLocatario([FromBody] UpdateLocatarioModel LocatarioToUpdate)
         {
             if (!ModelState.IsValid)
             {
@@ -123,33 +137,79 @@ namespace Layer.Application.Controllers
                 return BadRequest("Locatario não encontrado.");
             }
 
-            var userID = await _userService.GetUserByCPF(CPF);
+            var userID = new User();
 
-            if (userID == null)
-            {
-                return BadRequest("Usuário não encontrado.");
-            }
+            var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?? throw new ArgumentNullException("Email não encontrado.");
 
+            userID = await _userService.GetUserByEmail(email);
+            
             var locatario = await _locatarioService.GetLocatarioByUserId(userID.UsuarioId);
 
             // Atualizar apenas os campos que foram preenchidos
 
             if (!string.IsNullOrEmpty(LocatarioToUpdate.CPF))
                 locatario.CPF = LocatarioToUpdate.CPF;
-            if(!string.IsNullOrEmpty(LocatarioToUpdate.Nacionalidade))
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.Nacionalidade))
                 locatario.Nacionalidade = LocatarioToUpdate.Nacionalidade;
-            if(!string.IsNullOrEmpty(LocatarioToUpdate.NumeroTelefone))
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.NumeroTelefone))
                 locatario.NumeroTelefone = LocatarioToUpdate.NumeroTelefone;
-            if(!string.IsNullOrEmpty(LocatarioToUpdate.NomeCompletoLocatario))
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.NomeCompletoLocatario))
                 locatario.NomeCompletoLocatario = LocatarioToUpdate.NomeCompletoLocatario;
-            if(!string.IsNullOrEmpty(LocatarioToUpdate.Endereco))
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.Endereco))
                 locatario.Endereco = LocatarioToUpdate.Endereco;
-            if(!string.IsNullOrEmpty(LocatarioToUpdate.Passaporte))
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.Passaporte))
                 locatario.Passaporte = LocatarioToUpdate.Passaporte;
-            if(!string.IsNullOrEmpty(LocatarioToUpdate.RG))
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.RG))
                 locatario.RG = LocatarioToUpdate.RG;
 
             var updatedLocatario = await _locatarioService.UpdateLocatario(locatario);
+
+            await _applicationLog.LogAsync($"Atualização de Locatario com email {email}", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
+            return Ok();
+        }
+
+        [HttpPut("AtualizarOutroLocatario")]
+        [Authorize(Policy = nameof(Roles.Admin))]
+        public async Task<IActionResult> UpdateAnotherLocatario(string email, [FromBody] UpdateLocatarioModel LocatarioToUpdate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (LocatarioToUpdate == null)
+            {
+                return BadRequest("Locatario não encontrado.");
+            }
+
+            var userID = new User();
+
+            userID = await _userService.GetUserByEmail(email);
+
+            
+            var locatario = await _locatarioService.GetLocatarioByUserId(userID.UsuarioId);
+
+            // Atualizar apenas os campos que foram preenchidos
+
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.CPF))
+                locatario.CPF = LocatarioToUpdate.CPF;
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.Nacionalidade))
+                locatario.Nacionalidade = LocatarioToUpdate.Nacionalidade;
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.NumeroTelefone))
+                locatario.NumeroTelefone = LocatarioToUpdate.NumeroTelefone;
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.NomeCompletoLocatario))
+                locatario.NomeCompletoLocatario = LocatarioToUpdate.NomeCompletoLocatario;
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.Endereco))
+                locatario.Endereco = LocatarioToUpdate.Endereco;
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.Passaporte))
+                locatario.Passaporte = LocatarioToUpdate.Passaporte;
+            if (!string.IsNullOrEmpty(LocatarioToUpdate.RG))
+                locatario.RG = LocatarioToUpdate.RG;
+
+            var updatedLocatario = await _locatarioService.UpdateLocatario(locatario);
+
+            await _applicationLog.LogAsync($"Atualização de Locatario com Email {email}", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(updatedLocatario);
         }
@@ -159,6 +219,7 @@ namespace Layer.Application.Controllers
         public async Task<IActionResult> DeleteLocatario([FromBody] string CPF)
         {
             var locatario = await _locatarioService.DeleteLocatario(CPF);
+            await _applicationLog.LogAsync($"Deletar locatario com CPF {CPF} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return Ok(locatario);
         }
 

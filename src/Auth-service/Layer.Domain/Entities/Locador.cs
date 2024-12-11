@@ -14,9 +14,6 @@ namespace Layer.Domain.Entities
         [Column("usuarioid")]
         public int? UsuarioId { get; set; }
 
-        [Column("imovelid")]
-        public int? ImovelId { get; set; }
-
         [Column("pessoa_juridica")]
         public bool? PessoaJuridica { get; set; }
 
@@ -51,5 +48,9 @@ namespace Layer.Domain.Entities
         [Column("rg")]
         [MaxLength(20)]
         public string? RG { get; set; }
+
+        [ForeignKey("UsuarioId")]
+        public User User { get; set; }
     }
+
 }

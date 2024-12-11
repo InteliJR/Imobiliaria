@@ -8,26 +8,40 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Contracts\**" />
+    <Content Remove="Contracts\**" />
+    <EmbeddedResource Remove="Contracts\**" />
+    <None Remove="Contracts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="appsettings.Production.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.Production.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
+    <PackageReference Include="FirebaseAdmin" Version="3.0.1" />
     <PackageReference Include="JWT" Version="10.1.1" />
+	  
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Npgsql" Version="8.0.4" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+    <PackageReference Include="Npgsql" Version="9.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.7.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.7.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contracts\" />
   </ItemGroup>
 
   <ItemGroup>

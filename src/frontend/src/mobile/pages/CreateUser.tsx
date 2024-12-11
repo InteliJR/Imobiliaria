@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import FormField from '../components/Form/FormField';
 import Navbar from '../../components/Navbar/Navbar';
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
@@ -20,7 +20,7 @@ export default function AddUser() {
   const [state, setState] = useState("");
   const [nationality, setNationality] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       console.log({
@@ -43,8 +43,8 @@ export default function AddUser() {
 
       // Requisição...
 
-      showSuccessToast(response?.data?.message || "Usuário criado com sucesso.");
-    } catch (error) {
+      showSuccessToast( "Usuário criado com sucesso.");
+    } catch (error: any) {
       console.error(error);
 
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
@@ -71,23 +71,23 @@ export default function AddUser() {
                 </select>
 
 
-                <FormField label="Nome Completo" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                <FormField label="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <FormField label="Telefone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                <FormField label="RG" value={rg} onChange={(e) => setRg(e.target.value)} />
-                <FormField label="CPF" value={cpf} onChange={(e) => setCpf(e.target.value)} />
-                <FormField label="Passaporte" value={passport} onChange={(e) => setPassport(e.target.value)} />
+                <FormField label="Nome Completo" value={fullName} onChange={setFullName} />
+                <FormField label="E-mail" value={email} onChange={setEmail} />
+                <FormField label="Telefone" value={phone} onChange={setPhone} />
+                <FormField label="RG" value={rg} onChange={setRg} />
+                <FormField label="CPF" value={cpf} onChange={setCpf} />
+                <FormField label="Passaporte" value={passport} onChange={setPassport} />
               
               <hr />
 
-                <FormField label="CEP" value={cep} onChange={(e) => setCep(e.target.value)} />
-                <FormField label="Logradouro" value={address} onChange={(e) => setAddress(e.target.value)} />
-                <FormField label="Número" value={number} onChange={(e) => setNumber(e.target.value)} />
-                <FormField label="Complemento" value={complement} onChange={(e) => setComplement(e.target.value)} />
-                <FormField label="Bairro" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} />
-                <FormField label="Cidade" value={city} onChange={(e) => setCity(e.target.value)} />
-                <FormField label="Estado" value={state} onChange={(e) => setState(e.target.value)} />
-                <FormField label="Nacionalidade" value={nationality} onChange={(e) => setNationality(e.target.value)} />
+                <FormField label="CEP" value={cep} onChange={setCep} />
+                <FormField label="Logradouro" value={address} onChange={setAddress} />
+                <FormField label="Número" value={number} onChange={setNumber} />
+                <FormField label="Complemento" value={complement} onChange={setComplement} />
+                <FormField label="Bairro" value={neighborhood} onChange={setNeighborhood} />
+                <FormField label="Cidade" value={city} onChange={setCity} />
+                <FormField label="Estado" value={state} onChange={setState} />
+                <FormField label="Nacionalidade" value={nationality} onChange={setNationality} />
 
                 <button
                     type="submit"
