@@ -14,6 +14,9 @@ namespace Layer.Domain.Entities
         [Column("imovelid")] // Nome da coluna no banco de dados
         public int ImovelId { get; set; }
 
+        [Column("fotos")]
+        public string Fotos { get; set; }
+
         [Column("tipo_imovel")]
         [MaxLength(255)] // Mesmo limite de 'varchar' no banco de dados, pode ajustar
         public string TipoImovel { get; set; }

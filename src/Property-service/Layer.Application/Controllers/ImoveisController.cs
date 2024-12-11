@@ -128,5 +128,39 @@ namespace Layer.Application.Controllers
 
             return NoContent();
         }
+        
+        [HttpPost("CriarImovelComFoto")]
+        [Consumes("multipart/form-data")]
+        [Authorize(Policy = nameof(Roles.Admin))]
+        public async Task<IActionResult> PostImoveisWithPhoto([FromForm] NewImoveis newImovel, IFormFileCollection files)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Criar o imóvel com o caminho da foto
+            var imovel = new Imoveis
+            {
+                TipoImovel = newImovel.TipoImovel,
+                Cep = newImovel.Cep,
+                Condominio = newImovel.Condominio,
+                ValorImovel = newImovel.ValorImovel,
+                Bairro = newImovel.Bairro,
+                Descricao = newImovel.Descricao,
+                Endereco = newImovel.Endereco,
+                Complemento = newImovel.Complemento,
+                LocatarioId = newImovel.LocatarioId,
+                LocadorId = newImovel.LocadorId
+            };
+
+            var novoImovel = await _imoveisService.AddImoveisWithPhotosAsync(imovel, files);
+
+            await _applicationLog.LogAsync($"Criação de Imóvel com id: {novoImovel.ImovelId}", 
+                HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", 
+                HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
+            return Ok(novoImovel);
+        }
     }
 }

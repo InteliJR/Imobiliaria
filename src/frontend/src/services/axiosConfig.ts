@@ -1,7 +1,8 @@
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_BASE_URL
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8093',
+    baseURL: baseUrl, // https://gateway-2ev7.onrender.com/
     withCredentials: true, // Necessário para enviar cookies/credenciais
     headers: {
         'Content-Type': 'application/json',

@@ -48,6 +48,24 @@ namespace Layer.Services.Services
             return await _dbContext.Chamados.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Chamados>> GetByImovelIdAsync(int imovelId)
+        {
+            return await _dbContext.Chamados.Where(c => c.IdImovel == imovelId).ToListAsync();
+        }
+
+        public async Task<int> DeleteByImovelIdAsync(int imovelId)
+        {
+            var chamados = await _dbContext.Chamados.Where(c => c.IdImovel == imovelId).ToListAsync();
+            if (chamados == null || chamados.Count == 0)
+            {
+                return 0;
+            }
+
+            _dbContext.Chamados.RemoveRange(chamados);
+            return await _dbContext.SaveChangesAsync();
+        }
+
+
         public async Task<int> UpdateAsync(Chamados chamado)
         {
             var existingChamado = await _dbContext.Chamados.FindAsync(chamado.IdChamado);
@@ -57,11 +75,9 @@ namespace Layer.Services.Services
             }
 
             // Atualizando os campos
-            existingChamado.NomeSolicitante = chamado.NomeSolicitante;
-            existingChamado.ContatoSolicitante = chamado.ContatoSolicitante;
-            existingChamado.NomeLocador = chamado.NomeLocador;
-            existingChamado.ContatoLocador = chamado.ContatoLocador;
+            existingChamado.SolicitanteId = chamado.SolicitanteId;
             existingChamado.IdImovel = chamado.IdImovel;
+            existingChamado.Titulo = chamado.Titulo;
             existingChamado.DataSolicitacao = chamado.DataSolicitacao;
             existingChamado.DataInicio = chamado.DataInicio;
             existingChamado.DataFim = chamado.DataFim;
