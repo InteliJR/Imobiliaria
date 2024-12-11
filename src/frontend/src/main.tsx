@@ -37,7 +37,7 @@ import CreateTicket from "./desktop/pages/CreateTicket";
 import CreatePropertyMobile from "./mobile/pages/CreateProperty";
 import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
-import Dashboard from "./mobile/pages/dashboard";
+import Dashboard from "./mobile/pages/Dashboard";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
