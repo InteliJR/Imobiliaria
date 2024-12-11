@@ -211,7 +211,7 @@ export default function CreatePropertyMobile() {
 
               {/* Locador*/}
               <FormField
-                label="Locadore"
+                label="Locadores"
                 placeholder="Digite para buscar"
                 value={locadorQuery}
                 onChange={(e) => setLocadorQuery(e.target.value)}
