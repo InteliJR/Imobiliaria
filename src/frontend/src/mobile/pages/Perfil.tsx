@@ -1,17 +1,18 @@
-
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../components/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
 import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
+import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useState, useEffect } from "react";
 
 export default function Perfil() {
   const navigate = useNavigate(); // Obtendo a função navigate
+  const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<{
     nome: string | null;
     telefone: string | null;
@@ -35,7 +36,7 @@ export default function Perfil() {
     CNPJ: null,
     email: null,
     dataCriacao: null,
-    role: null
+    role: null,
   });
 
   const profileEdit = () => {
@@ -49,19 +50,18 @@ export default function Perfil() {
   // Integracao com o back
 
   const getUser = async () => {
-    try{
-        const response = await axiosInstance.get(`auth/Account/WhoAmI`);
-        console.log(response.data);
+    try {
+      const response = await axiosInstance.get(`auth/Account/WhoAmI`);
+      console.log(response.data);
 
-        // Alterar os valores dos campos com os dados do usuário
+      // Alterar os valores dos campos com os dados do usuário
 
-        const UserInfo = response.data;
+      const UserInfo = response.data;
 
-        if(UserInfo.role == "Admin" || UserInfo.role == "Judiciario"){
+      if (UserInfo.role == "Admin" || UserInfo.role == "Judiciario") {
+        const notApplicable = "Não aplicável";
 
-          const notApplicable = "Não aplicável";
-          
-          setUserData({
+        setUserData({
           nome: UserInfo.nome,
           telefone: notApplicable,
           nacionalidade: notApplicable,
@@ -71,33 +71,36 @@ export default function Perfil() {
           endereço: notApplicable,
           CNPJ: notApplicable,
           email: UserInfo.email,
-          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'), // formatar para dd/mm/yyyy
-          role: UserInfo.role
-          });
-          } else{
-          setUserData({
-            nome: UserInfo.nome,
-            telefone: UserInfo.telefone,
-            nacionalidade: UserInfo.nacionalidade,
-            cpf: UserInfo.cpf,
-            rg: UserInfo.rg,
-            passaporte: UserInfo.passaporte,
-            endereço: UserInfo.endereco,
-            CNPJ: UserInfo.cnpj,
-            email: UserInfo.email,
-            dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'),
-            role: UserInfo.role
-          })
-          }
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString(
+            "pt-BR"
+          ), // formatar para dd/mm/yyyy
+          role: UserInfo.role,
+        });
+      } else {
+        setUserData({
+          nome: UserInfo.nome,
+          telefone: UserInfo.telefone,
+          nacionalidade: UserInfo.nacionalidade,
+          cpf: UserInfo.cpf,
+          rg: UserInfo.rg,
+          passaporte: UserInfo.passaporte,
+          endereço: UserInfo.endereco,
+          CNPJ: UserInfo.cnpj,
+          email: UserInfo.email,
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString(
+            "pt-BR"
+          ),
+          role: UserInfo.role,
+        });
+      }
+    } catch (erro: any) {
+      console.error(erro.response?.data?.message || "Erro ao buscar o usuário");
 
-
-
-    } catch(erro: any){
-        console.error(erro.response?.data?.message || "Erro ao buscar o usuário");
-
-        showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      showErrorToast(
+        erro?.response?.data?.message || "Erro ao se conectar com o servidor."
+      );
     }
-  }
+  };
 
   useEffect(() => {
     getUser();
@@ -110,31 +113,52 @@ export default function Perfil() {
       <section className="section-custom">
         <Voltar />
 
-        <div>
-          <h1 className="text-title font-strong">{userData.nome || " "}</h1>
-          <h2 className="text-sm text-gray-700">{userData.role || " "}</h2>
-        </div>
+        {loading ? (
+          <Loading type="skeleton" />
+        ) : (
+          <>
+            <div>
+              <h1 className="text-title font-strong">{userData.nome || " "}</h1>
+              <h2 className="text-sm text-gray-700">{userData.role || " "}</h2>
+            </div>
 
-        <Botao label="Editar Perfil" onClick={profileEdit} />
+            <Botao label="Editar Perfil" onClick={profileEdit} />
 
-        <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
-          <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
+            <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
+              <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
 
-          <VisualizarItem
-            label="E-mail"
-            informacao={userData.email || " "}
-          />
-          <VisualizarItem label="Telefone" informacao={userData.telefone || " "} />
-          <VisualizarItem label="Data de Criação" informacao={userData.dataCriacao || " "} />
-          <VisualizarItem label="Nacionalidade" informacao={userData.nacionalidade || " "} />
-          <VisualizarItem label="CPF" informacao={userData.cpf || " "} />
-          <VisualizarItem label="RG" informacao={userData.rg || " "} />
-          <VisualizarItem label="Passaporte" informacao={userData.passaporte || " "} />
-          <VisualizarItem label="Endereço" informacao={userData.endereço || " "} />
-          <VisualizarItem label="CNPJ" informacao={userData.CNPJ || " "} />
-        </div>
+              <VisualizarItem
+                label="E-mail"
+                informacao={userData.email || " "}
+              />
+              <VisualizarItem
+                label="Telefone"
+                informacao={userData.telefone || " "}
+              />
+              <VisualizarItem
+                label="Data de Criação"
+                informacao={userData.dataCriacao || " "}
+              />
+              <VisualizarItem
+                label="Nacionalidade"
+                informacao={userData.nacionalidade || " "}
+              />
+              <VisualizarItem label="CPF" informacao={userData.cpf || " "} />
+              <VisualizarItem label="RG" informacao={userData.rg || " "} />
+              <VisualizarItem
+                label="Passaporte"
+                informacao={userData.passaporte || " "}
+              />
+              <VisualizarItem
+                label="Endereço"
+                informacao={userData.endereço || " "}
+              />
+              <VisualizarItem label="CNPJ" informacao={userData.CNPJ || " "} />
+            </div>
 
-        <BotaoAlterarSenha label="Alterar Senha" onClick={passwordEdit} />
+            <BotaoAlterarSenha label="Alterar Senha" onClick={passwordEdit} />
+          </>
+        )}
       </section>
 
       <Footer />
