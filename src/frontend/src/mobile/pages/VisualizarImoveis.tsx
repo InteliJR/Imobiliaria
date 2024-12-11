@@ -5,9 +5,12 @@ import Card from "../components/Imoveis/Card";
 import FormField from "../components/Form/FormField";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../components/Voltar";
+import Loading from "../../components/Loading"; 
 import { showErrorToast } from "../../utils/toastMessage";
 
-export default function MainPage() {
+export default function Properties() {
+  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
+  
   const fetchProperties = () => {
     try {
       console.log("Traz os imóveis");

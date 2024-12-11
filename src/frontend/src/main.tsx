@@ -61,7 +61,10 @@ const Root = () => {
         />
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
 
-        <Route path="/usuarios" element={<VisualizarUsuarios />} />
+        <Route
+          path="/usuarios"
+          element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
+        />
         <Route path="/usuarios/criar" element={isDesktop ? <CreateUser /> : <CreateUserMobile />} />
 
         <Route path="/perfil" element={isDesktop ? <Perfil /> : <PerfilMobile />} />
@@ -85,10 +88,6 @@ const Root = () => {
           element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
         />
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
-        <Route
-          path="/visualizar-usuarios"
-          element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
-        />
         <Route path="/dash" element={<Dashboard />} />
 
         <Route path="*" element={<NotFound />} />

@@ -5,10 +5,11 @@ import Card from "../components/Chamados/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../components/Voltar";
+import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
-export default function MainPage() {
+export default function Tickets() {
   interface Ticket {
     chamadoId: number;
     title: string;
@@ -20,15 +21,25 @@ export default function MainPage() {
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
 
   const fetchTickets = async () => {
     try {
+      const chamadosResponse = await axiosInstance.get(
+        "property/Chamados/PegarTodosOsChamados"
+      );
+      const usersResponse = await axiosInstance.get(
+        "auth/User/PegarTodosUsuarios"
+      );
+      const propertiesResponse = await axiosInstance.get(
+        "property/Imoveis/PegarTodosImoveis"
+      );
 
-      const chamadosResponse = await axiosInstance.get('property/Chamados/PegarTodosOsChamados');
-      const usersResponse = await axiosInstance.get('auth/User/PegarTodosUsuarios');
-      const propertiesResponse = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
-
-      if (!chamadosResponse.data || !usersResponse.data || !propertiesResponse.data) {
+      if (
+        !chamadosResponse.data ||
+        !usersResponse.data ||
+        !propertiesResponse.data
+      ) {
         console.error("Dados de resposta inválidos");
         return;
       }
@@ -42,22 +53,37 @@ export default function MainPage() {
       const properties = propertiesResponse.data;
 
       // Mesclando os dados
-      const mergedData = chamados.map((chamado: { solicitanteId: any; idImovel: any; idChamado: any; titulo: any; dataSolicitacao: any; status: any; }) => {
-        const user = users.find((u: { usuarioId: any; }) => u.usuarioId === chamado.solicitanteId) || {};
-        const property = properties.find((p: { imovelId: any; }) => p.imovelId === chamado.idImovel) || {};
+      const mergedData = chamados.map(
+        (chamado: {
+          solicitanteId: any;
+          idImovel: any;
+          idChamado: any;
+          titulo: any;
+          dataSolicitacao: any;
+          status: any;
+        }) => {
+          const user =
+            users.find(
+              (u: { usuarioId: any }) => u.usuarioId === chamado.solicitanteId
+            ) || {};
+          const property =
+            properties.find(
+              (p: { imovelId: any }) => p.imovelId === chamado.idImovel
+            ) || {};
 
-        return {
-          chamadoId: chamado.idChamado,
-          title: chamado.titulo || 'Título não informado',
-          solicitor: user.nome || 'Usuário desconhecido',
-          address: property.endereco || 'Endereço desconhecido',
-          date: chamado.dataSolicitacao || 'Data não informada',
-          open: chamado.status === 'Aberto' ? true : false,
-        };
-      });
+          return {
+            chamadoId: chamado.idChamado,
+            title: chamado.titulo || "Título não informado",
+            solicitor: user.nome || "Usuário desconhecido",
+            address: property.endereco || "Endereço desconhecido",
+            date: chamado.dataSolicitacao || "Data não informada",
+            open: chamado.status === "Aberto" ? true : false,
+          };
+        }
+      );
 
       setTickets(mergedData);
-      setFilteredData(mergedData)
+      setFilteredData(mergedData);
 
       // console.log("Dados mesclados:", mergedData);
 
@@ -66,6 +92,8 @@ export default function MainPage() {
       console.error(error);
 
       showErrorToast("Erro ao se conectar com o servidor.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,12 +120,14 @@ export default function MainPage() {
             {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
             <div className="flex w-full gap-2 items-end">
               <div className="w-full">
-              <FormFieldFilter
+                <FormFieldFilter
                   label="Buscar chamado"
                   onFilter={(searchTerm) => {
                     // console.log(searchTerm);
-                    const filtered = tickets.filter(chamados =>
-                      chamados.title.toLowerCase().includes(searchTerm.toLowerCase())
+                    const filtered = tickets.filter((chamados) =>
+                      chamados.title
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
                     );
                     setFilteredData(filtered);
                   }}
