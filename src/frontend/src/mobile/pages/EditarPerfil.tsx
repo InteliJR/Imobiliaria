@@ -157,7 +157,7 @@ export default function EditarPerfil() {
       showErrorToast(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
       );
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
