@@ -38,22 +38,6 @@ export default function Perfil() {
     role: null
   });
 
-  const fetchProfile = () => {
-    try {
-      console.log("Traz o perfil do usuário logado");
-
-      // Requisição...
-    } catch (error: any) {
-      console.error(error);
-
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
-    }
-  };
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
   const profileEdit = () => {
     navigate("/perfil/editar"); // Navega para a página de edição de perfil
   };
@@ -109,14 +93,15 @@ export default function Perfil() {
 
 
     } catch(erro: any){
-        console.log(erro.response?.data?.message || "Erro ao buscar o usuário");
+        console.error(erro.response?.data?.message || "Erro ao buscar o usuário");
+
+        showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
     }
   }
 
   useEffect(() => {
     getUser();
   }, []);
-
 
   return (
     <main className="main-custom">
