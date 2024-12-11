@@ -24,7 +24,7 @@ export default function CreatePropertyMobile() {
   const [locatarioId, setLocatarioId] = useState(null); // Armazena o ID do locatário selecionado
   const [isLoading, setIsLoading] = useState(false); // Estado de carregamento
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
@@ -58,7 +58,7 @@ export default function CreatePropertyMobile() {
       );
 
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       showErrorToast(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
@@ -68,7 +68,7 @@ export default function CreatePropertyMobile() {
 
   // Função de busca de locadores no backend com debounce
   const fetchLocadorResults = useCallback(
-    debounce(async (searchTerm) => {
+    debounce(async (searchTerm:string) => {
       if (!searchTerm) {
         setLocadorResults([]);
         return;
@@ -81,6 +81,7 @@ export default function CreatePropertyMobile() {
         //   { params: { query: searchTerm } }
         // );
         // setLocadorResults(response.data || []);
+        console.log("termo buscado:", searchTerm)
       } catch (error) {
         console.error("Erro ao buscar locadores:", error);
         showErrorToast("Erro ao buscar resultados.");
@@ -93,13 +94,14 @@ export default function CreatePropertyMobile() {
 
   // Função de busca de locatários no backend com debounce
   const fetchLocatarioResults = useCallback(
-    debounce(async (searchTerm) => {
+    debounce(async (searchTerm: string) => {
       if (!searchTerm) {
         setLocatarioResults([]);
         return;
       }
       setIsLoading(true);
       try {
+        console.log("termo buscado:", searchTerm)
         // adicionar a requisição dos locatarios pelo termo buscado
         // const response = await axiosInstance.get(
         //   getServiceUrl("userService", "/Locatarios/Buscar"),

@@ -93,6 +93,8 @@ export default function Perfil() {
           role: UserInfo.role,
         });
       }
+
+      setLoading(false)
     } catch (erro: any) {
       console.error(erro.response?.data?.message || "Erro ao buscar o usuário");
 

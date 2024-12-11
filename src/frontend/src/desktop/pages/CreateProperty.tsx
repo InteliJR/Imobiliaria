@@ -68,38 +68,40 @@ export default function CreateProperty() {
 
   // Função de busca de locadores
   const fetchLocadorResults = useCallback(
-    debounce(async (searchTerm) => {
+    debounce(async (searchTerm: string) => {
       if (!searchTerm) {
         setLocadorResults([]);
         return;
       }
       setIsLoading(true);
       try {
+        console.log("termo buscado:", searchTerm)
         // Adicione a requisição ao backend aqui
         // const response = await axiosInstance.get(
-        //   getServiceUrl("userService", "/Locadores/Buscar"),
-        //   { params: { query: searchTerm } }
-        // );
-        // setLocadorResults(response.data || []);
-      } catch (error) {
-        console.error("Erro ao buscar locadores:", error);
-        showErrorToast("Erro ao buscar resultados.");
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300),
-    []
-  );
-
-  // Função de busca de locatários
-  const fetchLocatarioResults = useCallback(
-    debounce(async (searchTerm) => {
-      if (!searchTerm) {
-        setLocatarioResults([]);
-        return;
-      }
-      setIsLoading(true);
-      try {
+          //   getServiceUrl("userService", "/Locadores/Buscar"),
+          //   { params: { query: searchTerm } }
+          // );
+          // setLocadorResults(response.data || []);
+        } catch (error) {
+          console.error("Erro ao buscar locadores:", error);
+          showErrorToast("Erro ao buscar resultados.");
+        } finally {
+          setIsLoading(false);
+        }
+      }, 300),
+      []
+    );
+    
+    // Função de busca de locatários
+    const fetchLocatarioResults = useCallback(
+      debounce(async (searchTerm: string) => {
+        if (!searchTerm) {
+          setLocatarioResults([]);
+          return;
+        }
+        setIsLoading(true);
+        try {
+        console.log("termo buscado:", searchTerm)
         // Adicione a requisição ao backend aqui
         // const response = await axiosInstance.get(
         //   getServiceUrl("userService", "/Locatarios/Buscar"),
