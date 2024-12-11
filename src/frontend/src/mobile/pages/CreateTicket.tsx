@@ -63,7 +63,7 @@ export default function CreateTicket() {
       setDescription("");
       setHouseNames("");
 
-      showSuccessToast("Chamado aberto com sucesso!");
+      showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
     } catch (error) {
       console.error("Error creating ticket:", error);
       showErrorToast(

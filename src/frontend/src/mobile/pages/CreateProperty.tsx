@@ -155,11 +155,11 @@ export default function CreatePropertyMobile() {
       <Navbar />
       <div className="mx-10 mt-10">
         <Voltar />
-        <h1 className="text-xl font-bold text-yellow-darker mt-6">
+        <h1 className="text-xl font-bold mt-6">
           Criar Imóvel
         </h1>
-        <div className="min-h-screen flex flex-col items-center justify-center">
-          <div className="w-full max-w-xl py-6 bg-white rounded-lg">
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-full max-w-xl py-3 pb-5 bg-white rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Tipo do Imóvel */}
               <div>
