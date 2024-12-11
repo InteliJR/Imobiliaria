@@ -7,7 +7,6 @@ import axiosInstance from '../../services/axiosConfig';
 import { showErrorToast } from '../../utils/toastMessage';
 import { jwtDecode } from 'jwt-decode';
 
-
 export default function Login() {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -17,17 +16,7 @@ export default function Login() {
         event.preventDefault();
 
         try {
-            // const response = await fetch('http://localhost:8080/Account/Login', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({ Email: email, Senha: senha })
-            // });
-
-            // Novo metodo
-
-            const response = await axiosInstance.post('/auth/Account/Login', {
+            const response = await axiosInstance.post('auth/Account/Login', {
                 Email: email,
                 Senha: senha,
             });
@@ -35,10 +24,10 @@ export default function Login() {
             // Obtém e decodifica o token JWT para obter a role do usuário
             const token = response.data.token;
             const decodedToken: any = jwtDecode(token);
-            const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
-            const role = decodedToken[roleClaim];
+            const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'; // Era usado para impedir visualização de rotas protegidas
+            const role = decodedToken[roleClaim]; // Era usado para impedir visualização de rotas protegidas
             localStorage.setItem('jwtToken', token);
-            localStorage.setItem('userRole', role);
+            localStorage.setItem('userRole', role); // Era usado para impedir visualização de rotas protegidas
 
             // Redirecionar o usuário para home ou dashboard após o login bem-sucedido 
             navigate('/'); // Trocar '/landing' por 'home' ou 'dashboard'
