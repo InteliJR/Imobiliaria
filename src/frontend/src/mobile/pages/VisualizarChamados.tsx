@@ -4,7 +4,7 @@ import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Chamados/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
@@ -165,7 +165,7 @@ export default function Tickets() {
               </div>
             ) : (
               <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum usuário encontrado.
+                Nenhum chamado encontrado.
               </p>
             )}
           </section>

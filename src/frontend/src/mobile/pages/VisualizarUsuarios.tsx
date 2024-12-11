@@ -3,7 +3,7 @@ import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Usuarios/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import { showErrorToast } from "../../utils/toastMessage";
 import { useState, useEffect } from "react";
 import Loading from "../../components/Loading";

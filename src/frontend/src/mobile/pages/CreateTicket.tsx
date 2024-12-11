@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import FormField from "../components/Form/FormField";
 import Footer from "../../components/Footer/FooterSmall";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";

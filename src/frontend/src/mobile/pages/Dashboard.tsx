@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"; // Added import
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import { showErrorToast } from "../../utils/toastMessage";
 // Removed unused import of Card
 import FormField from "../components/Form/FormField";

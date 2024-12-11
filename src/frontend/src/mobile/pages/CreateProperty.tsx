@@ -3,7 +3,7 @@ import FormField from "../../desktop/components/Form/FormField";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { getServiceUrl } from "../../services/apiService";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import FormField from "../components/Form/FormField";
 import Botao from "../../components/Botoes/Botao";
 import Loading from "../../components/Loading";

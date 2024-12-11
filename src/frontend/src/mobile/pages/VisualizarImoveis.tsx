@@ -4,7 +4,7 @@ import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Imoveis/Card";
 import FormField from "../components/Form/FormField";
 import FilterIcon from "/Filter.svg";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 
@@ -73,7 +73,7 @@ export default function Properties() {
             <div className="h-[1px] bg-black"></div>
             {Array.from({ length: 6 }).length === 0 ? ( // Substitua por uma verificação da sua fonte de dados
               <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum usuário encontrado.
+                Nenhum imóvel encontrado.
               </p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
