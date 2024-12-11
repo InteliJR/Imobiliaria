@@ -130,6 +130,7 @@ namespace Layer.Application.Controllers
         }
         
         [HttpPost("CriarImovelComFoto")]
+        [Consumes("multipart/form-data")]
         // [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> PostImoveisWithPhoto([FromForm] NewImoveis newImovel, IFormFileCollection files)
         {

@@ -95,26 +95,22 @@ namespace Layer.Services.Services
                     if (file.Length > 0)
                     {
                         // Gerar caminho temporário para o arquivo
-                        var tempFilePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
+                        var tempFilePath = Path.GetTempFileName();
                         
                         // Salvar temporariamente no servidor
-                        using (var stream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
+                        using (var stream = new FileStream(tempFilePath, FileMode.Create))
                         {
                             await file.CopyToAsync(stream);
                         }
 
                         // Fazer upload para o Firebase Storage
                         var objectName = $"imoveis/{Guid.NewGuid()}_{file.FileName}";
-                        var publicUrl = _storageService.UploadFileAsync(tempFilePath, objectName);
 
                         // Adicionar URL pública à lista de fotos
-                        fotos.Add(publicUrl);
+                        // fotos.Add(publicUrl);
+                        var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
 
-                        // Remover o arquivo temporário após o upload
-                        if (System.IO.File.Exists(tempFilePath))
-                        {
-                            System.IO.File.Delete(tempFilePath);
-                        }
+                        fotos.Add(publicUrl);
                     }
                 }
 
