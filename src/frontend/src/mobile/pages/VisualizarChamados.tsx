@@ -102,9 +102,11 @@ export default function Tickets() {
   }, []);
 
   return (
-    <div className="flex flex-col bg-[#F0F0F0] gap-y-5 min-h-screen">
+    <main className="main-custom">
       <Navbar />
-      <main className="px-4 gap-y-5 mt-4 flex flex-col">
+
+      {/* Formulário */}
+      <section className="section-custom">
         <Voltar />
         <button
           type="submit"
@@ -112,61 +114,66 @@ export default function Tickets() {
         >
           Abrir chamado
         </button>
-
-        {/* Formulário */}
-        <section className="flex flex-col gap-y-5">
-          <h2 className="text-2xl font-semibold">Chamados</h2>
-          <form className="grid grid-cols-1 gap-4">
-            {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
-            <div className="flex w-full gap-2 items-end">
-              <div className="w-full">
-                <FormFieldFilter
-                  label="Buscar chamado"
-                  onFilter={(searchTerm) => {
-                    // console.log(searchTerm);
-                    const filtered = tickets.filter((chamados) =>
-                      chamados.title
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    );
-                    setFilteredData(filtered);
-                  }}
-                />
-              </div>
-              <button
-                type="submit"
-                className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
-              >
-                Filtrar
-                {/* Ícone SVG importado */}
-                <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
-              </button>
-            </div>
-          </form>
-        </section>
-
-        {/* Cards */}
-        <section className="flex-grow flex flex-col gap-y-5">
-          <h2 className="text-2xl font-semibold">Resultados</h2>
-          <div className="h-[1px] bg-black"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredData.map((ticket) => (
-              <Card
-                key={ticket.chamadoId} // Usar o idChamado real como chave
-                id={ticket.chamadoId} // Passar o idChamado real como número
-                title={ticket.title} // Título com o id real
-                line1={ticket.solicitor} // Nome do solicitante
-                line2={ticket.address} // Endereço do imóvel
-                line3={new Date(ticket.date).toLocaleDateString("pt-BR")} // Data formatada
-                status={ticket.open ? "Aberto" : "Fechado"} // Status com base no campo `open`
+        <h2 className="text-2xl font-semibold">Chamados</h2>
+        <form className="grid grid-cols-1 gap-4">
+          {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
+          <div className="flex w-full gap-2 items-end">
+            <div className="w-full">
+              <FormFieldFilter
+                label="Buscar chamado"
+                onFilter={(searchTerm) => {
+                  // console.log(searchTerm);
+                  const filtered = tickets.filter((chamados) =>
+                    chamados.title
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  );
+                  setFilteredData(filtered);
+                }}
               />
-            ))}
+            </div>
+            <button
+              type="submit"
+              className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+            >
+              Filtrar
+              {/* Ícone SVG importado */}
+              <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
+            </button>
           </div>
-        </section>
-      </main>
+        </form>
+        {/* Cards */}
+        {loading ? (
+          <Loading type="skeleton" />
+        ) : (
+          <section className="flex-grow flex flex-col gap-y-5">
+            <h2 className="text-2xl font-semibold">Resultados</h2>
+            <div className="h-[1px] bg-black"></div>
+            {filteredData.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredData.map((ticket) => (
+                  <Card
+                    key={ticket.chamadoId} // Usar o idChamado real como chave
+                    id={ticket.chamadoId} // Passar o idChamado real como número
+                    title={ticket.title} // Título com o id real
+                    line1={ticket.solicitor} // Nome do solicitante
+                    line2={ticket.address} // Endereço do imóvel
+                    line3={new Date(ticket.date).toLocaleDateString("pt-BR")} // Data formatada
+                    status={ticket.open ? "Aberto" : "Fechado"} // Status com base no campo `open`
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+                Nenhum usuário encontrado.
+              </p>
+            )}
+          </section>
+        )}
+      </section>
 
       {/* Footer */}
       <Footer />
-    </div>
+    </main>
   );
 }

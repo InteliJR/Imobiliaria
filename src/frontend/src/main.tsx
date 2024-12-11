@@ -48,13 +48,19 @@ const Root = () => {
         <Route path="/" element={isDesktop ? <Landing /> : <LandingMobile />} />
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
 
-        <Route path="/imoveis" element={<VisualizarImoveis />} />
+        <Route
+          path="/imoveis"
+          element={isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
+        />
         <Route
           path="/imoveis/criar"
           element={isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
         />
 
-        <Route path="/chamados" element={<VisualizarChamados />} />
+        <Route
+          path="/chamados"
+          element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
+        />
         <Route
           path="/chamados/criar"
           element={isDesktop ? <CreateTicket /> : <CreateTicketMobile />}
@@ -79,14 +85,7 @@ const Root = () => {
         />
 
         {/* <Route path="/profile/:id" element={<Profile />} /> */}
-        <Route
-          path="/visualizar-imoveis"
-          element={isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
-        />
-        <Route
-          path="/visualizar-chamados"
-          element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
-        />
+       
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
         <Route path="/dash" element={<Dashboard />} />
 

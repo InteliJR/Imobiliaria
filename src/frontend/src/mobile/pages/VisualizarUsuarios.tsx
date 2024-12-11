@@ -115,6 +115,10 @@ export default function Users() {
           <div className="h-[1px] bg-black"></div>
           {loading ? (
             <Loading type="skeleton" />
+          ) : filteredData.length === 0 ? (
+            <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+              Nenhum usuário encontrado.
+            </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredData.map((user, index) => {
@@ -123,7 +127,7 @@ export default function Users() {
                   roleLower === "admin"
                     ? "Admin"
                     : roleLower === "judiciario"
-                    ? "Judiciario"
+                    ? "Judiciário"
                     : roleLower === "locador"
                     ? "Locador"
                     : roleLower === "locatario"
