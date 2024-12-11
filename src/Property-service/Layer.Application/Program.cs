@@ -168,6 +168,8 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Serviço de Gestão de imóveis", Version = "v1" });
 
+    // c.OperationFilter<FileUploadOperationFilter>();
+
     // Configura��o para exibir a op��o de autentica��o Bearer
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -210,7 +212,7 @@ if (app.Environment.IsDevelopment())
 //}
 
 //app.UseHttpsRedirection();
-app.UseStaticFiles();
+// app.UseStaticFiles();
 
 app.UseRouting();
 
