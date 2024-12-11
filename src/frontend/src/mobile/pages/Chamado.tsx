@@ -142,16 +142,16 @@ export default function Chamado() {
         </div>
 
         {/* Tipo de manutenção */}
-        <VisualizarItem label="Tipo" informacao={ticket?.TypeTicket} />
+        <VisualizarItem label="Tipo" informacao={ticket?.TypeTicket ?? "Tipo não especificado"} />
 
         {/* Endereço do Imóvel */}
         <VisualizarItem
         label="Imóvel"
-        informacao={ticket?.Address}
+        informacao={ticket?.Address ?? "Endereço não especificado"}
         />
 
         {/* Data da solicitação do chamado */}
-        <VisualizarItem label="Data da solicitação" informacao={ticket?.DateSolicitation} />
+        <VisualizarItem label="Data da solicitação" informacao={ticket?.DateSolicitation ?? "Data da solicitação não especificada"} />
 
         {/* Período do chamado */}
         <div>
