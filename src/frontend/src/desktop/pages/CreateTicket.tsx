@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
+import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import getTokenData from "../../services/tokenConfig";
@@ -12,6 +13,7 @@ export default function CreateTicket() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [houseNames, setHouseNames] = useState("");
+  const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,8 +23,9 @@ export default function CreateTicket() {
       return;
     }
 
-    try {
+    setLoading(true);
 
+    try {
       // /Chamados/CriarUmNovoChamado
       // {
       //   "idImovel": 0,
@@ -33,7 +36,6 @@ export default function CreateTicket() {
       //   "tipoChamado": "string",
       //   "status": "string"
       // }
-
 
       const tokenData = getTokenData();
 
@@ -48,61 +50,79 @@ export default function CreateTicket() {
         tipoChamado: ticketType,
       };
 
-
-      const response = await axiosInstance.post('property/Chamados/CriarUmNovoChamado', data);
+      const response = await axiosInstance.post(
+        "property/Chamados/CriarUmNovoChamado",
+        data
+      );
 
       console.log(response.data);
 
-      showSuccessToast("Chamado aberto com sucesso!");
+      // Limpa o formulário
+      setProperty("");
+      setTicketType("");
+      setTitle("");
+      setDescription("");
+      setHouseNames("");
 
+      showSuccessToast("Chamado aberto com sucesso!");
     } catch (error) {
-      console.error('Error creating ticket:', error);
+      console.error("Error creating ticket:", error);
       showErrorToast(
-        error instanceof Error ? error.message : "Erro ao se conectar com o servidor."
+        error instanceof Error
+          ? error.message
+          : "Erro ao se conectar com o servidor."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   const allHousesNames = async () => {
-
-    try{
-
-      const imoveisResponse = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
+    try {
+      const imoveisResponse = await axiosInstance.get(
+        "property/Imoveis/PegarTodosImoveis"
+      );
 
       const imoveis = imoveisResponse.data;
 
-      console.log(imoveis)
-      
+      console.log(imoveis);
 
-      const houseNamesArray = imoveis.map((imovel: { endereco: any; }) => imovel.endereco);
+      const houseNamesArray = imoveis.map(
+        (imovel: { endereco: any }) => imovel.endereco
+      );
       setHouseNames(houseNamesArray.join("; "));
 
-    console.log(houseNamesArray);
-    const houseDictionary = imoveis.reduce((acc: { [key: string]: string }, imovel: { imovelId: string; endereco: string }) => {
-      acc[imovel.imovelId] = imovel.endereco;
-      return acc;
-    }, {});
+      console.log(houseNamesArray);
+      const houseDictionary = imoveis.reduce(
+        (
+          acc: { [key: string]: string },
+          imovel: { imovelId: string; endereco: string }
+        ) => {
+          acc[imovel.imovelId] = imovel.endereco;
+          return acc;
+        },
+        {}
+      );
 
-    console.log(houseDictionary);
+      console.log(houseDictionary);
 
-    setHouseNames(houseDictionary)
-    
-    } catch(error){
-      console.error('Error getting the houses:', error);
-
+      setHouseNames(houseDictionary);
+    } catch (error) {
+      console.error("Error getting the houses:", error);
     }
-  }
+  };
 
   useEffect(() => {
     allHousesNames();
   }, []);
 
-
   return (
     <div>
       <Navbar />
       <div className="mx-10 mt-10">
-        <h1 className="text-3xl font-bold text-yellow-darker mb-6">Criar Chamado</h1>
+        <h1 className="text-3xl font-bold text-yellow-darker mb-6">
+          Criar Chamado
+        </h1>
         <div className="min-h-screen flex flex-col items-center justify-center">
           <div className="w-full max-w-xl py-6 bg-white rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -113,16 +133,22 @@ export default function CreateTicket() {
                   onChange={(e) => setProperty(e.target.value)}
                   className="h-10 w-full flex-grow bg-transparent border border-neutral-200 focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded"
                 >
-                  <option value="" disabled>Selecione um imóvel</option>
-                    {Object.entries(houseNames).map(([id, address]) => (
-                    <option key={id} value={id}>{address}</option>
-                    ))}
+                  <option value="" disabled>
+                    Selecione um imóvel
+                  </option>
+                  {Object.entries(houseNames).map(([id, address]) => (
+                    <option key={id} value={id}>
+                      {address}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               {/* Campo: Tipo de Chamado */}
               <div>
-                <label className="block text-neutral-600">Tipo de Chamado</label>
+                <label className="block text-neutral-600">
+                  Tipo de Chamado
+                </label>
                 <select
                   value={ticketType}
                   onChange={(e) => setTicketType(e.target.value)}
@@ -150,7 +176,9 @@ export default function CreateTicket() {
 
               {/* Campo: Descrição */}
               <div>
-                <label className="block text-neutral-600 font-medium">Descrição</label>
+                <label className="block text-neutral-600 font-medium">
+                  Descrição
+                </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -173,6 +201,7 @@ export default function CreateTicket() {
           </div>
         </div>
       </div>
+      {loading && <Loading type="spinner" />}
       <Footer />
     </div>
   );

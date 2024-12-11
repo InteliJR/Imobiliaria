@@ -2,16 +2,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
+import Loading from "../../components/Loading";
 import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
 import ModalConfirmacao from "../components/ModalConfirmacao";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
 export default function Perfil() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [loadingSkeleton, setLoadingSkeleton] = useState(true); // estado para controlar o componente de carregamento
+  const [loadingSpinner, setLoadingSpinner] = useState(false); // estado para controlar o componente de carregamento
   const navigate = useNavigate(); // Obtendo a função navigate
   const [userData, setUserData] = useState<{
     nome: string | null;
@@ -39,22 +42,6 @@ export default function Perfil() {
     role: null,
   });
 
-  const fetchProfile = () => {
-    try {
-      console.log("Traz o perfil deste usuário em questão");
-
-      // Requisição...
-    } catch (error: any) {
-      console.error(error);
-
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
-    }
-  };
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
   const profileEdit = () => {
     navigate("/perfil/editar/:id"); // Navega para a página de edição de perfil passando o id do usuário em questão
   };
@@ -63,18 +50,23 @@ export default function Perfil() {
     setIsModalVisible(true);
   };
 
-  const handleConfirm = async() => {
+  const handleConfirm = async () => {
     setIsModalVisible(false);
-    // Lógica de integração com o back
+    setLoadingSpinner(true);
+    try {
+      const response = await axiosInstance.post(
+        `auth/User/RedefinirSenhaUsuario?email=${userData.email}`
+      );
 
-    //AlterarSenhaUsuario
-
-    const response = await axiosInstance.post(`auth/User/RedefinirSenhaUsuario?email=${userData.email}`);
-    
-    showSuccessToast(response?.data?.message || "Senha resetada com sucesso.");
-
-    console.log(response.data);
-
+      showSuccessToast(
+        response?.data?.message || "Senha resetada com sucesso."
+      );
+    } catch (error) {
+      console.error(error);
+      showErrorToast("Erro ao se conectar com o servidor.");
+    } finally {
+      setLoadingSpinner(false);
+    }
   };
 
   // Função chamada ao cancelar a ação no modal
@@ -86,22 +78,22 @@ export default function Perfil() {
   const getUser = async () => {
     // Pegar id na url
     const id = window.location.pathname.split("/").pop();
-
-    console.log(id);
-
-    try{
-      const response = await axiosInstance.get(`auth/User/PegarUsuario?userId=${id}`);
+    
+    try {
+      const response = await axiosInstance.get(
+        `auth/User/PegarUsuario?userId=${id}`
+      );
       console.log(response.data);
-
+      
       // Alterar os valores dos campos com os dados do usuário
-
+      
       const UserInfo = response.data;
-
-      if(UserInfo.role == "Admin" || UserInfo.role == "Judiciario"){
-          
+      
+      setLoadingSkeleton(false);
+      if (UserInfo.role == "Admin" || UserInfo.role == "Judiciario") {
         const notApplicable = "Não aplicável";
 
-          setUserData({
+        setUserData({
           nome: UserInfo.nome,
           telefone: notApplicable,
           nacionalidade: UserInfo.national,
@@ -111,29 +103,33 @@ export default function Perfil() {
           endereço: notApplicable,
           CNPJ: notApplicable,
           email: UserInfo.email,
-          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'), // formatar para dd/mm/yyyy
-          role: UserInfo.role
-          });
-        } else{
-          setUserData({
-            nome: UserInfo.nome,
-            telefone: UserInfo.telefone,
-            nacionalidade: UserInfo.nacionalidade,
-            cpf: UserInfo.cpf,
-            rg: UserInfo.rg,
-            passaporte: UserInfo.passaporte,
-            endereço: UserInfo.endereco,
-            CNPJ: UserInfo.cnpj,
-            email: UserInfo.email,
-            dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'),
-            role: UserInfo.role
-          })
-        }
-
-    } catch(erro: any){
-        console.log(erro.response?.data?.message || "Erro ao buscar o usuário");
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString(
+            "pt-BR"
+          ), // formatar para dd/mm/yyyy
+          role: UserInfo.role,
+        });
+      } else {
+        setUserData({
+          nome: UserInfo.nome,
+          telefone: UserInfo.telefone,
+          nacionalidade: UserInfo.nacionalidade,
+          cpf: UserInfo.cpf,
+          rg: UserInfo.rg,
+          passaporte: UserInfo.passaporte,
+          endereço: UserInfo.endereco,
+          CNPJ: UserInfo.cnpj,
+          email: UserInfo.email,
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString(
+            "pt-BR"
+          ),
+          role: UserInfo.role,
+        });
+      }
+    } catch (erro: any) {
+      console.log(erro.response?.data?.message || "Erro ao buscar o usuário");
+      showErrorToast(erro.response?.data?.message || "Erro ao buscar o usuário");
     }
-  }
+  };
 
   useEffect(() => {
     getUser();
@@ -153,23 +149,49 @@ export default function Perfil() {
         <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
           <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
 
-          <VisualizarItem label="Tipo do usuário" informacao={userData.role || ''} />
-          <VisualizarItem
-            label="E-mail"
-            informacao={userData.email || ''}
-          />
-          <VisualizarItem label="Telefone" informacao={userData.telefone || ''} />
-          <VisualizarItem label="Nacionalidade" informacao={userData.nacionalidade || ''} />
-          <VisualizarItem label="CPF" informacao={userData.cpf || ''} />
-          <VisualizarItem label="RG" informacao={userData.rg || ''} />
-          <VisualizarItem label="Passaporte" informacao={userData.passaporte || ''} />
-          <VisualizarItem label="Endereço" informacao={userData.endereço || ''} />
-          <VisualizarItem label="CNPJ" informacao={userData.CNPJ || ''} />
-          <VisualizarItem label="Data de Criação" informacao={userData.dataCriacao || ''} />
+          {loadingSkeleton ? (
+            <Loading type="skeleton" />
+          ) : (
+            <>
+              <VisualizarItem
+                label="Tipo do usuário"
+                informacao={userData.role || ""}
+              />
+              <VisualizarItem
+                label="E-mail"
+                informacao={userData.email || ""}
+              />
+              <VisualizarItem
+                label="Telefone"
+                informacao={userData.telefone || ""}
+              />
+              <VisualizarItem
+                label="Nacionalidade"
+                informacao={userData.nacionalidade || ""}
+              />
+              <VisualizarItem label="CPF" informacao={userData.cpf || ""} />
+              <VisualizarItem label="RG" informacao={userData.rg || ""} />
+              <VisualizarItem
+                label="Passaporte"
+                informacao={userData.passaporte || ""}
+              />
+              <VisualizarItem
+                label="Endereço"
+                informacao={userData.endereço || ""}
+              />
+              <VisualizarItem label="CNPJ" informacao={userData.CNPJ || ""} />
+              <VisualizarItem
+                label="Data de Criação"
+                informacao={userData.dataCriacao || ""}
+              />
+            </>
+          )}
         </div>
 
         <BotaoAlterarSenha label="Resetar Senha" onClick={showModal} />
       </section>
+
+      {loadingSpinner && <Loading type="spinner" />}
 
       <Footer />
 

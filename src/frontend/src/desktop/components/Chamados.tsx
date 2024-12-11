@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ProblemCard from "../components/CardChamado";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
+import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
@@ -20,15 +21,25 @@ export default function ChamadosComponent() {
   const navigate = useNavigate();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
 
   const fetchTickets = async () => {
     try {
+      const chamadosResponse = await axiosInstance.get(
+        "property/Chamados/PegarTodosOsChamados"
+      );
+      const usersResponse = await axiosInstance.get(
+        "auth/User/PegarTodosUsuarios"
+      );
+      const propertiesResponse = await axiosInstance.get(
+        "property/Imoveis/PegarTodosImoveis"
+      );
 
-      const chamadosResponse = await axiosInstance.get('property/Chamados/PegarTodosOsChamados');
-      const usersResponse = await axiosInstance.get('auth/User/PegarTodosUsuarios');
-      const propertiesResponse = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
-
-      if (!chamadosResponse.data || !usersResponse.data || !propertiesResponse.data) {
+      if (
+        !chamadosResponse.data ||
+        !usersResponse.data ||
+        !propertiesResponse.data
+      ) {
         console.error("Dados de resposta inválidos");
         return;
       }
@@ -42,29 +53,42 @@ export default function ChamadosComponent() {
       const properties = propertiesResponse.data;
 
       // Mesclando os dados
-      const mergedData = chamados.map((chamado: {
-        descricao: string; solicitanteId: any; idImovel: any; idChamado: any; titulo: any; dataSolicitacao: any; status: any; description: any 
-}) => {
-        const user = users.find((u: { usuarioId: any; }) => u.usuarioId === chamado.solicitanteId) || {};
-        const property = properties.find((p: { imovelId: any; }) => p.imovelId === chamado.idImovel) || {};
+      const mergedData = chamados.map(
+        (chamado: {
+          descricao: string;
+          solicitanteId: any;
+          idImovel: any;
+          idChamado: any;
+          titulo: any;
+          dataSolicitacao: any;
+          status: any;
+          description: any;
+        }) => {
+          const user =
+            users.find(
+              (u: { usuarioId: any }) => u.usuarioId === chamado.solicitanteId
+            ) || {};
+          const property =
+            properties.find(
+              (p: { imovelId: any }) => p.imovelId === chamado.idImovel
+            ) || {};
 
-        return {
-          chamadoId: chamado.idChamado,
-          title: chamado.titulo || 'Título não informado',
-          solicitor: user.nome || 'Usuário desconhecido',
-          address: property.endereco || 'Endereço desconhecido',
-          date: chamado.dataSolicitacao || 'Data não informada',
-          open: chamado.status === 'Aberto' ? true : false,
-          description: chamado.descricao || 'Descrição não informada',
-        };
-      });
+          return {
+            chamadoId: chamado.idChamado,
+            title: chamado.titulo || "Título não informado",
+            solicitor: user.nome || "Usuário desconhecido",
+            address: property.endereco || "Endereço desconhecido",
+            date: chamado.dataSolicitacao || "Data não informada",
+            open: chamado.status === "Aberto" ? true : false,
+            description: chamado.descricao || "Descrição não informada",
+          };
+        }
+      );
 
       setTickets(mergedData);
-      setFilteredData(mergedData)
+      setFilteredData(mergedData);
 
-      // console.log("Dados mesclados:", mergedData);
-
-      // Requisição...
+      setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
     } catch (error) {
       console.error(error);
 
@@ -95,16 +119,18 @@ export default function ChamadosComponent() {
         <div className="flex-grow">
           <div className="w-full">
             <FormFieldFilter
-                label="Buscar chamado"
-                onFilter={(searchTerm) => {
-                  // console.log(searchTerm);
-                  const filtered = tickets.filter(chamados =>
-                    chamados.title.toLowerCase().includes(searchTerm.toLowerCase())
-                  );
-                  setFilteredData(filtered);
-                }}
-              />
-            </div>
+              label="Buscar chamado"
+              onFilter={(searchTerm) => {
+                // console.log(searchTerm);
+                const filtered = tickets.filter((chamados) =>
+                  chamados.title
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                );
+                setFilteredData(filtered);
+              }}
+            />
+          </div>
         </div>
         <button
           type="submit"
@@ -119,20 +145,29 @@ export default function ChamadosComponent() {
       <section className="flex flex-col gap-y-5">
         <h2 className="text-2xl font-semibold">Resultados</h2>
         <div className="h-[1px] bg-neutral-400 mb-4"></div>
-        <div className="flex flex-col gap-6">
+        {loading ? (
+          <Loading type="skeleton" />
+        ) : (
+          /* {users.length === 0 ? ( // Verifica se a lista de usuários está vazia
+              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+                Nenhum usuário encontrado.
+              </p>
+            ) : */
+          <div className="flex flex-col gap-6">
             {filteredData.map((ticket) => (
-            <ProblemCard
-              key={ticket.chamadoId}
-              id={ticket.chamadoId}
-              title={ticket.title}
-              creator={ticket.solicitor}
-              contact={ticket.address}
-              description={ticket.description}
-              date={ticket.date.split('T')[0]}
-              time={ticket.date.split('T')[1].split('.')[0]}
-            />
+              <ProblemCard
+                key={ticket.chamadoId}
+                id={ticket.chamadoId}
+                title={ticket.title}
+                creator={ticket.solicitor}
+                contact={ticket.address}
+                description={ticket.description}
+                date={ticket.date.split("T")[0]}
+                time={ticket.date.split("T")[1].split(".")[0]}
+              />
             ))}
-        </div>
+          </div>
+        )}
       </section>
     </div>
   );

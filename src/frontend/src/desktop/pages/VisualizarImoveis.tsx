@@ -3,6 +3,7 @@ import { FaHome, FaClipboardList, FaUsers } from "react-icons/fa"; // Importing 
 import Dashboard from "../components/Dashboard";
 import Imoveis from "../components/Imoveis";
 import Navbar from "../../mobile/components/Navbar/NavbarLogin";
+import Footer from "../../components/Footer/FooterSmall";
 
 export default function VisualizarImoveis() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export default function VisualizarImoveis() {
   return (
     <div className="bg-[#F0F0F0]">
       <Navbar />
-      <div className="mt-16 mb-24">
+      <div className="mt-10 mb-24">
         <Dashboard />
       </div>
       {/* New Row with Clickable Options */}
@@ -42,6 +43,8 @@ export default function VisualizarImoveis() {
       </div>
       <div className="h-[1px] bg-neutral-400 mb-4"></div>
       <Imoveis />
+
+      <Footer/>
     </div>
   );
 }
