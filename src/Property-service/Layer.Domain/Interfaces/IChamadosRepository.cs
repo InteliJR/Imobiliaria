@@ -15,5 +15,7 @@ namespace Layer.Domain.Interfaces
         Task<Chamados> AddAsync(Chamados chamado);
         Task<int> UpdateAsync(Chamados chamado);
         Task<int> DeleteAsync(int id);
+        Task<IEnumerable<Chamados>> GetByImovelIdAsync(int imovelId);
+        Task<int> DeleteByImovelIdAsync(int imovelId);
     }
 }
