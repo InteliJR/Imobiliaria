@@ -18,5 +18,7 @@ namespace Layer.Domain.Interfaces
         Task<int> UpdateImoveisAsync(int id, Imoveis imovel);
         Task<Imoveis> AddImoveisWithPhotosAsync(Imoveis imovel, IFormFileCollection files);
         Task<int> DeleteImoveisAsync(int id);
+
+       // Task<string> UpdateImovelPhotoAsync(int id, string TempFilePath, string objectName);
     }
 }

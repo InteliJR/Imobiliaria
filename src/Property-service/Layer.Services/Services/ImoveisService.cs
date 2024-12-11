@@ -94,29 +94,58 @@ namespace Layer.Services.Services
                 {
                     if (file.Length > 0)
                     {
+                        // Gerar caminho temporário para o arquivo
+                        var tempFilePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
+                        
                         // Salvar temporariamente no servidor
-                        var tempFilePath = Path.GetTempFileName();
-                        using (var stream = new FileStream(tempFilePath, FileMode.Create))
+                        using (var stream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
                         {
                             await file.CopyToAsync(stream);
                         }
 
                         // Fazer upload para o Firebase Storage
-                        var objectName = $"imoveis/{file.FileName}";
-                        var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
+                        var objectName = $"imoveis/{Guid.NewGuid()}_{file.FileName}";
+                        var publicUrl = _storageService.UploadFileAsync(tempFilePath, objectName);
 
+                        // Adicionar URL pública à lista de fotos
                         fotos.Add(publicUrl);
+
+                        // Remover o arquivo temporário após o upload
+                        if (System.IO.File.Exists(tempFilePath))
+                        {
+                            System.IO.File.Delete(tempFilePath);
+                        }
                     }
                 }
 
                 // Adiciona URLs ao objeto imóvel
-                imovel.Fotos = string.Join(";", fotos); // Ou salve em outro formato (ex: lista no banco)
+                imovel.Fotos = string.Join(";", fotos); // Salva como string separada por ";" no banco de dados
             }
 
             await _dbcontext.Imoveis.AddAsync(imovel);
             await _dbcontext.SaveChangesAsync();
-
             return imovel;
         }
+
+        public async Task<string> UpdateImovelPhotoAsync(int id, string tempFilePath, string objectName)
+        {
+            var imovel = await _dbcontext.Imoveis.FindAsync(id);
+
+            if (imovel == null)
+            {
+                throw new Exception("Imóvel não encontrado.");
+            }
+
+            // Fazer upload para o Firebase Storage
+            var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
+
+            // Atualizar o registro no banco de dados
+            imovel.Fotos = publicUrl;
+            _dbcontext.Imoveis.Update(imovel);
+            await _dbcontext.SaveChangesAsync();
+
+            return publicUrl;
+        }
+
     }
 }
