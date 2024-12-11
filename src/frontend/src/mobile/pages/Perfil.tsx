@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 
 export default function Perfil() {
   const navigate = useNavigate(); // Obtendo a função navigate
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [userData, setUserData] = useState<{
     nome: string | null;
     telefone: string | null;

@@ -19,8 +19,8 @@ const Loading: React.FC<LoadingProps> = ({ type }) => {
   }
 
   return (
-    <div className="fixed left-0 bottom-0 flex justify-center items-center p-5">
-      <div className="h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-[100%] animate-spin"></div>
+    <div className="fixed left-0 bottom-0 flex justify-center items-center p-5 z-40 ">
+      <div className="h-9 w-9 border-8 border-blue-500 border-t-transparent rounded-[100%] shadow-lg animate-spin"></div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import Voltar from "../components/Voltar";
 import FormField from "../components/Form/FormField";
 import ModalConfirmacao from "../components/ModalConfirmacao";
 import Botao from "../../components/Botoes/Botao";
+import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import getTokenData from "../../services/tokenConfig";
@@ -42,6 +43,7 @@ export default function EditarPerfil() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [disabledFields, setDisabledFields] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
 
   // Tipagem explícita para os parâmetros 'field' e 'value'
   const handleInputChange = (field: keyof typeof userData, value: string) => {
@@ -55,29 +57,30 @@ export default function EditarPerfil() {
 
   const handleConfirm = async () => {
     setIsModalVisible(false);
+
+    setLoading(true);
     // console.log("Perfil salvo com sucesso:", userData);
 
     // {
-//   "email": "string",
-//   "cpf": "string",
-//   "imovelId": 0,
-//   "nacionalidade": "string",
-//   "numeroTelefone": "string",
-//   "nomeCompletoLocador": "string",
-//   "cnpj": "string",
-//   "endereco": "string",
-//   "passaporte": "string",
-//   "rg": "string"
-// }
+    //   "email": "string",
+    //   "cpf": "string",
+    //   "imovelId": 0,
+    //   "nacionalidade": "string",
+    //   "numeroTelefone": "string",
+    //   "nomeCompletoLocador": "string",
+    //   "cnpj": "string",
+    //   "endereco": "string",
+    //   "passaporte": "string",
+    //   "rg": "string"
+    // }
 
     // Integracao com o back para atualizar
 
-    try{ 
-
-      // Pegar info do jwt 
+    try {
+      // Pegar info do jwt
       const tokenInfo = getTokenData();
 
-      if(!tokenInfo){
+      if (!tokenInfo) {
         console.log("Token não encontrado");
         return;
       }
@@ -86,182 +89,206 @@ export default function EditarPerfil() {
 
       // http://schemas.microsoft.com/ws/2008/06/identity/claims/role
 
-      const role = tokenInfo["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      const role =
+        tokenInfo[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ];
 
       var responseUpdate: any;
 
-      if(role == "Admin" || role == "Judiciario"){
+      if (role == "Admin" || role == "Judiciario") {
         // {
         //   "usuarioId": 0,
         //   "nomeCompleto": "string",
         //   "tipoColaborador": "string"
         // }
 
-        responseUpdate = await axiosInstance.put(`auth/Colaborador/AtualizarColaborador`, {
-          nomeCompleto: userData.nome,
-          tipoColaborador: role,
-        });
-
-      } else if(role == "Locador"){
-         responseUpdate = await axiosInstance.put(`auth/Locador/AtualizarLocador`, {
-          email: userData.email,
-          cpf: userData.cpf,
-          nacionalidade: userData.nacionalidade,
-          numeroTelefone: userData.telefone,
-          nomeCompletoLocador: userData.nome,
-          cnpj: userData.CNPJ,
-          endereco: userData.endereço,
-          passaporte: userData.passaporte,
-          rg: userData.rg,
-        });
-      } else if(role == "Locatario"){
-        responseUpdate = await axiosInstance.put(`auth/Locatario/AtualizarLocatario`, {
-          email: userData.email,
-          cpf: userData.cpf,
-          nacionalidade: userData.nacionalidade,
-          numeroTelefone: userData.telefone,
-          nomeCompletoLocatario: userData.nome,
-          cnpj: userData.CNPJ,
-          endereco: userData.endereço,
-          passaporte: userData.passaporte,
-          rg: userData.rg,
-        });
+        responseUpdate = await axiosInstance.put(
+          `auth/Colaborador/AtualizarColaborador`,
+          {
+            nomeCompleto: userData.nome,
+            tipoColaborador: role,
+          }
+        );
+      } else if (role == "Locador") {
+        responseUpdate = await axiosInstance.put(
+          `auth/Locador/AtualizarLocador`,
+          {
+            email: userData.email,
+            cpf: userData.cpf,
+            nacionalidade: userData.nacionalidade,
+            numeroTelefone: userData.telefone,
+            nomeCompletoLocador: userData.nome,
+            cnpj: userData.CNPJ,
+            endereco: userData.endereço,
+            passaporte: userData.passaporte,
+            rg: userData.rg,
+          }
+        );
+      } else if (role == "Locatario") {
+        responseUpdate = await axiosInstance.put(
+          `auth/Locatario/AtualizarLocatario`,
+          {
+            email: userData.email,
+            cpf: userData.cpf,
+            nacionalidade: userData.nacionalidade,
+            numeroTelefone: userData.telefone,
+            nomeCompletoLocatario: userData.nome,
+            cnpj: userData.CNPJ,
+            endereco: userData.endereço,
+            passaporte: userData.passaporte,
+            rg: userData.rg,
+          }
+        );
       }
-
 
       if (responseUpdate && responseUpdate.status === 200) {
         setResultMessage("Perfil atualizado com sucesso");
-        showSuccessToast(responseUpdate?.data?.message || "Perfil alterado com sucesso.");
+        showSuccessToast(
+          responseUpdate?.data?.message || "Perfil alterado com sucesso."
+        );
         console.log("Perfil atualizado com sucesso");
         navigate("/perfil");
-      } else{
+      } else {
         setResultMessage("Erro ao atualizar o perfil");
         console.log("Erro ao atualizar o perfil");
       }
-
-
-    } catch(error: any){
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    } catch (error: any) {
+      showErrorToast(
+        error?.response?.data?.message || "Erro ao se conectar com o servidor."
+      );
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCancel = () => setIsModalVisible(false);
 
   const getUser = async () => {
-    try{
-        const response = await axiosInstance.get(`auth/Account/WhoAmI`);
-        console.log(response.data);
+    try {
+      const response = await axiosInstance.get(`auth/Account/WhoAmI`);
+      console.log(response.data);
 
-        // Alterar os valores dos campos com os dados do usuário
+      // Alterar os valores dos campos com os dados do usuário
 
-        const UserInfo = response.data;
+      const UserInfo = response.data;
 
-        if(UserInfo.role == "Admin" || UserInfo.role == "Judiciario"){
-            setUserData({
-            nome: UserInfo.nome,
-            telefone: null,
-            nacionalidade: UserInfo.national,
-            cpf: null,
-            rg: null,
-            passaporte: null,
-            endereço: null,
-            CNPJ: null,
-            email: UserInfo.email,
-            dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'), // formatar para dd/mm/yyyy
-            });
+      if (UserInfo.role == "Admin" || UserInfo.role == "Judiciario") {
+        setUserData({
+          nome: UserInfo.nome,
+          telefone: null,
+          nacionalidade: UserInfo.national,
+          cpf: null,
+          rg: null,
+          passaporte: null,
+          endereço: null,
+          CNPJ: null,
+          email: UserInfo.email,
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString(
+            "pt-BR"
+          ), // formatar para dd/mm/yyyy
+        });
 
-            // Definir campos desabilitados
-            setDisabledFields(["telefone", "cpf", "rg", "passaporte", "endereço", "CNPJ", "nacionalidade"]);
-
-          } else {
-            setUserData({
-              nome: UserInfo.nome,
-              telefone: UserInfo.telefone,
-              nacionalidade: UserInfo.nacionalidade,
-              cpf: UserInfo.cpf,
-              rg: UserInfo.rg,
-              passaporte: UserInfo.passaporte,
-              endereço: UserInfo.endereco,
-              CNPJ: UserInfo.cnpj,
-              email: UserInfo.email,
-              dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString('pt-BR'),
-            })
-          }
-
-
-
-    } catch(erro: any){
-        console.log(erro.response?.data?.message || "Erro ao buscar o usuário");
+        // Definir campos desabilitados
+        setDisabledFields([
+          "telefone",
+          "cpf",
+          "rg",
+          "passaporte",
+          "endereço",
+          "CNPJ",
+          "nacionalidade",
+        ]);
+      } else {
+        setUserData({
+          nome: UserInfo.nome,
+          telefone: UserInfo.telefone,
+          nacionalidade: UserInfo.nacionalidade,
+          cpf: UserInfo.cpf,
+          rg: UserInfo.rg,
+          passaporte: UserInfo.passaporte,
+          endereço: UserInfo.endereco,
+          CNPJ: UserInfo.cnpj,
+          email: UserInfo.email,
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString(
+            "pt-BR"
+          ),
+        });
+      }
+    } catch (erro: any) {
+      console.log(erro.response?.data?.message || "Erro ao buscar o usuário");
     }
-  }
+  };
 
   useEffect(() => {
     getUser();
   }, []);
-  
 
   return (
     <main className="main-custom">
       <Navbar />
       <section className="section-custom">
         <Voltar />
-        <h1>Editar Perfil</h1>
+        <h1 className="font-bold text-lg">Editar Perfil</h1>
 
         <form className="flex flex-col gap-4 mb-4">
           <FormField
             label="Nome"
-            value={userData.nome || ''}
+            value={userData.nome || ""}
             onChange={(value) => handleInputChange("nome", value)}
             // disabled={disabledFields.includes("nome")}
           />
           <FormField
             label="Telefone"
-            value={userData.telefone || ''}
+            value={userData.telefone || ""}
             onChange={(value) => handleInputChange("telefone", value)}
             disabled={disabledFields.includes("telefone")}
           />
           <FormField
             label="Nacionalidade"
-            value={userData.nacionalidade || ''}
+            value={userData.nacionalidade || ""}
             onChange={(value) => handleInputChange("nacionalidade", value)}
           />
           <FormField
             label="CPF"
-            value={userData.cpf || ''}
+            value={userData.cpf || ""}
             onChange={(value) => handleInputChange("cpf", value)}
             disabled={disabledFields.includes("cpf")}
           />
           <FormField
             label="RG"
-            value={userData.rg || ''}
+            value={userData.rg || ""}
             onChange={(value) => handleInputChange("rg", value)}
             disabled={disabledFields.includes("rg")}
           />
           <FormField
             label="Passaporte"
-            value={userData.passaporte || ''}
+            value={userData.passaporte || ""}
             onChange={(value) => handleInputChange("passaporte", value)}
             disabled={disabledFields.includes("passaporte")}
           />
           <FormField
             label="Endereço"
-            value={userData.endereço || ''}
+            value={userData.endereço || ""}
             onChange={(value) => handleInputChange("endereço", value)}
             disabled={disabledFields.includes("endereço")}
           />
           <FormField
             label="CNPJ"
-            value={userData.CNPJ || ''}
+            value={userData.CNPJ || ""}
             onChange={(value) => handleInputChange("CNPJ", value)}
             disabled={disabledFields.includes("CNPJ")}
           />
-
         </form>
 
-        {resultMessage && <p className="text-black-500 mt-4">{resultMessage}</p>}
+        {resultMessage && (
+          <p className="text-black-500 mt-4">{resultMessage}</p>
+        )}
         <Botao label="Salvar" onClick={showModal} />
       </section>
+
+      {loading && <Loading type="spinner" />}
 
       <Footer />
 
