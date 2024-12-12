@@ -29,8 +29,12 @@ export default function Login() {
             localStorage.setItem('jwtToken', token);
             localStorage.setItem('userRole', role); // Era usado para impedir visualização de rotas protegidas
 
-            // Redirecionar o usuário para home ou dashboard após o login bem-sucedido 
-            navigate('/'); // Trocar '/landing' por 'home' ou 'dashboard'
+            if (role === 'Locador') {
+                navigate('/home-locador');
+            }
+            else {
+                navigate('/');
+            }
         } catch (error: any) {
             // Axios retorna erros no `response`
             showErrorToast(error.response?.data?.message || 'Erro ao fazer login');

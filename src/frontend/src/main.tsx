@@ -38,6 +38,7 @@ import CreatePropertyMobile from "./mobile/pages/CreateProperty";
 import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
 import Dashboard from "./mobile/pages/Dashboard";
+import HomeLocador from "./mobile/pages/HomeLocador";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -90,6 +91,8 @@ const Root = () => {
           element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
         />
         <Route path="/dash" element={<Dashboard />} />
+
+        <Route path="/home-locador" element={<HomeLocador />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
