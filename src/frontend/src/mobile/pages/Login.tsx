@@ -32,6 +32,15 @@ export default function Login() {
             if (role === 'Locador') {
                 navigate('/home-locador');
             }
+            else if (role === 'Locatario') {
+                navigate('/home-locatario');
+            }
+            else if (role === 'Admin') {
+                navigate('/dash');
+            }
+            else if (role === 'Judiciario') {
+                navigate('/dash');
+            }
             else {
                 navigate('/');
             }

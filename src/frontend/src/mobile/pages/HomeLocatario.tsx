@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function HomeLocador() {
+export default function HomeLocatario() {
   return (
     <div>
-      Home Locador
+      Home Locatario
     </div>
   )
 }

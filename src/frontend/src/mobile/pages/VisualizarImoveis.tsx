@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Imoveis/Card";
@@ -6,17 +6,67 @@ import FormField from "../components/Form/FormField";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../components/Voltar";
 import { showErrorToast } from "../../utils/toastMessage";
+import axiosInstance from "../../services/axiosConfig";
 
 export default function MainPage() {
-  const fetchProperties = () => {
+
+  interface Property {
+    propertyId: number;
+    title: string;
+    owner: string;
+    address: string;
+    date: string;
+    open: boolean;
+  }
+
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+
+  const fetchProperties = async () => {
     try {
-      console.log("Traz os imóveis");
+
+      const chamadosResponse = await axiosInstance.get('property/Chamados/PegarTodosOsChamados');
+      const usersResponse = await axiosInstance.get('auth/User/PegarTodosUsuarios');
+      const propertiesResponse = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
+
+      if (!chamadosResponse.data || !usersResponse.data || !propertiesResponse.data) {
+        console.error("Dados de resposta inválidos");
+        return;
+      }
+
+      // console.log("Chamados:", chamadosResponse.data);
+      // console.log("Usuários:", usersResponse.data);
+      // console.log("Imóveis:", propertiesResponse.data);
+
+      const chamados = chamadosResponse.data;
+      const users = usersResponse.data;
+      const properties = propertiesResponse.data;
+
+      // Mesclando os dados
+      const mergedData = properties.map((chamado: { solicitanteId: any; idImovel: any; idChamado: any; titulo: any; dataSolicitacao: any; status: any; }) => {
+        const user = users.find((u: { usuarioId: any; }) => u.usuarioId === chamado.solicitanteId) || {};
+        const property = properties.find((p: { imovelId: any; }) => p.imovelId === chamado.idImovel) || {};
+
+        return {
+          chamadoId: chamado.idChamado,
+          title: chamado.titulo || 'Título não informado',
+          solicitor: user.nome || 'Usuário desconhecido',
+          address: property.endereco || 'Endereço desconhecido',
+          date: chamado.dataSolicitacao || 'Data não informada',
+          open: chamado.status === 'Aberto' ? true : false,
+        };
+      });
+
+      setProperties(mergedData);
+      setFilteredData(mergedData)
+
+      // console.log("Dados mesclados:", mergedData);
 
       // Requisição...
     } catch (error: any) {
       console.error(error);
 
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      showErrorToast("Erro ao se conectar com o servidor.");
     }
   };
 
