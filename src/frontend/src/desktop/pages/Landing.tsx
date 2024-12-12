@@ -4,7 +4,7 @@ import FeaturesSection from "../../components/Landing/FeaturesSection";
 import Navbar from "../../mobile/components/Navbar/Navbar";
 import Footer from "../components/FooterBig";
 import Botao from "../components/Botao";
-
+import WhatsAppBtn from "../../components/Botoes/WhatsAppBtn";
 // Importações das imagens
 import whiteLogo from "../../assets/landingPage/desktop/whiteLogo.svg";
 import logoSimplified from "../../assets/landingPage/logoSimplified.svg";
@@ -109,6 +109,13 @@ export default function Landing() {
             navigate("/login");
           }}
         />
+
+        <div className="fixed bottom-8 left-8 z-50">
+          <WhatsAppBtn
+            phoneNumber="5511965922552"
+            message="Olá, gostaria de mais informações sobre a plataforma K.K. Administradora."
+          />
+        </div>
 
         <img
           // Imagem deecorativa 
