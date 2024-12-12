@@ -1,26 +1,33 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "./CardImovel";
 import FormField from "../../mobile/components/Form/FormField";
+import Loading from "../../components/Loading";
 import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
 import { AxiosError } from "axios";
+
 export default function Imoveis() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
 
   const fetchProperties = () => {
     try {
       console.log("Traz os imóveis");
 
       // Requisição...
+
+      setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
     } catch (error) {
-     console.error(error);
+      console.error(error);
 
       if (error instanceof AxiosError) {
-        showErrorToast(error.response?.data?.message || "Erro ao se conectar com o servidor.");
+        showErrorToast(
+          error.response?.data?.message || "Erro ao se conectar com o servidor."
+        );
       } else {
-          showErrorToast("Erro ao se conectar com o servidor.");
-      } 
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
     }
   };
 
@@ -60,26 +67,35 @@ export default function Imoveis() {
       <section className="flex flex-col gap-y-5">
         <h2 className="text-2xl font-semibold">Resultados</h2>
         <div className="h-[1px] bg-neutral-400 mb-4"></div>
-        <div className="flex flex-col gap-6">
-          {Array.from({ length: 6 }, (_, index) => {
-            // Alternate tenant data to showcase variation
-            const tenant = index % 2 === 0 ? "Lucas Matheus Nunes" : null;
+        {loading ? (
+          <Loading type="skeleton" />
+        ) : (
+          /* {users.length === 0 ? ( // Verifica se a lista de usuários está vazia
+              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+                Nenhum usuário encontrado.
+              </p>
+            ) : */
+          <div className="flex flex-col gap-6">
+            {Array.from({ length: 6 }, (_, index) => {
+              // Alternate tenant data to showcase variation
+              const tenant = index % 2 === 0 ? "Lucas Matheus Nunes" : null;
 
-            return (
-              <Card
-                key={index}
-                id={index + 1}
-                address={`Rua Davi, ${273 + index}`}
-                neighborhood="Jardim Palmares"
-                postalCode="02328-161"
-                propertyType="Sobrado"
-                landlord="Lucas Matheus Nunes"
-                tenant={tenant}
-                imageSrc={`/imovel.png`} // Adjust based on available images
-              />
-            );
-          })}
-        </div>
+              return (
+                <Card
+                  key={index}
+                  id={index + 1}
+                  address={`Rua Davi, ${273 + index}`}
+                  neighborhood="Jardim Palmares"
+                  postalCode="02328-161"
+                  propertyType="Sobrado"
+                  landlord="Lucas Matheus Nunes"
+                  tenant={tenant}
+                  imageSrc={`/imovel.png`} // Adjust based on available images
+                />
+              );
+            })}
+          </div>
+        )}
       </section>
     </div>
   );
