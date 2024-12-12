@@ -21,6 +21,11 @@ namespace Layer.Services.Services
         {
             _dbcontext = dbcontext;
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json");
+
+            if (!File.Exists(filePath))
+            {
+                filePath = "/etc/secrets/administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json";
+            }
             //var credentialsPath = @"C:\Users\Inteli\Desktop\Imobiliaria\src\Property-service\Layer.Application\imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json";
             var bucketName = "administradora-kk.appspot.com"; // Substitua pelo nome correto do seu bucket
             _storageService = new GoogleCloudStorageService(filePath, bucketName);
