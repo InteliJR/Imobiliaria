@@ -6,11 +6,12 @@ interface CardProps {
   line2: string;
   line3: string;
   imageUrl: string;
+  onClick?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ title, line1, line2, line3, imageUrl }) => {
+const Card: React.FC<CardProps> = ({ title, line1, line2, line3, imageUrl, onClick }) => {
   return (
-    <div className="flex flex-row-reverse shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden h-[120px]">
+    <div className="flex flex-row-reverse shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden h-[120px]" onClick={onClick}>
       {/* Imagem do Card */}
       <div className="w-1/4">
         <img src={imageUrl} alt={title} className="h-full w-full object-cover rounded-r" />

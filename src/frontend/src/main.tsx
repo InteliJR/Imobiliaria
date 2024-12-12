@@ -40,6 +40,8 @@ import CreateTicketMobile from "./mobile/pages/CreateTicket";
 import Dashboard from "./mobile/pages/Dashboard";
 import HomeLocadorMobile from "./mobile/pages/HomeLocador";
 import HomeLocatarioMobile from "./mobile/pages/HomeLocatario";
+import ChamadosImovel from "./mobile/pages/ChamadosImovel";
+import ImovelMobile from "./mobile/pages/Imovel";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -94,6 +96,10 @@ const Root = () => {
         <Route path="/home-locador" element={<HomeLocadorMobile />} />
 
         <Route path="/home-locatario" element={<HomeLocatarioMobile />} />
+
+        <Route path="/imovel/:imovelId" element={<ImovelMobile />} />
+
+        <Route path="/chamados/:imovelId" element={<ChamadosImovel />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
