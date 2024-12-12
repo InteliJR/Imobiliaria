@@ -42,6 +42,7 @@ import HomeLocadorMobile from "./mobile/pages/HomeLocador";
 import HomeLocatarioMobile from "./mobile/pages/HomeLocatario";
 import ChamadosImovel from "./mobile/pages/ChamadosImovel";
 import ImovelMobile from "./mobile/pages/Imovel";
+import PagamentosImovel from "./mobile/pages/PagamentosImovel";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -100,6 +101,8 @@ const Root = () => {
         <Route path="/imovel/:imovelId" element={<ImovelMobile />} />
 
         <Route path="/chamados/:imovelId" element={<ChamadosImovel />} />
+
+        <Route path="/pagamentos" element={<PagamentosImovel />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
