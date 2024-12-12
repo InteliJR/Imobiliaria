@@ -86,10 +86,10 @@ const Root = () => {
         />
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
         <Route
-          path="/visualizar-usuarios"
+          path="/usuarios"
           element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
         />
-        <Route path="/dash" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

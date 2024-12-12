@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Usuarios/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
@@ -7,7 +7,6 @@ import Voltar from "../components/Voltar";
 import { showErrorToast } from "../../utils/toastMessage";
 import { useState, useEffect } from "react";
 import axiosInstance from "../../services/axiosConfig";
-
 
 export default function MainPage() {
   const [data, setData] = useState<any[]>([]);
@@ -51,8 +50,6 @@ export default function MainPage() {
       console.error("Erro ao obter informações de usuários ou imóveis:", error.message);
     }
   };
-  
-  
   
   useEffect(() => {
     getAllInfo();

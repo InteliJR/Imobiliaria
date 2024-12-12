@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterBig";
 import WelcomeBanner from "../../components/Landing/WelcomeBanner";
 import FeaturesSection from "../../components/Landing/FeaturesSection";

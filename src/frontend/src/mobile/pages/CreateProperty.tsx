@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import FormField from "../../desktop/components/Form/FormField";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { getServiceUrl } from "../../services/apiService";
