@@ -154,5 +154,33 @@ namespace Layer.Application.Controllers
             _applicationLog.LogAsync($"Payment reminder sent to {emailDestinatario} for payment ID {pagamentoId}.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return Ok(result);
         }
+
+        // GET: api/Payments/ByLocatario/5
+        [HttpGet("ByLocatario/{locatarioId}")]
+        public async Task<IActionResult> GetPaymentsByLocatario(int locatarioId)
+        {
+            //PEGAR A EXECUÇÃO DO SERVIÇO DE PAGAMENTOS [A LÓGICA TODA ESTA LÁ]
+        }
+
+        // // GET: api/Payments/ByLocador/5
+        // [HttpGet("ByLocador/{locadorId}")]
+        // public async Task<IActionResult> GetPaymentsByLocador(int locadorId)
+        // {
+        //     var payments = await _context.Payments
+        //         .Join(_context.Contratos,
+        //               payment => payment.ContratoId,
+        //               contrato => contrato.ContratoId,
+        //               (payment, contrato) => new { Payment = payment, Contrato = contrato })
+        //         .Where(pc => pc.Contrato.LocadorId == locadorId)
+        //         .Select(pc => pc.Payment)
+        //         .ToListAsync();
+
+        //     if (!payments.Any())
+        //     {
+        //         return NotFound(new { Message = "No payments found for this locadorId" });
+        //     }
+
+        //     return Ok(payments);
+        // }
     }
 }
