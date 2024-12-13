@@ -150,5 +150,9 @@ namespace Layer.Services.Services
         }
 
         //Lógica para pegar o imóvel de determinado id de locatário
+        public async Task<IEnumerable<Imoveis>> GetImoveisByIdLocatario (int locatarioId)
+        {
+            return await _dbcontext.Imoveis.Where(c => c.LocatarioId == locatarioId).ToListAsync();
+        }
     }
 }
