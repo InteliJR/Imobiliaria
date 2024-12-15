@@ -87,7 +87,7 @@ const Root = () => {
         {/* <Route path="/profile/:id" element={<Profile />} /> */}
        
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
-        <Route path="/dash" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

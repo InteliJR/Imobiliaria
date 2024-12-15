@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaClipboardList, FaUsers } from 'react-icons/fa'; // Importing icons
-import Dashboard from '../components/dashboard';
+import Dashboard from '../components/Dashboard';
 import Chamados from '../components/Chamados';
-import Navbar from '../../components/Navbar/NavBar';
+import Navbar from '../../components/Navbar/Navbar';
 import Footer from "../../components/Footer/FooterSmall";
 
 export default function VisualizarChamados() {

@@ -8,7 +8,7 @@ interface NavbarProps {
   showMenu?: boolean; // Prop opcional para exibir o menu
 }
 
-export default function Navbar({
+export default function NavBar({
   showLoginButton = false,
   showMenu = true,
 }: NavbarProps) {

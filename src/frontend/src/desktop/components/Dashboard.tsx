@@ -16,7 +16,7 @@ import {
 import { showErrorToast } from "../../utils/toastMessage";
 import Loading from "../../components/Loading";
 
-export default function MainPage() {
+export default function Dashboard() {
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
 
   const pieData = [
