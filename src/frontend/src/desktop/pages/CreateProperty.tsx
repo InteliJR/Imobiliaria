@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
+import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig.ts";
 import { getServiceUrl } from "../../services/apiService.ts";
@@ -22,10 +23,14 @@ export default function CreateProperty() {
   const [locatarioQuery, setLocatarioQuery] = useState(""); // Para busca de locatário
   const [locatarioResults, setLocatarioResults] = useState([]); // Resultados da consulta de locatário
   const [locatarioId, setLocatarioId] = useState(null); // Armazena o ID do locatário selecionado
-  const [isLoading, setIsLoading] = useState(false); // Estado de carregamento
+  const [isLoadingLessor, setIsLoadingLessor] = useState(false); // Estado de carregamento da busca de locador
+  const [isLoadingRenter, setIsLoadingRenter] = useState(false); // Estado de carregamento da busca de locatário
+  const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    setLoading(true);
 
     try {
       console.log({
@@ -58,11 +63,29 @@ export default function CreateProperty() {
       );
 
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
+
+      // Limpar formulário após sucesso
+      setPropertyType("Kitnet");
+      setCep("");
+      setAddress("");
+      setComplement("");
+      setNeighborhood("");
+      setRent("");
+      setCondoFee("");
+      setDescription("");
+      setLocadorQuery("");
+      setLocadorResults([]);
+      setLocadorId(null);
+      setLocatarioQuery("");
+      setLocatarioResults([]);
+      setLocatarioId(null);
     } catch (error: any) {
       console.error(error);
       showErrorToast(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,35 +96,35 @@ export default function CreateProperty() {
         setLocadorResults([]);
         return;
       }
-      setIsLoading(true);
+      setIsLoadingLessor(true);
       try {
-        console.log("termo buscado:", searchTerm)
+        console.log("termo buscado:", searchTerm);
         // Adicione a requisição ao backend aqui
         // const response = await axiosInstance.get(
-          //   getServiceUrl("userService", "/Locadores/Buscar"),
-          //   { params: { query: searchTerm } }
-          // );
-          // setLocadorResults(response.data || []);
-        } catch (error) {
-          console.error("Erro ao buscar locadores:", error);
-          showErrorToast("Erro ao buscar resultados.");
-        } finally {
-          setIsLoading(false);
-        }
-      }, 300),
-      []
-    );
-    
-    // Função de busca de locatários
-    const fetchLocatarioResults = useCallback(
-      debounce(async (searchTerm: string) => {
-        if (!searchTerm) {
-          setLocatarioResults([]);
-          return;
-        }
-        setIsLoading(true);
-        try {
-        console.log("termo buscado:", searchTerm)
+        //   getServiceUrl("userService", "/Locadores/Buscar"),
+        //   { params: { query: searchTerm } }
+        // );
+        // setLocadorResults(response.data || []);
+      } catch (error) {
+        console.error("Erro ao buscar locadores:", error);
+        showErrorToast("Erro ao buscar resultados.");
+      } finally {
+        setIsLoadingLessor(false);
+      }
+    }, 300),
+    []
+  );
+
+  // Função de busca de locatários
+  const fetchLocatarioResults = useCallback(
+    debounce(async (searchTerm: string) => {
+      if (!searchTerm) {
+        setLocatarioResults([]);
+        return;
+      }
+      setIsLoadingRenter(true);
+      try {
+        console.log("termo buscado:", searchTerm);
         // Adicione a requisição ao backend aqui
         // const response = await axiosInstance.get(
         //   getServiceUrl("userService", "/Locatarios/Buscar"),
@@ -112,7 +135,7 @@ export default function CreateProperty() {
         console.error("Erro ao buscar locatários:", error);
         showErrorToast("Erro ao buscar resultados.");
       } finally {
-        setIsLoading(false);
+        setIsLoadingRenter(false);
       }
     }, 300),
     []
@@ -213,7 +236,7 @@ export default function CreateProperty() {
                 value={locadorQuery}
                 onChange={(e) => setLocadorQuery(e.target.value)}
               />
-              {isLoading && (
+              {isLoadingLessor && (
                 <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
               )}
               {locadorResults.length > 0 && (
@@ -240,7 +263,7 @@ export default function CreateProperty() {
                 value={locatarioQuery}
                 onChange={(e) => setLocatarioQuery(e.target.value)}
               />
-              {isLoading && (
+              {isLoadingRenter && (
                 <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
               )}
               {locatarioResults.length > 0 && (
@@ -283,6 +306,7 @@ export default function CreateProperty() {
           </div>
         </div>
       </div>
+      {loading && <Loading type="spinner" />} {/* Spinner de carregamento */}
       <Footer />
     </div>
   );

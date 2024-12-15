@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
-import Voltar from "../components/Voltar";
+import Voltar from "../../components/Botoes/Voltar";
 import VisualizarItem from "../components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
 import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 
 export default function Perfil() {
   const navigate = useNavigate(); // Obtendo a função navigate
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [userData, setUserData] = useState<{
     nome: string | null;
     telefone: string | null;

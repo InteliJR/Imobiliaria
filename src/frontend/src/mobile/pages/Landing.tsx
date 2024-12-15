@@ -5,6 +5,8 @@ import WelcomeBanner from "../../components/Landing/WelcomeBanner";
 import FeaturesSection from "../../components/Landing/FeaturesSection";
 import logoSimplified from "../../assets/landingPage/logoSimplified.svg";
 import Botao from "../../components/Botoes/Botao";
+import WhatsAppBtn from "../../components/Botoes/WhatsAppBtn";
+
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -34,13 +36,18 @@ export default function Landing() {
                 }}
               />
             </div>
-
             <img
               src={logoSimplified}
               className="w-16 absolute bottom-11 -left-4 z-0 -rotate-45 opacity-75"
               alt="Logotipo simplificado da K.K. Administradora"
             />
           </div>
+        </div>
+        <div className="fixed bottom-8 left-8 z-50">
+          <WhatsAppBtn
+            phoneNumber="5511965922552"
+            message="Olá, gostaria de mais informações sobre a plataforma K.K. Administradora."
+          />
         </div>
       </section>
 

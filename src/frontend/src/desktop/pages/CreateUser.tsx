@@ -2,6 +2,7 @@ import { useState } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
+import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import { AxiosError } from "axios";
 
@@ -21,9 +22,12 @@ export default function AddClient() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [nationality, setNationality] = useState("");
+  const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setLoading(true);
 
     try {
       console.log({
@@ -44,13 +48,35 @@ export default function AddClient() {
         nationality,
       });
 
+      //Lima o formulário:
+      setUserType("Administrador");
+      setFullName("");
+      setEmail("");
+      setPhone("");
+      setRg("");
+      setCpf("");
+      setPassport("");
+      setCep("");
+      setAddress("");
+      setNumber("");
+      setComplement("");
+      setNeighborhood("");
+      setCity("");
+      setState("");
+      setNationality("");
+
       // Requisição...
       showSuccessToast("Usuário criado com sucesso.");
     } catch (error) {
       console.error(error);
       if (error instanceof AxiosError) {
-        showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+        showErrorToast(
+          error?.response?.data?.message ||
+            "Erro ao se conectar com o servidor."
+        );
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,13 +84,17 @@ export default function AddClient() {
     <div>
       <Navbar />
       <div className="mx-10 mt-10">
-        <h1 className="text-3xl font-bold text-yellow-darker mb-6">Adicionar Cliente</h1>
+        <h1 className="text-3xl font-bold text-yellow-darker mb-6">
+          Adicionar Cliente
+        </h1>
         <div className="min-h-screen flex flex-col items-center justify-center">
           <div className="w-full max-w-xl py-6 bg-white rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-6">
               <h2 className="text-xl text-neutral-700">Dados Pessoais</h2>
               <div>
-                <label className="block text-neutral-600">Tipo de Usuário</label>
+                <label className="block text-neutral-600">
+                  Tipo de Usuário
+                </label>
                 <select
                   value={userType}
                   onChange={(e) => setUserType(e.target.value)}
@@ -80,14 +110,26 @@ export default function AddClient() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
               />
-              <FormField label="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <FormField
+                label="E-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
               <FormField
                 label="Telefone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
-              <FormField label="RG" value={rg} onChange={(e) => setRg(e.target.value)} />
-              <FormField label="CPF" value={cpf} onChange={(e) => setCpf(e.target.value)} />
+              <FormField
+                label="RG"
+                value={rg}
+                onChange={(e) => setRg(e.target.value)}
+              />
+              <FormField
+                label="CPF"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+              />
               <FormField
                 label="Passaporte"
                 value={passport}
@@ -97,7 +139,11 @@ export default function AddClient() {
               <hr />
 
               <h2 className="text-xl text-neutral-700">Endereço</h2>
-              <FormField label="CEP" value={cep} onChange={(e) => setCep(e.target.value)} />
+              <FormField
+                label="CEP"
+                value={cep}
+                onChange={(e) => setCep(e.target.value)}
+              />
               <FormField
                 label="Logradouro"
                 value={address}
@@ -121,7 +167,11 @@ export default function AddClient() {
                 onChange={(e) => setNeighborhood(e.target.value)}
               />
               <div className="grid grid-cols-2 gap-4">
-                <FormField label="Cidade" value={city} onChange={(e) => setCity(e.target.value)} />
+                <FormField
+                  label="Cidade"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
                 <FormField
                   label="Estado"
                   value={state}
@@ -144,6 +194,7 @@ export default function AddClient() {
           </div>
         </div>
       </div>
+      {loading && <Loading type="spinner" />}
       <Footer />
     </div>
   );

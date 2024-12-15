@@ -48,20 +48,29 @@ const Root = () => {
         <Route path="/" element={isDesktop ? <Landing /> : <LandingMobile />} />
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
 
-        <Route path="/imoveis" element={<VisualizarImoveis />} />
+        <Route
+          path="/imoveis"
+          element={isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
+        />
         <Route
           path="/imoveis/criar"
           element={isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
         />
 
-        <Route path="/chamados" element={<VisualizarChamados />} />
+        <Route
+          path="/chamados"
+          element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
+        />
         <Route
           path="/chamados/criar"
           element={isDesktop ? <CreateTicket /> : <CreateTicketMobile />}
         />
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
 
-        <Route path="/usuarios" element={<VisualizarUsuarios />} />
+        <Route
+          path="/usuarios"
+          element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
+        />
         <Route path="/usuarios/criar" element={isDesktop ? <CreateUser /> : <CreateUserMobile />} />
 
         <Route path="/perfil" element={isDesktop ? <Perfil /> : <PerfilMobile />} />
@@ -76,20 +85,9 @@ const Root = () => {
         />
 
         {/* <Route path="/profile/:id" element={<Profile />} /> */}
-        <Route
-          path="/visualizar-imoveis"
-          element={isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
-        />
-        <Route
-          path="/visualizar-chamados"
-          element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
-        />
+       
         <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
-        <Route
-          path="/usuarios"
-          element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
-        />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dash" element={<Dashboard />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
