@@ -27,41 +27,27 @@ namespace Layer.Services.Services
             return await _context.Pagamentos.ToListAsync();
         }
 
-        public async Task<IEnumerable<Payment>> GetPaymentsByIdLocatario(int locatarioId)
+        public async Task<IEnumerable<Payment>> GetAllPaymentsByIdImovel(int imovelid)
         {
-            var payments = await _context.Payments
+            var contratos = new Contratos();
+            var contratoId = contratos.ContratoId;
+
+            var payments = await _context.Pagamentos
                 .Join(_context.Contratos,
                         payment => payment.ContratoId,
                         contrato => contrato.ContratoId,
                         (payment, contrato) => new { Payment = payment, Contrato = contrato })
-                .Where(pc => pc.Contrato.LocatarioId == locatarioId)
+                .Where(pc => pc.Contrato.ImovelId == imovelid)
                 .Select(pc => pc.Payment)
                 .ToListAsync();
 
             if (!payments.Any())
             {
-                return NotFound(new { Message = "No payments found for this locatarioId" });
+                throw new KeyNotFoundException("No payments found for this locatarioId");
             }
 
-            return Ok(payments);
-            
+            return payments;
         }
-
-
-        //AQUI DEVE SER IMPLEMENTADA A LÓGICA DE PEGAR PAGAMENTOS PELO ID DO LOCADOR
-        // |
-        // |
-        // |
-        // |
-        // |
-        // |
-        // |
-        // |
-        // |
-        // |
-        // |
-        // |
-        ////
 
         public async Task<Payment> GetPaymentByIdAsync(int id)
         {

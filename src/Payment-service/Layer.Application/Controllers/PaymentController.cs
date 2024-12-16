@@ -155,11 +155,16 @@ namespace Layer.Application.Controllers
             return Ok(result);
         }
 
-        // GET: api/Payments/ByLocatario/5
-        [HttpGet("ByLocatario/{locatarioId}")]
-        public async Task<IActionResult> GetPaymentsByLocatario(int locatarioId)
+        // GET: api/Payments/ByImovel/5
+        [HttpGet("ByImovel/{imovelid}")]
+        public async Task<IActionResult> GetPaymentsByImovel(int imovelid)
         {
-            //PEGAR A EXECUÇÃO DO SERVIÇO DE PAGAMENTOS [A LÓGICA TODA ESTA LÁ]
+            var payment = await _paymentService.GetAllPaymentsByIdImovel(imovelid);
+            if (payment == null)
+            {
+                return NotFound();
+            }
+            return Ok(payment);
         }
 
         // // GET: api/Payments/ByLocador/5
