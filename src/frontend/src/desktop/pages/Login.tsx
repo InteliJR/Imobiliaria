@@ -1,4 +1,4 @@
-import Navbar from "../../components/Navbar/NavBar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterBig";
 import FormField from "../../mobile/components/Form/FormField";
 import Loading from "../../components/Loading";
