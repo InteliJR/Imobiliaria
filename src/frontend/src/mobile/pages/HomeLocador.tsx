@@ -60,14 +60,7 @@ export default function MainPage() {
       <Navbar />
 
       <section className="section-custom">
-        <Voltar />
-        <button
-          type="submit"
-          className="w-full h-10 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
-        >
-          Cadastrar Imóvel
-        </button>
-        <h2 className="text-2xl font-semibold">Imóveis</h2>
+        <h2 className="text-2xl font-semibold">Seus Imóveis</h2>
         <form className="grid grid-cols-1 gap-4">
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
