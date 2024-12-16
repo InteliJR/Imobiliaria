@@ -38,6 +38,7 @@ import CreatePropertyMobile from "./mobile/pages/CreateProperty";
 import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
 import Dashboard from "./mobile/pages/Dashboard";
+import ProtectedRoute from "./components/Router/ProtectedRouter";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -45,51 +46,117 @@ const Root = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Rota Raiz e Login */}
         <Route path="/" element={isDesktop ? <Landing /> : <LandingMobile />} />
         <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
+        {/* Not Found */}
+        <Route path="*" element={<NotFound />} />
 
+        {/* Imóveis */}
         <Route
           path="/imoveis"
-          element={isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              {isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/imoveis/criar"
-          element={isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              {isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
+            </ProtectedRoute>
+          }
         />
 
+        {/* Chamados */}
         <Route
           path="/chamados"
-          element={isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              {isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/chamados/criar"
-          element={isDesktop ? <CreateTicket /> : <CreateTicketMobile />}
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              {isDesktop ? <CreateTicket /> : <CreateTicketMobile />}
+            </ProtectedRoute>
+          }
         />
-        <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
+        <Route
+          path="/chamado/:id"
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              {isDesktop ? <Chamado /> : <ChamadoMobile />}
+            </ProtectedRoute>
+          }
+        />
 
+        {/* Usuários */}
         <Route
           path="/usuarios"
-          element={isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              {isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
+            </ProtectedRoute>
+          }
         />
-        <Route path="/usuarios/criar" element={isDesktop ? <CreateUser /> : <CreateUserMobile />} />
+        <Route
+          path="/usuarios/criar"
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              {isDesktop ? <CreateUser /> : <CreateUserMobile />}
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/perfil" element={isDesktop ? <Perfil /> : <PerfilMobile />} />
-        <Route path="/perfil/:id" element={isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />} />
+        {/* Perfil */} {/* Precisa adicionar "requiredRole" */} 
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute> 
+              {isDesktop ? <Perfil /> : <PerfilMobile />}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/perfil/:id"
+          element={
+            <ProtectedRoute>
+              {isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />}
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/perfil/editar"
-          element={isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />}
+          element={
+            <ProtectedRoute>
+              {isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />}
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/perfil/alterar-senha"
-          element={isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile />}
+          element={
+            <ProtectedRoute>
+              {isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile />}
+            </ProtectedRoute>
+          }
         />
 
-        {/* <Route path="/profile/:id" element={<Profile />} /> */}
-       
-        <Route path="/chamado/:id" element={isDesktop ? <Chamado /> : <ChamadoMobile />} />
-        <Route path="/dash" element={<Dashboard />} />
-
-        <Route path="*" element={<NotFound />} />
+        {/* Dashboard */} {/* Precisa adicionar "requiredRole" */} 
+        <Route
+          path="/dash"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
 
       <ToastContainer />
