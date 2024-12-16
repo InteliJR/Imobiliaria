@@ -166,26 +166,5 @@ namespace Layer.Application.Controllers
             }
             return Ok(payment);
         }
-
-        // // GET: api/Payments/ByLocador/5
-        // [HttpGet("ByLocador/{locadorId}")]
-        // public async Task<IActionResult> GetPaymentsByLocador(int locadorId)
-        // {
-        //     var payments = await _context.Payments
-        //         .Join(_context.Contratos,
-        //               payment => payment.ContratoId,
-        //               contrato => contrato.ContratoId,
-        //               (payment, contrato) => new { Payment = payment, Contrato = contrato })
-        //         .Where(pc => pc.Contrato.LocadorId == locadorId)
-        //         .Select(pc => pc.Payment)
-        //         .ToListAsync();
-
-        //     if (!payments.Any())
-        //     {
-        //         return NotFound(new { Message = "No payments found for this locadorId" });
-        //     }
-
-        //     return Ok(payments);
-        // }
     }
 }
