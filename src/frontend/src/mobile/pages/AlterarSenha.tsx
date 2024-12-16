@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
 import FormField from "../components/Form/FormField";

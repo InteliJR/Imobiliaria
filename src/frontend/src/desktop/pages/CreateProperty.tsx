@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import FormField from "../components/Form/FormField";
-import Navbar from "../../mobile/components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";

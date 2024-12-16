@@ -1,4 +1,4 @@
-import NavbarLogin from '../components/Navbar/NavbarLogin';
+import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/FooterSmall';
 import ProfileField from '../components/ProfileField';
 
@@ -6,7 +6,7 @@ export default function Profile () {
     return (
         <div>
             <div className='flex flex-col min-h-screen'>
-                <NavbarLogin />
+                <Navbar />
                 <div className='mx-10'>
                     <div className='grid grid-cols-2 mt-5'>
                         <div>

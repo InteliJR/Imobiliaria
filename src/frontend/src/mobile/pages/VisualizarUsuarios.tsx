@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Usuarios/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import FormField from "../../desktop/components/Form/FormField";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
 import Voltar from "../../components/Botoes/Voltar";

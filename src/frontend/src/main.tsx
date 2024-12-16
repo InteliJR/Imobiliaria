@@ -150,7 +150,7 @@ const Root = () => {
 
         {/* Dashboard */} {/* Precisa adicionar "requiredRole" */} 
         <Route
-          path="/dash"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
