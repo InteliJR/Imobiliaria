@@ -154,5 +154,17 @@ namespace Layer.Application.Controllers
             _applicationLog.LogAsync($"Payment reminder sent to {emailDestinatario} for payment ID {pagamentoId}.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return Ok(result);
         }
+
+        // GET: api/Payments/ByImovel/5
+        [HttpGet("ByImovel/{imovelid}")]
+        public async Task<IActionResult> GetPaymentsByImovel(int imovelid)
+        {
+            var payment = await _paymentService.GetAllPaymentsByIdImovel(imovelid);
+            if (payment == null)
+            {
+                return NotFound();
+            }
+            return Ok(payment);
+        }
     }
 }
