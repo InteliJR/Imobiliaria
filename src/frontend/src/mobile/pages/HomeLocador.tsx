@@ -5,10 +5,11 @@ import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Imoveis/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
-import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
+import { jwtDecode } from "jwt-decode";
+import getTokenData from "../../services/tokenConfig";
 
 export default function MainPage() {
 
@@ -29,30 +30,86 @@ export default function MainPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState<Property[]>([]);
+  const [locadorId, setLocadorId] = useState<number | null>(null);
 
-  const fetchProperties = async () => {
-    try {
-      const response = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
-
-      if (!response.data) {
-        console.error("Dados de resposta inválidos");
+  
+  const tokenData = getTokenData();
+  console.log(tokenData);
+  const userId = tokenData.UserID;
+  console.log(userId);
+  
+  useEffect(() => {
+    const fetchLocadorId = async () => {
+      if (!userId) {
+        console.error("User ID is not available.");
         return;
       }
-
-      setProperties(response.data);
-      setFilteredData(response.data);
-    } catch (error: any) {
-      console.error(error);
-      showErrorToast(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  
+      try {
+        const response = await axiosInstance.get(
+          `auth/Locador/PegarLocadorPorUserId/${userId}`
+        );
+  
+        if (!response.data) {
+          console.error("Dados de resposta inválidos");
+          return;
+        }
+  
+        setLocadorId(response.data.locadorId);
+      } catch (error: any) {
+        console.error(error);
+        showErrorToast(
+          error?.response?.data?.message || "Erro ao se conectar com o servidor."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchLocadorId();
+  }, [userId]);
+  
   useEffect(() => {
+    if (locadorId === null) return; // Wait until locadorId is set
+  
+    const fetchProperties = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `property/Imoveis/PegarImovelPorIdDoLocador/${locadorId}`
+        );
+  
+        if (!response.data) {
+          console.error("Dados de resposta inválidos");
+          return;
+        }
+  
+        setProperties(response.data);
+        setFilteredData(response.data);
+      } catch (error: any) {
+        console.error(error);
+        showErrorToast(
+          error?.response?.data?.message || "Erro ao se conectar com o servidor."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     fetchProperties();
+  }, [locadorId]);
+  
+  useEffect(() => {
+    const tokenData = getTokenData();
+    console.log(tokenData);
+  
+    if (tokenData) {
+      const userId = tokenData.UserID; // Case-sensitive check
+      if (!userId) {
+        console.error("User ID is not available in the token.");
+      } else {
+        console.log(userId);
+      }
+    }
   }, []);
 
   return (
