@@ -111,6 +111,31 @@ namespace Layer.Application.Controllers
             return Ok(imovel);
         }
 
+        [HttpGet("PegarImovelPorIdDoLocador/{locadorId}}")]
+        [Authorize(Policy = "AllRoles")]
+        public async Task<IActionResult> GetImovelByIdDoLocador(int locadorId)
+        {
+            var imovel = await _imoveisService.GetImoveisByIdLocador(locadorId);
+            if (imovel == null)
+            {
+                return NotFound();
+            }
+            return Ok(imovel);
+        }
+
+        [HttpGet("PegarImovelPorIdDoLocatario/{locatarioId}}")]
+        [Authorize(Policy = "AllRoles")]
+        public async Task<IActionResult> GetImovelByIdDoLocatario(int locatarioId)
+        {
+            var imovel = await _imoveisService.GetImoveisByIdLocatario(locatarioId);
+            if (imovel == null)
+            {
+                return NotFound();
+            }
+            return Ok(imovel);
+        }
+
+
         [HttpDelete("DeletarImovel/{id}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> DeleteImovel(int id)
