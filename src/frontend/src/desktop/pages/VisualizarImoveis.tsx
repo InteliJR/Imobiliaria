@@ -18,7 +18,7 @@ export default function VisualizarImoveis() {
       <div className="flex justify-start gap-6 ms-2">
         <button
           className="relative group flex items-center gap-2 px-4 py-2 text-neutral-800 rounded-md overflow-hidden"
-          onClick={() => navigate("/visualizar-imoveis")}
+          onClick={() => navigate("/imoveis")}
         >
           <span className="absolute inset-0 -m-2 bg-neutral-400 z-0 scale-0 group-hover:scale-100 transition-transform"></span>
           <FaHome className="z-10" />
@@ -26,7 +26,7 @@ export default function VisualizarImoveis() {
         </button>
         <button
           className="relative group flex items-center gap-2 px-4 py-2 text-neutral-800 rounded-md overflow-hidden"
-          onClick={() => navigate("/visualizar-chamados")}
+          onClick={() => navigate("/chamados")}
         >
           <span className="absolute inset-0 -m-2 bg-neutral-400 z-0 scale-0 group-hover:scale-100 transition-transform"></span>
           <FaClipboardList className="z-10" />
