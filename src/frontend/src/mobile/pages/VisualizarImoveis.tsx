@@ -21,6 +21,7 @@ export default function MainPage() {
     descricao: string;
     endereco: string;
     complemento: string;
+    fotos: string[];
   }
 
   const [properties, setProperties] = useState<Property[]>([]);
@@ -35,6 +36,13 @@ export default function MainPage() {
         console.error("Dados de resposta inválidos");
         return;
       }
+
+      // Transformar os links das fotos que estão separados por vírgula em um array
+      response.data.forEach((property: Property & { fotos: string | string[] }) => {
+        if (typeof property.fotos === 'string') {
+          property.fotos = property.fotos.split(",");
+        }
+      });
 
       setProperties(response.data);
       setFilteredData(response.data);
@@ -101,18 +109,19 @@ export default function MainPage() {
                 Nenhum imóvel encontrado.
               </p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredData.map((property) => (
+                  console.log(property),
                   <Card
-                    key={property.imovelId}
-                    title={property.tipoImovel}
-                    line1={property.bairro}
-                    line2={property.endereco}
-                    line3={`R$${property.valorImovel.toFixed(2)}`}
-                    imageUrl="/imovel.png"
+                  key={property.imovelId}
+                  title={property.tipoImovel}
+                  line1={property.bairro}
+                  line2={property.endereco}
+                  line3={`R$${property.valorImovel.toFixed(2)}`}
+                  imageUrl={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/image.png"}
                   />
                 ))}
-              </div>
+                </div>
             )}
           </section>
         )}
