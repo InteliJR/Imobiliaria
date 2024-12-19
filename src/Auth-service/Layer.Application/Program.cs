@@ -198,8 +198,7 @@ builder.Logging.AddDebug();
 // Configuração de CORS corrigida
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        policy =>
+    options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com/") // Substitua pelos domínios específicos que você deseja permitir
                   .AllowCredentials()
@@ -248,10 +247,8 @@ if (env == "Development")
     app.UseHttpsRedirection();
 }
 
-if (env == "Development")
-{
-app.UseHttpsRedirection();
-}
+app.UseCors("AllowSpecificOrigins");
+
 app.UseRouting();
 
 app.UseCors();
