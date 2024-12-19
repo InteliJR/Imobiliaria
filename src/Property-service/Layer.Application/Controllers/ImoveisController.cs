@@ -111,7 +111,7 @@ namespace Layer.Application.Controllers
             return Ok(imovel);
         }
 
-        [HttpGet("PegarImovelPorIdDoLocador/{locadorId}}")]
+        [HttpGet("PegarImovelPorIdDoLocador/{locadorId}")]
         [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> GetImovelByIdDoLocador(int locadorId)
         {
@@ -123,7 +123,7 @@ namespace Layer.Application.Controllers
             return Ok(imovel);
         }
 
-        [HttpGet("PegarImovelPorIdDoLocatario/{locatarioId}}")]
+        [HttpGet("PegarImovelPorIdDoLocatario/{locatarioId}")]
         [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> GetImovelByIdDoLocatario(int locatarioId)
         {

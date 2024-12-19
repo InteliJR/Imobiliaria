@@ -143,17 +143,18 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
+// Configuração de CORS corrigida
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
-    });
+    options.AddPolicy("AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com/") // Substitua pelos domínios específicos que você deseja permitir
+                  .AllowCredentials()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
 });
-
 // Registrar o dbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -214,9 +215,16 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 // app.UseStaticFiles();
 
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Request Path: {context.Request.Path}");
+    await next();
+});
+
+
 app.UseRouting();
 
-app.UseCors();
+app.UseCors("All");
 
 app.UseAuthentication();
 app.UseAuthorization();
