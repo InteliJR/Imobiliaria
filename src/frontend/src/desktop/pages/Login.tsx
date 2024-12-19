@@ -35,7 +35,7 @@ export default function Login() {
       const role = decodedToken[roleClaim]; // Era usado para impedir visualização de rotas protegidas
       localStorage.setItem("userRole", role); // Era usado para impedir visualização de rotas protegidas
 
-      navigate("/visualizar-imoveis");
+      navigate("/imoveis");
     } catch (error: any) {
       showErrorToast(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
