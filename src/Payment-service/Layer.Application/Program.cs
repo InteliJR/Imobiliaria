@@ -202,7 +202,11 @@ app.UseHttpsRedirection();
 }
 
 app.UseHttpsRedirection();
-    
+
+app.UseCors("AllowSpecificOrigins");
+
+app.UseCors();
+
 app.UseRouting();
 
 app.UseAuthentication();

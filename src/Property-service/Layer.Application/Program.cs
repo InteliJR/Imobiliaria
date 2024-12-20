@@ -222,9 +222,11 @@ app.Use(async (context, next) =>
 });
 
 
-app.UseRouting();
+app.UseCors("AllowSpecificOrigins");
 
-app.UseCors("All");
+app.UseCors();
+
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
