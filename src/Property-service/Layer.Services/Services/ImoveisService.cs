@@ -154,5 +154,10 @@ namespace Layer.Services.Services
         {
             return await _dbcontext.Imoveis.Where(c => c.LocatarioId == locatarioId).ToListAsync();
         }
+
+        public async Task<string> GenerateSignedUrlOfImovelImageAsync(string objectName)
+        {
+            return await _storageService.GenerateSignedUrlAsync(objectName, 5);
+        }
     }
 }

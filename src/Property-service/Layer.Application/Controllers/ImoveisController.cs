@@ -187,5 +187,13 @@ namespace Layer.Application.Controllers
 
             return Ok(novoImovel);
         }
+
+        [HttpGet("GerarUrlAssinadaImovel")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> GenerateSignedUrlOfImovelImage(string idImage)
+        {
+            var url = await _imoveisService.GenerateSignedUrlOfImovelImageAsync(idImage);
+            return Ok(url);
+        }
     }
 }
