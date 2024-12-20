@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
-import Card from "../components/CardContratos";
+import Card from "../../components/CardContratos";
 import FormField from "../components/Form/FormField";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../../components/Botoes/Voltar";
