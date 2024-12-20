@@ -19,6 +19,7 @@ import Chamado from "./desktop/pages/Chamado";
 import VisualizarImoveis from "./desktop/pages/VisualizarImoveis";
 import VisualizarChamados from "./desktop/pages/VisualizarChamados";
 import VisualizarUsuarios from "./desktop/pages/VisualizarUsuarios";
+import Contratos from "./desktop/pages/VisualizarContratos";
 
 // Import mobile components and pages
 import LandingMobile from "./mobile/pages/Landing";
@@ -38,6 +39,7 @@ import CreatePropertyMobile from "./mobile/pages/CreateProperty";
 import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
 import Dashboard from "./mobile/pages/Dashboard";
+import ContratosMobile from "./mobile/pages/Contratos";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 
 const Root = () => {
@@ -48,10 +50,12 @@ const Root = () => {
       <Routes>
         {/* Rota Raiz e Login */}
         <Route path="/" element={isDesktop ? <Landing /> : <LandingMobile />} />
-        <Route path="/login" element={isDesktop ? <Login /> : <LoginMobile />} />
+        <Route
+          path="/login"
+          element={isDesktop ? <Login /> : <LoginMobile />}
+        />
         {/* Not Found */}
         <Route path="*" element={<NotFound />} />
-
         {/* Imóveis */}
         <Route
           path="/imoveis"
@@ -69,13 +73,16 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-
         {/* Chamados */}
         <Route
           path="/chamados"
           element={
             <ProtectedRoute requiredRole="Admin">
-              {isDesktop ? <VisualizarChamados /> : <VisualizarChamadosMobile />}
+              {isDesktop ? (
+                <VisualizarChamados />
+              ) : (
+                <VisualizarChamadosMobile />
+              )}
             </ProtectedRoute>
           }
         />
@@ -95,13 +102,16 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-
         {/* Usuários */}
         <Route
           path="/usuarios"
           element={
             <ProtectedRoute requiredRole="Admin">
-              {isDesktop ? <VisualizarUsuarios /> : <VisualizarUsuariosMobile />}
+              {isDesktop ? (
+                <VisualizarUsuarios />
+              ) : (
+                <VisualizarUsuariosMobile />
+              )}
             </ProtectedRoute>
           }
         />
@@ -113,12 +123,11 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Perfil */} {/* Precisa adicionar "requiredRole" */} 
+        {/* Perfil */} {/* Precisa adicionar "requiredRole" */}
         <Route
           path="/perfil"
           element={
-            <ProtectedRoute> 
+            <ProtectedRoute>
               {isDesktop ? <Perfil /> : <PerfilMobile />}
             </ProtectedRoute>
           }
@@ -147,13 +156,21 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Dashboard */} {/* Precisa adicionar "requiredRole" */} 
+        {/* Dashboard */} {/* Precisa adicionar "requiredRole" */}
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+       
+        <Route
+          path="/contratos"
+          element={
+            <ProtectedRoute>
+              {isDesktop ? <Contratos /> : <ContratosMobile />}
             </ProtectedRoute>
           }
         />

@@ -7,7 +7,7 @@ import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
 import { AxiosError } from "axios";
 
-export default function ChamadosComponent() {
+export default function UsuariosComponent() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
 
