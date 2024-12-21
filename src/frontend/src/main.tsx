@@ -174,16 +174,12 @@ const Root = () => {
         />
         <Route
           path="/contratos/criar"
-          element={<CreateContract />}
-        />
-        {/* <Route
-          path="/contratos/criar"
           element={
             <ProtectedRoute>
-              {isDesktop ? <Contratos /> : <ContratosMobile />}
+              <CreateContract />
             </ProtectedRoute>
           }
-        /> */}
+        />
       </Routes>
 
       <ToastContainer />
