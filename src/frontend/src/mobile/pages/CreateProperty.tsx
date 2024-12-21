@@ -6,7 +6,6 @@ import Loading from "../../components/Loading";
 import Voltar from "../../components/Botoes/Voltar";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
-import { getServiceUrl } from "../../services/apiService";
 import debounce from "lodash.debounce";
 
 export default function CreatePropertyMobile() {
@@ -28,11 +27,11 @@ export default function CreatePropertyMobile() {
   const [isLoadingRenter, setIsLoadingRenter] = useState(false); // Estado de carregamento da busca de locatário
   const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+  
     setLoading(true);
-
+  
     try {
       console.log({
         propertyType,
@@ -46,9 +45,9 @@ export default function CreatePropertyMobile() {
         locadorId,
         locatarioId,
       });
-
+  
       const response = await axiosInstance.post(
-        getServiceUrl("propertyService", "/Imoveis/CriarUmNovoImovel"),
+        "property/Imoveis/CriarUmNovoImovel",
         {
           TipoImovel: propertyType,
           Cep: cep,
@@ -62,24 +61,23 @@ export default function CreatePropertyMobile() {
           LocatarioId: locatarioId || null,
         }
       );
-
+  
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
-
-       // Limpar formulário após sucesso
-       setPropertyType("Kitnet");
-       setCep("");
-       setAddress("");
-       setComplement("");
-       setNeighborhood("");
-       setRent("");
-       setCondoFee("");
-       setDescription("");
-       setLocadorQuery("");
-       setLocadorResults([]);
-       setLocadorId(null);
-       setLocatarioQuery("");
-       setLocatarioResults([]);
-       setLocatarioId(null);
+  
+      setPropertyType("Kitnet");
+      setCep("");
+      setAddress("");
+      setComplement("");
+      setNeighborhood("");
+      setRent("");
+      setCondoFee("");
+      setDescription("");
+      setLocadorQuery("");
+      setLocadorResults([]);
+      setLocadorId(null);
+      setLocatarioQuery("");
+      setLocatarioResults([]);
+      setLocatarioId(null);
     } catch (error: any) {
       console.error(error);
       showErrorToast(
@@ -90,6 +88,7 @@ export default function CreatePropertyMobile() {
     }
   };
 
+
   // Função de busca de locadores no backend com debounce
   const fetchLocadorResults = useCallback(
     debounce(async (searchTerm: string) => {
@@ -99,12 +98,6 @@ export default function CreatePropertyMobile() {
       }
       setIsLoadingLessor(true);
       try {
-        // adicionar a requisição dos locatarios pelo termo buscado
-        // const response = await axiosInstance.get(
-        //   getServiceUrl("userService", "/Locadores/Buscar"),
-        //   { params: { query: searchTerm } }
-        // );
-        // setLocadorResults(response.data || []);
         console.log("termo buscado:", searchTerm);
       } catch (error) {
         console.error("Erro ao buscar locadores:", error);
@@ -126,12 +119,6 @@ export default function CreatePropertyMobile() {
       setIsLoadingRenter(true);
       try {
         console.log("termo buscado:", searchTerm);
-        // adicionar a requisição dos locatarios pelo termo buscado
-        // const response = await axiosInstance.get(
-        //   getServiceUrl("userService", "/Locatarios/Buscar"),
-        //   { params: { query: searchTerm } }
-        // );
-        // setLocatarioResults(response.data || []);
       } catch (error) {
         console.error("Erro ao buscar locatários:", error);
         showErrorToast("Erro ao buscar resultados.");
