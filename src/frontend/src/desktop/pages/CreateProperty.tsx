@@ -55,7 +55,7 @@ export default function CreateProperty() {
       formData.append("LocatarioId", selectedLocatarioId || "");
 
       // Adicionar as fotos ao FormData
-      photos.forEach((photo, index) => {
+      photos.forEach((photo) => {
         formData.append("Fotos[]", photo); // Enviar todas as fotos como array
       });
 
