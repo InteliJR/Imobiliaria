@@ -1,3 +1,6 @@
+//TEM QUE ARRUMAR A PARTE DE FILTRAGEM PARA QUE O USUÁRIO CONSIGA FAZER UMA PESQUISA DENTRO DO CONTEXTO DE IMÓVEIS
+// INCLUSIVE ESSE REQUISITO JÁ ESTA IMPLEMENTADO DENTRO DO COMPONENTE DE CHAMADOS
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "./CardImovel";
@@ -6,21 +9,59 @@ import Loading from "../../components/Loading";
 import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
 import { AxiosError } from "axios";
+import axiosInstance from "../../services/axiosConfig";
 
 export default function Imoveis() {
+  interface Property {
+    id: number;
+    address: string;
+    neighborhood: string;
+    postalCode: string;
+    propertyType: string;
+    landlord: string;
+    tenant: string | null;
+    imageSrc: string;
+    price: string;
+    condominio: string;
+  }
+  
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
+  const [loading, setLoading] = useState(true);
+  const [properties, setProperties] = useState<Property[]>([]);
 
-  const fetchProperties = () => {
+  const fetchProperties = async () => {
     try {
-      console.log("Traz os imóveis");
+      console.log("Trazendo os imóveis");
 
-      // Requisição...
+      // Requisição ao backend
+      const response = await axiosInstance.get(
+        "/property/Imoveis/PegarTodosImoveis"
+      );
+      console.log(response.data);
 
-      setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
+      // Transformar os dados recebidos
+      const transformedData = response.data.map((property: any) => ({
+        id: property.imovelId,
+        address: `${property.endereco} ${property.complemento || ""}`.trim(),
+        neighborhood: property.bairro,
+        postalCode: property.cep,
+        propertyType: property.tipoImovel,
+        landlord: property.locadorId || null,
+        tenant: property.locatarioId || "Imóvel sem locatário",
+        imageSrc: property.fotos?.[0]?.url || "/imovel.png", // Suporte para foto do backend ou imagem padrão
+        price: `${property.valorImovel.toLocaleString("pt-BR")}`,
+        condominio: `${
+          property.condominio ? property.condominio.toLocaleString("pt-BR") : "0,00"
+        }`,
+      }));
+
+      // Atualizar o estado com os dados transformados
+      setProperties(transformedData);
+      setLoading(false);
     } catch (error) {
       console.error(error);
 
+      // Tratamento de erros
       if (error instanceof AxiosError) {
         showErrorToast(
           error.response?.data?.message || "Erro ao se conectar com o servidor."
@@ -31,8 +72,12 @@ export default function Imoveis() {
     }
   };
 
+
   useEffect(() => {
-    fetchProperties();
+    const fetchData = async () => {
+      await fetchProperties();
+    }
+    fetchData();
   }, []);
 
   return (
@@ -69,29 +114,26 @@ export default function Imoveis() {
         <div className="h-[1px] bg-neutral-400 mb-4"></div>
         {loading ? (
           <Loading type="skeleton" />
+        ) : properties.length === 0 ? (
+          <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+            Nenhum imóvel encontrado.
+          </p>
         ) : (
-          /* {users.length === 0 ? ( // Verifica se a lista de usuários está vazia
-              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum usuário encontrado.
-              </p>
-            ) : */
           <div className="flex flex-col gap-6">
-            {Array.from({ length: 6 }, (_, index) => {
-              // Alternate tenant data to showcase variation
-              const tenant = index % 2 === 0 ? "Lucas Matheus Nunes" : null;
-
+            {properties.map((property) => {
               return (
                 <Card
-                  key={index}
-                  id={index + 1}
-                  address={`Rua Davi, ${273 + index}`}
-                  neighborhood="Jardim Palmares"
-                  postalCode="02328-161"
-                  propertyType="Sobrado"
-                  landlord="Lucas Matheus Nunes"
-                  tenant={tenant}
-                  imageSrc={`/imovel.png`} // Adjust based on available images
-                />
+                  key={property.id}
+                  id={property.id}
+                  address={property.address}
+                  neighborhood={property.neighborhood}
+                  postalCode={property.postalCode}
+                  propertyType={property.propertyType}
+                  landlord={property.landlord}
+                  tenant={property.tenant}
+                  imageSrc={property.imageSrc}
+                  price={property.price}
+                  condominio={property.condominio} />
               );
             })}
           </div>

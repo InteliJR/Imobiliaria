@@ -10,6 +10,8 @@ interface CardProps {
   landlord: string;
   tenant: string | null;
   imageSrc: string;
+  price: string;
+  condominio: string;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -21,6 +23,8 @@ const Card: React.FC<CardProps> = ({
   landlord,
   tenant,
   imageSrc,
+  price,
+  condominio,
 }) => {
   const navigate = useNavigate();
 
@@ -75,7 +79,7 @@ const Card: React.FC<CardProps> = ({
 
       {/* Price Section */}
       <div className="w-1/4 flex items-center justify-end pr-4 text-neutral-600">
-        R$ Imóvel | R$ Condomínio
+        R$ {price} | R$ {condominio}
       </div>
     </div>
   );
