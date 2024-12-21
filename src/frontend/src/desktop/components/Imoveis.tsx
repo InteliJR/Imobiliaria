@@ -1,6 +1,3 @@
-//TEM QUE ARRUMAR A PARTE DE FILTRAGEM PARA QUE O USUÁRIO CONSIGA FAZER UMA PESQUISA DENTRO DO CONTEXTO DE IMÓVEIS
-// INCLUSIVE ESSE REQUISITO JÁ ESTA IMPLEMENTADO DENTRO DO COMPONENTE DE CHAMADOS
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "./CardImovel";
