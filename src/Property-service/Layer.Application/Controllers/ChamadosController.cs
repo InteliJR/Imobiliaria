@@ -44,7 +44,7 @@ namespace property_management.Controllers
 
         // GET: api/chamados/imovel/{imovelId}
         [HttpGet("PegarChamadosPorImovel/{imovelId}")]
-        [Authorize(Policy = "AdminORJudiciario")]
+        [Authorize(Policy = "AllRoles")]
         public async Task<ActionResult<IEnumerable<Chamados>>> GetByImovelId(int imovelId)
         {
             var chamados = await _chamadosService.GetByImovelIdAsync(imovelId);

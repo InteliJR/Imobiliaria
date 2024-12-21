@@ -11,10 +11,7 @@ namespace Layer.Infrastructure.Database
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // DbSet para Pagamentos
         public DbSet<Payment> Pagamentos { get; set; }
@@ -22,12 +19,14 @@ namespace Layer.Infrastructure.Database
         // DbSet para Usuários        
         public DbSet<User> Usuarios { get; set; }
 
+        public DbSet<Contratos> Contratos { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Mapeamento para Pagamentos
-            modelBuilder.Entity<Payment>().ToTable("pagamentos");
+            modelBuilder.Entity<Payment>().ToTable("pagamentos").HasOne<Contratos>().WithMany().HasForeignKey(p => p.ContratoId);
 
             // Mapeamento para Usuários
             modelBuilder.Entity<User>().ToTable("usuarios"); 

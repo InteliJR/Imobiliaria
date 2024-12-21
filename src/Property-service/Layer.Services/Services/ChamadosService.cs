@@ -43,11 +43,13 @@ namespace Layer.Services.Services
             return await _dbContext.Chamados.ToListAsync();
         }
 
+        // Get chamados pelo id do chamado
         public async Task<Chamados> GetByIdAsync(int id)
         {
             return await _dbContext.Chamados.FindAsync(id);
         }
 
+        // Get chamados pelo Id do Imovel
         public async Task<IEnumerable<Chamados>> GetByImovelIdAsync(int imovelId)
         {
             return await _dbContext.Chamados.Where(c => c.IdImovel == imovelId).ToListAsync();
