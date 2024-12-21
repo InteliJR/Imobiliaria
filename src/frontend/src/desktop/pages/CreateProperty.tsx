@@ -20,18 +20,16 @@ export default function CreateProperty() {
   const [selectedLocadorId, setSelectedLocadorId] = useState<string | null>(null);
   const [selectedLocatarioId, setSelectedLocatarioId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  
+  const [photos, setPhotos] = useState<File[]>([]); // Estado para armazenar as fotos
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const locadoresResponse = await axiosInstance.get("auth/Locador/PegarTodosLocadores");
-        console.log(locadoresResponse.data);
         const locatariosResponse = await axiosInstance.get("auth/Locatario/PegarTodosLocatarios");
-        console.log(locatariosResponse.data);
         setLocadores(locadoresResponse.data || []);
         setLocatarios(locatariosResponse.data || []);
       } catch (error) {
-        console.error("Erro ao carregar dados:", error);
         showErrorToast("Erro ao carregar locadores e locatários.");
       }
     };
@@ -44,21 +42,27 @@ export default function CreateProperty() {
     setLoading(true);
 
     try {
-      const response = await axiosInstance.post("property/Imoveis/CriarUmNovoImovel", {
-        TipoImovel: propertyType,
-        Cep: cep,
-        Condominio: condoFee,
-        ValorImovel: rent,
-        Bairro: neighborhood,
-        Descricao: description,
-        Endereco: address,
-        Complemento: complement,
-        LocadorId: selectedLocadorId || null,
-        LocatarioId: selectedLocatarioId || null,
+      const formData = new FormData();
+      formData.append("TipoImovel", propertyType);
+      formData.append("Cep", cep);
+      formData.append("Condominio", condoFee);
+      formData.append("ValorImovel", rent);
+      formData.append("Bairro", neighborhood);
+      formData.append("Descricao", description);
+      formData.append("Endereco", address);
+      formData.append("Complemento", complement);
+      formData.append("LocadorId", selectedLocadorId || "");
+      formData.append("LocatarioId", selectedLocatarioId || "");
+
+      // Adicionar as fotos ao FormData
+      photos.forEach((photo, index) => {
+        formData.append("Fotos[]", photo); // Enviar todas as fotos como array
       });
 
+      // Alterar o endpoint para permitir upload de imagens
+      const response = await axiosInstance.post("property/Imoveis/CriarUmNovoImovel", formData);
+
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
-      // Resetar estado após o envio
       setPropertyType("Kitnet");
       setCep("");
       setAddress("");
@@ -69,23 +73,27 @@ export default function CreateProperty() {
       setDescription("");
       setSelectedLocadorId(null);
       setSelectedLocatarioId(null);
+      setPhotos([]); // Limpar fotos após o envio
     } catch (error: any) {
       console.error(error);
-      showErrorToast(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
-      );
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
     } finally {
       setLoading(false);
     }
   };
-  
+
+  // Função para lidar com o upload das fotos
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setPhotos(Array.from(e.target.files)); // Converter FileList para array
+    }
+  };
+
   return (
     <div>
       <Navbar />
       <div className="mx-10 mt-10">
-        <h1 className="text-3xl font-bold text-yellow-darker mb-6">
-          Adicionar Imóvel
-        </h1>
+        <h1 className="text-3xl font-bold text-yellow-darker mb-6">Adicionar Imóvel</h1>
         <div className="min-h-screen flex flex-col items-center justify-center">
           <div className="w-full max-w-xl py-6 bg-white rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -144,10 +152,21 @@ export default function CreateProperty() {
                   ))}
                 </select>
               </div>
+              
+              {/* Campo para envio de fotos */}
               <div>
-                <label className="block text-neutral-600 font-medium">
-                  Descrição
-                </label>
+                <label className="block text-neutral-600">Fotos do Imóvel</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  multiple
+                  className="h-10 w-full bg-transparent border border-neutral-200 px-2 rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block text-neutral-600 font-medium">Descrição</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
