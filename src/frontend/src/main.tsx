@@ -38,6 +38,7 @@ import CreateTicket from "./desktop/pages/CreateTicket";
 import CreatePropertyMobile from "./mobile/pages/CreateProperty";
 import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
+import CreateContract from "./mobile/pages/CreateContract";
 import Dashboard from "./mobile/pages/Dashboard";
 import ContratosMobile from "./mobile/pages/Contratos";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
@@ -67,11 +68,7 @@ const Root = () => {
         />
         <Route
           path="/imoveis/criar"
-          element={
-            <ProtectedRoute requiredRole="Admin">
-              {isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
-            </ProtectedRoute>
-          }
+          element={isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
         />
         {/* Chamados */}
         <Route
@@ -165,7 +162,8 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-       
+
+        {/* Contratos */}
         <Route
           path="/contratos"
           element={
@@ -174,6 +172,18 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/contratos/criar"
+          element={<CreateContract />}
+        />
+        {/* <Route
+          path="/contratos/criar"
+          element={
+            <ProtectedRoute>
+              {isDesktop ? <Contratos /> : <ContratosMobile />}
+            </ProtectedRoute>
+          }
+        /> */}
       </Routes>
 
       <ToastContainer />
