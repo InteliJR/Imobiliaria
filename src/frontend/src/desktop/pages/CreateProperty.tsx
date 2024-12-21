@@ -1,11 +1,10 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import FormField from "../components/Form/FormField";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig.ts";
-// import debounce from "lodash.debounce";
 
 export default function CreateProperty() {
   const [propertyType, setPropertyType] = useState("Kitnet");
@@ -18,8 +17,8 @@ export default function CreateProperty() {
   const [description, setDescription] = useState("");
   const [locadores, setLocadores] = useState([]); // Lista de locadores
   const [locatarios, setLocatarios] = useState([]); // Lista de locatários
-  const [selectedLocadorId, setSelectedLocadorId] = useState(null);
-  const [selectedLocatarioId, setSelectedLocatarioId] = useState(null);
+  const [selectedLocadorId, setSelectedLocadorId] = useState<string | null>(null);
+  const [selectedLocatarioId, setSelectedLocatarioId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   
   useEffect(() => {
@@ -122,7 +121,7 @@ export default function CreateProperty() {
                 >
                   <option value="">Selecione um locador</option>
                   {locadores.map((locador: any) => (
-                    <option key={locador.id} value={locador.id}>
+                    <option key={locador.locadorId} value={locador.locadorId}>
                       {locador.nomeCompletoLocador}
                     </option>
                   ))}
@@ -145,11 +144,21 @@ export default function CreateProperty() {
                   ))}
                 </select>
               </div>
-
+              <div>
+                <label className="block text-neutral-600 font-medium">
+                  Descrição
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="mt-1 block w-full border border-neutral-200 px-2 py-2 text-form-label rounded-md shadow-sm focus:border-brown-500 focus:ring-brown-500"
+                  rows={3}
+                ></textarea>
+              </div>
 
               <button
                 type="submit"
-                className="h-10 w-full bg-yellow-darker text-white rounded"
+                className="w-full py-2 px-4 bg-yellow-darker text-white rounded-md hover:bg-yellow-dark transition duration-300 focus:outline-none focus:bg-yellow-dark mt-4"
                 disabled={loading}
               >
                 {loading ? "Enviando..." : "Adicionar Imóvel"}
@@ -158,7 +167,8 @@ export default function CreateProperty() {
           </div>
         </div>
       </div>
-      <Footer></Footer>
+      {loading && <Loading type="spinner" />}
+      <Footer />
     </div>
   );
 }
