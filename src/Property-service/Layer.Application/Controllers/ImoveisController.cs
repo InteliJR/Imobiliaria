@@ -188,12 +188,20 @@ namespace Layer.Application.Controllers
             return Ok(novoImovel);
         }
 
-        [HttpGet("GerarUrlAssinadaImovel")]
+        [HttpGet("AssinarFoto")]
         [Authorize (Policy = "AllRoles")]
         public async Task<IActionResult> GenerateSignedUrlOfImovelImage(string idImage)
         {
             var url = await _imoveisService.GenerateSignedUrlOfImovelImageAsync(idImage);
             return Ok(url);
+        }
+
+        [HttpPost("AssinarFotos")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> GenerateSignedUrlOfImovelImages(List<string> idImages)
+        {
+            var urls = await _imoveisService.GenerateSignedUrlsOfImovelImagesAsync(idImages);
+            return Ok(urls);
         }
     }
 }

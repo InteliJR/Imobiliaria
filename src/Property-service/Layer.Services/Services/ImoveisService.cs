@@ -159,5 +159,10 @@ namespace Layer.Services.Services
         {
             return await _storageService.GenerateSignedUrlAsync(objectName, 5);
         }
+
+        public async Task<List<string>> GenerateSignedUrlsOfImovelImagesAsync(List<string> objectNames)
+        {
+            return await _storageService.GenerateSignedUrlsAsync(objectNames, 5);
+        }
     }
 }

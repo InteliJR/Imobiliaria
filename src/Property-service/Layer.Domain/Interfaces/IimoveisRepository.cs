@@ -21,6 +21,7 @@ namespace Layer.Domain.Interfaces
         Task<IEnumerable<Imoveis>> GetImoveisByIdLocador (int locadorId);
         Task<IEnumerable<Imoveis>> GetImoveisByIdLocatario (int locatarioId);
         Task<String> GenerateSignedUrlOfImovelImageAsync(string objectName);
+        Task<List<string>> GenerateSignedUrlsOfImovelImagesAsync(List<string> objectNames);
 
        // Task<string> UpdateImovelPhotoAsync(int id, string TempFilePath, string objectName);
     }

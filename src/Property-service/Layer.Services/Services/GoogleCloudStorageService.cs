@@ -130,9 +130,34 @@ public class GoogleCloudStorageService
         }
     }
 
+    public async Task<List<string>> GenerateSignedUrlsAsync(List<string> objectNames, int expiryDurationInMinutes)
+    {
+        var signedUrls = new List<string>();
 
+        foreach (var objectName in objectNames)
+        {
+            try
+            {
+                var requestTemplate = UrlSigner.RequestTemplate
+                    .FromBucket(_bucketName)
+                    .WithObjectName(objectName)
+                    .WithHttpMethod(HttpMethod.Get);
 
+                var options = UrlSigner.Options.FromDuration(TimeSpan.FromMinutes(expiryDurationInMinutes));
 
+                string signedUrl = _urlSigner.Sign(requestTemplate, options);
 
+                // Console.WriteLine($"URL assinada para o objeto {objectName}: {signedUrl}");
 
+                signedUrls.Add(signedUrl);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" Erro ao gerar URL assinada para o objeto {objectName}: {ex.Message}");
+                throw;
+            }
+        }
+
+        return await Task.FromResult(signedUrls);
+    }
 }
