@@ -57,7 +57,10 @@ const Card: React.FC<CardProps> = ({
 
         {/* Additional Details */}
         <p className="text-sm text-neutral-700 mb-1">
-          <strong>CEP:</strong> {postalCode} - {propertyType}
+          <strong>CEP:</strong> {postalCode}
+        </p>
+        <p className="text-sm text-neutral-700 mb-1">
+          <strong>Tipo de imóvel:</strong> {propertyType}
         </p>
         <p className="text-sm text-neutral-700 mb-1">
           <strong>Locador:</strong>{" "}
@@ -79,7 +82,7 @@ const Card: React.FC<CardProps> = ({
 
       {/* Price Section */}
       <div className="w-1/4 flex items-center justify-end pr-4 text-neutral-600">
-        R$ {price} | R$ {condominio}
+        {price} | {condominio}
       </div>
     </div>
   );
