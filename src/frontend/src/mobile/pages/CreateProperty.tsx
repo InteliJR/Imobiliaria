@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import FormField from "../components/Form/FormField";
+import FormFieldForMobile from "../components/Form/FormFieldForMobile.tsx";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
@@ -7,6 +7,15 @@ import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig.ts";
 
 export default function CreateProperty() {
+  interface Locador {
+    locadorId: string;
+    nomeCompletoLocador: string;
+  }
+  
+  interface Locatario {
+    locatarioId: string;
+    nomeCompletoLocatario: string;
+  }
   const [propertyType, setPropertyType] = useState("Kitnet");
   const [cep, setCep] = useState("");
   const [address, setAddress] = useState("");
@@ -15,8 +24,8 @@ export default function CreateProperty() {
   const [rent, setRent] = useState("");
   const [condoFee, setCondoFee] = useState("");
   const [description, setDescription] = useState("");
-  const [locadores, setLocadores] = useState([]); // Lista de locadores
-  const [locatarios, setLocatarios] = useState([]); // Lista de locatários
+  const [locadores, setLocadores] = useState<Locador[]>([]);
+  const [locatarios, setLocatarios] = useState<Locatario[]>([]);
   const [selectedLocadorId, setSelectedLocadorId] = useState<string | null>(null);
   const [selectedLocatarioId, setSelectedLocatarioId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -37,7 +46,7 @@ export default function CreateProperty() {
   }, []);
   
   // Função de envio do formulário
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -113,12 +122,12 @@ export default function CreateProperty() {
               </div>
 
               {/* Outros campos */}
-              <FormField label="CEP" placeholder="Digite o CEP" value={cep} onChange={(e: any) => setCep(e.target.value)} />
-              <FormField label="Endereço" placeholder="Digite o endereço" value={address} onChange={(e: any) => setAddress(e.target.value)} />
-              <FormField label="Complemento" placeholder="Digite o complemento" value={complement} onChange={(e: any) => setComplement(e.target.value)} />
-              <FormField label="Bairro" placeholder="Bairro do imóvel" value={neighborhood} onChange={(e: any) => setNeighborhood(e.target.value)} />
-              <FormField label="Aluguel (R$)" value={rent} onChange={(e: any) => setRent(e.target.value)} />
-              <FormField label="Condomínio (R$)" value={condoFee} onChange={(e: any) => setCondoFee(e.target.value)} />
+              <FormFieldForMobile label="CEP" placeholder="Digite o CEP" value={cep} onChange={(e) => setCep(e.target.value)} />
+              <FormFieldForMobile label="Endereço" placeholder="Digite o endereço" value={address} onChange={(e) => setAddress(e.target.value)} />
+              <FormFieldForMobile label="Complemento" placeholder="Digite o complemento" value={complement} onChange={(e) => setComplement(e.target.value)} />
+              <FormFieldForMobile label="Bairro" placeholder="Bairro do imóvel" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} />
+              <FormFieldForMobile label="Aluguel (R$)" value={rent} onChange={(e) => setRent(e.target.value)} />
+              <FormFieldForMobile label="Condomínio (R$)" value={condoFee} onChange={(e) => setCondoFee(e.target.value)} />
 
               {/* Dropdown de Locador */}
               <div>
