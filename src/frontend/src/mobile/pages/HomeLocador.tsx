@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Imoveis/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
@@ -158,12 +158,17 @@ export default function MainPage() {
                 {filteredData.map((property) => (
                   <Card
                     key={property.imovelId}
-                    title={property.tipoImovel}
-                    line1={property.bairro}
-                    line2={property.endereco}
-                    line3={`R$${property.valorImovel.toFixed(2)}`}
-                    imageUrl="/imovel.png"
-                    onClick={() => navigate(`/imovel/${property.imovelId}`)} // Pass imovelId in URL
+                    id={property.imovelId}
+                    propertyType={property.tipoImovel}
+                    neighborhood={property.bairro}
+                    address={property.endereco}
+                    postalCode={property.cep}
+                    landlord="Fulano de Tal"          // or property.landlord if it exists
+                    tenant={null}                     // or property.tenant if it exists
+                    imageSrc="/imovel.png"
+                    price={`R$${property.valorImovel.toFixed(2)}`}
+                    condominio={property.condominio?.toString() ?? "0"}
+                    onClick={() => navigate(`/imovel/${property.imovelId}`)}
                   />
                 ))}
               </div>

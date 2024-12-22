@@ -170,6 +170,23 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/home-locador"
+          element={
+            <ProtectedRoute>
+              <HomeLocadorMobile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/imovel/:imovelId"
+          element={
+            <ProtectedRoute>
+              <ImovelMobile />
+            </ProtectedRoute>
+          }
+        />
        
         <Route
           path="/contratos"
