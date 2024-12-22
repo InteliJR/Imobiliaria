@@ -65,7 +65,7 @@ export default function CreateProperty() {
 
       // Adicionar as fotos ao FormData
       photos.forEach((photo) => {
-        formData.append("Fotos[]", photo); // Enviar todas as fotos como array
+        formData.append("files", photo); // Enviar todas as fotos como array
       });
 
       // Alterar o endpoint para permitir upload de imagens

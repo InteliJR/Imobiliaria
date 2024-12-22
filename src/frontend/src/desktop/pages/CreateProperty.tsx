@@ -36,11 +36,20 @@ export default function CreateProperty() {
     fetchData();
   }, []);
   
+    // Função para lidar com o upload das fotos
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const filesArray = Array.from(e.target.files); // Converter para array
+        console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
+        setPhotos(filesArray); // Atualize o estado
+      }
+    };
+  
   // Função de envio do formulário
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
       const formData = new FormData();
       formData.append("TipoImovel", propertyType);
@@ -53,41 +62,33 @@ export default function CreateProperty() {
       formData.append("Complemento", complement);
       formData.append("LocadorId", selectedLocadorId || "");
       formData.append("LocatarioId", selectedLocatarioId || "");
-
-      // Adicionar as fotos ao FormData
-      photos.forEach((photo) => {
-        formData.append("Fotos[]", photo); // Enviar todas as fotos como array
+  
+      // Adicionar as fotos
+      photos.forEach((photo) => formData.append("files", photo));
+      
+      // Log detalhado
+      console.log("Verificar FormData:");
+      formData.forEach((value, key) => {
+        console.log(key, value);
       });
-
-      // Alterar o endpoint para permitir upload de imagens
-      const response = await axiosInstance.post("property/Imoveis/CriarUmNovoImovel", formData);
-
+  
+      const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
-      setPropertyType("Kitnet");
-      setCep("");
-      setAddress("");
-      setComplement("");
-      setNeighborhood("");
-      setRent("");
-      setCondoFee("");
-      setDescription("");
-      setSelectedLocadorId(null);
-      setSelectedLocatarioId(null);
-      setPhotos([]); // Limpar fotos após o envio
+      setPhotos([]);
     } catch (error: any) {
       console.error(error);
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
     } finally {
       setLoading(false);
     }
-  };
-
-  // Função para lidar com o upload das fotos
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setPhotos(Array.from(e.target.files)); // Converter FileList para array
-    }
-  };
+  };  
+  
 
   return (
     <div>
