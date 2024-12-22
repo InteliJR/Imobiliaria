@@ -65,7 +65,7 @@ export default function CreateProperty() {
   
       // Adicionar as fotos
       photos.forEach((photo) => formData.append("files", photo));
-      
+
       // Log detalhado
       console.log("Verificar FormData:");
       formData.forEach((value, key) => {
@@ -80,7 +80,17 @@ export default function CreateProperty() {
         }
       );
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
-      setPhotos([]);
+      setPropertyType("Kitnet");
+      setCep("");
+      setAddress("");
+      setComplement("");
+      setNeighborhood("");
+      setRent("");
+      setCondoFee("");
+      setDescription("");
+      setSelectedLocadorId(null);
+      setSelectedLocatarioId(null);
+      setPhotos([]); // Limpar fotos após o envio
     } catch (error: any) {
       console.error(error);
       showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");

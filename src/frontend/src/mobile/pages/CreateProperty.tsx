@@ -44,6 +44,12 @@ export default function CreateProperty() {
     };
     fetchData();
   }, []);
+    // Função para lidar com o upload das fotos
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setPhotos(Array.from(e.target.files)); // Converter FileList para array
+    }
+  };
   
   // Função de envio do formulário
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,12 +70,20 @@ export default function CreateProperty() {
       formData.append("LocatarioId", selectedLocatarioId || "");
 
       // Adicionar as fotos ao FormData
-      photos.forEach((photo) => {
-        formData.append("files", photo); // Enviar todas as fotos como array
-      });
+      photos.forEach((photo) => formData.append("files", photo));
 
-      // Alterar o endpoint para permitir upload de imagens
-      const response = await axiosInstance.post("property/Imoveis/CriarUmNovoImovel", formData);
+      console.log("Verificar FormData:");
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
+  
+      const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
       setPropertyType("Kitnet");
@@ -91,12 +105,7 @@ export default function CreateProperty() {
     }
   };
 
-  // Função para lidar com o upload das fotos
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setPhotos(Array.from(e.target.files)); // Converter FileList para array
-    }
-  };
+
 
   return (
     <div>
