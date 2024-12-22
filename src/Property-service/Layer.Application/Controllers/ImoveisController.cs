@@ -155,13 +155,18 @@ namespace Layer.Application.Controllers
         }
         
         [HttpPost("CriarImovelComFoto")]
-        [Consumes("multipart/form-data")]
+        // [Consumes("multipart/form-data")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> PostImoveisWithPhoto([FromForm] NewImoveis newImovel, IFormFileCollection files)
+        public async Task<IActionResult> PostImoveisWithPhoto([FromForm] NewImoveis newImovel, [FromForm] IFormFileCollection files)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (files == null || files.Count == 0)
+            {
+                return BadRequest("Nenhum arquivo foi enviado.");
             }
 
             // Criar o imóvel com o caminho da foto
