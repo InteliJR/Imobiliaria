@@ -9,6 +9,8 @@ import Voltar from "../../components/Botoes/Voltar";
 import Botao from "../../components/Botoes/Botao";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
+import axiosInstance from "../../services/axiosConfig";
+import { AxiosError } from "axios";
 
 interface Contrato {
   contratoId: string;
@@ -38,36 +40,31 @@ export default function Contratos() {
 
   const fetchContratos = async () => {
     try {
-      // Simulação de fetch
-      const mockContratos: Contrato[] = Array.from({ length: 6 }, (_, index) => ({
-        contratoId: `C-${index + 1}`,
-        documentos: ["contrato.pdf", "vistoria.pdf"],
-        valorAluguel: 1500 + index * 100,
-        dataEncerramento: `2024-12-${index + 25}`,
-        locadorId: `Locador ${index + 1}`,
-        locatarioId: `Locatário ${index + 1}`,
-        imovelId: `Imóvel ${index + 1}`,
-        tipoGarantia: "Fiador",
-        condicoesEspeciais: "Sem atrasos",
-        status: index % 2 === 0 ? "Ativo" : "Encerrado",
-        iptu: 200 + index * 50,
-        dataPagamento: "2024-01-01",
-        taxaAdm: 150,
-        renovado: index % 2 === 0,
-        valorReajuste: 100 + index * 20,
-      }));
-
-      setContratos(mockContratos);
-    } catch (error: any) {
+      setLoading(true); // Inicia o estado de carregamento
+      const response = await axiosInstance.get("property/Contratos/PegarTodosOsContratos");
+  
+      if (response.data) {
+        setContratos(response.data); // Atualiza o estado com os contratos recebidos
+      } else {
+        setContratos([]); // Garante que contratos seja uma lista vazia se não houver dados
+      }
+  
+      setLoading(false); // Finaliza o estado de carregamento
+    } catch (error) {
       console.error(error);
-      showErrorToast(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
-      );
-    } finally {
-      setLoading(false);
+  
+      if (error instanceof AxiosError) {
+        showErrorToast(
+          error.response?.data?.message || "Erro ao se conectar com o servidor."
+        );
+      } else {
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
+  
+      setLoading(false); // Finaliza o estado de carregamento em caso de erro
     }
   };
-
+  
   useEffect(() => {
     fetchContratos();
   }, []);
