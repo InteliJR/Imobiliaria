@@ -40,10 +40,10 @@ export default function Login() {
                 navigate('/home-locatario');
             }
             else if (role === 'Admin') {
-                navigate('/dash');
+                navigate('/imoveis');
             }
             else if (role === 'Judiciario') {
-                navigate('/dash');
+                navigate('/dashboard');
             }
             else {
                 navigate('/');
