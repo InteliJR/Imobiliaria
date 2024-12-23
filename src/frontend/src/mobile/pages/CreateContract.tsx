@@ -8,8 +8,7 @@ import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import axios from "axios";
 import CurrencyInput from "react-currency-input-field"; // máscara de valores monetários
-import { getServiceUrl } from "../../services/apiService";
-import debounce from "lodash.debounce";
+// import debounce from "lodash.debounce";
 
 export default function CreateContractMobile() {
   const [rentalValue, setRentalValue] = useState("");
@@ -25,23 +24,57 @@ export default function CreateContractMobile() {
   const [renewed, setRenewed] = useState(false);
   const [renewalEndDate, setRenewalEndDate] = useState("");
   const [adjustmentValue, setAdjustmentValue] = useState("");
-  const [documents, setDocuments] = useState<File | null>(null);
+  const [documents, setDocuments] = useState<File[] | null >([]);
+  const [locatarioEmail, setLocatarioEmail] = useState("");
+  const [locadorEmail, setLocadorEmail] = useState("");
+  
 
   // Estados relacionados à busca em outras tabelas
-  const [lessorQuery, setLessorQuery] = useState("");
-  const [lessorResults, setLessorResults] = useState([]);
-  const [lessorId, setLessorId] = useState(null);
-  const [renterQuery, setRenterQuery] = useState("");
-  const [renterResults, setRenterResults] = useState([]);
-  const [renterId, setRenterId] = useState(null);
-  const [propertyQuery, setPropertyQuery] = useState("");
-  const [propertyResults, setPropertyResults] = useState([]);
-  const [propertyId, setPropertyId] = useState(null);
   const [isLoadingLessor, setIsLoadingLessor] = useState(false);
   const [isLoadingRenter, setIsLoadingRenter] = useState(false);
   const [isLoadingProperty, setIsLoadingProperty] = useState(false);
+  const [locadores, setLocadores] = useState([]); // Lista de locadores
+  const [locatarios, setLocatarios] = useState([]); // Lista de locatários
+  const [imoveis, setImoveis] = useState([]);
+
+
+  const [selectedLocadorId, setSelectedLocadorId] = useState<string | null>(null);
+  const [selectedLocatarioId, setSelectedLocatarioId] = useState<string | null>(null);
+  const [selectedImovelId, setSelectedImovelId] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoadingLessor(true);
+        setIsLoadingRenter(true);
+        setIsLoadingProperty(true);
+        const locadoresResponse = await axiosInstance.get("auth/Locador/PegarTodosLocadores");
+        const locatariosResponse = await axiosInstance.get("auth/Locatario/PegarTodosLocatarios");
+        const imoveisResponse = await axiosInstance.get("property/Imoveis/PegarTodosImoveis");
+        setLocadores(locadoresResponse.data || []);
+        setLocatarios(locatariosResponse.data || []);
+        setImoveis(imoveisResponse.data || []);
+        console.log(locadoresResponse.data, locatariosResponse.data, imoveisResponse.data);
+      } catch (error) {
+        showErrorToast("Erro ao carregar locadores, locatários e imoveis.");
+      } finally {
+        setIsLoadingLessor(false);
+        setIsLoadingRenter(false);
+        setIsLoadingProperty(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files); // Converter para array
+      console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
+      setDocuments(filesArray); // Atualize o estado
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,9 +88,9 @@ export default function CreateContractMobile() {
       !paymentDate.trim() ||
       !adminFee.trim() ||
       !guaranteeType.trim() ||
-      !lessorId ||
-      !renterId ||
-      !propertyId
+      !selectedLocadorId ||
+      !selectedLocatarioId ||
+      !selectedImovelId
     ) {
       showErrorToast(
         "Por favor, preencha todos os campos."
@@ -65,11 +98,12 @@ export default function CreateContractMobile() {
       return;
     }
 
+
     setIsLoading(true);
 
     try {
       const formData = new FormData();
-      formData.append("documents", documents || "");
+      
       formData.append("valor_aluguel", rentalValue);
       formData.append("data_inicio", startDate);
       formData.append("data_encerramento", endDate);
@@ -83,13 +117,21 @@ export default function CreateContractMobile() {
       formData.append("renovado", renewed ? "true" : "false");
       formData.append("data_encerramento_renovacao", renewalEndDate || "");
       formData.append("valor_reajuste", adjustmentValue);
-      formData.append("locadorid", lessorId || "");
-      formData.append("locatarioid", renterId || "");
-      formData.append("imovelid", propertyId || "");
+      formData.append("locadorid", selectedLocadorId || "");
+      formData.append("locatarioid", selectedLocatarioId || "");
+      formData.append("imovelid", selectedImovelId || "");
 
-      const response = await axiosInstance.post(
-        getServiceUrl("contractService", "/Contratos/CriarUmNovoContrato"),
-        formData
+      // formData.append("files", documents || "");
+
+      documents?.forEach((document) => formData.append("files", document));
+
+      const response = await axiosInstance.post(`property/Contratos/CriarContratoComMultiplosArquivos?emailLocatario=${encodeURIComponent(locatarioEmail)}&emailLocador=${encodeURIComponent(locadorEmail)}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       showSuccessToast(
@@ -110,16 +152,9 @@ export default function CreateContractMobile() {
       setRenewed(false);
       setRenewalEndDate("");
       setAdjustmentValue("");
-      setDocuments(null);
-      setLessorQuery("");
-      setLessorResults([]);
-      setLessorId(null);
-      setRenterQuery("");
-      setRenterResults([]);
-      setRenterId(null);
-      setPropertyQuery("");
-      setPropertyResults([]);
-      setPropertyId(null);
+      setDocuments([]);
+      setLocadorEmail("");
+      setLocatarioEmail("");
     } catch (error) {
       console.error(error);
       if (axios.isAxiosError(error) && error.response) {
@@ -134,57 +169,6 @@ export default function CreateContractMobile() {
     }
   };
 
-  const fetchResults = useCallback(
-    debounce(async (query, setResults, serviceUrl) => {
-      if (!query) {
-        setResults([]);
-        return;
-      }
-
-      try {
-        const response = await axiosInstance.get(serviceUrl, {
-          params: { query },
-        });
-        setResults(response.data || []);
-      } catch (error) {
-        console.error("Erro ao buscar resultados:", error);
-        showErrorToast("Erro ao buscar resultados.");
-      }
-    }, 300),
-    []
-  );
-
-  useEffect(() => {
-    setIsLoadingLessor(true);
-    setIsLoadingLessor(false);
-
-    fetchResults(
-      lessorQuery,
-      setLessorResults,
-      getServiceUrl("userService", "/Locadores/Buscar")
-    );
-  }, [lessorQuery, fetchResults]);
-
-  useEffect(() => {
-    setIsLoadingRenter(true);
-    fetchResults(
-      renterQuery,
-      setRenterResults,
-      getServiceUrl("userService", "/Locatarios/Buscar")
-    );
-    setIsLoadingRenter(false);
-  }, [renterQuery, fetchResults]);
-
-  useEffect(() => {
-    setIsLoadingProperty(true);
-    fetchResults(
-      propertyQuery,
-      setPropertyResults,
-      getServiceUrl("propertyService", "/Imoveis/Buscar")
-    );
-    setIsLoadingProperty(false);
-  }, [propertyQuery, fetchResults]);
-
   return (
     <main className="main-custom">
       <Navbar />
@@ -194,6 +178,36 @@ export default function CreateContractMobile() {
         <div className="flex flex-col items-center justify-center">
           <div className="w-full max-w-xl py-3 pb-5 rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex flex-col w-full">
+                <label htmlFor="locatarioEmail" className="text-sm text-neutral-600 mb-1">
+                  Email do Locatário
+                </label>
+                <input
+                  type="email"
+                  id="locatarioEmail"
+                  name="locatarioEmail"
+                  placeholder="Email do Locatário"
+                  value={locatarioEmail}
+                  onChange={(e) => setLocatarioEmail(e.target.value)}
+                  className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col w-full">
+                <label htmlFor="locadorEmail" className="text-sm text-neutral-600 mb-1">
+                  Email do Locador
+                </label>
+                <input
+                  type="email"
+                  id="locadorEmail"
+                  name="locadorEmail"
+                  placeholder="Email do Locador"
+                  value={locadorEmail}
+                  onChange={(e) => setLocadorEmail(e.target.value)}
+                  className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                />
+              </div>
+
               {/* Valor do Aluguel */}
               <div className="flex flex-col w-full">
                 <label
@@ -311,91 +325,73 @@ export default function CreateContractMobile() {
                 onChange={(e) => setGuaranteeType(e.target.value)}
               />
               {/* Imóvel */}
-              <FormField
-                label="Imóvel"
-                placeholder="Digite para buscar"
-                value={propertyQuery}
-                onChange={(e) => setPropertyQuery(e.target.value)}
-              />
               {isLoadingProperty && (
                 <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
               )}
-              {propertyResults.length > 0 && (
-                <ul className="border border-neutral-200 rounded mt-2">
-                  {propertyResults.map((property: any) => (
-                    <li
-                      key={property.id}
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        setPropertyQuery(property.nome);
-                        setPropertyId(property.id);
-                      }}
-                    >
-                      {property.nome}
-                    </li>
+              <div>
+                <label className="block text-neutral-600">Imóvel</label>
+                <select
+                  value={selectedLocadorId || ""}
+                  onChange={(e) => setSelectedImovelId(e.target.value)}
+                  className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
+                >
+                  <option value="">Selecione um imóvel</option>
+                  {imoveis.map((imovel: any) => (
+                    <option key={imovel.imovelId} value={imovel.imovelId}>
+                      {imovel.imovelId}
+                    </option>
                   ))}
-                </ul>
-              )}
+                </select>
+              </div>
               {/* Locador */}
-              <FormField
-                label="Locador"
-                placeholder="Digite para buscar"
-                value={lessorQuery}
-                onChange={(e) => setLessorQuery(e.target.value)}
-              />
               {isLoadingLessor && (
                 <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
               )}
-              {lessorResults.length > 0 && (
-                <ul className="border border-neutral-200 rounded mt-2">
-                  {lessorResults.map((lessor: any) => (
-                    <li
-                      key={lessor.id}
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        setLessorQuery(lessor.nome);
-                        setLessorId(lessor.id);
-                      }}
-                    >
-                      {lessor.nome}
-                    </li>
+              <div>
+                <label className="block text-neutral-600">Locador</label>
+                <select
+                  value={selectedLocadorId || ""}
+                  onChange={(e) => setSelectedLocadorId(e.target.value)}
+                  className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
+                >
+                  <option value="">Selecione um locador</option>
+                  {locadores.map((locador: any) => (
+                    <option key={locador.locadorId} value={locador.locadorId}>
+                      {locador.nomeCompletoLocador}
+                    </option>
                   ))}
-                </ul>
-              )}
+                </select>
+              </div>
+
               {/* Locatário */}
-              <FormField
-                label="Locatário"
-                placeholder="Digite para buscar"
-                value={renterQuery}
-                onChange={(e) => setRenterQuery(e.target.value)}
-              />
               {isLoadingRenter && (
                 <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
               )}
-              {renterResults.length > 0 && (
-                <ul className="border border-neutral-200 rounded mt-2">
-                  {renterResults.map((renter: any) => (
-                    <li
-                      key={renter.id}
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        setRenterQuery(renter.nome);
-                        setRenterId(renter.id);
-                      }}
-                    >
-                      {renter.nome}
-                    </li>
+              <div>
+                <label className="block text-neutral-600">Locatário</label>
+                <select
+                  value={selectedLocatarioId || ""}
+                  onChange={(e) => setSelectedLocatarioId(e.target.value)}
+                  className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
+                >
+                  <option value="">Selecione um locatário</option>
+                  {locatarios.map((locatario: any) => (
+                    <option key={locatario.locatarioId} value={locatario.locatarioId}>
+                      {locatario.nomeCompletoLocatario}
+                    </option>
                   ))}
-                </ul>
-              )}
+                </select>
+              </div>
+              
               {/* Envio de documentos: */}
               <div className="flex flex-col">
                 {/* Label com fonte de 13px e margem inferior de 5px */}
                 <label className="block text-neutral-600">Documento</label>
                 <input
                   type="file"
-                  onChange={(e) => setDocuments(e.target.files?.[0] ?? null)}
+                  onChange={handleFileChange}
                   className="h-10 flex-grow mt-1 block w-full rounded-md px-2 text-neutral-700 shadow-sm focus:border-neutral-300 cursor-pointer"
+                  multiple
                 />
               </div>
               <button
