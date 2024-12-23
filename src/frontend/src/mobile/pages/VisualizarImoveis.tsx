@@ -8,8 +8,15 @@ import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 export default function Properties() {
+  const navigate = useNavigate();
+
+  const handleRedirection = () => {
+    navigate("/imoveis/criar");
+  }
+
   interface Property {
     id: number;
     address: string;
@@ -111,6 +118,7 @@ export default function Properties() {
         <button
           type="submit"
           className="w-full h-10 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+          onClick={handleRedirection}
         >
           Cadastrar Imóvel
         </button>

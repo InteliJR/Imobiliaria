@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaClipboardList, FaUsers, FaFileContract } from "react-icons/fa"; // Importing icons
-import Dashboard from "../components/Dashboard";
+// import Dashboard from "../components/Dashboard";
 import Usuarios from "../components/Usuarios";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
@@ -8,12 +8,13 @@ import Footer from "../../components/Footer/FooterSmall";
 export default function VisualizarUsuarios() {
   const navigate = useNavigate();
 
+
   return (
     <div className="bg-[#F0F0F0]">
       <Navbar />
-      <div className="mt-10 mb-24">
+      {/* <div className="mt-10 mb-24">
         <Dashboard />
-      </div>
+      </div> */}
       {/* New Row with Clickable Options */}
       <div className="flex justify-start gap-6 ms-2">
         <button
