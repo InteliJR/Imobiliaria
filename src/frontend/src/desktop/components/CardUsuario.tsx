@@ -22,7 +22,7 @@ const LandlordCard: React.FC<LandlordCardProps> = ({
 
   // Function to handle navigation
   const handleClick = () => {
-    navigate(`/locador/${id}`);
+    navigate(`/perfil/${id}`);
   };
 
   return (
