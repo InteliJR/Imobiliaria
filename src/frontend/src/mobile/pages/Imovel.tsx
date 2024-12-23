@@ -43,18 +43,18 @@ export default function PropertyDetails() {
       const property: Property = response.data;
       // console.log(property);
       if (typeof property.fotos === 'string') {
-        property.fotos = property.fotos.split(",").map((foto) => foto.trim());
+        property.fotos = property.fotos.split(";").map((foto) => foto.trim());
       }
 
-      console.log(property.fotos);
+      // console.log(property.fotos);
 
   
       // array apenas com os nomes dos objetos no Storage
-      const allPhotos = property.fotos.map((foto) =>
+      const allPhotos = property.fotos ? property.fotos.map((foto) =>
         foto.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
-      );
+      ) : [];
 
-      console.log(allPhotos);
+      // console.log(allPhotos);
       // Assinar as fotos
       const responsePhotos = await axiosInstance.post('property/Imoveis/AssinarFotos', allPhotos);
       if (!responsePhotos.data) {
@@ -64,7 +64,7 @@ export default function PropertyDetails() {
 
       // Substituir as URLs das fotos pelas URLs assinadas
       property.fotos = responsePhotos.data;
-      console.log(property.fotos);
+      // console.log(property.fotos);
 
       setProperty(property);
       // console.log(property)

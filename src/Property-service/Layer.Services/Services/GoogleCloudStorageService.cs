@@ -160,4 +160,18 @@ public class GoogleCloudStorageService
 
         return await Task.FromResult(signedUrls);
     }
+
+    public async Task DeleteFileAsync(string objectName)
+    {
+        try
+        {
+            await _storageClient.DeleteObjectAsync(_bucketName, objectName);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao deletar o arquivo {objectName}: {ex.Message}");
+            throw;
+        }
+    }
+
 }

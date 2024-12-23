@@ -40,7 +40,7 @@ const ImovelImage: React.FC<ImageViewerProps> = ({ images }) => {
       {images.length > 1 && (
         <button
           onClick={openGallery}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
         >
           Ver mais
         </button>

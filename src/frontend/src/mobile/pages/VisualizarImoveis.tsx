@@ -41,7 +41,7 @@ export default function MainPage() {
       const properties: Property[] = response.data;
       properties.forEach((property) => {
         if (typeof property.fotos === 'string') {
-          property.fotos = property.fotos.split(",").map((foto) => foto.trim());
+          property.fotos = property.fotos.split(";").map((foto) => foto.trim());
           }
       });
   

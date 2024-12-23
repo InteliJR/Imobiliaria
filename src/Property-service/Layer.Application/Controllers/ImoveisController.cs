@@ -203,5 +203,22 @@ namespace Layer.Application.Controllers
             var urls = await _imoveisService.GenerateSignedUrlsOfImovelImagesAsync(idImages);
             return Ok(urls);
         }
+
+        [HttpPost("AdicionarFotos/{id}")]
+        [Consumes("multipart/form-data")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> AddImovelPhotos(int id, IFormFileCollection files)
+        {
+            var urls = await _imoveisService.AddImovelPhotosAsync(id, files);
+            return Ok(urls);
+        }
+
+        [HttpDelete("DeletarFoto/{id}")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> DeleteImovelPhoto(int id, string objectName)
+        {
+            await _imoveisService.DeleteImovelPhotoAsync(id, objectName);
+            return Ok();
+        }
     }
 }

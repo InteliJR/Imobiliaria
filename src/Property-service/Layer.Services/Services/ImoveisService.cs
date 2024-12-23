@@ -164,5 +164,78 @@ namespace Layer.Services.Services
         {
             return await _storageService.GenerateSignedUrlsAsync(objectNames, 5);
         }
+
+        public async Task<List<string>> AddImovelPhotosAsync(int id, IFormFileCollection files)
+        {
+            var imovel = await _dbcontext.Imoveis.FindAsync(id);
+
+            if (imovel == null)
+            {
+                throw new Exception("Imóvel não encontrado.");
+            }
+
+            var fotos = new List<string>();
+
+            // Fazer upload de cada arquivo
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    // Gerar caminho temporário para o arquivo
+                    var tempFilePath = Path.GetTempFileName();
+
+                    // Salvar temporariamente no servidor
+                    using (var stream = new FileStream(tempFilePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    // Fazer upload para o Firebase Storage
+                    var objectName = $"imoveis/{Guid.NewGuid()}_{file.FileName}";
+                    var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
+
+                    fotos.Add(publicUrl);
+                }
+            }
+
+            var todasFotos = new List<string>();
+
+            // Pfotos atuais se tiver
+            if (!string.IsNullOrEmpty(imovel.Fotos))
+            {
+                var fotosAtuais = imovel.Fotos.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+                todasFotos.AddRange(fotosAtuais); // primeiro fotos antigas
+            }
+
+            // novas fotos
+            todasFotos.AddRange(fotos);
+
+            // antigas primeiro, novas depois
+            imovel.Fotos = string.Join(";", todasFotos);
+            _dbcontext.Imoveis.Update(imovel);
+            await _dbcontext.SaveChangesAsync();
+
+            return todasFotos;
+        }
+
+        public async Task<int> DeleteImovelPhotoAsync(int id, string objectName)
+        {
+            var imovel = await _dbcontext.Imoveis.FindAsync(id);
+
+            if (imovel == null)
+            {
+                throw new Exception("Imóvel não encontrado.");
+            }
+
+            // Deletar a foto do Firebase Storage
+            await _storageService.DeleteFileAsync(objectName);
+
+            // Atualizar o registro no banco de dados
+            imovel.Fotos = imovel.Fotos.Replace(objectName, "").Replace(";;", ";");
+            _dbcontext.Imoveis.Update(imovel);
+            return await _dbcontext.SaveChangesAsync();
+        }
+
+
     }
 }
