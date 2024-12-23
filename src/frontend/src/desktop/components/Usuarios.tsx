@@ -5,33 +5,83 @@ import FormField from "../../mobile/components/Form/FormField";
 import Loading from "../../components/Loading";
 import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
-import { AxiosError } from "axios";
+// import { AxiosError } from "axios";
+import axiosInstance from "../../services/axiosConfig";
 
 export default function UsuariosComponent() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
 
-  const fetchUsers = () => {
+  const [data, setData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [search, setSearch] = useState(""); // Estado para o campo de busca
+
+  const getAllInfo = async () => {
     try {
-      console.log("Traz os usuários");
+      const responseAuth = await axiosInstance.get(
+        "auth/User/PegarTodosUsuarios"
+      );
+      const responseProperty = await axiosInstance.get(
+        "property/Imoveis/PegarTodosImoveis"
+      );
 
-      // Requisição...
-      setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
-    } catch (error) {
-      console.error(error);
-
-      if (error instanceof AxiosError) {
-        showErrorToast(
-          error.response?.data?.message || "Erro ao se conectar com o servidor."
-        );
-      } else {
-        showErrorToast("Erro ao se conectar com o servidor.");
+      if (!responseAuth.data || !responseProperty.data) {
+        console.error("Dados de resposta inválidos");
+        return;
       }
+
+      // Você pode manter ou ajustar o filtro de usuários conforme necessário
+      const usersWithRelevantRoles = responseAuth.data;
+
+      const combinedData = usersWithRelevantRoles.map((user: any) => {
+        // Filtrar imóveis relacionados ao usuário usando roleId
+        const imoveis = responseProperty.data.filter((imovel: any) => {
+          const isLocador = Number(imovel.locadorId) === Number(user.roleId);
+          const isLocatario =
+            Number(imovel.locatarioId) === Number(user.roleId);
+          return isLocador || isLocatario;
+        });
+
+        console.log(`Usuário: ${user.nome}, Imóveis encontrados:`, imoveis);
+
+        return {
+          ...user,
+          nImoveis: imoveis.length,
+          imoveis,
+        };
+      });
+
+      setData(combinedData);
+      setFilteredData(combinedData); // Inicialmente exibir todos os usuários
+      console.log("Dados combinados:", combinedData);
+    } catch (error: any) {
+      showErrorToast(
+        error?.response?.data?.message || "Erro ao se conectar com o servidor."
+      );
+      console.error(
+        "Erro ao obter informações de usuários ou imóveis:",
+        error.message
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    getAllInfo();
+  }, []);
+
+  const handleFilter = (e: React.FormEvent) => {
+    e.preventDefault();
+    const searchLower = search.toLowerCase();
+    const filtered = data.filter((user: any) =>
+      user.nome.toLowerCase().includes(searchLower)
+    );
+    setFilteredData(filtered);
+  };
+
+  useEffect(() => {
+    getAllInfo();
   }, []);
 
   return (
@@ -49,9 +99,15 @@ export default function UsuariosComponent() {
       </div>
 
       {/* Formulário */}
-      <form className="flex items-end gap-4 mb-6">
+      <form className="flex items-end gap-4 mb-6" onSubmit={handleFilter}>
         <div className="flex-grow">
-          <FormField label="Buscar usuário" value="" onChange={() => {}} />
+          <FormField
+            label="Buscar usuário"
+            value={search}
+            onChange={(e: any) =>
+              setSearch(e.target.value)
+            }
+          />
         </div>
         <button
           type="submit"
@@ -68,34 +124,23 @@ export default function UsuariosComponent() {
         <div className="h-[1px] bg-neutral-400 mb-4"></div>
         {loading ? (
           <Loading type="skeleton" />
+        ) : filteredData.length === 0 ? (
+          <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+            Nenhum usuário encontrado.
+          </p>
         ) : (
-          /* {users.length === 0 ? ( // Verifica se a lista de usuários está vazia
-              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum usuário encontrado.
-              </p>
-            ) : */
           <div className="flex flex-col gap-6">
-            {Array.from({ length: 6 }, (_, index) => {
-              // Sample data for each card
-              const name =
-                index % 2 === 0 ? "Renan Feitosa" : "Lucas Matheus Nunes";
-              const role = "Locador";
-              const cpf = `041.675.157-${17 + index}`;
-              const rg = `37953.553-${1 + index}`;
-              const associatedProperties = 5 + index;
-
-              return (
-                <LandlordCard
-                  key={index}
-                  id={index + 1}
-                  name={name}
-                  role={role}
-                  cpf={cpf}
-                  rg={rg}
-                  associatedProperties={associatedProperties}
-                />
-              );
-            })}
+            {filteredData.map((user: any) => (
+              <LandlordCard
+                key={user.id}
+                id={user.id}
+                name={user.nome || "Nome não disponível"}
+                role={user.role || "Função não disponível"}
+                cpf={user.cpf || "não encontrado"}
+                rg={user.rg || "não encontrado"}
+                associatedProperties={user.nImoveis}
+              />
+            ))}
           </div>
         )}
       </section>
