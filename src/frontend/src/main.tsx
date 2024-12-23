@@ -40,6 +40,7 @@ import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
 import Dashboard from "./mobile/pages/Dashboard";
 import ContratosMobile from "./mobile/pages/Contratos";
+import ContractView from "./mobile/pages/ContractView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 
 const Root = () => {
@@ -165,7 +166,16 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-       
+
+        <Route path="/contratos/:id" element={<ContractView />} />
+        {/* <Route
+          path="/contratos"
+          element={
+            <ProtectedRoute>
+              <ContractView />
+            </ProtectedRoute>
+          }
+        /> */}
         <Route
           path="/contratos"
           element={
