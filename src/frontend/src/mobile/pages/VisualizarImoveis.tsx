@@ -7,28 +7,106 @@ import FilterIcon from "/Filter.svg";
 import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
+import axiosInstance from "../../services/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 export default function Properties() {
+  const navigate = useNavigate();
+
+  const handleRedirection = () => {
+    navigate("/imoveis/criar");
+  }
+
+  interface Property {
+    id: number;
+    address: string;
+    neighborhood: string;
+    postalCode: string;
+    propertyType: string;
+    landlord: string;
+    tenant: string | null;
+    imageSrc: string;
+    price: string;
+    condominio: string;
+  }
+
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
-  const fetchProperties = () => {
+  const fetchProperties = async () => {
     try {
-      console.log("Traz os imóveis");
-
-      // Requisição...
-    } catch (error: any) {
-      console.error(error);
-
-      showErrorToast(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
+      const propertiesResponse = await axiosInstance.get(
+        "property/Imoveis/PegarTodosImoveis"
       );
-    } finally {
-      setLoading(false);
+      const usersResponse = await axiosInstance.get(
+        "auth/User/PegarTodosUsuarios"
+      );
+  
+      if (!propertiesResponse.data || !usersResponse.data) {
+        console.error("Dados de resposta inválidos");
+        return;
+      }
+  
+      const properties = propertiesResponse.data;
+      const users = usersResponse.data;
+  
+      // Mesclando os dados de imóveis com locador e locatário
+      const mergedProperties = properties.map(
+        (property: {
+          imovelId: any;
+          endereco: string;
+          bairro: string;
+          cep: string;
+          tipoImovel: string;
+          locadorId: any;
+          locatarioId: any;
+          fotos: any;
+          valorImovel: any;
+          condominio: any;
+          complemento: any;
+        }) => {
+          // Encontrando os dados do locador
+          const landlord =
+            users.find((user: { usuarioId: any }) => user.usuarioId === property.locadorId)?.nome || "Locador não encontrado";
+  
+          // Encontrando os dados do locatário
+          const tenant =
+            users.find((user: { usuarioId: any }) => user.usuarioId === property.locatarioId)?.nome || "Locatário não encontrado";
+  
+          return {
+            id: property.imovelId,
+            address: `${property.endereco} ${property.complemento || ""}`.trim(),
+            neighborhood: property.bairro,
+            postalCode: property.cep,
+            propertyType: property.tipoImovel,
+            landlord: landlord,
+            tenant: tenant,
+            imageSrc: property.fotos?.[0]?.url || "/imovel.png", // Suporte para foto do backend ou imagem padrão
+            price: `R$ ${property.valorImovel.toLocaleString("pt-BR")}`,
+            condominio: property.condominio != 0 ? `R$ ${property.condominio}` : "Este imóvel não tem condominio"
+          };
+        }
+      );
+  
+      // Atualizando os estados com os dados mesclados
+      setProperties(mergedProperties);
+      setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
+      setFilteredData(mergedProperties);
+      console.log(mergedProperties);
+  
+    } catch (error) {
+      console.error(error);
+      showErrorToast("Erro ao se conectar com o servidor.");
     }
   };
 
+
   useEffect(() => {
-    fetchProperties();
+    const fetchData = async () => {
+      await fetchProperties();
+    }
+    fetchData();
   }, []);
 
   return (
@@ -40,6 +118,7 @@ export default function Properties() {
         <button
           type="submit"
           className="w-full h-10 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+          onClick={handleRedirection}
         >
           Cadastrar Imóvel
         </button>
@@ -71,24 +150,32 @@ export default function Properties() {
           <section className="flex-grow flex flex-col gap-y-5">
             <h2 className="text-2xl font-semibold">Resultados</h2>
             <div className="h-[1px] bg-black"></div>
-            {Array.from({ length: 6 }).length === 0 ? ( // Substitua por uma verificação da sua fonte de dados
-              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum imóvel encontrado.
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }, (_, index) => (
-                  <Card
-                    key={index}
-                    title={`Imóvel ${index + 1}`}
-                    line1="Lucas Matheus Nunes"
-                    line2="Bubuntantã"
-                    line3="07/01/2024 - Em aberto"
-                    imageUrl="/imovel.png"
-                  />
-                ))}
-              </div>
-            )}
+            {loading ? (
+          <Loading type="skeleton" />
+        ) : properties.length === 0 ? (
+          <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+            Nenhum imóvel encontrado.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-6">
+            {filteredData.map((property) => {
+              return (
+                <Card
+                  key={property.id}
+                  id={property.id}
+                  address={property.address}
+                  neighborhood={property.neighborhood}
+                  postalCode={property.postalCode}
+                  propertyType={property.propertyType}
+                  landlord={property.landlord}
+                  tenant={property.tenant}
+                  imageSrc={property.imageSrc}
+                  price={property.price}
+                  condominio={property.condominio} />
+              );
+            })}
+          </div>
+        )}
           </section>
         )}
       </section>

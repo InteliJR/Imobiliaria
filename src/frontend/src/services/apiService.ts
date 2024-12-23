@@ -9,3 +9,4 @@ const services = {
 export const getServiceUrl = (serviceName: keyof typeof services, path: string): string => {
     return `${services[serviceName]}${path}`;
 };
+
