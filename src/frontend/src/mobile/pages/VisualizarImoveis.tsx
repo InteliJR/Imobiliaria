@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar/Navbar";
+import { useEffect, useState } from "react";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Imoveis/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
@@ -9,8 +9,7 @@ import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
-export default function MainPage() {
-
+export default function Properties() {
   interface Property {
     imovelId: number;
     tipoImovel: string;
@@ -21,91 +20,129 @@ export default function MainPage() {
     descricao: string;
     endereco: string;
     complemento: string;
+    locador: string;
+    locatario: string;
     fotos: string | string[];
   }
 
+  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filteredData, setFilteredData] = useState<Property[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const fetchProperties = async () => {
     try {
-      // propriedades
-      const response = await axiosInstance.get('property/Imoveis/PegarTodosImoveis');
-      if (!response.data) {
+        const propertiesResponse = await axiosInstance.get(
+          "property/Imoveis/PegarTodosImoveis"
+        );
+        const usersResponse = await axiosInstance.get(
+          "auth/User/PegarTodosUsuarios"
+        );
+  
+      if (!propertiesResponse.data || !usersResponse.data) {
         console.error("Dados de resposta inválidos");
         return;
       }
+      const properties = propertiesResponse.data;
+      const users = usersResponse.data;
+
+      const mergedProperties = properties.map(
+        (property: {
+          imovelId: any;
+          endereco: string;
+          bairro: string;
+          cep: string;
+          tipoImovel: string;
+          locadorId: any;
+          locatarioId: any;
+          fotos: any;
+          valorImovel: any;
+          condominio: any;
+          complemento: any;
+        }) => {
+          // Encontrando os dados do locador
+          const landlord =
+            users.find((user: { usuarioId: any }) => user.usuarioId === property.locadorId)?.nome || "Locador não encontrado";
   
+          // Encontrando os dados do locatário
+          const tenant =
+            users.find((user: { usuarioId: any }) => user.usuarioId === property.locatarioId)?.nome || "Locatário não encontrado";
+  
+          return {
+            id: property.imovelId,
+            address: `${property.endereco} ${property.complemento || ""}`.trim(),
+            neighborhood: property.bairro,
+            postalCode: property.cep,
+            propertyType: property.tipoImovel,
+            landlord: landlord,
+            tenant: tenant,
+            imageSrc: property.fotos,
+            price: `R$ ${property.valorImovel.toLocaleString("pt-BR")}`,
+            condominio: property.condominio != 0 ? `R$ ${property.condominio}` : "Este imóvel não tem condominio"
+          };
+        }
+      );
+
+      // Arrumar imagens para serem exibidas
       // separar string por vírgula
-      const properties: Property[] = response.data;
-      properties.forEach((property) => {
-        if (typeof property.fotos === 'string') {
-          property.fotos = property.fotos.split(";").map((foto) => foto.trim());
-          }
+      mergedProperties.forEach((property: any) => {
+        if (typeof property.imageSrc === 'string') {
+          property.imageSrc = property.imageSrc.split(";").map((foto: string) => foto.trim());
+        }
       });
-  
+
       // array apenas com os nomes dos objetos no Storage
-      const allPhotos = properties.flatMap((property) => {
-        if (!property.fotos || property.fotos.length === 0) {
+      const allPhotos = mergedProperties.flatMap((property: any) => {
+        if (!property.imageSrc || property.imageSrc.length === 0) {
           return []; // sem fotos
         }
         // Tirar o prefixo da URL
-        return Array.isArray(property.fotos) ? property.fotos.map((foto) =>
+        return Array.isArray(property.imageSrc) ? property.imageSrc.map((foto: string) =>
           foto.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
         ) : [];
       });
-  
-      // Se não tiver foto já retorna
-      if (allPhotos.length === 0) {
-        setProperties(properties);
-        setFilteredData(properties);
-        return;
-      }
-  
-      // Assinar as fotos
+
+      // Assinar as URLs das imagens
       const responsePhotos = await axiosInstance.post('property/Imoveis/AssinarFotos', allPhotos);
       if (!responsePhotos.data) {
         console.error("Dados de resposta inválidos do endpoint de assinatura");
         return;
       }
-  
+      
       const signedPhotos: string[] = responsePhotos.data;
-  
-      // Redistribuir as fotos assinadas para cada imóvel usando um offset -> idea do GPT
+      
+      // Redistribuir as fotos assinadas para cada imóvel usando um offset
       let offset = 0;
-      properties.forEach((property) => {
-        if (!property.fotos) {
+      mergedProperties.forEach((property: any) => {
+        if (!property.imageSrc) {
           return; // sem fotos
         }
-  
-        const count = property.fotos.length;
+      
+        const count = property.imageSrc.length;
         // As fotos assinadas desse imóvel estão em [offset, offset + count)
         const signedSlice = signedPhotos.slice(offset, offset + count);
-  
+      
         // Atualiza as fotos do imóvel com as URLs assinadas
-        property.fotos = signedSlice;
-  
+        property.imageSrc = signedSlice;
+      
         // Avança o offset
         offset += count;
       });
-  
-      setProperties(properties);
-      setFilteredData(properties);
-  
+
+      setProperties(mergedProperties);
+      setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
+      setFilteredData(mergedProperties);
+      console.log(mergedProperties);
     } catch (error: any) {
       console.error(error);
-      showErrorToast(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
-      );
-    } finally {
-      setLoading(false);
+      showErrorToast("Erro ao se conectar com o servidor.");
     }
   };
-  
 
   useEffect(() => {
-    fetchProperties();
+    const fetchData = async () => {
+      await fetchProperties();
+    }
+    fetchData();
   }, []);
 
   return (
@@ -152,25 +189,35 @@ export default function MainPage() {
           <section className="flex-grow flex flex-col gap-y-5">
             <h2 className="text-2xl font-semibold">Resultados</h2>
             <div className="h-[1px] bg-black"></div>
-            {filteredData.length === 0 ? (
-              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum imóvel encontrado.
-              </p>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredData.map((property) => (
-                  // console.log(property),
-                  <Card
-                  key={property.imovelId}
-                  title={property.tipoImovel}
-                  line1={property.bairro}
-                  line2={property.endereco}
-                  line3={`R$${property.valorImovel.toFixed(2)}`}
+            {loading ? (
+          <Loading type="skeleton" />
+        ) : properties.length === 0 ? (
+          <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+            Nenhum imóvel encontrado.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-6">
+            {filteredData.map((property) => {
+              return (
+                <Card
+                  key={property.id}
+                  id={property.id}
+                  address={property.address}
+                  neighborhood={property.neighborhood}
+                  postalCode={property.postalCode}
+                  propertyType={property.propertyType}
+                  landlord={property.landlord}
+                  tenant={property.tenant}
+                  imageSrc={property.imageSrc}
+                  price={property.price}
+                  condominio={property.condominio} 
                   imageUrl={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/image.png"}
                   />
-                ))}
-                </div>
-            )}
+                  
+              );
+            })}
+          </div>
+        )}
           </section>
         )}
       </section>

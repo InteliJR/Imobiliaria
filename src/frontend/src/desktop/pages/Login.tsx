@@ -1,4 +1,4 @@
-import NavbarLogin from "../../mobile/components/Navbar/NavbarLogin";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterBig";
 import FormField from "../../mobile/components/Form/FormField";
 import Loading from "../../components/Loading";
@@ -30,12 +30,28 @@ export default function Login() {
       localStorage.setItem("jwtToken", token);
 
       const decodedToken: any = jwtDecode(token);
+      console.log(decodedToken);
       const roleClaim =
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"; // Era usado para impedir visualização de rotas protegidas
       const role = decodedToken[roleClaim]; // Era usado para impedir visualização de rotas protegidas
       localStorage.setItem("userRole", role); // Era usado para impedir visualização de rotas protegidas
+      
+      if(role === 'Admin') {
+        navigate('/imoveis');
+      }
+      else if (role === 'Locatario') {
+        navigate('/home-locatario');
+      }
+      else if (role === 'Locador') {
+        navigate('/home-locador');
+      }
+      else if (role === 'Judiciario') {
+        navigate('/dashboard');
+      }
+      else {
+        navigate('/');
+      }
 
-      navigate("/visualizar-imoveis");
     } catch (error: any) {
       showErrorToast(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
@@ -48,7 +64,7 @@ export default function Login() {
   return (
     <div className="bg-[#F0F0F0] flex flex-col min-h-screen">
       {/* Navbar */}
-      <NavbarLogin />
+      <Navbar showMenu={false}/>
 
       {/* Main Content */}
       <div className="flex-grow flex flex-col justify-center items-center px-4">

@@ -158,6 +158,20 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
+
+// Configuração de CORS corrigida
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com/") // Substitua pelos domínios específicos que você deseja permitir
+                  .AllowCredentials()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -188,7 +202,11 @@ app.UseHttpsRedirection();
 }
 
 app.UseHttpsRedirection();
-    
+
+app.UseCors("AllowSpecificOrigins");
+
+app.UseCors();
+
 app.UseRouting();
 
 app.UseAuthentication();

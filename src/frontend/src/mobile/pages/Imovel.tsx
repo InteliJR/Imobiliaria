@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
@@ -29,7 +29,7 @@ export default function PropertyDetails() {
   const fetchPropertyDetails = async () => {
     try {
       const response = await axiosInstance.get(
-        `property/Imoveis/PegarImovelPorId/${imovelId}`
+        `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
       );
 
       if (!response.data) {
