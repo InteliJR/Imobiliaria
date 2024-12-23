@@ -3,7 +3,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
-import { showErrorToast } from "../../utils/toastMessage";
+import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosConfig";
 import Botao from "../../components/Botoes/Botao"; // Import do componente Botao
@@ -205,7 +205,10 @@ export default function Contrato() {
       return;
     }
 
-    // Aqui você faria a chamada para salvar as alterações
+    // Aqui deve ficar a chamada ao serviço para salvar as alterações
+
+    showSuccessToast("Contrato atualizado com sucesso!");
+    setOriginalContract(contract); // seta os dados que foram devidamente atualizados como os originais
     console.log("Salvar contrato:", contract);
   };
 
@@ -244,7 +247,7 @@ export default function Contrato() {
 
       // Atualiza a lista de pagamentos
       await fetchPayments();
-      showErrorToast("Pagamento adicionado com sucesso!");
+      showSuccessToast("Pagamento adicionado com sucesso!");
     } catch (error) {
       console.error("Erro ao adicionar pagamento:", error);
       showErrorToast("Erro ao adicionar pagamento.");
@@ -261,313 +264,298 @@ export default function Contrato() {
         {loading ? (
           <Loading type="skeleton" />
         ) : (
-          <>
-            <h1 className="text-title font-strong">
-              Contrato: {contract?.contratoId}
-            </h1>
-            <form className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded">
-              {/* Valor do Aluguel */}
-              <label className="flex flex-col">
-                <span>Valor do Aluguel:</span>
-                <CurrencyInput
-                  id="rentalValue"
-                  name="valorAluguel"
-                  placeholder="R$ 0,00"
-                  decimalSeparator=","
-                  groupSeparator="."
-                  prefix="R$ "
-                  decimalsLimit={2}
-                  maxLength={9}
-                  value={contract?.valorAluguel || ""}
-                  onValueChange={(newValue) =>
-                    setContract((prevContract) => {
-                      if (!prevContract) {
-                        return null; // Ou defina o comportamento desejado para o caso de prevContract ser null
-                      }
-                      return {
-                        ...prevContract,
-                        valorAluguel: parseFloat(newValue || "0"),
-                      };
-                    })
-                  }
-                  disabled={!isEditable}
-                  className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                />
-              </label>
-
-              {/* Data de Encerramento */}
-              <label className="flex flex-col">
-                <span>Data de Encerramento:</span>
-                <input
-                  type="date"
-                  name="dataEncerramento"
-                  value={contract?.dataEncerramento || ""}
-                  onChange={handleInputChange}
-                  disabled={!isEditable}
-                  className="input-custom"
-                />
-              </label>
-
-              {/* Tipo de Garantia */}
-              <label className="flex flex-col">
-                <span>Tipo de Garantia:</span>
-                <input
-                  type="text"
-                  name="tipoGarantia"
-                  value={contract?.tipoGarantia || ""}
-                  onChange={handleInputChange}
-                  disabled={!isEditable}
-                  className="input-custom"
-                />
-              </label>
-
-              {/* Condições Especiais */}
-              <label className="flex flex-col">
-                <span>Condições Especiais:</span>
-                <input
-                  type="text"
-                  name="condicoesEspeciais"
-                  value={contract?.condicoesEspeciais || ""}
-                  onChange={handleInputChange}
-                  disabled={!isEditable}
-                  className="input-custom"
-                />
-              </label>
-
-              {/* Status */}
-              <label className="flex flex-col">
-                <span>Status:</span>
-                <input
-                  type="text"
-                  name="status"
-                  value={contract?.status || ""}
-                  onChange={handleInputChange}
-                  disabled={!isEditable}
-                  className="input-custom"
-                />
-              </label>
-
-              {/* IPTU */}
-              <label className="flex flex-col">
-                <span>IPTU:</span>
-                <CurrencyInput
-                  id="iptuValue"
-                  name="iptu"
-                  placeholder="R$ 0,00"
-                  decimalSeparator=","
-                  groupSeparator="."
-                  prefix="R$ "
-                  decimalsLimit={2}
-                  maxLength={9}
-                  value={contract?.iptu || ""}
-                  onValueChange={(newValue) =>
-                    setContract((prevContract) => {
-                      if (!prevContract) {
-                        return null; // Ou defina o comportamento desejado para o caso de prevContract ser null
-                      }
-                      return {
-                        ...prevContract,
-                        iptu: parseFloat(newValue || "0"),
-                      };
-                    })
-                  }
-                  disabled={!isEditable}
-                  className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                />
-              </label>
-
-              {/* Botão Salvar Alterações */}
-              {isEditable && (
-                <Botao label="Salvar Alterações" onClick={handleSave} />
-              )}
-            </form>
-
-            {/* Exibição da lista de pagamentos */}
-            <section className="mt-6">
-              <h2 className="text-xl font-semibold">Pagamentos</h2>
-              {loadingPayments ? (
-                <Loading type="spinner" />
-              ) : payments.length === 0 ? (
-                <p className="text-neutral-500">Nenhum pagamento registrado.</p>
-              ) : (
-                <ul className="list-disc list-inside">
-                  {payments.map((payment) => (
-                    <li key={payment.pagamentoId}>
-                      <p>
-                        <strong>ID:</strong> {payment.pagamentoId},{" "}
-                        <strong>Valor:</strong> {payment.valor},{" "}
-                        <strong>Data:</strong> {payment.data},{" "}
-                        <strong>Pagante:</strong> {payment.pagante}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-
-            {/* Texto para alternar o formulário de pagamento */}
-            {canAddPayments && (
-              <p
-                className="text-blue-500 cursor-pointer"
-                onClick={() => setShowPaymentForm((prev) => !prev)}
-              >
-                Quer adicionar pagamentos?
-              </p>
-            )}
-
-            {/* Condicional para exibir o formulário de adição de pagamento */}
-            {showPaymentForm && (
-              <form
-                className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded mt-6"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleAddPayment();
-                }}
-              >
-                <h2 className="text-xl font-semibold">Adicionar Pagamento</h2>
-
-                {/* Valor */}
+          <div className="flex flex-col justify-center items-center">
+            <div className="w-full max-w-5xl">
+              <h1 className="text-title font-strong mb-2">
+                Contrato: {contract?.contratoId}
+              </h1>
+              <form className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded">
+                {/* Valor do Aluguel */}
                 <label className="flex flex-col">
-                  <span>Valor:</span>
+                  <span>Valor do Aluguel:</span>
                   <CurrencyInput
-                    id="paymentValue"
-                    name="paymentValue"
+                    id="rentalValue"
+                    name="valorAluguel"
                     placeholder="R$ 0,00"
                     decimalSeparator=","
                     groupSeparator="."
                     prefix="R$ "
                     decimalsLimit={2}
                     maxLength={9}
-                    value={newPayment.valor || ""}
+                    value={contract?.valorAluguel || ""}
                     onValueChange={(newValue) =>
-                      handlePaymentChange("valor", parseFloat(newValue || "0"))
+                      setContract((prevContract) => {
+                        if (!prevContract) {
+                          return null; // Ou defina o comportamento desejado para o caso de prevContract ser null
+                        }
+                        return {
+                          ...prevContract,
+                          valorAluguel: parseFloat(newValue || "0"),
+                        };
+                      })
                     }
+                    disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
-
-                {/* Data */}
+                {/* Data de Encerramento */}
                 <label className="flex flex-col">
-                  <span>Data:</span>
+                  <span>Data de Encerramento:</span>
                   <input
                     type="date"
-                    name="data"
-                    value={newPayment.data || ""}
-                    onChange={(e) =>
-                      handlePaymentChange("data", e.target.value)
-                    }
-                    className="input-custom"
-                    required
+                    name="dataEncerramento"
+                    value={contract?.dataEncerramento || ""}
+                    onChange={handleInputChange}
+                    disabled={!isEditable}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
-
-                {/* Pagante */}
+                {/* Tipo de Garantia */}
                 <label className="flex flex-col">
-                  <span>Pagante:</span>
+                  <span>Tipo de Garantia:</span>
                   <input
                     type="text"
-                    name="pagante"
-                    value={newPayment.pagante || ""}
-                    onChange={(e) =>
-                      handlePaymentChange("pagante", e.target.value)
-                    }
-                    className="input-custom"
-                    required
+                    name="tipoGarantia"
+                    value={contract?.tipoGarantia || ""}
+                    onChange={handleInputChange}
+                    disabled={!isEditable}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
-
-                {/* Método de Pagamento */}
+                {/* Condições Especiais */}
                 <label className="flex flex-col">
-                  <span>Método de Pagamento:</span>
+                  <span>Condições Especiais:</span>
                   <input
                     type="text"
-                    name="metodo_pagamento"
-                    value={newPayment.metodo_pagamento || ""}
-                    onChange={(e) =>
-                      handlePaymentChange("metodo_pagamento", e.target.value)
-                    }
-                    className="input-custom"
-                    required
+                    name="condicoesEspeciais"
+                    value={contract?.condicoesEspeciais || ""}
+                    onChange={handleInputChange}
+                    disabled={!isEditable}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
-
-                {/* Descrição */}
+                {/* Status */}
                 <label className="flex flex-col">
-                  <span>Descrição:</span>
+                  <span>Status:</span>
                   <input
                     type="text"
-                    name="descricao"
-                    value={newPayment.descricao || ""}
-                    onChange={(e) =>
-                      handlePaymentChange("descricao", e.target.value)
-                    }
-                    className="input-custom"
+                    name="status"
+                    value={contract?.status || ""}
+                    onChange={handleInputChange}
+                    disabled={!isEditable}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
-
-                {/* Tipo de Pagamento */}
+                {/* IPTU */}
                 <label className="flex flex-col">
-                  <span>Tipo de Pagamento:</span>
-                  <input
-                    type="text"
-                    name="tipo_pagamento"
-                    value={newPayment.tipo_pagamento || ""}
-                    onChange={(e) =>
-                      handlePaymentChange("tipo_pagamento", e.target.value)
-                    }
-                    className="input-custom"
-                    required
-                  />
-                </label>
-
-                {/* Multa */}
-                <label className="flex flex-col">
-                  <span>Multa:</span>
+                  <span>IPTU:</span>
                   <CurrencyInput
-                    id="fine"
-                    name="fine"
+                    id="iptuValue"
+                    name="iptu"
                     placeholder="R$ 0,00"
                     decimalSeparator=","
                     groupSeparator="."
                     prefix="R$ "
                     decimalsLimit={2}
                     maxLength={9}
-                    value={newPayment.multa || ""}
+                    value={contract?.iptu || ""}
                     onValueChange={(newValue) =>
-                      handlePaymentChange("multa", parseFloat(newValue || "0"))
+                      setContract((prevContract) => {
+                        if (!prevContract) {
+                          return null; // Ou defina o comportamento desejado para o caso de prevContract ser null
+                        }
+                        return {
+                          ...prevContract,
+                          iptu: parseFloat(newValue || "0"),
+                        };
+                      })
                     }
+                    disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
-
-                {/* Valor da Multa */}
-                <label className="flex flex-col">
-                  <span>Valor da Multa:</span>
-                  <CurrencyInput
-                    id="fineValue"
-                    name="fineValue"
-                    placeholder="R$ 0,00"
-                    decimalSeparator=","
-                    groupSeparator="."
-                    prefix="R$ "
-                    decimalsLimit={2}
-                    maxLength={9}
-                    value={newPayment.valor_multa || ""}
-                    onValueChange={(newValue) =>
-                      handlePaymentChange(
-                        "valor_multa",
-                        parseFloat(newValue || "0")
-                      )
-                    }
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
-                </label>
-
-                {/* Botão de Adicionar Pagamento */}
-                <Botao label="Adicionar Pagamento" onClick={handleAddPayment} />
+                {/* Botão Salvar Alterações */}
+                {isEditable && (
+                  <Botao label="Salvar Alterações" onClick={handleSave} />
+                )}
               </form>
-            )}
-          </>
+              {/* Exibição da lista de pagamentos */}
+              <section className="mt-6">
+                <h2 className="text-xl font-semibold">Pagamentos</h2>
+                {loadingPayments ? (
+                  <Loading type="spinner" />
+                ) : payments.length === 0 ? (
+                  <p className="text-neutral-500">Nenhum pagamento registrado.</p>
+                ) : (
+                  <ul className="list-disc list-inside">
+                    {payments.map((payment) => (
+                      <li key={payment.pagamentoId}>
+                        <p>
+                          <strong>ID:</strong> {payment.pagamentoId},{" "}
+                          <strong>Valor:</strong> {payment.valor},{" "}
+                          <strong>Data:</strong> {payment.data},{" "}
+                          <strong>Pagante:</strong> {payment.pagante}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+              {/* Texto para alternar o formulário de pagamento */}
+              {canAddPayments && !showPaymentForm && (
+                <p
+                  className="mt-4 underline tracking-wide text-lg cursor-pointer hover:tracking-[.05em] duration-300 ease-in-out"
+                  onClick={() => setShowPaymentForm((prev) => !prev)}
+                >
+                  Deseja adicionar pagamentos?
+                </p>
+              )}
+              {/* Condicional para exibir o formulário de adição de pagamento */}
+              {showPaymentForm && (
+                <form
+                  className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded mt-6"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleAddPayment();
+                  }}
+                >
+                  <h2 className="text-xl font-semibold">Adicionar Pagamento</h2>
+                  {/* Valor */}
+                  <label className="flex flex-col">
+                    <span>Valor:</span>
+                    <CurrencyInput
+                      id="paymentValue"
+                      name="paymentValue"
+                      placeholder="R$ 0,00"
+                      decimalSeparator=","
+                      groupSeparator="."
+                      prefix="R$ "
+                      decimalsLimit={2}
+                      maxLength={9}
+                      value={newPayment.valor || ""}
+                      onValueChange={(newValue) =>
+                        handlePaymentChange("valor", parseFloat(newValue || "0"))
+                      }
+                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                    />
+                  </label>
+                  {/* Data */}
+                  <label className="flex flex-col">
+                    <span>Data:</span>
+                    <input
+                      type="date"
+                      name="data"
+                      value={newPayment.data || ""}
+                      onChange={(e) =>
+                        handlePaymentChange("data", e.target.value)
+                      }
+                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                      required
+                    />
+                  </label>
+                  {/* Pagante */}
+                  <label className="flex flex-col">
+                    <span>Pagante:</span>
+                    <input
+                      type="text"
+                      name="pagante"
+                      value={newPayment.pagante || ""}
+                      onChange={(e) =>
+                        handlePaymentChange("pagante", e.target.value)
+                      }
+                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                      required
+                    />
+                  </label>
+                  {/* Método de Pagamento */}
+                  <label className="flex flex-col">
+                    <span>Método de Pagamento:</span>
+                    <input
+                      type="text"
+                      name="metodo_pagamento"
+                      value={newPayment.metodo_pagamento || ""}
+                      onChange={(e) =>
+                        handlePaymentChange("metodo_pagamento", e.target.value)
+                      }
+                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                      required
+                    />
+                  </label>
+                  {/* Tipo de Pagamento */}
+                  <label className="flex flex-col">
+                    <span>Tipo de Pagamento:</span>
+                    <input
+                      type="text"
+                      name="tipo_pagamento"
+                      value={newPayment.tipo_pagamento || ""}
+                      onChange={(e) =>
+                        handlePaymentChange("tipo_pagamento", e.target.value)
+                      }
+                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                      required
+                    />
+                  </label>
+                  {/* Multa */}
+                  <label className="flex flex-col">
+                    <span>Multa:</span>
+                    <CurrencyInput
+                      id="fine"
+                      name="fine"
+                      placeholder="R$ 0,00"
+                      decimalSeparator=","
+                      groupSeparator="."
+                      prefix="R$ "
+                      decimalsLimit={2}
+                      maxLength={9}
+                      value={newPayment.multa || ""}
+                      onValueChange={(newValue) =>
+                        handlePaymentChange("multa", parseFloat(newValue || "0"))
+                      }
+                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                    />
+                  </label>
+                  {/* Valor da Multa */}
+                  <label className="flex flex-col">
+                    <span>Valor da Multa:</span>
+                    <CurrencyInput
+                      id="fineValue"
+                      name="fineValue"
+                      placeholder="R$ 0,00"
+                      decimalSeparator=","
+                      groupSeparator="."
+                      prefix="R$ "
+                      decimalsLimit={2}
+                      maxLength={9}
+                      value={newPayment.valor_multa || ""}
+                      onValueChange={(newValue) =>
+                        handlePaymentChange(
+                          "valor_multa",
+                          parseFloat(newValue || "0")
+                        )
+                      }
+                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                    />
+                  </label>
+            
+                  {/* Descrição */}
+                  <label className="flex flex-col">
+                    <span>Descrição:</span>
+                    <textarea
+                      name="descricao"
+                      value={newPayment.descricao || ""}
+                      onChange={(e) =>
+                        handlePaymentChange("descricao", e.target.value)
+                      }
+                      className="w-full p-2 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm h-24 resize-none"
+                      maxLength={350}
+                    />
+                  </label>
+                  {/* Botão de Adicionar Pagamento */}
+                  <Botao label="Adicionar Pagamento" onClick={handleAddPayment} />
+                </form>
+              )}
+            </div>
+          </div>
         )}
       </section>
 
