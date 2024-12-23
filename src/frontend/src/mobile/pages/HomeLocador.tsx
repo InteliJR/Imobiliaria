@@ -84,6 +84,7 @@ export default function MainPage() {
         }
   
         setProperties(response.data);
+        console.log("Este é o valor de property: ", properties);
         setFilteredData(response.data);
       } catch (error: any) {
         console.error(error);

@@ -39,11 +39,11 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> GetImovelByIdWithVerification(int id)
         {
-            // Obter o ID do usuário logado
-            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
+            // Obter o RoleID do usuário logado
+            var roleId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "RoleID")?.Value;
+            if (string.IsNullOrEmpty(roleId))
             {
-                return Unauthorized("Usuário não autenticado.");
+                return Unauthorized("RoleID do usuário não encontrado.");
             }
 
             // Obter o papel do usuário logado (Locatário ou Locador)
@@ -66,13 +66,13 @@ namespace Layer.Application.Controllers
                 return NotFound($"Imóvel com ID {id} não encontrado.");
             }
 
-            // Verificar acesso com base no papel
-            if (userRole == nameof(Roles.Locador) && imovel.LocadorId.ToString() != userId)
+            // Verificar acesso com base no RoleID
+            if (userRole == nameof(Roles.Locador) && imovel.LocadorId.ToString() != roleId)
             {
                 return Forbid("Acesso negado: você não é o locador deste imóvel.");
             }
 
-            if (userRole == nameof(Roles.Locatario) && imovel.LocatarioId.ToString() != userId)
+            if (userRole == nameof(Roles.Locatario) && imovel.LocatarioId.ToString() != roleId)
             {
                 return Forbid("Acesso negado: você não é o locatário deste imóvel.");
             }
@@ -80,6 +80,7 @@ namespace Layer.Application.Controllers
             // Caso o usuário tenha permissão, retornar o imóvel
             return Ok(imovel);
         }
+
 
 
         [HttpPost("CriarUmNovoImovel")]
