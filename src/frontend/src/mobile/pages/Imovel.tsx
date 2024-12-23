@@ -28,9 +28,15 @@ export default function PropertyDetails() {
 
   const fetchPropertyDetails = async () => {
     try {
+      // DESCOMENTAR QUANDO O ENDPOINT ESTIVER PRONTO
+      // const response = await axiosInstance.get(
+      //   `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
+      // );
+
       const response = await axiosInstance.get(
-        `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
+        `property/Imoveis/PegarImovelPorId/${imovelId}`
       );
+
 
       if (!response.data) {
         console.error("Dados de resposta inválidos");
