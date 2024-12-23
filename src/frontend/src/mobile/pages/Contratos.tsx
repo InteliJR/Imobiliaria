@@ -99,7 +99,7 @@ export default function Contratos() {
         <Voltar />
         <Botao 
           label="Cadastrar Contrato" 
-          onClick={() => navigate("/contrato/criar")} 
+          onClick={() => navigate("/contratos/criar")} 
         />
         <h2 className="text-2xl font-semibold">Contratos</h2>
         <form

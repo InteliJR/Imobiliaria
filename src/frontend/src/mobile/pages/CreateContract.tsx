@@ -8,7 +8,6 @@ import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import axios from "axios";
 import CurrencyInput from "react-currency-input-field"; // máscara de valores monetários
-// import debounce from "lodash.debounce";
 
 export default function CreateContractMobile() {
   const [rentalValue, setRentalValue] = useState("");
