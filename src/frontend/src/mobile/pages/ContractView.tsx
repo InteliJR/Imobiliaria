@@ -14,6 +14,7 @@ export default function Contrato() {
   const [role, setRole] = useState("admin"); // Simulação da role do usuário
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [loadingPayments, setLoadingPayments] = useState(true); // estado para controlar o carregamento dos pagamentos
+  const [showPaymentForm, setShowPaymentForm] = useState(false); // Estado para controlar a visibilidade do formulário de adição de pagamentos
 
   interface Contract {
     contratoId: string;
@@ -404,8 +405,18 @@ export default function Contrato() {
               )}
             </section>
 
-            {/* Formulário de Adição de Pagamentos */}
+            {/* Texto para alternar o formulário de pagamento */}
             {canAddPayments && (
+              <p
+                className="text-blue-500 cursor-pointer"
+                onClick={() => setShowPaymentForm((prev) => !prev)}
+              >
+                Quer adicionar pagamentos?
+              </p>
+            )}
+
+            {/* Condicional para exibir o formulário de adição de pagamento */}
+            {showPaymentForm && (
               <form
                 className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded mt-6"
                 onSubmit={(e) => {
