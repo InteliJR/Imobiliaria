@@ -45,6 +45,8 @@ export default function Properties() {
       const properties = propertiesResponse.data;
       const users = usersResponse.data;
 
+      console.log(users);
+
       const mergedProperties = properties.map(
         (property: {
           imovelId: any;
@@ -60,12 +62,12 @@ export default function Properties() {
           complemento: any;
         }) => {
           // Encontrando os dados do locador
-          const landlord =
-            users.find((user: { usuarioId: any }) => user.usuarioId === property.locadorId)?.nome || "Locador não encontrado";
+            const landlord =
+            users.find((user: { roleId: any }) => user.roleId === property.locadorId)?.nome || "Locador não encontrado";
   
           // Encontrando os dados do locatário
           const tenant =
-            users.find((user: { usuarioId: any }) => user.usuarioId === property.locatarioId)?.nome || "Locatário não encontrado";
+            users.find((user: { roleId: any  }) => user.roleId === property.locatarioId)?.nome || "Locatário não encontrado";
   
           return {
             id: property.imovelId,
@@ -208,10 +210,9 @@ export default function Properties() {
                   propertyType={property.propertyType}
                   landlord={property.landlord}
                   tenant={property.tenant}
-                  imageSrc={property.imageSrc}
                   price={property.price}
                   condominio={property.condominio} 
-                  imageUrl={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/image.png"}
+                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../public/image.png"}
                   />
                   
               );
