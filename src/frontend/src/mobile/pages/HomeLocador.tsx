@@ -8,7 +8,7 @@ import FilterIcon from "/Filter.svg";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 import getTokenData from "../../services/tokenConfig";
 
 export default function MainPage() {

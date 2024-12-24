@@ -177,6 +177,15 @@ const Root = () => {
         />
 
         <Route
+          path="/home-locatario"
+          element={
+            <ProtectedRoute>
+              <HomeLocatarioMobile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/imovel/:imovelId"
           element={
             <ProtectedRoute>

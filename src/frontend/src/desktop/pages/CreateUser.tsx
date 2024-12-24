@@ -5,6 +5,7 @@ import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import { AxiosError } from "axios";
+import axiosInstance from "../../services/axiosConfig";
 
 export default function AddClient() {
   const [userType, setUserType] = useState("Administrador");
@@ -14,41 +15,51 @@ export default function AddClient() {
   const [rg, setRg] = useState("");
   const [cpf, setCpf] = useState("");
   const [passport, setPassport] = useState("");
-  const [cep, setCep] = useState("");
   const [address, setAddress] = useState("");
+  const [cep, setCep] = useState("");
   const [number, setNumber] = useState("");
   const [complement, setComplement] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [nationality, setNationality] = useState("");
-  const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const userTypeRoutes: { [key: string]: string } = {
+    "Administrador": "/auth/User/CriarUsuarioAdmin",
+    "Locador": "/auth/User/CriarUsuarioLocador",
+    "Locatário": "/auth/User/CriarUsuarioLocatario",
+    "Judiciário": "/auth/User/CriarUsuarioJudiciario",
+  };
+  const fullNameField =
+    userType === "Locatário" ? "nomeCompletoLocatario" : "nomeCompletoLocador";
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     setLoading(true);
 
-    try {
-      console.log({
-        userType,
-        fullName,
-        email,
-        phone,
-        rg,
-        cpf,
-        passport,
-        cep,
-        address,
-        number,
-        complement,
-        neighborhood,
-        city,
-        state,
-        nationality,
-      });
+    const requestBody = {
+      cpf,
+      nacionalidade: nationality,
+      numeroTelefone: phone,
+      [fullNameField] : fullName,
+      cnpj: null,
+      endereco: `${address}, ${number}, ${city}, ${state}`,
+      passaporte: passport || null,
+      rg,
+    };
 
-      //Lima o formulário:
+    const endpoint = userTypeRoutes[userType];
+    if (!endpoint) {
+      showErrorToast("Tipo de usuário inválido.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await axiosInstance.post(`${endpoint}?email=${email}`, requestBody);
+      showSuccessToast("Usuário criado com sucesso.");
+      // Limpar o formulário:
       setUserType("Administrador");
       setFullName("");
       setEmail("");
@@ -64,9 +75,6 @@ export default function AddClient() {
       setCity("");
       setState("");
       setNationality("");
-
-      // Requisição...
-      showSuccessToast("Usuário criado com sucesso.");
     } catch (error) {
       console.error(error);
       if (error instanceof AxiosError) {
@@ -92,9 +100,7 @@ export default function AddClient() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <h2 className="text-xl text-neutral-700">Dados Pessoais</h2>
               <div>
-                <label className="block text-neutral-600">
-                  Tipo de Usuário
-                </label>
+                <label className="block text-neutral-600">Tipo de Usuário</label>
                 <select
                   value={userType}
                   onChange={(e) => setUserType(e.target.value)}
@@ -103,6 +109,7 @@ export default function AddClient() {
                   <option>Administrador</option>
                   <option>Locador</option>
                   <option>Locatário</option>
+                  <option>Judiciário</option>
                 </select>
               </div>
               <FormField
@@ -135,9 +142,7 @@ export default function AddClient() {
                 value={passport}
                 onChange={(e) => setPassport(e.target.value)}
               />
-
               <hr />
-
               <h2 className="text-xl text-neutral-700">Endereço</h2>
               <FormField
                 label="CEP"
@@ -183,7 +188,6 @@ export default function AddClient() {
                 value={nationality}
                 onChange={(e) => setNationality(e.target.value)}
               />
-
               <button
                 type="submit"
                 className="w-full py-2 px-4 bg-yellow-darker text-white rounded-md hover:bg-yellow-dark transition duration-300 focus:outline-none focus:bg-yellow-dark mt-4"
