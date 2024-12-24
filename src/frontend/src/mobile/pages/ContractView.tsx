@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
+import DocumentViewer from "../../components/DocumentViewer";
 import Loading from "../../components/Loading";
 import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ import Botao from "../../components/Botoes/Botao"; // Import do componente Botao
 import CurrencyInput from "react-currency-input-field";
 
 export default function Contrato() {
+  const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URL
   const [role, setRole] = useState("admin"); // Simulação da role do usuário
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
@@ -95,7 +97,11 @@ export default function Contrato() {
     // Mock de dados para teste de contrato
     const mockContract: Contract = {
       contratoId: "12345",
-      documentos: ["contrato.pdf", "vistoria.pdf"],
+      documentos: [
+        "https://www.thecampusqdl.com/uploads/files/pdf_sample_2.pdf",
+        "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf",
+        "urlInvalida",
+      ],
       valorAluguel: 1500,
       dataInicio: "2024-01-05",
       dataEncerramento: "2024-12-31",
@@ -256,6 +262,10 @@ export default function Contrato() {
     }
   };
 
+  const handleRedirect = (url) => {
+    navigate(url);
+  };
+
   return (
     <main className="main-custom">
       <Navbar />
@@ -273,7 +283,7 @@ export default function Contrato() {
               </h1>
               <form className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded">
                 {/* Valor do Aluguel */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label htmlFor="rentalValue">Valor do Aluguel:</label>
                   <CurrencyInput
                     id="rentalValue"
@@ -299,10 +309,10 @@ export default function Contrato() {
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
-                </label>
+                </div>
 
                 {/* Data de Início */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label>Data de Início:</label>
                   <input
                     type="date"
@@ -311,10 +321,10 @@ export default function Contrato() {
                     disabled={true}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
-                </label>
+                </div>
 
                 {/* Data de Encerramento */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label htmlFor="dataEncerramento">
                     Data de Encerramento:
                   </label>
@@ -327,9 +337,10 @@ export default function Contrato() {
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
-                </label>
+                </div>
+
                 {/* Tipo de Garantia */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label htmlFor="tipoGarantia">Tipo de Garantia:</label>
                   <input
                     id="tipoGarantia"
@@ -340,9 +351,10 @@ export default function Contrato() {
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
-                </label>
+                </div>
+
                 {/* Condições Especiais */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label htmlFor="condicoesEspeciais">
                     Condições Especiais:
                   </label>
@@ -355,10 +367,10 @@ export default function Contrato() {
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
-                </label>
+                </div>
 
                 {/* Status */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label htmlFor="status">Status:</label>
                   <select
                     id="status"
@@ -373,10 +385,10 @@ export default function Contrato() {
                     <option value="Rescindido">Rescindido</option>
                     <option value="Renovado">Renovado</option>
                   </select>
-                </label>
+                </div>
 
                 {/* IPTU */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label htmlFor="iptuValue">IPTU:</label>
                   <CurrencyInput
                     id="iptuValue"
@@ -402,10 +414,10 @@ export default function Contrato() {
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
-                </label>
+                </div>
 
                 {/* Data de Pagamento */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label htmlFor="dataPagamento">Data de Pagamento:</label>
                   <input
                     id="dataPagamento"
@@ -416,10 +428,10 @@ export default function Contrato() {
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
-                </label>
+                </div>
 
                 {/* Taxa Administrativa */}
-                <label className="flex flex-col">
+                <div className="flex flex-col">
                   <label htmlFor="adminFee">Taxa Administrativa:</label>
                   <CurrencyInput
                     id="adminFee"
@@ -445,7 +457,30 @@ export default function Contrato() {
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
-                </label>
+                </div>
+
+                {/* Documentos */}
+                <div className="w-full">
+                  <h3>Documentos</h3>
+                  {contract?.documentos && contract.documentos.length > 0 ? (
+                    contract.documentos.map((docUrl, index) => (
+                      <div key={index} className="bg-[#f3f4f6] mt-3">
+                        <h4 className="text-neutral-800 ml-2 mb-2 pt-1">
+                          Documento {index + 1}
+                        </h4>
+                        <DocumentViewer fileUrl={docUrl} />
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 mt-3">
+                      Nenhum documento associado.
+                    </p>
+                  )}
+                </div>
+                {isEditable && (
+                  <p className="cursor-pointer">Enviar documento</p>
+                )}
+
                 {/* Botão Salvar Alterações */}
                 {isEditable && (
                   <Botao label="Salvar Alterações" onClick={handleSave} />
@@ -464,7 +499,11 @@ export default function Contrato() {
                 ) : (
                   <ul className="list-disc list-inside">
                     {payments.map((payment) => (
-                      <li key={payment.pagamentoId}>
+                      <li
+                        key={payment.pagamentoId}
+                        className="cursor-pointer hover:underline duration-300 ease-in-out"
+                        onClick={() => handleRedirect(`/pagamentos/${payment.pagamentoId}`)}
+                      >
                         <p>
                           <strong>ID:</strong> {payment.pagamentoId},{" "}
                           <strong>Valor:</strong> {payment.valor},{" "}
@@ -476,6 +515,7 @@ export default function Contrato() {
                   </ul>
                 )}
               </section>
+
               {/* Texto para alternar o formulário de pagamento */}
               {canAddPayments && !showPaymentForm && (
                 <p
@@ -552,7 +592,9 @@ export default function Contrato() {
 
                   {/* Método de Pagamento */}
                   <div className="flex flex-col">
-                    <label htmlFor="metodo_pagamento">Método de Pagamento:</label>
+                    <label htmlFor="metodo_pagamento">
+                      Método de Pagamento:
+                    </label>
                     <input
                       type="text"
                       id="metodo_pagamento"
