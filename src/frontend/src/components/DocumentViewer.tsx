@@ -43,12 +43,10 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
         setContainerWidth(containerRef.current.offsetWidth);
       }
     };
-
-    updateWidth(); // Defina a largura inicial
-    window.addEventListener("resize", updateWidth); // Atualize ao redimensionar
-
+    updateWidth(); 
+    window.addEventListener("resize", updateWidth); 
     return () => {
-      window.removeEventListener("resize", updateWidth); // Limpe o evento
+      window.removeEventListener("resize", updateWidth); 
     };
   }, []);
 
