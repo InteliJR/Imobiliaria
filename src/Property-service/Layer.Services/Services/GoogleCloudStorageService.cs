@@ -38,23 +38,48 @@ public class GoogleCloudStorageService
         {
             using (var fileStream = File.OpenRead(localFilePath))
             {
-                // Faz o upload do arquivo para o bucket, definindo o ContentType
+                // 1) Identifica a extensão do arquivo.
+                var extension = Path.GetExtension(objectName).ToLowerInvariant();
+                Console.WriteLine($"Extensão do arquivo: {extension}");
+
+
+                // 2) Define o ContentType de acordo com a extensão.
+                string contentType;
+                switch (extension)
+                {
+                    case ".pdf":
+                        contentType = "application/pdf";
+                        break;
+                    case ".jpg":
+                    case ".jpeg":
+                        contentType = "image/jpeg";
+                        break;
+                    case ".png":
+                        contentType = "image/png";
+                        break;
+                    default:
+                        contentType = "application/octet-stream";
+                        break;
+                }
+
+                // 3) Faz o upload do arquivo para o bucket, definindo o ContentType
                 var storageObject = await _storageClient.UploadObjectAsync(
                     bucket: _bucketName,
                     objectName: objectName,
-                    contentType: "image/jpeg",
+                    contentType: contentType,
                     source: fileStream
                 );
 
                 Console.WriteLine($"Arquivo {storageObject.Name} enviado para o bucket {storageObject.Bucket}.");
 
-                // Ajusta o ContentDisposition para inline
-                storageObject.ContentDisposition = "inline; filename=\"image.jpg\"";
+                // 4) Ajusta o ContentDisposition para inline, usando o nome do arquivo real, se desejar
+                var fileName = Path.GetFileName(localFilePath);
+                storageObject.ContentDisposition = $"inline; filename=\"{fileName}\"";
 
-                // Atualiza o objeto no Storage
+                // 5) Atualiza o objeto no Storage
                 storageObject = await _storageClient.UpdateObjectAsync(storageObject);
 
-                // Agora, a URL pública deve exibir a imagem inline no navegador
+                // Agora, a URL pública deve exibir o arquivo inline no navegador (caso seja suportado, como PDF ou imagem).
                 return $"https://storage.googleapis.com/{_bucketName}/{objectName}";
             }
         }
@@ -65,6 +90,7 @@ public class GoogleCloudStorageService
         }
     }
 
+
     public async Task<List<string>> UploadMultipleFilesAsync(List<string> localFilePaths, List<string> objectNames)
     {
         if (localFilePaths.Count != objectNames.Count)
@@ -74,27 +100,53 @@ public class GoogleCloudStorageService
 
         var publicUrls = new List<string>();
 
-        for (int i = 0; i < localFilePaths.Count; i++)
+        for (int i = 0; i < objectNames.Count; i++)
         {
             try
             {
-                using (var fileStream = File.OpenRead(localFilePaths[i]))
+                using (var fileStream = File.OpenRead(objectNames[i]))
                 {
-                    // Faz o upload do arquivo, definindo o ContentType
+                    // 1) Identifica a extensão do arquivo.
+                    var extension = Path.GetExtension(objectNames[i]).ToLowerInvariant();
+                    Console.WriteLine($"Extensão do arquivo: {extension}");
+
+                    // 2) Define o ContentType de acordo com a extensão.
+                    string contentType;
+                    switch (extension)
+                    {
+                        case ".pdf":
+                            contentType = "application/pdf";
+                            break;
+                        case ".jpg":
+                        case ".jpeg":
+                            contentType = "image/jpeg";
+                            break;
+                        case ".png":
+                            contentType = "image/png";
+                            break;
+                        default:
+                            contentType = "application/octet-stream";
+                            break;
+                    }
+
+                    // 3) Faz o upload do arquivo para o bucket
                     var storageObject = await _storageClient.UploadObjectAsync(
                         bucket: _bucketName,
                         objectName: objectNames[i],
-                        contentType: "image/jpeg",
+                        contentType: contentType,
                         source: fileStream
                     );
 
                     Console.WriteLine($"Arquivo {storageObject.Name} enviado para o bucket {storageObject.Bucket}.");
 
-                    // Ajusta o ContentDisposition para inline
-                    storageObject.ContentDisposition = "inline; filename=\"image.jpg\"";
+                    // 4) Ajusta o ContentDisposition para inline, usando o nome do arquivo real
+                    var fileName = Path.GetFileName(localFilePaths[i]);
+                    storageObject.ContentDisposition = $"inline; filename=\"{fileName}\"";
+
+                    // 5) Atualiza o objeto no Storage
                     storageObject = await _storageClient.UpdateObjectAsync(storageObject);
 
-                    // Adiciona a URL pública
+                    // 6) Adiciona a URL pública
                     publicUrls.Add($"https://storage.googleapis.com/{_bucketName}/{objectNames[i]}");
                 }
             }
@@ -107,6 +159,7 @@ public class GoogleCloudStorageService
 
         return publicUrls;
     }
+
 
     public async Task<string> GenerateSignedUrlAsync(string objectName, int expiryDurationInMinutes)
     {

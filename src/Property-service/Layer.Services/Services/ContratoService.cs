@@ -64,6 +64,8 @@ namespace Layer.Services.Services
                         }
 
                         var objectName = $"uploads/{file.FileName}";
+                        // Printar o nome do arquivo temporário
+                        Console.WriteLine($"Nome do arquivo temporário: {tempFilePath}");
                         var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
 
                         documentos.Add(publicUrl);
