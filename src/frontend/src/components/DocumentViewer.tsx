@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -17,6 +17,8 @@ interface DocumentViewerProps {
 const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
   const [numPages, setNumPages] = useState<number | undefined>();
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }): void => {
     setNumPages(numPages);
@@ -35,8 +37,34 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
     }
   };
 
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+
+    updateWidth(); // Defina a largura inicial
+    window.addEventListener("resize", updateWidth); // Atualize ao redimensionar
+
+    return () => {
+      window.removeEventListener("resize", updateWidth); // Limpe o evento
+    };
+  }, []);
+
+  // Lógica para definir a largura da página
+  const getPageWidth = () => {
+    if (containerWidth && containerWidth <= 550) {
+      return containerWidth;
+    }
+    return 550; // Fixamente 550px se a largura do container for maior que 700px
+  };
+
   return (
-    <div className="document-viewer flex flex-col items-center p-4 border rounded-md bg-gray-100">
+    <div
+      ref={containerRef}
+      className="document-viewer flex flex-col items-center p-4 border rounded-md bg-gray-100"
+    >
       <Document
         file={fileUrl}
         className="border-2 border-gray-400 rounded-[5px] overflow-hidden"
@@ -52,12 +80,13 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
       >
         <Page
           pageNumber={pageNumber}
+          width={getPageWidth()} // Largura dinâmica ou fixa
           error={
             <p className="text-neutral-700">
               Não foi possível carregar esta página
             </p>
           }
-          loading={<p className="text-neutral-700">Carregando o página...</p>}
+          loading={<p className="text-neutral-700">Carregando a página...</p>}
         />
       </Document>
       <div className="controls flex items-center gap-2 mt-4">
