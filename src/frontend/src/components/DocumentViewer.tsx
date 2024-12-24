@@ -43,10 +43,10 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
         setContainerWidth(containerRef.current.offsetWidth);
       }
     };
-    updateWidth(); 
-    window.addEventListener("resize", updateWidth); 
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
     return () => {
-      window.removeEventListener("resize", updateWidth); 
+      window.removeEventListener("resize", updateWidth);
     };
   }, []);
 
@@ -67,12 +67,14 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
         file={fileUrl}
         className="border-2 border-gray-400 rounded-[5px] overflow-hidden"
         error={
-          <p className="text-neutral-700">
+          <p className="text-neutral-700 m-2 mx-3">
             Não foi possível acessar este documento
           </p>
         }
         onLoadSuccess={onDocumentLoadSuccess}
-        loading={<p className="text-neutral-700">Carregando documento...</p>}
+        loading={
+          <p className="text-neutral-700 m-2 mx-3">Carregando documento...</p>
+        }
         externalLinkRel="noopener"
         externalLinkTarget="_blank"
       >
@@ -80,11 +82,13 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
           pageNumber={pageNumber}
           width={getPageWidth()} // Largura dinâmica ou fixa
           error={
-            <p className="text-neutral-700">
+            <p className="text-neutral-700 m-2 mx-3">
               Não foi possível carregar esta página
             </p>
           }
-          loading={<p className="text-neutral-700">Carregando a página...</p>}
+          loading={
+            <p className="text-neutral-700 m-2 mx-3">Carregando página...</p>
+          }
         />
       </Document>
       <div className="controls flex items-center gap-2 mt-4">

@@ -52,12 +52,36 @@ export default function Contrato() {
     valor_multa: number;
   }
 
+  // Função para obter a data de hoje
+  const getTodayDate = (): string => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Janeiro é 0
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`; // Formato aaaa-mm-dd
+  };
+
   const [contract, setContract] = useState<Contract | null>(null);
   const [originalContract, setOriginalContract] = useState<Contract | null>(
     null
   );
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [newPayment, setNewPayment] = useState<Partial<Payment>>({});
+  const [newPayment, setNewPayment] = useState<Partial<Payment>>({
+    data: getTodayDate(), // Inicializa com a data de hoje
+  });
+
+  // Estados relacionados à busca em outras tabelas
+  const [isLoadingLessor, setIsLoadingLessor] = useState(false);
+  const [isLoadingRenter, setIsLoadingRenter] = useState(false);
+  const [isLoadingProperty, setIsLoadingProperty] = useState(false);
+  const [lessors, setLessors] = useState([]); // Lista de lessors
+  const [renters, setRenters] = useState([]); // Lista de locatários
+  const [properties, setProperties] = useState([]);
+  const [selectedLessorId, setSelectedLessorId] = useState<string | null>(null);
+  const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(
+    null
+  );
 
   const fetchContract = async () => {
     try {
@@ -90,6 +114,37 @@ export default function Contrato() {
     } catch (error) {
       console.error(error);
       showErrorToast("Erro ao carregar pagamentos.");
+    }
+  };
+
+  const fetchSelectOptions = async () => {
+    try {
+      setIsLoadingLessor(true);
+      setIsLoadingRenter(true);
+      setIsLoadingProperty(true);
+      const lessorsResponse = await axiosInstance.get(
+        "auth/Lessor/PegarTodosLessors"
+      );
+      const rentersResponse = await axiosInstance.get(
+        "auth/Renter/PegarTodosRenters"
+      );
+      const propertiesResponse = await axiosInstance.get(
+        "property/Properties/PegarTodosProperties"
+      );
+      setLessors(lessorsResponse.data || []);
+      setRenters(rentersResponse.data || []);
+      setProperties(propertiesResponse.data || []);
+      console.log(
+        lessorsResponse.data,
+        rentersResponse.data,
+        propertiesResponse.data
+      );
+    } catch (error) {
+      showErrorToast("Erro ao carregar lessors, locatários e properties.");
+    } finally {
+      setIsLoadingLessor(false);
+      setIsLoadingRenter(false);
+      setIsLoadingProperty(false);
     }
   };
 
@@ -143,6 +198,8 @@ export default function Contrato() {
         valor_multa: 50,
       },
     ];
+
+    fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
 
     // Simulando a captura da role do usuário
     setRole("admin");
@@ -262,9 +319,7 @@ export default function Contrato() {
     }
   };
 
-  const handleRedirect = (url) => {
-    navigate(url);
-  };
+  const handleRedirect = (url: string) => navigate(url);
 
   return (
     <main className="main-custom">
@@ -342,15 +397,19 @@ export default function Contrato() {
                 {/* Tipo de Garantia */}
                 <div className="flex flex-col">
                   <label htmlFor="tipoGarantia">Tipo de Garantia:</label>
-                  <input
+                  <select
                     id="tipoGarantia"
-                    type="text"
                     name="tipoGarantia"
                     value={contract?.tipoGarantia || ""}
                     onChange={handleInputChange}
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
+                  >
+                    <option value="Caução">Caução</option>
+                    <option value="Depósito">Depósito</option>
+                    <option value="Fiador">Fiador</option>
+                    <option value="Renovado">Outro</option>
+                  </select>
                 </div>
 
                 {/* Condições Especiais */}
@@ -459,6 +518,69 @@ export default function Contrato() {
                   />
                 </div>
 
+                {/* Imóvel */}
+                {isLoadingProperty && (
+                  <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
+                )}
+                <div>
+                  <label className="block text-neutral-600">Imóvel</label>
+                  <select
+                    value={selectedPropertyId || ""}
+                    onChange={(e) => setSelectedPropertyId(e.target.value)}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
+                  >
+                    <option value="">Selecione um imóvel</option>
+                    {properties.map((imovel: any) => (
+                      <option key={imovel.imovelId} value={imovel.imovelId}>
+                        {imovel.imovelId}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Lessor */}
+                {isLoadingLessor && (
+                  <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
+                )}
+                <div>
+                  <label className="block text-neutral-600">Lessor</label>
+                  <select
+                    value={selectedLessorId || ""}
+                    onChange={(e) => setSelectedLessorId(e.target.value)}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
+                  >
+                    <option value="">Selecione um locador</option>
+                    {lessors.map((locador: any) => (
+                      <option key={locador.locadorId} value={locador.locadorId}>
+                        {locador.nomeCompletoLessor}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Locatário */}
+                {isLoadingRenter && (
+                  <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
+                )}
+                <div>
+                  <label className="block text-neutral-600">Locatário</label>
+                  <select
+                    value={selectedRenterId || ""}
+                    onChange={(e) => setSelectedRenterId(e.target.value)}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
+                  >
+                    <option value="">Selecione um locatário</option>
+                    {renters.map((locatario: any) => (
+                      <option
+                        key={locatario.locatarioId}
+                        value={locatario.locatarioId}
+                      >
+                        {locatario.nomeCompletoRenter}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Documentos */}
                 <div className="w-full">
                   <h3>Documentos</h3>
@@ -481,6 +603,10 @@ export default function Contrato() {
                   <p className="cursor-pointer">Enviar documento</p>
                 )}
 
+                <p className="cursor-pointer">
+                  !!!!!FUNCIONALIDADE DE RESCINDIR CONTRATO!!!!!!!
+                </p>
+
                 {/* Botão Salvar Alterações */}
                 {isEditable && (
                   <Botao label="Salvar Alterações" onClick={handleSave} />
@@ -502,7 +628,9 @@ export default function Contrato() {
                       <li
                         key={payment.pagamentoId}
                         className="cursor-pointer hover:underline duration-300 ease-in-out"
-                        onClick={() => handleRedirect(`/pagamentos/${payment.pagamentoId}`)}
+                        onClick={() =>
+                          handleRedirect(`/pagamentos/${payment.pagamentoId}`)
+                        }
                       >
                         <p>
                           <strong>ID:</strong> {payment.pagamentoId},{" "}
