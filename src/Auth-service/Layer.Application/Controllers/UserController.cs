@@ -308,13 +308,13 @@ namespace Layer.Application.Controllers
 
         [HttpPost("CriarUsuarioAdmin")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> InsertNewUserColaboradorAdmin([FromQuery] string email, string NomeCompleto)
+        public async Task<IActionResult> InsertNewUserColaboradorAdmin([FromQuery] string email, [FromBody] NewJuridicoAdmModel colaborador)
         {
             // Montar o objeto Colaborador
             var colaboradorNew = new Colaborador
             {
                 UsuarioId = null,
-                NomeCompleto = NomeCompleto,
+                NomeCompleto = colaborador.NomeCompleto,
                 TipoColaborador = Roles.Admin.ToString()
             };
 
@@ -331,13 +331,13 @@ namespace Layer.Application.Controllers
 
         [HttpPost("CriarUsuarioJudiciario")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> InsertNewUserColaboradorJudiciario([FromQuery] string email, string NomeCompleto)
+        public async Task<IActionResult> InsertNewUserColaboradorJudiciario([FromQuery] string email, [FromBody] NewJuridicoAdmModel colaborador)
         {
             // Montar o objeto Colaborador
             var colaboradorNew = new Colaborador
             {
                 UsuarioId = null,
-                NomeCompleto = NomeCompleto,
+                NomeCompleto = colaborador.NomeCompleto,
                 TipoColaborador = Roles.Judiciario.ToString()
             };
 

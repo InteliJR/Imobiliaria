@@ -31,35 +31,54 @@ export default function AddClient() {
     "Locatário": "/auth/User/CriarUsuarioLocatario",
     "Judiciário": "/auth/User/CriarUsuarioJudiciario",
   };
-  const fullNameField =
-    userType === "Locatário" ? "nomeCompletoLocatario" : "nomeCompletoLocador";
+
+  console.log(userType);
+  
+  let fullNameField = '';
+  if (userType === "Locatário") {
+    fullNameField = "NomeCompletoLocatario";
+  } else if (userType === "Locador") {
+    fullNameField = "NomeCompletoLocador";
+  } else {
+    fullNameField = "NomeCompleto";
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-
-    const requestBody = {
+  
+    // Validação de campos obrigatórios
+    if (!fullName.trim()) {
+      showErrorToast("O campo 'Nome Completo' é obrigatório.");
+      setLoading(false);
+      return;
+    }
+  
+    let requestBody: any = {
+      [fullNameField]: fullName, // O campo será dinâmico, conforme o tipo de usuário
+      email,
       cpf,
       nacionalidade: nationality,
       numeroTelefone: phone,
-      [fullNameField] : fullName,
       cnpj: null,
       endereco: `${address}, ${number}, ${city}, ${state}`,
       passaporte: passport || null,
       rg,
     };
-
+  
+    console.log(fullName);
+  
     const endpoint = userTypeRoutes[userType];
     if (!endpoint) {
       showErrorToast("Tipo de usuário inválido.");
       setLoading(false);
       return;
     }
-
+  
     try {
       await axiosInstance.post(`${endpoint}?email=${email}`, requestBody);
       showSuccessToast("Usuário criado com sucesso.");
-      // Limpar o formulário:
+      // Limpar o formulário
       setUserType("Administrador");
       setFullName("");
       setEmail("");
@@ -87,6 +106,7 @@ export default function AddClient() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div>
@@ -112,82 +132,99 @@ export default function AddClient() {
                   <option>Judiciário</option>
                 </select>
               </div>
-              <FormField
-                label="Nome Completo"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-              <FormField
-                label="E-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <FormField
-                label="Telefone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-              <FormField
-                label="RG"
-                value={rg}
-                onChange={(e) => setRg(e.target.value)}
-              />
-              <FormField
-                label="CPF"
-                value={cpf}
-                onChange={(e) => setCpf(e.target.value)}
-              />
-              <FormField
-                label="Passaporte"
-                value={passport}
-                onChange={(e) => setPassport(e.target.value)}
-              />
-              <hr />
-              <h2 className="text-xl text-neutral-700">Endereço</h2>
-              <FormField
-                label="CEP"
-                value={cep}
-                onChange={(e) => setCep(e.target.value)}
-              />
-              <FormField
-                label="Logradouro"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  label="Número"
-                  value={number}
-                  onChange={(e) => setNumber(e.target.value)}
-                />
-                <FormField
-                  label="Complemento"
-                  value={complement}
-                  onChange={(e) => setComplement(e.target.value)}
-                />
-              </div>
-              <FormField
-                label="Bairro"
-                value={neighborhood}
-                onChange={(e) => setNeighborhood(e.target.value)}
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  label="Cidade"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                />
-                <FormField
-                  label="Estado"
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                />
-              </div>
-              <FormField
-                label="Nacionalidade"
-                value={nationality}
-                onChange={(e) => setNationality(e.target.value)}
-              />
+                {userType === "Judiciário" || "Administrador"? (
+                  <>
+                    <FormField
+                      label="Nome Completo"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                    />
+                    <FormField
+                      label="E-mail"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <FormField
+                      label="Nome Completo"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                    />
+                    <FormField
+                      label="E-mail"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <FormField
+                      label="Telefone"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                    <FormField
+                      label="RG"
+                      value={rg}
+                      onChange={(e) => setRg(e.target.value)}
+                    />
+                    <FormField
+                      label="CPF"
+                      value={cpf}
+                      onChange={(e) => setCpf(e.target.value)}
+                    />
+                    <FormField
+                      label="Passaporte"
+                      value={passport}
+                      onChange={(e) => setPassport(e.target.value)}
+                    />
+                    <hr />
+                    <h2 className="text-xl text-neutral-700">Endereço</h2>
+                    <FormField
+                      label="CEP"
+                      value={cep}
+                      onChange={(e) => setCep(e.target.value)}
+                    />
+                    <FormField
+                      label="Logradouro"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        label="Número"
+                        value={number}
+                        onChange={(e) => setNumber(e.target.value)}
+                      />
+                      <FormField
+                        label="Complemento"
+                        value={complement}
+                        onChange={(e) => setComplement(e.target.value)}
+                      />
+                    </div>
+                    <FormField
+                      label="Bairro"
+                      value={neighborhood}
+                      onChange={(e) => setNeighborhood(e.target.value)}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        label="Cidade"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                      />
+                      <FormField
+                        label="Estado"
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                      />
+                    </div>
+                    <FormField
+                      label="Nacionalidade"
+                      value={nationality}
+                      onChange={(e) => setNationality(e.target.value)}
+                    />
+                  </>
+                )}
               <button
                 type="submit"
                 className="w-full py-2 px-4 bg-yellow-darker text-white rounded-md hover:bg-yellow-dark transition duration-300 focus:outline-none focus:bg-yellow-dark mt-4"
