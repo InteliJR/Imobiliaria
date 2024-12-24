@@ -167,7 +167,7 @@ const Root = () => {
         {/* Contratos */}
         <Route path="/contratos/:id" element={<ContractView />} />
         {/* <Route
-          path="/contratos"
+          path="/contratos/:id"
           element={
             <ProtectedRoute>
               <ContractView />

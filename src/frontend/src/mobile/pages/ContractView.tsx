@@ -20,6 +20,7 @@ export default function Contrato() {
     contratoId: string;
     documentos: string[];
     valorAluguel: number;
+    dataInicio: string;
     dataEncerramento: string;
     locadorId: string;
     locatarioId: string;
@@ -96,6 +97,7 @@ export default function Contrato() {
       contratoId: "12345",
       documentos: ["contrato.pdf", "vistoria.pdf"],
       valorAluguel: 1500,
+      dataInicio: "2024-01-05",
       dataEncerramento: "2024-12-31",
       locadorId: "locador_001",
       locatarioId: "locatario_001",
@@ -272,7 +274,7 @@ export default function Contrato() {
               <form className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded">
                 {/* Valor do Aluguel */}
                 <label className="flex flex-col">
-                  <span>Valor do Aluguel:</span>
+                  <label htmlFor="rentalValue">Valor do Aluguel:</label>
                   <CurrencyInput
                     id="rentalValue"
                     name="valorAluguel"
@@ -298,10 +300,26 @@ export default function Contrato() {
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
+
+                {/* Data de Início */}
+                <label className="flex flex-col">
+                  <label>Data de Início:</label>
+                  <input
+                    type="date"
+                    name="dataInicio"
+                    value={contract?.dataInicio || ""}
+                    disabled={true}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                  />
+                </label>
+
                 {/* Data de Encerramento */}
                 <label className="flex flex-col">
-                  <span>Data de Encerramento:</span>
+                  <label htmlFor="dataEncerramento">
+                    Data de Encerramento:
+                  </label>
                   <input
+                    id="dataEncerramento"
                     type="date"
                     name="dataEncerramento"
                     value={contract?.dataEncerramento || ""}
@@ -312,8 +330,9 @@ export default function Contrato() {
                 </label>
                 {/* Tipo de Garantia */}
                 <label className="flex flex-col">
-                  <span>Tipo de Garantia:</span>
+                  <label htmlFor="tipoGarantia">Tipo de Garantia:</label>
                   <input
+                    id="tipoGarantia"
                     type="text"
                     name="tipoGarantia"
                     value={contract?.tipoGarantia || ""}
@@ -324,8 +343,11 @@ export default function Contrato() {
                 </label>
                 {/* Condições Especiais */}
                 <label className="flex flex-col">
-                  <span>Condições Especiais:</span>
+                  <label htmlFor="condicoesEspeciais">
+                    Condições Especiais:
+                  </label>
                   <input
+                    id="condicoesEspeciais"
                     type="text"
                     name="condicoesEspeciais"
                     value={contract?.condicoesEspeciais || ""}
@@ -334,21 +356,28 @@ export default function Contrato() {
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
+
                 {/* Status */}
                 <label className="flex flex-col">
-                  <span>Status:</span>
-                  <input
-                    type="text"
+                  <label htmlFor="status">Status:</label>
+                  <select
+                    id="status"
                     name="status"
                     value={contract?.status || ""}
                     onChange={handleInputChange}
                     disabled={!isEditable}
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
+                  >
+                    <option value="Ativo">Ativo</option>
+                    <option value="Encerrado">Encerrado</option>
+                    <option value="Rescindido">Rescindido</option>
+                    <option value="Renovado">Renovado</option>
+                  </select>
                 </label>
+
                 {/* IPTU */}
                 <label className="flex flex-col">
-                  <span>IPTU:</span>
+                  <label htmlFor="iptuValue">IPTU:</label>
                   <CurrencyInput
                     id="iptuValue"
                     name="iptu"
@@ -374,18 +403,64 @@ export default function Contrato() {
                     className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                   />
                 </label>
+
+                {/* Data de Pagamento */}
+                <label className="flex flex-col">
+                  <label htmlFor="dataPagamento">Data de Pagamento:</label>
+                  <input
+                    id="dataPagamento"
+                    type="date"
+                    name="dataPagamento"
+                    value={contract?.dataPagamento || ""}
+                    onChange={handleInputChange}
+                    disabled={!isEditable}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                  />
+                </label>
+
+                {/* Taxa Administrativa */}
+                <label className="flex flex-col">
+                  <label htmlFor="adminFee">Taxa Administrativa:</label>
+                  <CurrencyInput
+                    id="adminFee"
+                    name="taxaAdm"
+                    placeholder="R$ 0,00"
+                    decimalSeparator=","
+                    groupSeparator="."
+                    prefix="R$ "
+                    decimalsLimit={2}
+                    maxLength={9}
+                    value={contract?.taxaAdm || ""}
+                    onValueChange={(newValue) =>
+                      setContract((prevContract) => {
+                        if (!prevContract) {
+                          return null;
+                        }
+                        return {
+                          ...prevContract,
+                          taxaAdm: parseFloat(newValue || "0"),
+                        };
+                      })
+                    }
+                    disabled={!isEditable}
+                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+                  />
+                </label>
                 {/* Botão Salvar Alterações */}
                 {isEditable && (
                   <Botao label="Salvar Alterações" onClick={handleSave} />
                 )}
               </form>
+
               {/* Exibição da lista de pagamentos */}
               <section className="mt-6">
                 <h2 className="text-xl font-semibold">Pagamentos</h2>
                 {loadingPayments ? (
                   <Loading type="spinner" />
                 ) : payments.length === 0 ? (
-                  <p className="text-neutral-500">Nenhum pagamento registrado.</p>
+                  <p className="text-neutral-500">
+                    Nenhum pagamento registrado.
+                  </p>
                 ) : (
                   <ul className="list-disc list-inside">
                     {payments.map((payment) => (
@@ -404,7 +479,7 @@ export default function Contrato() {
               {/* Texto para alternar o formulário de pagamento */}
               {canAddPayments && !showPaymentForm && (
                 <p
-                  className="mt-4 underline tracking-wide text-lg cursor-pointer hover:tracking-[.05em] duration-300 ease-in-out"
+                  className="mt-6 underline tracking-wide text-lg cursor-pointer hover:tracking-[.05em] duration-300 ease-in-out"
                   onClick={() => setShowPaymentForm((prev) => !prev)}
                 >
                   Deseja adicionar pagamentos?
@@ -421,8 +496,8 @@ export default function Contrato() {
                 >
                   <h2 className="text-xl font-semibold">Adicionar Pagamento</h2>
                   {/* Valor */}
-                  <label className="flex flex-col">
-                    <span>Valor:</span>
+                  <div className="flex flex-col">
+                    <label htmlFor="paymentValue">Valor:</label>
                     <CurrencyInput
                       id="paymentValue"
                       name="paymentValue"
@@ -434,15 +509,20 @@ export default function Contrato() {
                       maxLength={9}
                       value={newPayment.valor || ""}
                       onValueChange={(newValue) =>
-                        handlePaymentChange("valor", parseFloat(newValue || "0"))
+                        handlePaymentChange(
+                          "valor",
+                          parseFloat(newValue || "0")
+                        )
                       }
                       className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                     />
-                  </label>
+                  </div>
+
                   {/* Data */}
-                  <label className="flex flex-col">
-                    <span>Data:</span>
+                  <div className="flex flex-col">
+                    <label htmlFor="paymentDate">Data:</label>
                     <input
+                      id="paymentDate"
                       type="date"
                       name="data"
                       value={newPayment.data || ""}
@@ -452,11 +532,13 @@ export default function Contrato() {
                       className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                       required
                     />
-                  </label>
+                  </div>
+
                   {/* Pagante */}
-                  <label className="flex flex-col">
-                    <span>Pagante:</span>
+                  <div className="flex flex-col">
+                    <label htmlFor="pagante">Pagante:</label>
                     <input
+                      id="pagante"
                       type="text"
                       name="pagante"
                       value={newPayment.pagante || ""}
@@ -466,12 +548,14 @@ export default function Contrato() {
                       className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                       required
                     />
-                  </label>
+                  </div>
+
                   {/* Método de Pagamento */}
-                  <label className="flex flex-col">
-                    <span>Método de Pagamento:</span>
+                  <div className="flex flex-col">
+                    <label htmlFor="metodo_pagamento">Método de Pagamento:</label>
                     <input
                       type="text"
+                      id="metodo_pagamento"
                       name="metodo_pagamento"
                       value={newPayment.metodo_pagamento || ""}
                       onChange={(e) =>
@@ -480,12 +564,14 @@ export default function Contrato() {
                       className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                       required
                     />
-                  </label>
+                  </div>
+
                   {/* Tipo de Pagamento */}
-                  <label className="flex flex-col">
-                    <span>Tipo de Pagamento:</span>
+                  <div className="flex flex-col">
+                    <label htmlFor="tipo_pagamento">Tipo de Pagamento:</label>
                     <input
                       type="text"
+                      id="tipo_pagamento"
                       name="tipo_pagamento"
                       value={newPayment.tipo_pagamento || ""}
                       onChange={(e) =>
@@ -494,29 +580,11 @@ export default function Contrato() {
                       className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                       required
                     />
-                  </label>
-                  {/* Multa */}
-                  <label className="flex flex-col">
-                    <span>Multa:</span>
-                    <CurrencyInput
-                      id="fine"
-                      name="fine"
-                      placeholder="R$ 0,00"
-                      decimalSeparator=","
-                      groupSeparator="."
-                      prefix="R$ "
-                      decimalsLimit={2}
-                      maxLength={9}
-                      value={newPayment.multa || ""}
-                      onValueChange={(newValue) =>
-                        handlePaymentChange("multa", parseFloat(newValue || "0"))
-                      }
-                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                    />
-                  </label>
+                  </div>
+
                   {/* Valor da Multa */}
-                  <label className="flex flex-col">
-                    <span>Valor da Multa:</span>
+                  <div className="flex flex-col">
+                    <label htmlFor="fineValue">Valor da Multa:</label>
                     <CurrencyInput
                       id="fineValue"
                       name="fineValue"
@@ -535,12 +603,13 @@ export default function Contrato() {
                       }
                       className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                     />
-                  </label>
-            
+                  </div>
+
                   {/* Descrição */}
-                  <label className="flex flex-col">
-                    <span>Descrição:</span>
+                  <div className="flex flex-col">
+                    <label htmlFor="descricao">Descrição:</label>
                     <textarea
+                      id="descricao"
                       name="descricao"
                       value={newPayment.descricao || ""}
                       onChange={(e) =>
@@ -549,9 +618,12 @@ export default function Contrato() {
                       className="w-full p-2 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm h-24 resize-none"
                       maxLength={350}
                     />
-                  </label>
+                  </div>
                   {/* Botão de Adicionar Pagamento */}
-                  <Botao label="Adicionar Pagamento" onClick={handleAddPayment} />
+                  <Botao
+                    label="Adicionar Pagamento"
+                    onClick={handleAddPayment}
+                  />
                 </form>
               )}
             </div>
