@@ -93,6 +93,11 @@ export default function Contrato() {
       setContract(response.data);
       setOriginalContract(response.data);
 
+      // Define os valores iniciais dos selects
+      setSelectedPropertyId(response.data.imovelId);
+      setSelectedLessorId(response.data.locadorId);
+      setSelectedRenterId(response.data.locatarioId);
+
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -199,7 +204,10 @@ export default function Contrato() {
       },
     ];
 
-    fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
+    // Quando esta página for devidamente integrada ao back:
+    // fetchContract();
+    // fetchPayments();
+    // fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
 
     // Simulando a captura da role do usuário
     setRole("admin");
@@ -208,9 +216,10 @@ export default function Contrato() {
     setOriginalContract(mockContract);
     setPayments(mockPayments);
 
-    // Quando esta página for devidamente integrada ao back:
-    // fetchContract();
-    // fetchPayments();
+    // Define os valores iniciais dos selects
+    setSelectedPropertyId(mockContract.imovelId);
+    setSelectedLessorId(mockContract.locadorId);
+    setSelectedRenterId(mockContract.locatarioId);
 
     setLoading(false);
     setLoadingPayments(false);
@@ -221,7 +230,9 @@ export default function Contrato() {
   const isEditable = role === "admin"; // Supondo que só adm pode editar um contrato
   const canAddPayments = role === "admin" || role === "legal"; // Supondo que adm e o jurídico podem editar um contrato
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     if (contract) {
       const { name, value } = e.target;
       setContract({ ...contract, [name]: value });
@@ -235,7 +246,9 @@ export default function Contrato() {
     setNewPayment({ ...newPayment, [field]: value });
   };
 
-  const handleSave = () => {
+  const handleSave = (event: React.FormEvent) => {
+    event.preventDefault();
+
     if (!contract) {
       showErrorToast("Contrato não carregado.");
       return;
@@ -257,14 +270,21 @@ export default function Contrato() {
       showErrorToast("Nenhuma alteração foi feita.");
       return;
     }
-
     // Verifica se todos os campos obrigatórios estão preenchidos e válidos
     if (
       !contract.valorAluguel ||
-      contract.valorAluguel <= 0 || // ValorAluguel precisa ser maior que zero
+      contract.valorAluguel <= 0 || // Valor do aluguel precisa ser maior que zero
       !contract.dataEncerramento ||
       new Date(contract.dataEncerramento) <= new Date() || // Data de encerramento deve ser futura
-      !contract.tipoGarantia.trim() // Tipo de garantia não pode ser vazio
+      !contract.tipoGarantia.trim() || // Tipo de garantia não pode ser vazio
+      !contract.iptu ||
+      contract.iptu <= 0 || // IPTU deve ser positivo
+      !contract.taxaAdm ||
+      contract.taxaAdm <= 0 || // Taxa administrativa deve ser positiva
+      !contract.dataPagamento || // Data de pagamento deve estar preenchida
+      !selectedPropertyId?.trim() || // Um imóvel precisa ser selecionado
+      !selectedLessorId?.trim() || // Um locador precisa ser selecionado
+      !selectedRenterId?.trim() // Um locatário precisa ser selecionado
     ) {
       showErrorToast("Preencha todos os campos obrigatórios corretamente.");
       return;
@@ -523,7 +543,7 @@ export default function Contrato() {
                   <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
                 )}
                 <div>
-                  <label className="block text-neutral-600">Imóvel</label>
+                  <label>Imóvel</label>
                   <select
                     value={selectedPropertyId || ""}
                     onChange={(e) => setSelectedPropertyId(e.target.value)}
@@ -532,18 +552,19 @@ export default function Contrato() {
                     <option value="">Selecione um imóvel</option>
                     {properties.map((imovel: any) => (
                       <option key={imovel.imovelId} value={imovel.imovelId}>
-                        {imovel.imovelId}
+                        {imovel.nome || imovel.imovelId}{" "}
+                        {/* Exibe o nome ou ID do imóvel */}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                {/* Lessor */}
+                {/* Locador */}
                 {isLoadingLessor && (
                   <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
                 )}
                 <div>
-                  <label className="block text-neutral-600">Lessor</label>
+                  <label>Locador</label>
                   <select
                     value={selectedLessorId || ""}
                     onChange={(e) => setSelectedLessorId(e.target.value)}
@@ -552,7 +573,7 @@ export default function Contrato() {
                     <option value="">Selecione um locador</option>
                     {lessors.map((locador: any) => (
                       <option key={locador.locadorId} value={locador.locadorId}>
-                        {locador.nomeCompletoLessor}
+                        {locador.nomeCompletoLessor || locador.locadorId}
                       </option>
                     ))}
                   </select>
@@ -563,7 +584,7 @@ export default function Contrato() {
                   <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
                 )}
                 <div>
-                  <label className="block text-neutral-600">Locatário</label>
+                  <label>Locatário</label>
                   <select
                     value={selectedRenterId || ""}
                     onChange={(e) => setSelectedRenterId(e.target.value)}
@@ -575,7 +596,7 @@ export default function Contrato() {
                         key={locatario.locatarioId}
                         value={locatario.locatarioId}
                       >
-                        {locatario.nomeCompletoRenter}
+                        {locatario.nomeCompletoRenter || locatario.locatarioId}
                       </option>
                     ))}
                   </select>
