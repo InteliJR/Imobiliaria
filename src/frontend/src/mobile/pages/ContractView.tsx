@@ -2,13 +2,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
-import DocumentViewer from "../../components/DocumentViewer";
+import { ContractForm } from "../../components/Form/ContractForm";
+import PaymentForm from "../../components/Form/PaymentForm";
 import Loading from "../../components/Loading";
 import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosConfig";
-import Botao from "../../components/Botoes/Botao"; // Import do componente Botao
-import CurrencyInput from "react-currency-input-field";
 
 export default function Contrato() {
   const navigate = useNavigate();
@@ -239,11 +238,10 @@ export default function Contrato() {
     }
   };
 
-  const handlePaymentChange = (
-    field: keyof Payment,
-    value: string | number
-  ) => {
-    setNewPayment({ ...newPayment, [field]: value });
+  const handleValueChange = (field: string, value: number | string) => {
+    if (contract) {
+      setContract({ ...contract, [field]: value });
+    }
   };
 
   const handleSave = (event: React.FormEvent) => {
@@ -353,286 +351,25 @@ export default function Contrato() {
         ) : (
           <div className="flex flex-col justify-center items-center">
             <div className="w-full max-w-5xl">
-              <h1 className="text-title font-strong mb-2">
-                Contrato: {contract?.contratoId}
-              </h1>
-              <form className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded">
-                {/* Valor do Aluguel */}
-                <div className="flex flex-col">
-                  <label htmlFor="rentalValue">Valor do Aluguel:</label>
-                  <CurrencyInput
-                    id="rentalValue"
-                    name="valorAluguel"
-                    placeholder="R$ 0,00"
-                    decimalSeparator=","
-                    groupSeparator="."
-                    prefix="R$ "
-                    decimalsLimit={2}
-                    maxLength={9}
-                    value={contract?.valorAluguel || ""}
-                    onValueChange={(newValue) =>
-                      setContract((prevContract) => {
-                        if (!prevContract) {
-                          return null; // Ou defina o comportamento desejado para o caso de prevContract ser null
-                        }
-                        return {
-                          ...prevContract,
-                          valorAluguel: parseFloat(newValue || "0"),
-                        };
-                      })
-                    }
-                    disabled={!isEditable}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
-                </div>
-
-                {/* Data de Início */}
-                <div className="flex flex-col">
-                  <label>Data de Início:</label>
-                  <input
-                    type="date"
-                    name="dataInicio"
-                    value={contract?.dataInicio || ""}
-                    disabled={true}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
-                </div>
-
-                {/* Data de Encerramento */}
-                <div className="flex flex-col">
-                  <label htmlFor="dataEncerramento">
-                    Data de Encerramento:
-                  </label>
-                  <input
-                    id="dataEncerramento"
-                    type="date"
-                    name="dataEncerramento"
-                    value={contract?.dataEncerramento || ""}
-                    onChange={handleInputChange}
-                    disabled={!isEditable}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
-                </div>
-
-                {/* Tipo de Garantia */}
-                <div className="flex flex-col">
-                  <label htmlFor="tipoGarantia">Tipo de Garantia:</label>
-                  <select
-                    id="tipoGarantia"
-                    name="tipoGarantia"
-                    value={contract?.tipoGarantia || ""}
-                    onChange={handleInputChange}
-                    disabled={!isEditable}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  >
-                    <option value="Caução">Caução</option>
-                    <option value="Depósito">Depósito</option>
-                    <option value="Fiador">Fiador</option>
-                    <option value="Renovado">Outro</option>
-                  </select>
-                </div>
-
-                {/* Condições Especiais */}
-                <div className="flex flex-col">
-                  <label htmlFor="condicoesEspeciais">
-                    Condições Especiais:
-                  </label>
-                  <input
-                    id="condicoesEspeciais"
-                    type="text"
-                    name="condicoesEspeciais"
-                    value={contract?.condicoesEspeciais || ""}
-                    onChange={handleInputChange}
-                    disabled={!isEditable}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
-                </div>
-
-                {/* Status */}
-                <div className="flex flex-col">
-                  <label htmlFor="status">Status:</label>
-                  <select
-                    id="status"
-                    name="status"
-                    value={contract?.status || ""}
-                    onChange={handleInputChange}
-                    disabled={!isEditable}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  >
-                    <option value="Ativo">Ativo</option>
-                    <option value="Encerrado">Encerrado</option>
-                    <option value="Rescindido">Rescindido</option>
-                    <option value="Renovado">Renovado</option>
-                  </select>
-                </div>
-
-                {/* IPTU */}
-                <div className="flex flex-col">
-                  <label htmlFor="iptuValue">IPTU:</label>
-                  <CurrencyInput
-                    id="iptuValue"
-                    name="iptu"
-                    placeholder="R$ 0,00"
-                    decimalSeparator=","
-                    groupSeparator="."
-                    prefix="R$ "
-                    decimalsLimit={2}
-                    maxLength={9}
-                    value={contract?.iptu || ""}
-                    onValueChange={(newValue) =>
-                      setContract((prevContract) => {
-                        if (!prevContract) {
-                          return null; // Ou defina o comportamento desejado para o caso de prevContract ser null
-                        }
-                        return {
-                          ...prevContract,
-                          iptu: parseFloat(newValue || "0"),
-                        };
-                      })
-                    }
-                    disabled={!isEditable}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
-                </div>
-
-                {/* Data de Pagamento */}
-                <div className="flex flex-col">
-                  <label htmlFor="dataPagamento">Data de Pagamento:</label>
-                  <input
-                    id="dataPagamento"
-                    type="date"
-                    name="dataPagamento"
-                    value={contract?.dataPagamento || ""}
-                    onChange={handleInputChange}
-                    disabled={!isEditable}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
-                </div>
-
-                {/* Taxa Administrativa */}
-                <div className="flex flex-col">
-                  <label htmlFor="adminFee">Taxa Administrativa:</label>
-                  <CurrencyInput
-                    id="adminFee"
-                    name="taxaAdm"
-                    placeholder="R$ 0,00"
-                    decimalSeparator=","
-                    groupSeparator="."
-                    prefix="R$ "
-                    decimalsLimit={2}
-                    maxLength={9}
-                    value={contract?.taxaAdm || ""}
-                    onValueChange={(newValue) =>
-                      setContract((prevContract) => {
-                        if (!prevContract) {
-                          return null;
-                        }
-                        return {
-                          ...prevContract,
-                          taxaAdm: parseFloat(newValue || "0"),
-                        };
-                      })
-                    }
-                    disabled={!isEditable}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                  />
-                </div>
-
-                {/* Imóvel */}
-                {isLoadingProperty && (
-                  <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
-                )}
-                <div>
-                  <label>Imóvel</label>
-                  <select
-                    value={selectedPropertyId || ""}
-                    onChange={(e) => setSelectedPropertyId(e.target.value)}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
-                  >
-                    <option value="">Selecione um imóvel</option>
-                    {properties.map((imovel: any) => (
-                      <option key={imovel.imovelId} value={imovel.imovelId}>
-                        {imovel.nome || imovel.imovelId}{" "}
-                        {/* Exibe o nome ou ID do imóvel */}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Locador */}
-                {isLoadingLessor && (
-                  <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
-                )}
-                <div>
-                  <label>Locador</label>
-                  <select
-                    value={selectedLessorId || ""}
-                    onChange={(e) => setSelectedLessorId(e.target.value)}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
-                  >
-                    <option value="">Selecione um locador</option>
-                    {lessors.map((locador: any) => (
-                      <option key={locador.locadorId} value={locador.locadorId}>
-                        {locador.nomeCompletoLessor || locador.locadorId}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Locatário */}
-                {isLoadingRenter && (
-                  <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
-                )}
-                <div>
-                  <label>Locatário</label>
-                  <select
-                    value={selectedRenterId || ""}
-                    onChange={(e) => setSelectedRenterId(e.target.value)}
-                    className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
-                  >
-                    <option value="">Selecione um locatário</option>
-                    {renters.map((locatario: any) => (
-                      <option
-                        key={locatario.locatarioId}
-                        value={locatario.locatarioId}
-                      >
-                        {locatario.nomeCompletoRenter || locatario.locatarioId}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Documentos */}
-                <div className="w-full">
-                  <h3>Documentos</h3>
-                  {contract?.documentos && contract.documentos.length > 0 ? (
-                    contract.documentos.map((docUrl, index) => (
-                      <div key={index} className="bg-[#f3f4f6] mt-3">
-                        <h4 className="text-neutral-800 ml-2 mb-2 pt-1">
-                          Documento {index + 1}
-                        </h4>
-                        <DocumentViewer fileUrl={docUrl} />
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500 mt-3">
-                      Nenhum documento associado.
-                    </p>
-                  )}
-                </div>
-                {isEditable && (
-                  <p className="cursor-pointer">Enviar documento</p>
-                )}
-
-                <p className="cursor-pointer">
-                  !!!!!FUNCIONALIDADE DE RESCINDIR CONTRATO!!!!!!!
-                </p>
-
-                {/* Botão Salvar Alterações */}
-                {isEditable && (
-                  <Botao label="Salvar Alterações" onClick={handleSave} />
-                )}
-              </form>
+              <ContractForm
+                contract={contract}
+                isEditable={isEditable}
+                properties={properties}
+                lessors={lessors}
+                renters={renters}
+                selectedPropertyId={selectedPropertyId}
+                selectedLessorId={selectedLessorId}
+                selectedRenterId={selectedRenterId}
+                isLoadingProperty={isLoadingProperty}
+                isLoadingLessor={isLoadingLessor}
+                isLoadingRenter={isLoadingRenter}
+                onInputChange={handleInputChange}
+                onValueChange={handleValueChange}
+                setSelectedPropertyId={setSelectedPropertyId}
+                setSelectedLessorId={setSelectedLessorId}
+                setSelectedRenterId={setSelectedRenterId}
+                handleSave={handleSave}
+              />
 
               {/* Exibição da lista de pagamentos */}
               <section className="mt-6">
@@ -674,148 +411,14 @@ export default function Contrato() {
                   Deseja adicionar pagamentos?
                 </p>
               )}
+
               {/* Condicional para exibir o formulário de adição de pagamento */}
               {showPaymentForm && (
-                <form
-                  className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded mt-6"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleAddPayment();
-                  }}
-                >
-                  <h2 className="text-xl font-semibold">Adicionar Pagamento</h2>
-                  {/* Valor */}
-                  <div className="flex flex-col">
-                    <label htmlFor="paymentValue">Valor:</label>
-                    <CurrencyInput
-                      id="paymentValue"
-                      name="paymentValue"
-                      placeholder="R$ 0,00"
-                      decimalSeparator=","
-                      groupSeparator="."
-                      prefix="R$ "
-                      decimalsLimit={2}
-                      maxLength={9}
-                      value={newPayment.valor || ""}
-                      onValueChange={(newValue) =>
-                        handlePaymentChange(
-                          "valor",
-                          parseFloat(newValue || "0")
-                        )
-                      }
-                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                    />
-                  </div>
-
-                  {/* Data */}
-                  <div className="flex flex-col">
-                    <label htmlFor="paymentDate">Data:</label>
-                    <input
-                      id="paymentDate"
-                      type="date"
-                      name="data"
-                      value={newPayment.data || ""}
-                      onChange={(e) =>
-                        handlePaymentChange("data", e.target.value)
-                      }
-                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                      required
-                    />
-                  </div>
-
-                  {/* Pagante */}
-                  <div className="flex flex-col">
-                    <label htmlFor="pagante">Pagante:</label>
-                    <input
-                      id="pagante"
-                      type="text"
-                      name="pagante"
-                      value={newPayment.pagante || ""}
-                      onChange={(e) =>
-                        handlePaymentChange("pagante", e.target.value)
-                      }
-                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                      required
-                    />
-                  </div>
-
-                  {/* Método de Pagamento */}
-                  <div className="flex flex-col">
-                    <label htmlFor="metodo_pagamento">
-                      Método de Pagamento:
-                    </label>
-                    <input
-                      type="text"
-                      id="metodo_pagamento"
-                      name="metodo_pagamento"
-                      value={newPayment.metodo_pagamento || ""}
-                      onChange={(e) =>
-                        handlePaymentChange("metodo_pagamento", e.target.value)
-                      }
-                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                      required
-                    />
-                  </div>
-
-                  {/* Tipo de Pagamento */}
-                  <div className="flex flex-col">
-                    <label htmlFor="tipo_pagamento">Tipo de Pagamento:</label>
-                    <input
-                      type="text"
-                      id="tipo_pagamento"
-                      name="tipo_pagamento"
-                      value={newPayment.tipo_pagamento || ""}
-                      onChange={(e) =>
-                        handlePaymentChange("tipo_pagamento", e.target.value)
-                      }
-                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                      required
-                    />
-                  </div>
-
-                  {/* Valor da Multa */}
-                  <div className="flex flex-col">
-                    <label htmlFor="fineValue">Valor da Multa:</label>
-                    <CurrencyInput
-                      id="fineValue"
-                      name="fineValue"
-                      placeholder="R$ 0,00"
-                      decimalSeparator=","
-                      groupSeparator="."
-                      prefix="R$ "
-                      decimalsLimit={2}
-                      maxLength={9}
-                      value={newPayment.valor_multa || ""}
-                      onValueChange={(newValue) =>
-                        handlePaymentChange(
-                          "valor_multa",
-                          parseFloat(newValue || "0")
-                        )
-                      }
-                      className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
-                    />
-                  </div>
-
-                  {/* Descrição */}
-                  <div className="flex flex-col">
-                    <label htmlFor="descricao">Descrição:</label>
-                    <textarea
-                      id="descricao"
-                      name="descricao"
-                      value={newPayment.descricao || ""}
-                      onChange={(e) =>
-                        handlePaymentChange("descricao", e.target.value)
-                      }
-                      className="w-full p-2 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm h-24 resize-none"
-                      maxLength={350}
-                    />
-                  </div>
-                  {/* Botão de Adicionar Pagamento */}
-                  <Botao
-                    label="Adicionar Pagamento"
-                    onClick={handleAddPayment}
-                  />
-                </form>
+                <PaymentForm
+                  newPayment={newPayment}
+                  setNewPayment={setNewPayment}
+                  handleAddPayment={handleAddPayment}
+                />
               )}
             </div>
           </div>
