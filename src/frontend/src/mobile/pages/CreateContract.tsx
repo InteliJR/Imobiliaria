@@ -330,7 +330,7 @@ export default function CreateContractMobile() {
               <div>
                 <label className="block text-neutral-600">Imóvel</label>
                 <select
-                  value={selectedLocadorId || ""}
+                  value={selectedImovelId || ""}
                   onChange={(e) => setSelectedImovelId(e.target.value)}
                   className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
                 >
