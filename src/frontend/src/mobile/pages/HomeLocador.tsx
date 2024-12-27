@@ -24,6 +24,7 @@ export default function MainPage() {
     descricao: string;
     endereco: string;
     complemento: string;
+    fotos: string | string[];
     onClick: () => void;  
   }
 
@@ -34,9 +35,9 @@ export default function MainPage() {
 
   
   const tokenData = getTokenData();
-  console.log(tokenData);
+  // console.log(tokenData);
   const userId = tokenData.UserID;
-  console.log(userId);
+  // console.log(userId);
   
   useEffect(() => {
     const fetchLocadorId = async () => {
@@ -82,8 +83,51 @@ export default function MainPage() {
           console.error("Dados de resposta inválidos");
           return;
         }
+
+        // Logica para assinar imagens
+        const imoveisData = response.data;
+
+        // Arrumar imagens para serem exibidas
+        // separar string por vírgula
+        imoveisData.forEach((imovel: any) => {
+          if(typeof imovel.fotos === "string") {
+            imovel.fotos = imovel.fotos.split(";").map((foto: string) => foto.trim());
+          }
+        });
+
+        // array apenas com os nomes dos objetos no Storage
+        const allPhotos = imoveisData.flatMap((property: any) => 
+          Array.isArray(property.fotos) 
+            ? property.fotos.map((foto: string) => foto.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", ""))
+            : []
+        );
+        
+
+        // Assinar as URLs das imagens
+        const responsePhotos = await axiosInstance.post('property/Imoveis/AssinarFotos', allPhotos);
+        if (!responsePhotos.data) {
+          console.error("Dados de resposta inválidos do endpoint de assinatura");
+          return;
+        }
+
+        const signedPhotos: string[] = responsePhotos.data;
+
+        // Redistribuir as fotos assinadas para cada imóvel usando um offset
+        let offset = 0;
+        imoveisData.forEach((property: any) => {
+          if (Array.isArray(property.fotos) && property.fotos.length > 0) {
+            const count = property.fotos.length;
+            property.fotos = signedPhotos.slice(offset, offset + count); // Atualiza com URLs assinadas
+            offset += count; // Atualiza o offset
+          } else {
+            property.fotos = ["../../../public/ImovelSemFoto.png"]; // Define imagem padrão caso não existam fotos
+          }
+        });
+        
+
+        // console.log("Este é o valor de imoveisData: ", imoveisData);
   
-        setProperties(response.data);
+        setProperties(imoveisData);
         console.log("Este é o valor de property: ", properties);
         setFilteredData(response.data);
       } catch (error: any) {
@@ -166,7 +210,7 @@ export default function MainPage() {
                     postalCode={property.cep}
                     landlord="Fulano de Tal"          // or property.landlord if it exists
                     tenant={null}                     // or property.tenant if it exists
-                    imageSrc="/imovel.png"
+                    imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/ImovelSemFoto.png"}
                     price={`R$${property.valorImovel.toFixed(2)}`}
                     condominio={property.condominio?.toString() ?? "0"}
                     onClick={() => navigate(`/imovel/${property.imovelId}`)}

@@ -220,7 +220,7 @@ export default function Properties() {
                   tenant={property.tenant}
                   price={property.price}
                   condominio={property.condominio} 
-                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../public/image.png"}
+                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../public/ImovelSemFoto.png"}
                   />
                   
               );

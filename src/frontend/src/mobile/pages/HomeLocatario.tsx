@@ -46,6 +46,8 @@ export default function LocatarioPage() {
           `property/Imoveis/PegarImovelPorIdDoLocatario/${roleID}`
         );
 
+        console.log(response.data);
+
         if (!response.data) {
           console.error("Invalid response data");
           return;
