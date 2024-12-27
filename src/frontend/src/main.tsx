@@ -72,6 +72,10 @@ const Root = () => {
           }
         />
         <Route
+          path="/teste"
+          element={<PagamentosImovel/>}
+        />
+        <Route
           path="/imoveis/criar"
           element={isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
         />
