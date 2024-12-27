@@ -23,6 +23,7 @@ export default function LocatarioPage() {
     descricao: string;
     endereco: string;
     complemento: string;
+    fotos: string | string[];
     onClick: () => void;
   }
 
@@ -53,8 +54,48 @@ export default function LocatarioPage() {
           return;
         }
 
-        setProperties(response.data);
-        setFilteredData(response.data);
+        const imoveisData = response.data;
+
+        // Arrumar imagens para serem exibidas
+        // separar string por vírgula
+        imoveisData.forEach((imovel: any) => {
+          if(typeof imovel.fotos === "string") {
+            imovel.fotos = imovel.fotos.split(";").map((foto: string) => foto.trim());
+          }
+        });
+
+        // array apenas com os nomes dos objetos no Storage
+        const allPhotos = imoveisData.flatMap((property: any) => 
+          Array.isArray(property.fotos) 
+            ? property.fotos.map((foto: string) => foto.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", ""))
+            : []
+        );
+        
+
+        // Assinar as URLs das imagens
+        const responsePhotos = await axiosInstance.post('property/Imoveis/AssinarFotos', allPhotos);
+        if (!responsePhotos.data) {
+          console.error("Dados de resposta inválidos do endpoint de assinatura");
+          return;
+        }
+
+        const signedPhotos: string[] = responsePhotos.data;
+
+        // Redistribuir as fotos assinadas para cada imóvel usando um offset
+        let offset = 0;
+        imoveisData.forEach((property: any) => {
+          if (Array.isArray(property.fotos) && property.fotos.length > 0) {
+            const count = property.fotos.length;
+            property.fotos = signedPhotos.slice(offset, offset + count); // Atualiza com URLs assinadas
+            offset += count; // Atualiza o offset
+          } else {
+            property.fotos = ["../../../public/ImovelSemFoto.png"]; // Define imagem padrão caso não existam fotos
+          }
+        });
+        
+
+        setProperties(imoveisData);
+        setFilteredData(imoveisData);
       } catch (error: any) {
         console.error(error);
         showErrorToast(
@@ -121,7 +162,7 @@ export default function LocatarioPage() {
                     postalCode={property.cep}
                     landlord="Proprietário Desconhecido"
                     tenant="Você"
-                    imageSrc="/imovel.png"
+                    imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/ImovelSemFoto.png"}
                     price={`R$${property.valorImovel.toFixed(2)}`}
                     condominio={property.condominio?.toString() ?? "0"}
                     onClick={() => navigate(`/imovel/${property.imovelId}`)}

@@ -125,11 +125,11 @@ export default function MainPage() {
         });
         
 
-        // console.log("Este é o valor de imoveisData: ", imoveisData);
+        // console.log("Este é o valor de imoveisData: ", imoveisData); 
   
         setProperties(imoveisData);
         console.log("Este é o valor de property: ", properties);
-        setFilteredData(response.data);
+        setFilteredData(imoveisData);
       } catch (error: any) {
         console.error(error);
         showErrorToast(
