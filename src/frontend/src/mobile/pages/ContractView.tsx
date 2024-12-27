@@ -9,6 +9,27 @@ import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosConfig";
 
+export interface Contract {
+  contratoId: string;
+  documentos: string[];
+  valorAluguel: number;
+  dataInicio: string;
+  dataEncerramento: string;
+  locadorId: string;
+  locatarioId: string;
+  imovelId: string;
+  tipoGarantia: string;
+  condicoesEspeciais: string;
+  status: string;
+  iptu: number;
+  dataPagamento: string;
+  taxaAdm: number;
+  dataRescisao?: string;
+  renovado: boolean;
+  dataEncerramentoRenovacao?: string;
+  valorReajuste?: number;
+}
+
 export default function Contrato() {
   const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URL
@@ -16,28 +37,7 @@ export default function Contrato() {
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [loadingPayments, setLoadingPayments] = useState(true); // estado para controlar o carregamento dos pagamentos
   const [showPaymentForm, setShowPaymentForm] = useState(false); // Estado para controlar a visibilidade do formulário de adição de pagamentos
-
-  interface Contract {
-    contratoId: string;
-    documentos: string[];
-    valorAluguel: number;
-    dataInicio: string;
-    dataEncerramento: string;
-    locadorId: string;
-    locatarioId: string;
-    imovelId: string;
-    tipoGarantia: string;
-    condicoesEspeciais: string;
-    status: string;
-    iptu: number;
-    dataPagamento: string;
-    taxaAdm: number;
-    dataRescisao?: string;
-    renovado: boolean;
-    dataEncerramentoRenovacao?: string;
-    valorReajuste?: number;
-  }
-
+  
   interface Payment {
     pagamentoId: string;
     contratoId: string;
@@ -418,6 +418,7 @@ export default function Contrato() {
                   newPayment={newPayment}
                   setNewPayment={setNewPayment}
                   handleAddPayment={handleAddPayment}
+                  setShowPaymentForm={setShowPaymentForm}
                 />
               )}
             </div>

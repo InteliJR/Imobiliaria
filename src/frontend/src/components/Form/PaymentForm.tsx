@@ -1,6 +1,7 @@
 import React from "react";
 import CurrencyInput from "react-currency-input-field";
 import Botao from "../Botoes/Botao";
+import { IoIosClose } from "react-icons/io";
 
 interface Payment {
   valor?: number;
@@ -16,12 +17,14 @@ interface PaymentFormProps {
   newPayment: Partial<Payment>;
   setNewPayment: React.Dispatch<React.SetStateAction<Partial<Payment>>>;
   handleAddPayment: () => void;
+  setShowPaymentForm: (value: boolean) => void; // Aceita um booleano
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = ({
   newPayment,
   setNewPayment,
   handleAddPayment,
+  setShowPaymentForm,
 }) => {
   const handlePaymentChange = (field: keyof Payment, value: any) => {
     setNewPayment((prev) => ({
@@ -32,13 +35,23 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 
   return (
     <form
-      className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded mt-6"
+      className="flex flex-col relative gap-5 border-2 border-neutral-500 p-4 rounded mt-6"
       onSubmit={(e) => {
         e.preventDefault();
         handleAddPayment();
       }}
     >
       <h2 className="text-xl font-semibold">Adicionar Pagamento</h2>
+
+      <button
+        className="absolute top-1 right-2 hover:rotate-180 duration-300 ease-in-out"
+        onClick={(e) => {
+          e.preventDefault();
+          setShowPaymentForm(false);
+        }}
+      >
+        <IoIosClose size={40} />
+      </button>
 
       {/* Valor */}
       <div className="flex flex-col">

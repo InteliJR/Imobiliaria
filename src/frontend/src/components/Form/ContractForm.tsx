@@ -2,6 +2,7 @@ import React from "react";
 import CurrencyInput from "react-currency-input-field";
 import DocumentViewer from "../DocumentViewer";
 import Botao from "../Botoes/Botao";
+import { Contract } from "../../mobile/pages/ContractView";
 
 interface ContractFormProps {
   contract: Contract | null;
@@ -270,7 +271,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
         <div className="w-full">
           <h3>Documentos</h3>
           {contract?.documentos && contract.documentos.length > 0 ? (
-            contract.documentos.map((docUrl, index) => (
+            contract.documentos.map((docUrl: string, index: number) => (
               <div key={index} className="bg-[#f3f4f6] mt-3">
                 <h4 className="text-neutral-800 ml-2 mb-2 pt-1">
                   Documento {index + 1}
