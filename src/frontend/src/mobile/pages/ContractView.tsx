@@ -37,7 +37,7 @@ export default function Contrato() {
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [loadingPayments, setLoadingPayments] = useState(true); // estado para controlar o carregamento dos pagamentos
   const [showPaymentForm, setShowPaymentForm] = useState(false); // Estado para controlar a visibilidade do formulário de adição de pagamentos
-  
+
   interface Payment {
     pagamentoId: string;
     contratoId: string;
@@ -238,7 +238,10 @@ export default function Contrato() {
     }
   };
 
-  const handleValueChange = (field: string, value: number | string) => {
+  const handleValueChange = (
+    field: string,
+    value: number | string | string[]
+  ) => {
     if (contract) {
       setContract({ ...contract, [field]: value });
     }

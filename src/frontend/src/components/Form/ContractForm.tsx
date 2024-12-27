@@ -3,6 +3,7 @@ import CurrencyInput from "react-currency-input-field";
 import DocumentViewer from "../DocumentViewer";
 import Botao from "../Botoes/Botao";
 import { Contract } from "../../mobile/pages/ContractView";
+import { FaTrash } from "react-icons/fa";
 
 interface ContractFormProps {
   contract: Contract | null;
@@ -45,6 +46,13 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   setSelectedRenterId,
   handleSave,
 }) => {
+  const handleRemoveDocument = (index: number) => {
+    if (!contract) return;
+    const updatedDocuments = [...contract.documentos];
+    updatedDocuments.splice(index, 1); // Remove o documento do array
+    onValueChange("documentos", updatedDocuments); // Atualiza o estado do contrato
+  };
+
   if (!contract) {
     return <p>Contrato não encontrado.</p>;
   }
@@ -200,7 +208,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             decimalsLimit={2}
             maxLength={9}
             value={contract?.taxaAdm || ""}
-            onValueChange={(value) => onValueChange("taxaAdm", parseFloat(value || "0"))}
+            onValueChange={(value) =>
+              onValueChange("taxaAdm", parseFloat(value || "0"))
+            }
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
           />
@@ -272,17 +282,32 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <h3>Documentos</h3>
           {contract?.documentos && contract.documentos.length > 0 ? (
             contract.documentos.map((docUrl: string, index: number) => (
-              <div key={index} className="bg-[#f3f4f6] mt-3">
-                <h4 className="text-neutral-800 ml-2 mb-2 pt-1">
-                  Documento {index + 1}
-                </h4>
+              <div
+                key={index}
+                className="relative bg-gray-100 mt-3 p-2 flex flex-col items-center rounded-[.5rem]"
+              >
+                <h4 className="text-neutral-800 mb-4">Documento {index + 1}</h4>
+
                 <DocumentViewer fileUrl={docUrl} />
+
+                {isEditable && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveDocument(index)}
+                    className="absolute top-3 right-3 text-neutral-600 hover:text-neutral-800 duration-200 ease-in-out"
+                    aria-label={`Remover documento ${index + 1}`}
+                    title={`Remover documento ${index + 1}`}
+                  >
+                    <FaTrash size={24} />
+                  </button>
+                )}
               </div>
             ))
           ) : (
             <p className="text-gray-500 mt-3">Nenhum documento associado.</p>
           )}
         </div>
+
         {isEditable && <p className="cursor-pointer">Enviar documento</p>}
 
         <p className="cursor-pointer">
