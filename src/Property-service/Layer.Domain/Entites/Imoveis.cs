@@ -11,6 +11,7 @@ namespace Layer.Domain.Entities
         // É bom colocar o nome da coluna real para ajudar no mapeamento e manter padrões do Db e do .NET
         // No .NET geralmente usamos PascalCase e no Db geralmente usamos snake_case
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("imovelid")] // Nome da coluna no banco de dados
         public int ImovelId { get; set; }
 

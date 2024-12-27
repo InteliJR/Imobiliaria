@@ -20,6 +20,10 @@ namespace Layer.Domain.Interfaces
         Task<int> DeleteImoveisAsync(int id);
         Task<IEnumerable<Imoveis>> GetImoveisByIdLocador (int locadorId);
         Task<IEnumerable<Imoveis>> GetImoveisByIdLocatario (int locatarioId);
+        Task<String> GenerateSignedUrlOfImovelImageAsync(string objectName);
+        Task<List<string>> GenerateSignedUrlsOfImovelImagesAsync(List<string> objectNames);
+        Task<List<string>> AddImovelPhotosAsync(int id, IFormFileCollection files);
+        Task<int> DeleteImovelPhotoAsync(int id, string objectName);
 
        // Task<string> UpdateImovelPhotoAsync(int id, string TempFilePath, string objectName);
     }

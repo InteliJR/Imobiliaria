@@ -6,6 +6,7 @@ import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
+import ImovelImage from "../components/Imoveis/ImovelImage";
 
 interface Property {
   imovelId: number;
@@ -15,8 +16,8 @@ interface Property {
   valorImovel: number;
   bairro: string;
   descricao: string;
-  endereco: string;
   complemento: string;
+  fotos: string | string[];
 }
 
 export default function PropertyDetails() {
@@ -27,16 +28,52 @@ export default function PropertyDetails() {
 
   const fetchPropertyDetails = async () => {
     try {
+      // DESCOMENTAR QUANDO O ENDPOINT ESTIVER PRONTO
+      // const response = await axiosInstance.get(
+      //   `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
+      // );
+
       const response = await axiosInstance.get(
-        `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
+        `property/Imoveis/PegarImovelPorId/${imovelId}`
       );
+
 
       if (!response.data) {
         console.error("Dados de resposta inválidos");
         return;
       }
 
-      setProperty(response.data);
+      // console.log(response.data);
+
+      // separar string por vírgula
+      const property: Property = response.data;
+      // console.log(property);
+      if (typeof property.fotos === 'string') {
+        property.fotos = property.fotos.split(";").map((foto) => foto.trim());
+      }
+
+      // console.log(property.fotos);
+
+  
+      // array apenas com os nomes dos objetos no Storage
+      const allPhotos = property.fotos ? property.fotos.map((foto) =>
+        foto.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
+      ) : [];
+
+      // console.log(allPhotos);
+      // Assinar as fotos
+      const responsePhotos = await axiosInstance.post('property/Imoveis/AssinarFotos', allPhotos);
+      if (!responsePhotos.data) {
+        console.error("Dados de resposta inválidos do endpoint de assinatura");
+        return;
+      }
+
+      // Substituir as URLs das fotos pelas URLs assinadas
+      property.fotos = responsePhotos.data;
+      // console.log(property.fotos);
+
+      setProperty(property);
+      // console.log(property)
     } catch (error: any) {
       console.error(error);
       showErrorToast(
@@ -79,6 +116,7 @@ export default function PropertyDetails() {
       <section className="section-custom">
         <Voltar />
         <h2 className="text-2xl font-semibold">Detalhes do Imóvel</h2>
+        <ImovelImage images={Array.isArray(property.fotos) ? property.fotos : [property.fotos]} />
         <div className="mt-4 p-4 text-normal-text shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden">
           <p><span className="text-[#76726A]">Tipo: </span> {property.tipoImovel}</p>
           <p><span className="text-[#76726A]">Endereço:  </span>{property.endereco}</p>

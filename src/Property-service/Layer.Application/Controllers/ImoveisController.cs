@@ -240,5 +240,38 @@ namespace Layer.Application.Controllers
 
             return Ok(novoImovel);
         }
+
+        [HttpGet("AssinarFoto")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> GenerateSignedUrlOfImovelImage(string idImage)
+        {
+            var url = await _imoveisService.GenerateSignedUrlOfImovelImageAsync(idImage);
+            return Ok(url);
+        }
+
+        [HttpPost("AssinarFotos")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> GenerateSignedUrlOfImovelImages(List<string> idImages)
+        {
+            var urls = await _imoveisService.GenerateSignedUrlsOfImovelImagesAsync(idImages);
+            return Ok(urls);
+        }
+
+        [HttpPost("AdicionarFotos/{id}")]
+        [Consumes("multipart/form-data")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> AddImovelPhotos(int id, IFormFileCollection files)
+        {
+            var urls = await _imoveisService.AddImovelPhotosAsync(id, files);
+            return Ok(urls);
+        }
+
+        [HttpDelete("DeletarFoto/{id}")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> DeleteImovelPhoto(int id, string objectName)
+        {
+            await _imoveisService.DeleteImovelPhotoAsync(id, objectName);
+            return Ok();
+        }
     }
 }
