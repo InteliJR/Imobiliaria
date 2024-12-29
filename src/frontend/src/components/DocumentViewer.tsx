@@ -43,7 +43,6 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
     const updateWidth = () => {
       if (viewerRef.current) {
         const parentWidth = viewerRef.current.clientWidth;
-        console.log(parentWidth)
         setPdfWidth(parentWidth <= 600 ? parentWidth : 550);
       }
     };

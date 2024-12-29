@@ -20,7 +20,7 @@ interface ContractFormProps {
   onInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
-  onValueChange: (field: string, value: number | string) => void;
+  onValueChange: (field: string, value: string | number | string[]) => void;
   setSelectedPropertyId: (value: string) => void;
   setSelectedLessorId: (value: string) => void;
   setSelectedRenterId: (value: string) => void;

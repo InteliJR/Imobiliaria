@@ -30,26 +30,27 @@ export interface Contract {
   valorReajuste?: number;
 }
 
+export interface Payment {
+  pagamentoId: string;
+  contratoId: string;
+  valor: number;
+  data: string;
+  pagante: string;
+  metodo_pagamento: string;
+  descricao: string;
+  tipo_pagamento: string;
+  multa: boolean; // Alterado para boolean
+  valor_multa: number;
+}  
+
 export default function Contrato() {
   const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URL
   const [role, setRole] = useState("admin"); // Simulação da role do usuário
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
+  const [loadingSpinner, setLoadingSpinner] = useState(false); // estado para controlar o componente de carregamento
   const [loadingPayments, setLoadingPayments] = useState(true); // estado para controlar o carregamento dos pagamentos
   const [showPaymentForm, setShowPaymentForm] = useState(false); // Estado para controlar a visibilidade do formulário de adição de pagamentos
-
-  interface Payment {
-    pagamentoId: string;
-    contratoId: string;
-    valor: number;
-    data: string;
-    pagante: string;
-    metodo_pagamento: string;
-    descricao: string;
-    tipo_pagamento: string;
-    multa: number;
-    valor_multa: number;
-  }
 
   // Função para obter a data de hoje
   const getTodayDate = (): string => {
@@ -61,9 +62,7 @@ export default function Contrato() {
   };
 
   const [contract, setContract] = useState<Contract | null>(null);
-  const [originalContract, setOriginalContract] = useState<Contract | null>(
-    null
-  );
+  const [originalContract, setOriginalContract] = useState<Contract | null>(null);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [newPayment, setNewPayment] = useState<Partial<Payment>>({
     data: getTodayDate(), // Inicializa com a data de hoje
@@ -73,20 +72,18 @@ export default function Contrato() {
   const [isLoadingLessor, setIsLoadingLessor] = useState(false);
   const [isLoadingRenter, setIsLoadingRenter] = useState(false);
   const [isLoadingProperty, setIsLoadingProperty] = useState(false);
+  const [isLoadingPayers, setIsLoadingPayers] = useState(false);
+  const [payers, setPayers] = useState([]); // Lista de pagantes
   const [lessors, setLessors] = useState([]); // Lista de lessors
   const [renters, setRenters] = useState([]); // Lista de locatários
   const [properties, setProperties] = useState([]);
   const [selectedLessorId, setSelectedLessorId] = useState<string | null>(null);
   const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
-  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(
-    null
-  );
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
 
   const fetchContract = async () => {
     try {
-      const response = await axiosInstance.get(
-        `property/Contratos/PegarContratoPorId/${id}`
-      );
+      const response = await axiosInstance.get(`property/Contratos/PegarContratoPorId/${id}`);
 
       console.log("Contrato:", response.data);
       setContract(response.data);
@@ -107,9 +104,7 @@ export default function Contrato() {
   const fetchPayments = async () => {
     try {
       // Simulação de chamada de API
-      const response = await axiosInstance.get(
-        `property/Contratos/Pagamentos/${id}`
-      );
+      const response = await axiosInstance.get(`property/Contratos/Pagamentos/${id}`);
 
       console.log("Pagamentos:", response.data);
       setPayments(response.data);
@@ -126,29 +121,35 @@ export default function Contrato() {
       setIsLoadingLessor(true);
       setIsLoadingRenter(true);
       setIsLoadingProperty(true);
-      const lessorsResponse = await axiosInstance.get(
-        "auth/Lessor/PegarTodosLessors"
-      );
-      const rentersResponse = await axiosInstance.get(
-        "auth/Renter/PegarTodosRenters"
-      );
+      const lessorsResponse = await axiosInstance.get("auth/Lessor/PegarTodosLessors");
+      const rentersResponse = await axiosInstance.get("auth/Renter/PegarTodosRenters");
       const propertiesResponse = await axiosInstance.get(
         "property/Properties/PegarTodosProperties"
       );
       setLessors(lessorsResponse.data || []);
       setRenters(rentersResponse.data || []);
       setProperties(propertiesResponse.data || []);
-      console.log(
-        lessorsResponse.data,
-        rentersResponse.data,
-        propertiesResponse.data
-      );
+      console.log(lessorsResponse.data, rentersResponse.data, propertiesResponse.data);
     } catch (error) {
       showErrorToast("Erro ao carregar lessors, locatários e properties.");
     } finally {
       setIsLoadingLessor(false);
       setIsLoadingRenter(false);
       setIsLoadingProperty(false);
+    }
+  };
+
+  // Carrega os pagantes para as options do formulário de adição de pagamentos
+  const fetchPayers = async () => {
+    try {
+      setIsLoadingPayers(true);
+      const response = await axiosInstance.get("auth/Payers/PegarTodosPayers"); // Endpoint hipotético
+      setPayers(response.data || []);
+      console.log("Pagantes:", response.data);
+    } catch (error) {
+      showErrorToast("Erro ao carregar pagantes.");
+    } finally {
+      setIsLoadingPayers(false);
     }
   };
 
@@ -186,7 +187,7 @@ export default function Contrato() {
         metodo_pagamento: "Cartão de Crédito",
         descricao: "Pagamento mensal",
         tipo_pagamento: "Mensalidade",
-        multa: 0,
+        multa: false,
         valor_multa: 0,
       },
       {
@@ -198,7 +199,7 @@ export default function Contrato() {
         metodo_pagamento: "Boleto",
         descricao: "Pagamento mensal",
         tipo_pagamento: "Mensalidade",
-        multa: 50,
+        multa: true,
         valor_multa: 50,
       },
     ];
@@ -207,6 +208,7 @@ export default function Contrato() {
     // fetchContract();
     // fetchPayments();
     // fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
+    // fetchPayers(); // Chamada à API para carregar os pagantes
 
     // Simulando a captura da role do usuário
     setRole("admin");
@@ -229,19 +231,14 @@ export default function Contrato() {
   const isEditable = role === "admin"; // Supondo que só adm pode editar um contrato
   const canAddPayments = role === "admin" || role === "legal"; // Supondo que adm e o jurídico podem editar um contrato
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (contract) {
       const { name, value } = e.target;
       setContract({ ...contract, [name]: value });
     }
   };
 
-  const handleValueChange = (
-    field: string,
-    value: number | string | string[]
-  ) => {
+  const handleValueChange = (field: string, value: number | string | string[]) => {
     if (contract) {
       setContract({ ...contract, [field]: value });
     }
@@ -249,6 +246,8 @@ export default function Contrato() {
 
   const handleSave = (event: React.FormEvent) => {
     event.preventDefault();
+
+    setLoadingSpinner(true);
 
     if (!contract) {
       showErrorToast("Contrato não carregado.");
@@ -262,9 +261,7 @@ export default function Contrato() {
 
     // Verifica se houve mudanças
     const hasChanges = Object.keys(originalContract).some(
-      (key) =>
-        originalContract[key as keyof Contract] !==
-        contract[key as keyof Contract]
+      (key) => originalContract[key as keyof Contract] !== contract[key as keyof Contract]
     );
 
     if (!hasChanges) {
@@ -296,25 +293,30 @@ export default function Contrato() {
     showSuccessToast("Contrato atualizado com sucesso!");
     setOriginalContract(contract); // seta os dados que foram devidamente atualizados como os originais
     console.log("Salvar contrato:", contract);
+    setLoadingSpinner(false);
   };
 
   const handleAddPayment = async () => {
+    setLoadingSpinner(true);
+
     // Verifica se todos os campos obrigatórios estão preenchidos e válidos
-    if (
-      !newPayment.valor ||
+    const isInvalid =
+      !newPayment.valor || // Valor deve ser maior que 0
       newPayment.valor <= 0 ||
-      !newPayment.data ||
-      new Date(newPayment.data) <= new Date() ||
-      newPayment.pagante === undefined ||
+      !newPayment.data || // Data deve ser preenchida e no futuro
+      isNaN(new Date(newPayment.data).getTime()) || // Valida se é uma data válida
+      !newPayment.pagante || // Pagante não pode ser vazio
       newPayment.pagante.trim() === "" ||
-      newPayment.metodo_pagamento === undefined ||
+      !newPayment.metodo_pagamento || // Método de pagamento não pode ser vazio
       newPayment.metodo_pagamento.trim() === "" ||
-      newPayment.tipo_pagamento === undefined ||
-      newPayment.tipo_pagamento.trim() === ""
-    ) {
-      showErrorToast(
-        "Preencha todos os campos obrigatórios do pagamento corretamente."
-      );
+      !newPayment.tipo_pagamento || // Tipo de pagamento não pode ser vazio
+      newPayment.tipo_pagamento.trim() === "" ||
+      (newPayment.tipo_pagamento === "multa" && // Para tipo "multa", valor_multa deve ser maior que 0
+        (!newPayment.valor_multa || newPayment.valor_multa <= 0));
+
+    if (isInvalid) {
+      showErrorToast("Preencha todos os campos obrigatórios do pagamento corretamente.");
+      setLoadingSpinner(false);
       return;
     }
 
@@ -323,10 +325,7 @@ export default function Contrato() {
       console.log("Adicionar pagamento:", newPayment);
 
       // Faça a chamada à API para adicionar o pagamento
-      await axiosInstance.post(
-        `property/Contratos/AdicionarPagamento`,
-        newPayment
-      );
+      await axiosInstance.post(`property/Contratos/AdicionarPagamento`, newPayment);
 
       // Limpa o formulário de pagamento
       setNewPayment({});
@@ -337,6 +336,8 @@ export default function Contrato() {
     } catch (error) {
       console.error("Erro ao adicionar pagamento:", error);
       showErrorToast("Erro ao adicionar pagamento.");
+    } finally {
+      setLoadingSpinner(false);
     }
   };
 
@@ -380,23 +381,18 @@ export default function Contrato() {
                 {loadingPayments ? (
                   <Loading type="spinner" />
                 ) : payments.length === 0 ? (
-                  <p className="text-neutral-500">
-                    Nenhum pagamento registrado.
-                  </p>
+                  <p className="text-neutral-500">Nenhum pagamento registrado.</p>
                 ) : (
                   <ul className="list-disc list-inside">
                     {payments.map((payment) => (
                       <li
                         key={payment.pagamentoId}
                         className="cursor-pointer hover:underline duration-300 ease-in-out"
-                        onClick={() =>
-                          handleRedirect(`/pagamentos/${payment.pagamentoId}`)
-                        }
+                        onClick={() => handleRedirect(`/pagamentos/${payment.pagamentoId}`)}
                       >
                         <p>
-                          <strong>ID:</strong> {payment.pagamentoId},{" "}
-                          <strong>Valor:</strong> {payment.valor},{" "}
-                          <strong>Data:</strong> {payment.data},{" "}
+                          <strong>ID:</strong> {payment.pagamentoId}, <strong>Valor:</strong>{" "}
+                          {payment.valor}, <strong>Data:</strong> {payment.data},{" "}
                           <strong>Pagante:</strong> {payment.pagante}
                         </p>
                       </li>
@@ -422,6 +418,8 @@ export default function Contrato() {
                   setNewPayment={setNewPayment}
                   handleAddPayment={handleAddPayment}
                   setShowPaymentForm={setShowPaymentForm}
+                  payers={payers}
+                  isLoadingPayers={isLoadingPayers}
                 />
               )}
             </div>
@@ -429,6 +427,7 @@ export default function Contrato() {
         )}
       </section>
 
+      {loadingSpinner && <Loading type="spinner" />}
       <Footer />
     </main>
   );

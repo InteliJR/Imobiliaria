@@ -42,6 +42,7 @@ import CreateContract from "./mobile/pages/CreateContract";
 import Dashboard from "./mobile/pages/Dashboard";
 import ContratosMobile from "./mobile/pages/Contratos";
 import ContractView from "./mobile/pages/ContractView";
+import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 
 const Root = () => {
@@ -164,7 +165,17 @@ const Root = () => {
           }
         />
 
-        {/* Contratos */}
+        {/* Contratos e pagamentos */}
+        <Route path="/pagamento/:id" element={<PaymentView />} />
+        {/* <Route
+          path="/pagamento/:id"
+          element={
+            <ProtectedRoute>
+              <PaymentView />
+            </ProtectedRoute>
+          }
+        /> */}
+        
         <Route path="/contratos/:id" element={<ContractView />} />
         {/* <Route
           path="/contratos/:id"
