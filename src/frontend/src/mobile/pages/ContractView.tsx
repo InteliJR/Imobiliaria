@@ -41,7 +41,7 @@ export interface Payment {
   tipo_pagamento: string;
   multa: boolean; // Alterado para boolean
   valor_multa: number;
-}  
+}
 
 export default function Contrato() {
   const navigate = useNavigate();
@@ -381,22 +381,27 @@ export default function Contrato() {
                 {loadingPayments ? (
                   <Loading type="spinner" />
                 ) : payments.length === 0 ? (
-                  <p className="text-neutral-500">Nenhum pagamento registrado.</p>
+                  <p className="text-neutral-500">Nenhum pagamento ainda.</p>
                 ) : (
-                  <ul className="list-disc list-inside">
-                    {payments.map((payment) => (
-                      <li
-                        key={payment.pagamentoId}
-                        className="cursor-pointer hover:underline duration-300 ease-in-out"
-                        onClick={() => handleRedirect(`/pagamento/${payment.pagamentoId}`)}
-                      >
-                        <p>
-                          <strong>ID:</strong> {payment.pagamentoId}, <strong>Valor:</strong>{" "}
-                          {payment.valor}, <strong>Data:</strong> {payment.data},{" "}
-                          <strong>Pagante:</strong> {payment.pagante}
-                        </p>
-                      </li>
-                    ))}
+                  <ul
+                    className="list-disc list-inside overflow-y-auto"
+                    style={{ maxHeight: "300px" /* Define a altura máxima do container */ }}
+                  >
+                    {payments
+                      .slice() // Cria uma cópia do array para evitar mutações no original
+                      .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime()) // Ordena as datas do mais recente para o mais antigo
+                      .map((payment) => (
+                        <li
+                          key={payment.pagamentoId}
+                          className="mt-1 cursor-pointer hover:underline duration-300 ease-in-out"
+                          onClick={() => handleRedirect(`/pagamento/${payment.pagamentoId}`)}
+                        >
+                          <p className="inline">
+                            <strong>Valor: R$</strong> {payment.valor}, <strong>Data:</strong>{" "}
+                            {payment.data}, <strong>Pagante:</strong> {payment.pagante}
+                          </p>
+                        </li>
+                      ))}
                   </ul>
                 )}
               </section>
