@@ -166,25 +166,22 @@ const Root = () => {
         />
 
         {/* Contratos e pagamentos */}
-        <Route path="/pagamento/:id" element={<PaymentView />} />
-        {/* <Route
+        <Route
           path="/pagamento/:id"
           element={
             <ProtectedRoute>
               <PaymentView />
             </ProtectedRoute>
           }
-        /> */}
-        
-        <Route path="/contratos/:id" element={<ContractView />} />
-        {/* <Route
+        />
+        <Route
           path="/contratos/:id"
           element={
             <ProtectedRoute>
               <ContractView />
             </ProtectedRoute>
           }
-        /> */}
+        />
         <Route
           path="/contratos"
           element={
