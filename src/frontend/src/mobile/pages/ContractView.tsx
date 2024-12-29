@@ -388,7 +388,7 @@ export default function Contrato() {
                       <li
                         key={payment.pagamentoId}
                         className="cursor-pointer hover:underline duration-300 ease-in-out"
-                        onClick={() => handleRedirect(`/pagamentos/${payment.pagamentoId}`)}
+                        onClick={() => handleRedirect(`/pagamento/${payment.pagamentoId}`)}
                       >
                         <p>
                           <strong>ID:</strong> {payment.pagamentoId}, <strong>Valor:</strong>{" "}
