@@ -17,9 +17,7 @@ interface ContractFormProps {
   isLoadingProperty: boolean;
   isLoadingLessor: boolean;
   isLoadingRenter: boolean;
-  onInputChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   onValueChange: (field: string, value: string | number | string[]) => void;
   setSelectedPropertyId: (value: string) => void;
   setSelectedLessorId: (value: string) => void;
@@ -59,9 +57,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
 
   return (
     <>
-      <h1 className="text-title font-strong mb-2">
-        Contrato: {contract?.contratoId}
-      </h1>
+      <h1 className="text-title font-strong mb-2">Contrato: {contract?.contratoId}</h1>
       <form className="flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded">
         {/* Valor do Aluguel */}
         <div className="flex flex-col">
@@ -76,9 +72,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             decimalsLimit={2}
             maxLength={9}
             value={contract?.valorAluguel || ""}
-            onValueChange={(value) =>
-              onValueChange("valorAluguel", parseFloat(value || "0"))
-            }
+            onValueChange={(value) => onValueChange("valorAluguel", parseFloat(value || "0"))}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
           />
@@ -160,6 +154,38 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           </select>
         </div>
 
+        {/* Campo de Data de Rescisão */}
+        {contract?.status === "Rescindido" && (
+          <div className="flex flex-col">
+            <label htmlFor="dataRescisao">Data de Rescisão:</label>
+            <input
+              id="dataRescisao"
+              type="date"
+              name="dataRescisao"
+              value={contract?.dataRescisao || new Date().toISOString().split("T")[0]}
+              onChange={onInputChange}
+              disabled={!isEditable}
+              className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+            />
+          </div>
+        )}
+
+        {/* Campo de Data de Encerramento da Renovação */}
+        {contract?.status === "Renovado" && (
+          <div className="flex flex-col">
+            <label htmlFor="dataEncerramentoRenovacao">Data de Encerramento da Renovação:</label>
+            <input
+              id="dataEncerramentoRenovacao"
+              type="date"
+              name="dataEncerramentoRenovacao"
+              value={contract?.dataEncerramentoRenovacao || new Date().toISOString().split("T")[0]}
+              onChange={onInputChange}
+              disabled={!isEditable}
+              className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+            />
+          </div>
+        )}
+
         {/* IPTU */}
         <div className="flex flex-col">
           <label htmlFor="iptuValue">IPTU:</label>
@@ -173,9 +199,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             decimalsLimit={2}
             maxLength={9}
             value={contract?.iptu || ""}
-            onValueChange={(value) =>
-              onValueChange("iptu", parseFloat(value || "0"))
-            }
+            onValueChange={(value) => onValueChange("iptu", parseFloat(value || "0"))}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
           />
@@ -208,18 +232,33 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             decimalsLimit={2}
             maxLength={9}
             value={contract?.taxaAdm || ""}
-            onValueChange={(value) =>
-              onValueChange("taxaAdm", parseFloat(value || "0"))
-            }
+            onValueChange={(value) => onValueChange("taxaAdm", parseFloat(value || "0"))}
+            disabled={!isEditable}
+            className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+          />
+        </div>
+
+        {/* Reajuste */}
+        <div className="flex flex-col">
+          <label htmlFor="valorReajuste">Valor de Reajuste:</label>
+          <CurrencyInput
+            id="valorReajuste"
+            name="valorReajuste"
+            placeholder="R$ 0,00"
+            decimalSeparator=","
+            groupSeparator="."
+            prefix="R$ "
+            decimalsLimit={2}
+            maxLength={9}
+            value={contract?.valorReajuste || ""}
+            onValueChange={(value) => onValueChange("valorReajuste", parseFloat(value || "0"))}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
           />
         </div>
 
         {/* Imóvel */}
-        {isLoadingProperty && (
-          <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
-        )}
+        {isLoadingProperty && <p className="text-sm text-neutral-500 mt-1">Carregando...</p>}
         <div>
           <label>Imóvel</label>
           <select
@@ -230,17 +269,14 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             <option value="">Selecione um imóvel</option>
             {properties.map((imovel: any) => (
               <option key={imovel.imovelId} value={imovel.imovelId}>
-                {imovel.nome || imovel.imovelId}{" "}
-                {/* Exibe o nome ou ID do imóvel */}
+                {imovel.nome || imovel.imovelId} {/* Exibe o nome ou ID do imóvel */}
               </option>
             ))}
           </select>
         </div>
 
         {/* Locador */}
-        {isLoadingLessor && (
-          <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
-        )}
+        {isLoadingLessor && <p className="text-sm text-neutral-500 mt-1">Carregando...</p>}
         <div>
           <label>Locador</label>
           <select
@@ -258,9 +294,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
         </div>
 
         {/* Locatário */}
-        {isLoadingRenter && (
-          <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
-        )}
+        {isLoadingRenter && <p className="text-sm text-neutral-500 mt-1">Carregando...</p>}
         <div>
           <label>Locatário</label>
           <select
@@ -309,10 +343,6 @@ export const ContractForm: React.FC<ContractFormProps> = ({
         </div>
 
         {isEditable && <p className="cursor-pointer">Enviar documento</p>}
-
-        <p className="cursor-pointer">
-          !!!!!FUNCIONALIDADE DE RESCINDIR CONTRATO!!!!!!!
-        </p>
 
         {/* Botão Salvar Alterações */}
         {isEditable && <Botao label="Salvar Alterações" onClick={handleSave} />}

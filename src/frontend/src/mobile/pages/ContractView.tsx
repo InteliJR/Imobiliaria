@@ -246,28 +246,25 @@ export default function Contrato() {
 
   const handleSave = (event: React.FormEvent) => {
     event.preventDefault();
-
-    setLoadingSpinner(true);
-
+  
     if (!contract) {
-      showErrorToast("Contrato não carregado.");
+      showErrorToast("Contrato não encontrado.");
       return;
     }
-
-    if (!originalContract) {
-      showErrorToast("Dados originais do contrato não disponíveis.");
-      return;
-    }
-
+  
+    setLoadingSpinner(true);
+  
     // Verifica se houve mudanças
-    const hasChanges = Object.keys(originalContract).some(
-      (key) => originalContract[key as keyof Contract] !== contract[key as keyof Contract]
+    const hasChanges = Object.keys(originalContract || {}).some(
+      (key) => originalContract![key as keyof Contract] !== contract[key as keyof Contract]
     );
-
+  
     if (!hasChanges) {
       showErrorToast("Nenhuma alteração foi feita.");
+      setLoadingSpinner(false);
       return;
     }
+  
     // Verifica se todos os campos obrigatórios estão preenchidos e válidos
     if (
       !contract.valorAluguel ||
@@ -285,16 +282,32 @@ export default function Contrato() {
       !selectedRenterId?.trim() // Um locatário precisa ser selecionado
     ) {
       showErrorToast("Preencha todos os campos obrigatórios corretamente.");
+      setLoadingSpinner(false);
       return;
     }
-
+  
+    // Ajusta os campos dependendo do status
+    const updatedContract = { ...contract };
+  
+    if (updatedContract.status === "Rescindido") {
+      updatedContract.dataRescisao = updatedContract.dataRescisao || new Date().toISOString().split("T")[0];
+      delete updatedContract.dataEncerramentoRenovacao;
+    } else if (updatedContract.status === "Renovado") {
+      updatedContract.dataEncerramentoRenovacao =
+        updatedContract.dataEncerramentoRenovacao || new Date().toISOString().split("T")[0];
+      delete updatedContract.dataRescisao;
+    } else {
+      delete updatedContract.dataRescisao;
+      delete updatedContract.dataEncerramentoRenovacao;
+    }
+  
     // Aqui deve ficar a chamada ao serviço para salvar as alterações
-
     showSuccessToast("Contrato atualizado com sucesso!");
-    setOriginalContract(contract); // seta os dados que foram devidamente atualizados como os originais
-    console.log("Salvar contrato:", contract);
+    setOriginalContract(updatedContract); // Seta os dados que foram devidamente atualizados como os originais
+    console.log("Salvar contrato:", updatedContract);
     setLoadingSpinner(false);
   };
+  
 
   const handleAddPayment = async () => {
     setLoadingSpinner(true);
