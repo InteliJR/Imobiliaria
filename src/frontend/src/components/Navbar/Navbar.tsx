@@ -31,7 +31,10 @@ export default function NavBar({
     <div>
       <div className="bg-neutral-black flex justify-between items-center px-4 py-4 min-h-20">
         <div>
-          <img src="/Logo.svg" alt="Logo" />
+          <a href="/">
+          
+            <img src="/Logo.svg" alt="Logo" /> <a href="/"></a>
+          </a>
         </div>
         <div>
           {showLoginButton ? (
