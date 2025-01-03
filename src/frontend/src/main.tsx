@@ -46,6 +46,8 @@ import ChamadosImovel from "./mobile/pages/ChamadosImovel";
 import ImovelMobile from "./mobile/pages/Imovel";
 import PagamentosImovel from "./mobile/pages/PagamentosImovel";
 import ContratosMobile from "./mobile/pages/Contratos";
+import ContractView from "./mobile/pages/ContractView";
+import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 
 const Root = () => {
@@ -70,6 +72,10 @@ const Root = () => {
               {isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
             </ProtectedRoute>
           }
+        />
+        <Route
+          path="/teste"
+          element={<PagamentosImovel/>}
         />
         <Route
           path="/imoveis/criar"
@@ -194,7 +200,23 @@ const Root = () => {
           }
         />
 
-        {/* Contratos */}
+        {/* Contratos e pagamentos */}
+        <Route
+          path="/pagamento/:id"
+          element={
+            <ProtectedRoute>
+              <PaymentView />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contratos/:id"
+          element={
+            <ProtectedRoute>
+              <ContractView />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/contratos"
           element={
