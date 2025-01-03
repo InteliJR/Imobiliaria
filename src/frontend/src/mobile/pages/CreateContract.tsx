@@ -23,10 +23,9 @@ export default function CreateContractMobile() {
   const [renewed, setRenewed] = useState(false);
   const [renewalEndDate, setRenewalEndDate] = useState("");
   const [adjustmentValue, setAdjustmentValue] = useState("");
-  const [documents, setDocuments] = useState<File[] | null >([]);
+  const [documents, setDocuments] = useState<File[] | null>([]);
   const [locatarioEmail, setLocatarioEmail] = useState("");
   const [locadorEmail, setLocadorEmail] = useState("");
-  
 
   // Estados relacionados à busca em outras tabelas
   const [isLoadingLessor, setIsLoadingLessor] = useState(false);
@@ -36,9 +35,12 @@ export default function CreateContractMobile() {
   const [locatarios, setLocatarios] = useState([]); // Lista de locatários
   const [imoveis, setImoveis] = useState([]);
 
-
-  const [selectedLocadorId, setSelectedLocadorId] = useState<string | null>(null);
-  const [selectedLocatarioId, setSelectedLocatarioId] = useState<string | null>(null);
+  const [selectedLocadorId, setSelectedLocadorId] = useState<string | null>(
+    null
+  );
+  const [selectedLocatarioId, setSelectedLocatarioId] = useState<string | null>(
+    null
+  );
   const [selectedImovelId, setSelectedImovelId] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -49,13 +51,23 @@ export default function CreateContractMobile() {
         setIsLoadingLessor(true);
         setIsLoadingRenter(true);
         setIsLoadingProperty(true);
-        const locadoresResponse = await axiosInstance.get("auth/Locador/PegarTodosLocadores");
-        const locatariosResponse = await axiosInstance.get("auth/Locatario/PegarTodosLocatarios");
-        const imoveisResponse = await axiosInstance.get("property/Imoveis/PegarTodosImoveis");
+        const locadoresResponse = await axiosInstance.get(
+          "auth/Locador/PegarTodosLocadores"
+        );
+        const locatariosResponse = await axiosInstance.get(
+          "auth/Locatario/PegarTodosLocatarios"
+        );
+        const imoveisResponse = await axiosInstance.get(
+          "property/Imoveis/PegarTodosImoveis"
+        );
         setLocadores(locadoresResponse.data || []);
         setLocatarios(locatariosResponse.data || []);
         setImoveis(imoveisResponse.data || []);
-        console.log(locadoresResponse.data, locatariosResponse.data, imoveisResponse.data);
+        console.log(
+          locadoresResponse.data,
+          locatariosResponse.data,
+          imoveisResponse.data
+        );
       } catch (error) {
         showErrorToast("Erro ao carregar locadores, locatários e imoveis.");
       } finally {
@@ -91,18 +103,15 @@ export default function CreateContractMobile() {
       !selectedLocatarioId ||
       !selectedImovelId
     ) {
-      showErrorToast(
-        "Por favor, preencha todos os campos."
-      );
+      showErrorToast("Por favor, preencha todos os campos.");
       return;
     }
-
 
     setIsLoading(true);
 
     try {
       const formData = new FormData();
-      
+
       formData.append("valor_aluguel", rentalValue);
       formData.append("data_inicio", startDate);
       formData.append("data_encerramento", endDate);
@@ -124,7 +133,10 @@ export default function CreateContractMobile() {
 
       documents?.forEach((document) => formData.append("files", document));
 
-      const response = await axiosInstance.post(`property/Contratos/CriarContratoComMultiplosArquivos?emailLocatario=${encodeURIComponent(locatarioEmail)}&emailLocador=${encodeURIComponent(locadorEmail)}`,
+      const response = await axiosInstance.post(
+        `property/Contratos/CriarContratoComMultiplosArquivos?emailLocatario=${encodeURIComponent(
+          locatarioEmail
+        )}&emailLocador=${encodeURIComponent(locadorEmail)}`,
         formData,
         {
           headers: {
@@ -178,7 +190,10 @@ export default function CreateContractMobile() {
           <div className="w-full max-w-xl py-3 pb-5 rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="flex flex-col w-full">
-                <label htmlFor="locatarioEmail" className="text-sm text-neutral-600 mb-1">
+                <label
+                  htmlFor="locatarioEmail"
+                  className="text-sm text-neutral-600 mb-1"
+                >
                   Email do Locatário
                 </label>
                 <input
@@ -193,7 +208,10 @@ export default function CreateContractMobile() {
               </div>
 
               <div className="flex flex-col w-full">
-                <label htmlFor="locadorEmail" className="text-sm text-neutral-600 mb-1">
+                <label
+                  htmlFor="locadorEmail"
+                  className="text-sm text-neutral-600 mb-1"
+                >
                   Email do Locador
                 </label>
                 <input
@@ -236,6 +254,7 @@ export default function CreateContractMobile() {
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
+              
               <FormField
                 label="Data de Encerramento"
                 type="date"
@@ -323,6 +342,7 @@ export default function CreateContractMobile() {
                 value={guaranteeType}
                 onChange={(e) => setGuaranteeType(e.target.value)}
               />
+
               {/* Imóvel */}
               {isLoadingProperty && (
                 <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
@@ -342,6 +362,7 @@ export default function CreateContractMobile() {
                   ))}
                 </select>
               </div>
+
               {/* Locador */}
               {isLoadingLessor && (
                 <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
@@ -375,13 +396,16 @@ export default function CreateContractMobile() {
                 >
                   <option value="">Selecione um locatário</option>
                   {locatarios.map((locatario: any) => (
-                    <option key={locatario.locatarioId} value={locatario.locatarioId}>
+                    <option
+                      key={locatario.locatarioId}
+                      value={locatario.locatarioId}
+                    >
                       {locatario.nomeCompletoLocatario}
                     </option>
                   ))}
                 </select>
               </div>
-              
+
               {/* Envio de documentos: */}
               <div className="flex flex-col">
                 {/* Label com fonte de 13px e margem inferior de 5px */}
