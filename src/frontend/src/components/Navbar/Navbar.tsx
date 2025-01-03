@@ -33,7 +33,7 @@ export default function NavBar({
         <div>
           <a href="/">
           
-            <img src="/Logo.svg" alt="Logo" /> <a href="/"></a>
+            <img src="/Logo.svg" alt="Logo" />
           </a>
         </div>
         <div>
