@@ -234,9 +234,9 @@ namespace Layer.Application.Controllers
 
             var novoImovel = await _imoveisService.AddImoveisWithPhotosAsync(imovel, files);
 
-            await _applicationLog.LogAsync($"Criação de Imóvel com id: {novoImovel.ImovelId}", 
-                HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", 
-                HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            // await _applicationLog.LogAsync($"Criação de Imóvel com id: {novoImovel.ImovelId}", 
+            //     HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", 
+            //     HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(novoImovel);
         }

@@ -5,6 +5,9 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Google.Cloud.Storage.V1;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 
 public class GoogleCloudStorageService
@@ -26,6 +29,36 @@ public class GoogleCloudStorageService
         _bucketName = bucketName;
     }
 
+    public static void AddWatermark(string inputImagePath, string watermarkImagePath, string outputImagePath)
+    {
+        using (Image image = Image.Load(inputImagePath))
+        using (Image watermark = Image.Load(watermarkImagePath))
+        {
+            // Redimensionar a marca d'água para caber na imagem principal
+            int maxWatermarkWidth = image.Width / 4;  // 25% da largura da imagem principal
+            int maxWatermarkHeight = image.Height / 4; // 25% da altura da imagem principal
+
+            // Redimensiona a marca d'água proporcionalmente
+            watermark.Mutate(ctx => ctx.Resize(new ResizeOptions
+            {
+                Size = new Size(maxWatermarkWidth, maxWatermarkHeight),
+                Mode = ResizeMode.Max
+            }));
+
+            // Calcula a posição central para a marca d'água
+            int x = (image.Width - watermark.Width) / 2;
+            int y = (image.Height - watermark.Height) / 2;
+
+            // Aplica a marca d'água com opacidade de 50%
+            image.Mutate(ctx => ctx.DrawImage(watermark, new Point(x, y), 0.5f));
+
+            // Salva a imagem final
+            image.Save(outputImagePath);
+        }
+    }
+
+
+
     /// <summary>
     /// Faz upload de um arquivo para o Google Cloud Storage (Firebase Storage usa GCS).
     /// </summary>
@@ -36,33 +69,45 @@ public class GoogleCloudStorageService
     {
         try
         {
+            // 1) Define a extensão
+            var extension = Path.GetExtension(objectName).ToLowerInvariant();
+            Console.WriteLine($"Extensão do arquivo: {extension}");
+
+            // 2) Define o ContentType
+            string contentType;
+            switch (extension)
+            {
+                case ".pdf":
+                    contentType = "application/pdf";
+                    break;
+                case ".jpg":
+                case ".jpeg":
+                    contentType = "image/jpeg";
+                    break;
+                case ".png":
+                    contentType = "image/png";
+                    break;
+                default:
+                    contentType = "application/octet-stream";
+                    break;
+            }
+
+            // 3) Se for imagem, gera a marca d’água antes de abrir o arquivo
+            if (contentType.StartsWith("image"))
+            {
+                var watermarkPath = Path.Combine(AppContext.BaseDirectory, "Services", "MarcaDeAgua.png");
+                var outputImagePath = Path.Combine(AppContext.BaseDirectory, "output.jpg");
+
+                AddWatermark(localFilePath, watermarkPath, outputImagePath);
+
+                // localFilePath passa a ser o arquivo com a marca d’água
+                localFilePath = outputImagePath;
+            }
+
+            // 4) Agora sim, abra o arquivo que realmente vai subir (com ou sem marca d’água)
             using (var fileStream = File.OpenRead(localFilePath))
             {
-                // 1) Identifica a extensão do arquivo.
-                var extension = Path.GetExtension(objectName).ToLowerInvariant();
-                Console.WriteLine($"Extensão do arquivo: {extension}");
-
-
-                // 2) Define o ContentType de acordo com a extensão.
-                string contentType;
-                switch (extension)
-                {
-                    case ".pdf":
-                        contentType = "application/pdf";
-                        break;
-                    case ".jpg":
-                    case ".jpeg":
-                        contentType = "image/jpeg";
-                        break;
-                    case ".png":
-                        contentType = "image/png";
-                        break;
-                    default:
-                        contentType = "application/octet-stream";
-                        break;
-                }
-
-                // 3) Faz o upload do arquivo para o bucket, definindo o ContentType
+                // 5) Upload do arquivo para o bucket
                 var storageObject = await _storageClient.UploadObjectAsync(
                     bucket: _bucketName,
                     objectName: objectName,
@@ -72,14 +117,13 @@ public class GoogleCloudStorageService
 
                 Console.WriteLine($"Arquivo {storageObject.Name} enviado para o bucket {storageObject.Bucket}.");
 
-                // 4) Ajusta o ContentDisposition para inline, usando o nome do arquivo real, se desejar
+                // 6) Ajusta o ContentDisposition (inline)
                 var fileName = Path.GetFileName(localFilePath);
                 storageObject.ContentDisposition = $"inline; filename=\"{fileName}\"";
 
-                // 5) Atualiza o objeto no Storage
+                // 7) Atualiza o objeto no Storage
                 storageObject = await _storageClient.UpdateObjectAsync(storageObject);
 
-                // Agora, a URL pública deve exibir o arquivo inline no navegador (caso seja suportado, como PDF ou imagem).
                 return $"https://storage.googleapis.com/{_bucketName}/{objectName}";
             }
         }
@@ -104,32 +148,46 @@ public class GoogleCloudStorageService
         {
             try
             {
-                using (var fileStream = File.OpenRead(objectNames[i]))
+                // 1) Define a extensão a partir do nome do objeto (ou localFilePaths[i], se desejar)
+                var extension = Path.GetExtension(objectNames[i]).ToLowerInvariant();
+                Console.WriteLine($"Extensão do arquivo: {extension}");
+
+                // 2) Define o ContentType
+                string contentType;
+                switch (extension)
                 {
-                    // 1) Identifica a extensão do arquivo.
-                    var extension = Path.GetExtension(objectNames[i]).ToLowerInvariant();
-                    Console.WriteLine($"Extensão do arquivo: {extension}");
+                    case ".pdf":
+                        contentType = "application/pdf";
+                        break;
+                    case ".jpg":
+                    case ".jpeg":
+                        contentType = "image/jpeg";
+                        break;
+                    case ".png":
+                        contentType = "image/png";
+                        break;
+                    default:
+                        contentType = "application/octet-stream";
+                        break;
+                }
 
-                    // 2) Define o ContentType de acordo com a extensão.
-                    string contentType;
-                    switch (extension)
-                    {
-                        case ".pdf":
-                            contentType = "application/pdf";
-                            break;
-                        case ".jpg":
-                        case ".jpeg":
-                            contentType = "image/jpeg";
-                            break;
-                        case ".png":
-                            contentType = "image/png";
-                            break;
-                        default:
-                            contentType = "application/octet-stream";
-                            break;
-                    }
+                // 3) Se for imagem, adiciona marca d'água antes de abrir o arquivo
+                if (contentType.StartsWith("image"))
+                {
+                    var watermarkPath = Path.Combine(AppContext.BaseDirectory, "Services", "MarcaDeAgua.png");
+                    var outputImagePath = Path.Combine(AppContext.BaseDirectory, "output.jpg");
 
-                    // 3) Faz o upload do arquivo para o bucket
+                    // Cria a imagem com a marca d'água
+                    AddWatermark(localFilePaths[i], watermarkPath, outputImagePath);
+
+                    // Ajusta o localFilePath[i] para o arquivo que acabou de ser gerado
+                    localFilePaths[i] = outputImagePath;
+                }
+
+                // 4) Agora sim, abra o arquivo final (com ou sem marca d'água) para upload
+                using (var fileStream = File.OpenRead(localFilePaths[i]))
+                {
+                    // 5) Faz o upload para o bucket
                     var storageObject = await _storageClient.UploadObjectAsync(
                         bucket: _bucketName,
                         objectName: objectNames[i],
@@ -139,14 +197,14 @@ public class GoogleCloudStorageService
 
                     Console.WriteLine($"Arquivo {storageObject.Name} enviado para o bucket {storageObject.Bucket}.");
 
-                    // 4) Ajusta o ContentDisposition para inline, usando o nome do arquivo real
+                    // 6) Ajusta o ContentDisposition para inline (usando o nome real do arquivo)
                     var fileName = Path.GetFileName(localFilePaths[i]);
                     storageObject.ContentDisposition = $"inline; filename=\"{fileName}\"";
 
-                    // 5) Atualiza o objeto no Storage
+                    // 7) Atualiza o objeto no Storage
                     storageObject = await _storageClient.UpdateObjectAsync(storageObject);
 
-                    // 6) Adiciona a URL pública
+                    // 8) Adiciona a URL pública
                     publicUrls.Add($"https://storage.googleapis.com/{_bucketName}/{objectNames[i]}");
                 }
             }

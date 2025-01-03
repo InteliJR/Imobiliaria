@@ -209,7 +209,7 @@ export default function Imoveis() {
                   propertyType={property.propertyType}
                   landlord={property.landlord}
                   tenant={property.tenant}
-                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../public/ImovelSemFoto.png"}
+                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "/ImovelSemFoto.png"}
                   price={property.price}
                   condominio={property.condominio} />
               );
