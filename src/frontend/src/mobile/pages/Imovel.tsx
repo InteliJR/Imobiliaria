@@ -28,14 +28,21 @@ export default function PropertyDetails() {
 
   const fetchPropertyDetails = async () => {
     try {
-      // DESCOMENTAR QUANDO O ENDPOINT ESTIVER PRONTO
-      // const response = await axiosInstance.get(
-      //   `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
-      // );
+      
+      const userRole = localStorage.getItem('userRole');
+      console.log(userRole);
+      let response;
 
-      const response = await axiosInstance.get(
-        `property/Imoveis/PegarImovelPorId/${imovelId}`
-      );
+      if (userRole == "Admin"){
+        response = await axiosInstance.get(
+          `property/Imoveis/PegarImovelPorId/${imovelId}`
+        );
+      }
+      else{
+        response = await axiosInstance.get(
+          `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
+        );
+      }
 
 
       if (!response.data) {

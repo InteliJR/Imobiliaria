@@ -40,10 +40,10 @@ import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
 import CreateContract from "./mobile/pages/CreateContract";
 import Dashboard from "./mobile/pages/Dashboard";
-import HomeLocadorMobile from "./mobile/pages/HomeLocador";
-import HomeLocatarioMobile from "./mobile/pages/HomeLocatario";
+import HomeLocador from "./mobile/pages/HomeLocador";
+import HomeLocatario from "./mobile/pages/HomeLocatario";
 import ChamadosImovel from "./mobile/pages/ChamadosImovel";
-import ImovelMobile from "./mobile/pages/Imovel";
+import ImovelById from "./mobile/pages/Imovel";
 import PagamentosImovel from "./mobile/pages/PagamentosImovel";
 import ContratosMobile from "./mobile/pages/Contratos";
 import ContractView from "./mobile/pages/ContractView";
@@ -177,7 +177,7 @@ const Root = () => {
           path="/home-locador"
           element={
             <ProtectedRoute>
-              <HomeLocadorMobile />
+              <HomeLocador />
             </ProtectedRoute>
           }
         />
@@ -186,7 +186,7 @@ const Root = () => {
           path="/home-locatario"
           element={
             <ProtectedRoute>
-              <HomeLocatarioMobile />
+              <HomeLocatario />
             </ProtectedRoute>
           }
         />
@@ -194,8 +194,9 @@ const Root = () => {
         <Route
           path="/imovel/:imovelId"
           element={
+            // ESTE COMPONENTE NÃO É 'MOBILE' 
             <ProtectedRoute>
-              <ImovelMobile />
+              <ImovelById /> 
             </ProtectedRoute>
           }
         />
