@@ -42,7 +42,7 @@ import CreateContract from "./mobile/pages/CreateContract";
 import Dashboard from "./mobile/pages/Dashboard";
 import HomeLocador from "./mobile/pages/HomeLocador";
 import HomeLocatario from "./mobile/pages/HomeLocatario";
-import ChamadosImovel from "./mobile/pages/ChamadosImovel";
+// import ChamadosImovel from "./mobile/pages/ChamadosImovel";
 import ImovelById from "./mobile/pages/Imovel";
 import PagamentosImovel from "./mobile/pages/PagamentosImovel";
 import ContratosMobile from "./mobile/pages/Contratos";

@@ -1,6 +1,6 @@
 // Modified version of ChamadosImovel to display Pagamentos
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Chamados/Card";
@@ -25,7 +25,7 @@ export default function PagamentosImovel() {
     valorMulta: number;
   }
 
-  const { imovelId } = useParams();
+  // const { imovelId } = useParams();
 
   const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);

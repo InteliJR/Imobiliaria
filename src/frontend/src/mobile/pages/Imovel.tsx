@@ -15,6 +15,7 @@ interface Property {
   condominio: number;
   valorImovel: number;
   bairro: string;
+  endereco: string;
   descricao: string;
   complemento: string;
   fotos: string | string[];
@@ -30,7 +31,6 @@ export default function PropertyDetails() {
     try {
       
       const userRole = localStorage.getItem('userRole');
-      console.log(userRole);
       let response;
 
       if (userRole == "Admin"){

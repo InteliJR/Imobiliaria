@@ -30,7 +30,7 @@ export default function LocatarioPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState<Property[]>([]);
-  const [roleId, setRoleId] = useState<number | null>(null);
+  // const [roleId, setRoleId] = useState<number | null>(null);
 
   const tokenData = getTokenData();
   const roleID = tokenData.RoleID;
