@@ -97,7 +97,7 @@ const Root = () => {
         <Route
           path="/chamados/criar"
           element={
-            <ProtectedRoute requiredRole="Admin">
+            <ProtectedRoute>
               {isDesktop ? <CreateTicket /> : <CreateTicketMobile />}
             </ProtectedRoute>
           }
