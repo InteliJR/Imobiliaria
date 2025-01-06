@@ -120,7 +120,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarTodosUsuarios")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetAllUsers()
         {
             try

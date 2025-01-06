@@ -33,11 +33,11 @@ export default function PropertyDetails() {
       const userRole = localStorage.getItem('userRole');
       let response;
 
-      if (userRole == "Admin"){
+      if (userRole == "Admin" || userRole == "Judiciario"){
         response = await axiosInstance.get(
           `property/Imoveis/PegarImovelPorId/${imovelId}`
         );
-      }
+      } 
       else{
         response = await axiosInstance.get(
           `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`

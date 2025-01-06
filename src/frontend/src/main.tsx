@@ -49,6 +49,7 @@ import ContratosMobile from "./mobile/pages/Contratos";
 import ContractView from "./mobile/pages/ContractView";
 import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
+import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -68,7 +69,7 @@ const Root = () => {
         <Route
           path="/imoveis"
           element={
-            <ProtectedRoute requiredRole="Admin">
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
               {isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
             </ProtectedRoute>
           }
@@ -79,13 +80,21 @@ const Root = () => {
         />
         <Route
           path="/imoveis/criar"
-          element={isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
+          element={
+            <ProtectedRoute requiredRole={["Admin"]}>
+              {isDesktop ? (
+                <CreateProperty />
+              ) : (
+                <CreatePropertyMobile />
+              )}
+            </ProtectedRoute>
+          }
         />
         {/* Chamados */}
         <Route
           path="/chamados"
           element={
-            <ProtectedRoute requiredRole="Admin">
+            <ProtectedRoute requiredRole={["Admin"]}>
               {isDesktop ? (
                 <VisualizarChamados />
               ) : (
@@ -97,7 +106,7 @@ const Root = () => {
         <Route
           path="/chamados/criar"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin", "Locatario"]}>
               {isDesktop ? <CreateTicket /> : <CreateTicketMobile />}
             </ProtectedRoute>
           }
@@ -105,7 +114,7 @@ const Root = () => {
         <Route
           path="/chamado/:id"
           element={
-            <ProtectedRoute requiredRole="Admin">
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
               {isDesktop ? <Chamado /> : <ChamadoMobile />}
             </ProtectedRoute>
           }
@@ -114,7 +123,7 @@ const Root = () => {
         <Route
           path="/usuarios"
           element={
-            <ProtectedRoute requiredRole="Admin">
+            <ProtectedRoute requiredRole={["Admin"]}>
               {isDesktop ? (
                 <VisualizarUsuarios />
               ) : (
@@ -126,7 +135,7 @@ const Root = () => {
         <Route
           path="/usuarios/criar"
           element={
-            <ProtectedRoute requiredRole="Admin">
+            <ProtectedRoute requiredRole={["Admin"]}>
               {isDesktop ? <CreateUser /> : <CreateUserMobile />}
             </ProtectedRoute>
           }
@@ -159,7 +168,7 @@ const Root = () => {
         <Route
           path="/perfil/alterar-senha"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin"]}>
               {isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile />}
             </ProtectedRoute>
           }
@@ -229,11 +238,12 @@ const Root = () => {
         <Route
           path="/contratos/criar"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin"]}>
               <CreateContract />
             </ProtectedRoute>
           }
         />
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
       </Routes>
 
       <ToastContainer />
