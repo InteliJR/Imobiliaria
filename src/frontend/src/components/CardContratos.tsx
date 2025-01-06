@@ -29,7 +29,7 @@ const Card: React.FC<CardProps> = ({
   return (
     <div
       className="relative p-4 border border-gray-300 rounded-lg shadow-md bg-white cursor-pointer hover:shadow-lg hover:border-gray-400 transition-all"
-      onClick={() => navigate(`/chamados/${id}`)}
+      onClick={() => navigate(`/contratos/${id}`)}
     >
       <h3 className="text-lg font-semibold mb-2">Contrato {title}</h3>
 
