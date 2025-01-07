@@ -16,7 +16,19 @@ export default function PerfilDesktop() {
   const [loadingSkeleton, setLoadingSkeleton] = useState(true);
   const [loadingSpinner, setLoadingSpinner] = useState(false);
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<{
+    nome: string | null;
+    telefone: string | null;
+    nacionalidade: string | null;
+    cpf: string | null;
+    rg: string | null;
+    passaporte: string | null;
+    endereco: string | null;
+    CNPJ: string | null;
+    email: string | null;
+    dataCriacao: string | null;
+    role: string | null;
+  }>({
     nome: null,
     telefone: null,
     nacionalidade: null,
@@ -101,7 +113,7 @@ export default function PerfilDesktop() {
           role: UserInfo.role,
         });
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error(error.response?.data?.message || "Erro ao buscar o usuário");
       showErrorToast(error.response?.data?.message || "Erro ao buscar o usuário");
     }
