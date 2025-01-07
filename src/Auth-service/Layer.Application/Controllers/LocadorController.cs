@@ -100,9 +100,9 @@ namespace Layer.Application.Controllers
             return Ok(locador);
         }
 
-        [HttpGet("PegarLocadorPorUserId")]
+        [HttpGet("PegarLocadorPorUserId/{userId}")]
         [Authorize(Policy = "AdminORLocador")]
-        public async Task<IActionResult> GetLocadorByUserId([FromQuery] int userId)
+        public async Task<IActionResult> GetLocadorByUserId(int userId)
         {
             try
             {

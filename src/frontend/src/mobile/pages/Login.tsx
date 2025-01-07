@@ -33,15 +33,26 @@ export default function Login() {
       localStorage.setItem("jwtToken", token);
       localStorage.setItem("userRole", role); // Era usado para impedir visualização de rotas protegidas
 
-      // Redirecionar o usuário para home ou dashboard após o login bem-sucedido
-      navigate("/"); // Trocar '/landing' por 'home' ou 'dashboard'
-    } catch (error: any) {
-      // Axios retorna erros no `response`
-      showErrorToast(error.response?.data?.message || "Erro ao fazer login");
-    } finally {
-      setLoading(false);
-    }
-  };
+            if (role === 'Locador') {
+                navigate('/home-locador');
+            }
+            else if (role === 'Locatario') {
+                navigate('/home-locatario');
+            }
+            else if (role === 'Admin') {
+                navigate('/imoveis');
+            }
+            else if (role === 'Judiciario') {
+                navigate('/dashboard');
+            }
+            else {
+                navigate('/');
+            }
+        } catch (error: any) {
+            // Axios retorna erros no `response`
+            showErrorToast(error.response?.data?.message || 'Erro ao fazer login');
+        }
+    };
 
   // Usuário já é direcionado para home ou dashboard se já estiver logado
   useEffect(() => {

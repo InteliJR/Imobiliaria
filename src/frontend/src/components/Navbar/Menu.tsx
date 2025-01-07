@@ -84,9 +84,22 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
     - tenant (locatário)
   */
 
+  const userRole = localStorage.getItem("userRole");
+
+  if (userRole == "Admin") {
+    userType = "Admin";
+  } else if (userRole == "Judiciario") {
+    userType = "Judiciario";
+  } else if (userRole == "Locatario") {
+    userType = "Locatario";
+  } else if (userRole == "Locador") {
+    userType = "Locador";
+  }
+
   const renderMenuItems = () => {
+    console.log("Este é o valor de userType: ", userType);
     switch (userType) {
-      case "admin":
+      case "Admin":
         return (
           <>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
@@ -140,7 +153,7 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/adicionar-contrato")}
+                onClick={() => redirect("/contratos/criar")}
               >
                 Adicionar Contrato
               </button>
@@ -155,23 +168,15 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             </li>
           </>
         );
-      case "legal":
+      case "Judiciario":
         return (
           <>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/")}
-              >
-                Início
-              </button>
-            </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
-              <button
-                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
                 onClick={() => redirect("/dashboard")}
               >
-                Dashboard
+                Início
               </button>
             </li>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
@@ -185,7 +190,7 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/documentos-locacao")}
+                onClick={() => redirect("/contratos")}
               >
                 Documentos
               </button>
@@ -200,25 +205,25 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             </li>
           </>
         );
-      case "lessor":
+      case "Locador":
         return (
           <>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/")}
+                onClick={() => redirect("/home-locador")}
               >
                 Início
               </button>
             </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+            {/* <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/imoveis")}
+                onClick={() => redirect("/imovel/:imovelId")}
               >
                 Imóveis
               </button>
-            </li>
+            </li> */}
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
@@ -227,14 +232,14 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
                 Dashboard
               </button>
             </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+            {/* <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
                 onClick={() => redirect("/documentos")}
               >
                 Documentos
               </button>
-            </li>
+            </li> */}
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
@@ -245,13 +250,13 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
             </li>
           </>
         );
-      case "tenant":
+      case "Locatario":
         return (
           <>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/")}
+                onClick={() => redirect("/home-locatario")}
               >
                 Início
               </button>
@@ -264,14 +269,14 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
                 Abrir chamado
               </button>
             </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+            {/* <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/imoveis")}
+                onClick={() => redirect("/imovel/:imovelId")}
               >
                 Imóveis
               </button>
-            </li>
+            </li> */}
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
@@ -280,14 +285,14 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
                 Dashboard
               </button>
             </li>
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+            {/* <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
                 onClick={() => redirect("/documentos-locacao")}
               >
                 Documentos
               </button>
-            </li>
+            </li> */}
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"

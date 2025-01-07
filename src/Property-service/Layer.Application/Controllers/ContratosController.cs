@@ -89,7 +89,7 @@ namespace property_management.Controllers
 
             await _emailSender.SendEmailAsync(emailLocatario, locatarioUserType, contractDetails);
 
-            await _applicationLog.LogAsync($"Criação de contrato com id: {novoContrato.ContratoId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            // await _applicationLog.LogAsync($"Criação de contrato com id: {novoContrato.ContratoId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(novoContrato);
         }
