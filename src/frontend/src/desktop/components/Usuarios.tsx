@@ -43,7 +43,7 @@ export default function UsuariosComponent() {
         });
 
         console.log(`Usuário: ${user.nome}, Imóveis encontrados:`, imoveis);
-
+        // console.log("Este é o valor de user.usuarioId ",user.usuarioId);
         return {
           ...user,
           nImoveis: imoveis.length,
@@ -132,8 +132,8 @@ export default function UsuariosComponent() {
           <div className="flex flex-col gap-6">
             {filteredData.map((user: any) => (
               <LandlordCard
-                key={user.id}
-                id={user.id}
+                key={user.usuarioId}
+                id={user.usuarioId}
                 name={user.nome || "Nome não disponível"}
                 role={user.role || "Função não disponível"}
                 cpf={user.cpf || "não encontrado"}

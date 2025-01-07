@@ -72,7 +72,6 @@ export default function Users() {
   return (
     <main className="main-custom">
       <Navbar />
-
       <section className="section-custom">
         <Voltar />
         <button
