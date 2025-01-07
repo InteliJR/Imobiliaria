@@ -112,26 +112,26 @@ export default function PerfilDesktop() {
   }, []);
 
   return (
-    <div className="perfil-desktop-container">
+    <div className="perfil-desktop-container bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
 
-      <main className="perfil-desktop-main">
+      <main className="perfil-desktop-main max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-md">
         <Voltar />
 
-        <h1 className="text-title font-strong mb-4">{userData.nome}</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">{userData.nome}</h1>
 
-        <div className="perfil-desktop-actions">
+        <div className="perfil-desktop-actions flex justify-center gap-4 mb-6">
           <Botao label="Editar Perfil" onClick={profileEdit} />
           <BotaoAlterarSenha label="Resetar Senha" onClick={showModal} />
         </div>
 
         <div className="perfil-desktop-info">
-          <h2 className="section-title">Informações Pessoais</h2>
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Informações Pessoais</h2>
 
           {loadingSkeleton ? (
             <Loading type="skeleton" />
           ) : (
-            <div className="info-grid">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <VisualizarItem label="Tipo do usuário" informacao={userData.role || ""} />
               <VisualizarItem label="E-mail" informacao={userData.email || ""} />
               <VisualizarItem label="Telefone" informacao={userData.telefone || ""} />
@@ -148,8 +148,10 @@ export default function PerfilDesktop() {
       </main>
 
       {loadingSpinner && <Loading type="spinner" />}
+      <div className="mt-auto">
 
-      <Footer />
+        <Footer />
+      </div>
 
       {isModalVisible && (
         <ModalConfirmacao
