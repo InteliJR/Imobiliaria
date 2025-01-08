@@ -45,6 +45,12 @@ export default function CreateContractMobile() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+
+  const cleanCurrencyValue = (value:any) => {
+    if (!value) return "0";
+    return value.replace(/R\$|\./g, "").replace(",", ".");
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -111,22 +117,23 @@ export default function CreateContractMobile() {
     try {
       const formData = new FormData();
 
-      formData.append("valor_aluguel", rentalValue);
-      formData.append("data_inicio", startDate);
-      formData.append("data_encerramento", endDate);
-      formData.append("tipo_garantia", guaranteeType);
-      formData.append("condicoes_especiais", specialConditions);
-      formData.append("status", status);
-      formData.append("iptu", iptu);
-      formData.append("data_pagamento", paymentDate);
-      formData.append("taxa_adm", adminFee);
-      formData.append("data_rescisao", terminationDate || "");
-      formData.append("renovado", renewed ? "true" : "false");
-      formData.append("data_encerramento_renovacao", renewalEndDate || "");
-      formData.append("valor_reajuste", adjustmentValue);
-      formData.append("locadorid", selectedLocadorId || "");
-      formData.append("locatarioid", selectedLocatarioId || "");
-      formData.append("imovelid", selectedImovelId || "");
+      formData.append("LocadorId", selectedLocadorId || "");
+      formData.append("LocatarioId", selectedLocatarioId || "");
+      formData.append("ImovelId", selectedImovelId || "");
+      formData.append("ValorAluguel", cleanCurrencyValue(rentalValue));
+      formData.append("Iptu", cleanCurrencyValue(iptu));
+      formData.append("TaxaAdm", cleanCurrencyValue(adminFee));
+      formData.append("DataInicio", new Date(startDate).toISOString()); // Envia como UTC
+      formData.append("DataEncerramento", new Date(endDate).toISOString());
+      formData.append("TipoGarantia", guaranteeType);
+      formData.append("CondicoesEspeciais", specialConditions);
+      formData.append("Status", status);
+      formData.append("DataPagamento", new Date(paymentDate).toISOString());
+      // formData.append("DataRescisao", terminationDate || "");
+      formData.append("DataRescisao", terminationDate ? new Date(terminationDate).toISOString() : "");
+      formData.append("Renovado", renewed ? "true" : "false");
+      formData.append("DataEncerramentoRenovacao", renewalEndDate ? new Date(renewalEndDate).toISOString() : "");
+      formData.append("ValorReajuste", cleanCurrencyValue(adjustmentValue));
 
       // formData.append("files", documents || "");
 
