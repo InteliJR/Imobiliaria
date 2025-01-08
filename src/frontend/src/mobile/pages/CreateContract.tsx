@@ -94,7 +94,6 @@ export default function CreateContractMobile() {
     if (
       !rentalValue.trim() ||
       !startDate.trim() ||
-      !endDate.trim() ||
       !iptu.trim() ||
       !paymentDate.trim() ||
       !adminFee.trim() ||
@@ -132,6 +131,28 @@ export default function CreateContractMobile() {
       // formData.append("files", documents || "");
 
       documents?.forEach((document) => formData.append("files", document));
+      console.log({
+        rentalValue,
+        startDate,
+        endDate,
+        guaranteeType,
+        specialConditions,
+        status,
+        iptu,
+        paymentDate,
+        adminFee,
+        terminationDate,
+        renewed,
+        renewalEndDate,
+        adjustmentValue,
+        selectedLocadorId,
+        selectedLocatarioId,
+        selectedImovelId,
+        documents,
+        locadorEmail,
+        locatarioEmail,
+      });
+      
 
       const response = await axiosInstance.post(
         `property/Contratos/CriarContratoComMultiplosArquivos?emailLocatario=${encodeURIComponent(
@@ -243,7 +264,7 @@ export default function CreateContractMobile() {
                   decimalsLimit={2}
                   maxLength={9}
                   value={rentalValue}
-                  onValueChange={(newValue) => setRentalValue(newValue || "")}
+                  onValueChange={(value) => setRentalValue(value || "")}
                   className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
                 />
               </div>
