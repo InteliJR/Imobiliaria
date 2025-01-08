@@ -58,11 +58,10 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   console.log('Tipo de contract.documentos:', typeof contract?.documentos);
   console.log('Valor de contract.documentos:', contract?.documentos);
 
-  const documentos = Array.isArray(contract?.documentos)
-  ? contract.documentos
-  : contract?.documentos
-  ? [contract.documentos]
-  : [];
+  const documentos = contract?.documentos
+    ? (typeof contract.documentos === "string" ? [contract.documentos] : contract.documentos)
+    : [];
+
 
 
   return (

@@ -46,7 +46,7 @@ export interface Payment {
 export default function Contrato() {
   const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URL
-  const [role, setRole] = useState("admin"); // Simulação da role do usuário
+  const [role, setRole] = useState(); // Simulação da role do usuário
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [loadingSpinner, setLoadingSpinner] = useState(false); // estado para controlar o componente de carregamento
   const [loadingPayments, setLoadingPayments] = useState(true); // estado para controlar o carregamento dos pagamentos
@@ -81,6 +81,8 @@ export default function Contrato() {
   const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
   
+  const userRole = localStorage.getItem("userRole");
+
   const fetchSelectOptions = async () => {
     try {
       setIsLoadingLessor(true);
@@ -112,22 +114,63 @@ export default function Contrato() {
   const fetchContract = async () => {
     try {
       const response = await axiosInstance.get(`property/Contratos/PegarContratoPorId/${id}`);
-
       console.log("Contrato:", response.data);
-      setContract(response.data);
-      setOriginalContract(response.data);
+  
+      const contractData = response.data;
+  
+      // Se 'documentos' for uma string, transformá-la em um array
+      let allDocuments = [];
+      if (typeof contractData.documentos === "string" && contractData.documentos.length > 0) {
+        allDocuments = contractData.documentos.split(",").map((documento: string) =>
+          decodeURIComponent(
+            documento.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
+          )
+        );
+      }
 
+      console.log("Este é o valor de allDocuments: ", allDocuments)
+  
+      if (allDocuments.length > 0) {
+        try {
+          const responseDocumentos = await axiosInstance.post(
+            "property/Contratos/AssinarPdfs",
+            allDocuments
+          );
+  
+          console.log("!!!!!!!!!!!!!!!!!!!!!!!11 Valor de responseDocumentos: ", responseDocumentos);
+  
+          if (!responseDocumentos.data) {
+            console.log("Dados de resposta inválidos do endpoint de assinatura");
+            throw new Error("Erro ao assinar documentos.");
+          }
+  
+          // Atualizar o contrato com os documentos assinados
+          contractData.documentos = responseDocumentos.data;
+        } catch (error) {
+          console.error("Erro ao assinar documentos:", error);
+          showErrorToast("Erro ao assinar documentos.");
+          return;
+        }
+      }
+  
+      // Atualizar o estado com o contrato assinado
+      setContract(contractData);
+  
       // Define os valores iniciais dos selects
-      setSelectedPropertyId(response.data.imovelId);
-      setSelectedLessorId(response.data.locadorId);
-      setSelectedRenterId(response.data.locatarioId);
-
+      setSelectedPropertyId(contractData.imovelId);
+      setSelectedLessorId(contractData.locadorId);
+      setSelectedRenterId(contractData.locatarioId);
+  
       setLoading(false);
     } catch (error) {
-      console.error(error);
-      showErrorToast("Erro ao se conectar com o servidor.");
+      console.error("Erro ao carregar contrato:", error);
+      showErrorToast("Erro ao carregar contrato.");
     }
   };
+  
+  
+  
+  
 
   const fetchPayments = async () => {
     try {
@@ -160,73 +203,10 @@ export default function Contrato() {
   };
 
   useEffect(() => {
-    // Mock de dados para teste de contrato
-    const mockContract: Contract = {
-      contratoId: "12345",
-      documentos: [
-        "https://www.thecampusqdl.com/uploads/files/pdf_sample_2.pdf",
-        "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf",
-        "urlInvalida",
-      ],
-      valorAluguel: 1500,
-      dataInicio: "2024-01-05",
-      dataEncerramento: "2024-12-31",
-      locadorId: "locador_001",
-      locatarioId: "locatario_001",
-      imovelId: "imovel_001",
-      tipoGarantia: "Fiador",
-      condicoesEspeciais: "Nenhuma",
-      status: "Ativo",
-      iptu: 300,
-      dataPagamento: "2024-01-05",
-      taxaAdm: 100,
-      renovado: false,
-    };
-
-    const mockPayments: Payment[] = [
-      {
-        pagamentoId: "pay_001",
-        contratoId: "12345",
-        valor: 1500,
-        data: "2024-01-05",
-        pagante: "João Silva",
-        metodo_pagamento: "Cartão de Crédito",
-        descricao: "Pagamento mensal",
-        tipo_pagamento: "Mensalidade",
-        multa: false,
-        valor_multa: 0,
-      },
-      {
-        pagamentoId: "pay_002",
-        contratoId: "12345",
-        valor: 1500,
-        data: "2024-02-05",
-        pagante: "João Silva",
-        metodo_pagamento: "Boleto",
-        descricao: "Pagamento mensal",
-        tipo_pagamento: "Mensalidade",
-        multa: true,
-        valor_multa: 50,
-      },
-    ];
-
-    // Quando esta página for devidamente integrada ao back:
     fetchContract();
-    // fetchPayments();
-    // fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
-    // fetchPayers(); // Chamada à API para carregar os pagantes
-
-    // Simulando a captura da role do usuário
-    setRole("admin");
-
-    setContract(mockContract);
-    setOriginalContract(mockContract);
-    setPayments(mockPayments);
-
-    // Define os valores iniciais dos selects
-    setSelectedPropertyId(mockContract.imovelId);
-    setSelectedLessorId(mockContract.locadorId);
-    setSelectedRenterId(mockContract.locatarioId);
+    fetchPayments();
+    fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
+    fetchPayers(); // Chamada à API para carregar os pagantes
 
     setLoading(false);
     setLoadingPayments(false);
