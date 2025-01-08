@@ -47,6 +47,12 @@ namespace Layer.Services.Services
             return contrato;
         }
 
+        public async Task<List<string>> GenerateSignedUrlsOfPdfsAsync(List<string> objectNames)
+        {
+            return await _storageService.GenerateSignedUrlsAsync(objectNames, 5);
+        }
+
+
         public async Task<Contratos> AddAsyncWithMultipleFiles(Contratos contrato, IFormFileCollection files)
         {
             var documentos = new List<string>();

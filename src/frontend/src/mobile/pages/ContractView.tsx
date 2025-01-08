@@ -80,6 +80,34 @@ export default function Contrato() {
   const [selectedLessorId, setSelectedLessorId] = useState<string | null>(null);
   const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
+  
+  const fetchSelectOptions = async () => {
+    try {
+      setIsLoadingLessor(true);
+      setIsLoadingRenter(true);
+      setIsLoadingProperty(true);
+      const lessorResponse = await axiosInstance.get(
+        "auth/Locador/PegarTodosLocadores"
+      );
+      const renterResponse = await axiosInstance.get(
+        "auth/Locatario/PegarTodosLocatarios"
+      );
+      const propertyResponse = await axiosInstance.get(
+        "property/Imoveis/PegarTodosImoveis"
+      );
+      
+      setLessors(lessorResponse.data || []);
+      setRenters(renterResponse.data || []);
+      setProperties(propertyResponse.data || []);
+      console.log(lessorResponse.data, renterResponse.data, propertyResponse.data);
+    } catch (error) {
+      showErrorToast("Erro ao carregar lessors, locatários e properties.");
+    } finally {
+      setIsLoadingLessor(false);
+      setIsLoadingRenter(false);
+      setIsLoadingProperty(false);
+    }
+  };
 
   const fetchContract = async () => {
     try {
@@ -116,28 +144,6 @@ export default function Contrato() {
     }
   };
 
-  const fetchSelectOptions = async () => {
-    try {
-      setIsLoadingLessor(true);
-      setIsLoadingRenter(true);
-      setIsLoadingProperty(true);
-      const lessorsResponse = await axiosInstance.get("auth/Lessor/PegarTodosLessors");
-      const rentersResponse = await axiosInstance.get("auth/Renter/PegarTodosRenters");
-      const propertiesResponse = await axiosInstance.get(
-        "property/Properties/PegarTodosProperties"
-      );
-      setLessors(lessorsResponse.data || []);
-      setRenters(rentersResponse.data || []);
-      setProperties(propertiesResponse.data || []);
-      console.log(lessorsResponse.data, rentersResponse.data, propertiesResponse.data);
-    } catch (error) {
-      showErrorToast("Erro ao carregar lessors, locatários e properties.");
-    } finally {
-      setIsLoadingLessor(false);
-      setIsLoadingRenter(false);
-      setIsLoadingProperty(false);
-    }
-  };
 
   // Carrega os pagantes para as options do formulário de adição de pagamentos
   const fetchPayers = async () => {
@@ -205,7 +211,7 @@ export default function Contrato() {
     ];
 
     // Quando esta página for devidamente integrada ao back:
-    // fetchContract();
+    fetchContract();
     // fetchPayments();
     // fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
     // fetchPayers(); // Chamada à API para carregar os pagantes

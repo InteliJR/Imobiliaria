@@ -55,6 +55,16 @@ export const ContractForm: React.FC<ContractFormProps> = ({
     return <p>Contrato não encontrado.</p>;
   }
 
+  console.log('Tipo de contract.documentos:', typeof contract?.documentos);
+  console.log('Valor de contract.documentos:', contract?.documentos);
+
+  const documentos = Array.isArray(contract?.documentos)
+  ? contract.documentos
+  : contract?.documentos
+  ? [contract.documentos]
+  : [];
+
+
   return (
     <>
       <h1 className="text-title font-strong mb-2">Contrato: {contract?.contratoId}</h1>
@@ -313,34 +323,34 @@ export const ContractForm: React.FC<ContractFormProps> = ({
 
         {/* Documentos */}
         <div className="w-full">
-          <h3>Documentos</h3>
-          {contract?.documentos && contract.documentos.length > 0 ? (
-            contract.documentos.map((docUrl: string, index: number) => (
-              <div
-                key={index}
-                className="relative bg-gray-100 mt-3 p-2 flex flex-col items-center rounded-[.5rem]"
-              >
-                <h4 className="text-neutral-800 mb-4">Documento {index + 1}</h4>
+  <h3>Documentos</h3>
+  {documentos.length > 0 ? (
+    documentos.map((docUrl: string, index: number) => (
+      <div
+        key={index}
+        className="relative bg-gray-100 mt-3 p-2 flex flex-col items-center rounded-[.5rem]"
+      >
+        <h4 className="text-neutral-800 mb-4">Documento {index + 1}</h4>
+        <DocumentViewer fileUrl={docUrl} />
 
-                <DocumentViewer fileUrl={docUrl} />
+        {isEditable && (
+          <button
+            type="button"
+            onClick={() => handleRemoveDocument(index)}
+            className="absolute top-3 right-3 text-neutral-600 hover:text-neutral-800 duration-200 ease-in-out"
+            aria-label={`Remover documento ${index + 1}`}
+            title={`Remover documento ${index + 1}`}
+          >
+            <FaTrash size={24} />
+          </button>
+        )}
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-500 mt-3">Nenhum documento associado.</p>
+  )}
+</div>
 
-                {isEditable && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveDocument(index)}
-                    className="absolute top-3 right-3 text-neutral-600 hover:text-neutral-800 duration-200 ease-in-out"
-                    aria-label={`Remover documento ${index + 1}`}
-                    title={`Remover documento ${index + 1}`}
-                  >
-                    <FaTrash size={24} />
-                  </button>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 mt-3">Nenhum documento associado.</p>
-          )}
-        </div>
 
         {isEditable && <p className="cursor-pointer">Enviar documento</p>}
 
