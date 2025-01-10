@@ -8,6 +8,8 @@ import Loading from "../../components/Loading";
 import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosConfig";
+import { useAtom } from "jotai";
+import { userRoleAtom } from "../../store/atoms";
 
 export interface Contract {
   contratoId: string;
@@ -45,7 +47,7 @@ export interface Payment {
 
 export default function Contrato() {
   const navigate = useNavigate();
-  const { id } = useParams(); // Obtém o ID do contrato pela URL
+  const { id } = useParams(); // Obtém o ID do contrato pela URLe
   const [role, setRole] = useState(); // Simulação da role do usuário
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [loadingSpinner, setLoadingSpinner] = useState(false); // estado para controlar o componente de carregamento
@@ -80,8 +82,10 @@ export default function Contrato() {
   const [selectedLessorId, setSelectedLessorId] = useState<string | null>(null);
   const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
-  
-  const userRole = localStorage.getItem("userRole");
+  const [canAddPayments, setCanAddPayments] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
+  // const userRole = localStorage.getItem("userRole");
+  const [userRole] = useAtom(userRoleAtom);
 
   const fetchSelectOptions = async () => {
     try {
@@ -97,7 +101,7 @@ export default function Contrato() {
       const propertyResponse = await axiosInstance.get(
         "property/Imoveis/PegarTodosImoveis"
       );
-      
+
       setLessors(lessorResponse.data || []);
       setRenters(renterResponse.data || []);
       setProperties(propertyResponse.data || []);
@@ -115,9 +119,9 @@ export default function Contrato() {
     try {
       const response = await axiosInstance.get(`property/Contratos/PegarContratoPorId/${id}`);
       console.log("Contrato:", response.data);
-  
+
       const contractData = response.data;
-  
+
       // Se 'documentos' for uma string, transformá-la em um array
       let allDocuments = [];
       if (typeof contractData.documentos === "string" && contractData.documentos.length > 0) {
@@ -129,21 +133,21 @@ export default function Contrato() {
       }
 
       console.log("Este é o valor de allDocuments: ", allDocuments)
-  
+
       if (allDocuments.length > 0) {
         try {
           const responseDocumentos = await axiosInstance.post(
             "property/Contratos/AssinarPdfs",
             allDocuments
           );
-  
+
           console.log("!!!!!!!!!!!!!!!!!!!!!!!11 Valor de responseDocumentos: ", responseDocumentos);
-  
+
           if (!responseDocumentos.data) {
             console.log("Dados de resposta inválidos do endpoint de assinatura");
             throw new Error("Erro ao assinar documentos.");
           }
-  
+
           // Atualizar o contrato com os documentos assinados
           contractData.documentos = responseDocumentos.data;
         } catch (error) {
@@ -152,25 +156,21 @@ export default function Contrato() {
           return;
         }
       }
-  
+
       // Atualizar o estado com o contrato assinado
       setContract(contractData);
-  
+
       // Define os valores iniciais dos selects
       setSelectedPropertyId(contractData.imovelId);
       setSelectedLessorId(contractData.locadorId);
       setSelectedRenterId(contractData.locatarioId);
-  
+
       setLoading(false);
     } catch (error) {
       console.error("Erro ao carregar contrato:", error);
       showErrorToast("Erro ao carregar contrato.");
     }
   };
-  
-  
-  
-  
 
   const fetchPayments = async () => {
     try {
@@ -186,7 +186,6 @@ export default function Contrato() {
       showErrorToast("Erro ao carregar pagamentos.");
     }
   };
-
 
   // Carrega os pagantes para as options do formulário de adição de pagamentos
   const fetchPayers = async () => {
@@ -212,10 +211,30 @@ export default function Contrato() {
     setLoadingPayments(false);
   }, []);
 
+  useEffect(() => {
+    if (userRole) {
+      setIsEditable(userRole === "Admin");
+      setCanAddPayments(userRole === "Admin" || userRole === "legal");
+    }
+  }, [userRole]);
+
   // Condicional para verificar se o usuário pode editar os campos ou visualizar o formulário de pagamentos
   // É necessário ajustar isto para atender às regras de negócios.
-  const isEditable = role === "admin"; // Supondo que só adm pode editar um contrato
-  const canAddPayments = role === "admin" || role === "legal"; // Supondo que adm e o jurídico podem editar um contrato
+
+  const renderPaymentForm = () => {
+    const canAddPayments = userRole === "Admin" || userRole === "legal";
+    if (canAddPayments) {
+      return <PaymentForm
+        newPayment={newPayment}
+        setNewPayment={setNewPayment}
+        handleAddPayment={handleAddPayment}
+        setShowPaymentForm={setShowPaymentForm}
+        payers={payers}
+        isLoadingPayers={isLoadingPayers}
+      />;
+    }
+    return null;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (contract) {
@@ -232,25 +251,25 @@ export default function Contrato() {
 
   const handleSave = (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     if (!contract) {
       showErrorToast("Contrato não encontrado.");
       return;
     }
-  
+
     setLoadingSpinner(true);
-  
+
     // Verifica se houve mudanças
     const hasChanges = Object.keys(originalContract || {}).some(
       (key) => originalContract![key as keyof Contract] !== contract[key as keyof Contract]
     );
-  
+
     if (!hasChanges) {
       showErrorToast("Nenhuma alteração foi feita.");
       setLoadingSpinner(false);
       return;
     }
-  
+
     // Verifica se todos os campos obrigatórios estão preenchidos e válidos
     if (
       !contract.valorAluguel ||
@@ -271,10 +290,10 @@ export default function Contrato() {
       setLoadingSpinner(false);
       return;
     }
-  
+
     // Ajusta os campos dependendo do status
     const updatedContract = { ...contract };
-  
+
     if (updatedContract.status === "Rescindido") {
       updatedContract.dataRescisao = updatedContract.dataRescisao || new Date().toISOString().split("T")[0];
       delete updatedContract.dataEncerramentoRenovacao;
@@ -286,14 +305,14 @@ export default function Contrato() {
       delete updatedContract.dataRescisao;
       delete updatedContract.dataEncerramentoRenovacao;
     }
-  
+
     // Aqui deve ficar a chamada ao serviço para salvar as alterações
     showSuccessToast("Contrato atualizado com sucesso!");
     setOriginalContract(updatedContract); // Seta os dados que foram devidamente atualizados como os originais
     console.log("Salvar contrato:", updatedContract);
     setLoadingSpinner(false);
   };
-  
+
 
   const handleAddPayment = async () => {
     setLoadingSpinner(true);
@@ -417,14 +436,7 @@ export default function Contrato() {
 
               {/* Condicional para exibir o formulário de adição de pagamento */}
               {showPaymentForm && (
-                <PaymentForm
-                  newPayment={newPayment}
-                  setNewPayment={setNewPayment}
-                  handleAddPayment={handleAddPayment}
-                  setShowPaymentForm={setShowPaymentForm}
-                  payers={payers}
-                  isLoadingPayers={isLoadingPayers}
-                />
+                renderPaymentForm()
               )}
             </div>
           </div>
