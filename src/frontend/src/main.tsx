@@ -39,7 +39,7 @@ import CreatePropertyMobile from "./mobile/pages/CreateProperty";
 import CreateUserMobile from "./mobile/pages/CreateUser";
 import CreateTicketMobile from "./mobile/pages/CreateTicket";
 import CreateContract from "./mobile/pages/CreateContract";
-import Dashboard from "./mobile/pages/Dashboard";
+import Dashboard from "./mobile/pages/dashboard/Dashboard";
 import HomeLocador from "./mobile/pages/HomeLocador";
 import HomeLocatario from "./mobile/pages/HomeLocatario";
 // import ChamadosImovel from "./mobile/pages/ChamadosImovel";
