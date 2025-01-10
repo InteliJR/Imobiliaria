@@ -198,13 +198,13 @@ builder.Logging.AddDebug();
 // Configuração de CORS corrigida
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-        {
-            policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com") // Substitua pelos domínios específicos que você deseja permitir
-                  .AllowCredentials()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowSpecificOrigin", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com") // Remova a barra no final
+              .AllowCredentials()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();
