@@ -198,28 +198,16 @@ builder.Logging.AddDebug();
 // Configuração de CORS corrigida
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin", policy =>
-    {
-        policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com") // Remova a barra no final
-              .AllowCredentials()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    options.AddDefaultPolicy(policy =>
+        {
+            policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com/") // Substitua pelos domínios específicos que você deseja permitir
+                  .AllowCredentials()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
 });
 
 var app = builder.Build();
-
-app.Use(async (context, next) =>
-{
-    if (context.Request.Method == "OPTIONS")
-    {
-        context.Response.StatusCode = 204; // No Content
-        await context.Response.CompleteAsync();
-        return;
-    }
-
-    await next();
-});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -259,8 +247,11 @@ if (env == "Development")
     app.UseHttpsRedirection();
 }
 
+if (env == "Development")
+{
+app.UseHttpsRedirection();
+}
 app.UseCors("AllowSpecificOrigins");
-
 app.UseRouting();
 
 app.UseCors();
