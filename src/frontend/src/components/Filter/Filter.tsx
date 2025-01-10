@@ -3,11 +3,11 @@ import { IUser } from "./UserInterfaces";
 import { IFilterField } from "./InputsInterfaces";
 
 // Função genérica de filtragem
-function applyFilters(
-  data: IUser[],
-  fields: IFilterField[],
+function applyFilters<T>(
+  data: T[],
+  fields: IFilterField<T>[],
   filters: Record<string, any>
-): IUser[] {
+): T[] {
   let result = [...data];
 
   for (const field of fields) {
@@ -145,60 +145,56 @@ function applyFilters(
  * Ele receberá a lista de dados (`data`), o array de `fields`,
  * e retornará o array filtrado via `onFilteredResult`.
  */
-interface GenericFilterModalProps {
+interface GenericFilterModalProps<T> {
   isOpen: boolean;
   onClose: () => void;
-  fields: IFilterField[];
-  data: IUser[];
+  fields: IFilterField<T>[];
+  data: T[];
   initialValues?: Record<string, any>;
-  onFilteredResult: (filteredData: IUser[]) => void;
-}
+  onFilteredResult: (filteredData: T[]) => void;
+}   
 
 // Componente genérico de filtro
-export const GenericFilterModal: React.FC<GenericFilterModalProps> = ({
-  isOpen,
-  onClose,
-  fields,
-  data,
-  initialValues = {},
-  onFilteredResult,
-}) => {
-  const [filterValues, setFilterValues] = useState<Record<string, any>>(initialValues);
-
-  function handleChange(fieldName: string, value: any) {
-    setFilterValues((prev) => ({ ...prev, [fieldName]: value }));
-  }
-
-  function handleDateRangeChange(
-    fieldName: string,
-    subField: "from" | "to",
-    newValue: string
-  ) {
-    setFilterValues((prev) => {
-      const oldRange = prev[fieldName] ?? {};
-      return {
-        ...prev,
-        [fieldName]: {
-          ...oldRange,
-          [subField]: newValue,
-        },
-      };
-    });
-  }
-
-  function handleSearch() {
-    const filtered = applyFilters(data, fields, filterValues);
-    onFilteredResult(filtered);
-    onClose();
-  }
-
-  function handleClearAll() {
-    setFilterValues({});
-    onFilteredResult([...data]);
-    // onClose();
-  }
-
-  if (!isOpen) return null;
+export const GenericFilterModal = <T,>({
+    isOpen,
+    onClose,
+    fields,
+    data,
+    initialValues = {},
+    onFilteredResult,
+  }: GenericFilterModalProps<T>) => {
+    const [filterValues, setFilterValues] = useState<Record<string, any>>(initialValues);
+  
+    function handleChange(fieldName: string, value: any) {
+      setFilterValues((prev) => ({ ...prev, [fieldName]: value }));
+    }
+  
+    function handleDateRangeChange(fieldName: string, subField: "from" | "to", newValue: string) {
+      setFilterValues((prev) => {
+        const oldRange = prev[fieldName] ?? {};
+        return {
+          ...prev,
+          [fieldName]: {
+            ...oldRange,
+            [subField]: newValue,
+          },
+        };
+      });
+    }
+  
+    function handleSearch() {
+      const filtered = applyFilters(data, fields, filterValues);
+      onFilteredResult(filtered);
+      onClose();
+    }
+  
+    function handleClearAll() {
+      setFilterValues({});
+      onFilteredResult([...data]);
+      // onClose();
+    }
+  
+    if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
@@ -323,7 +319,7 @@ export const GenericFilterModal: React.FC<GenericFilterModalProps> = ({
                       }}
                     >
                       <option value="eq">{"Igual"}</option>
-                      <option value="gt">{"Maior que"}</option>
+                      <option value="gt">{"Maior"}</option>
                       <option value="gte">{"Maior e igual"}</option>
                       <option value="lt">{"Menor"}</option>
                       <option value="lte">{"Menor e igual"}</option>

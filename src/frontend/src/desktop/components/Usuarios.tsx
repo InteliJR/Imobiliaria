@@ -8,8 +8,7 @@ import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
-// Se estiver usando a interface property-based, importe-a do local certo
-// import { IUser } from "../../components/Filter/UserInterfaces";
+import { IUser } from "../../components/Filter/UserInterfaces";
 
 export default function UsuariosComponent() {
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ export default function UsuariosComponent() {
   const [isModalOpen, setModalOpen] = useState(false);
 
   // Campos do filtro avançado (property-based)
-  const userFilterFields: IFilterField[] = [
+  const userFilterFields: IFilterField<IUser>[] = [
     {
       name: "perfil",
       label: "Perfil",
@@ -59,7 +58,7 @@ export default function UsuariosComponent() {
       name: "numeroImoveisRange",
       label: "Número de Imóveis",
       type: "numberRange",
-      property:  "nImoveis",
+      property: "nImoveis",
       placeholder: "Digite a faixa de numeros de imoveis",
     },
     {
@@ -68,7 +67,7 @@ export default function UsuariosComponent() {
       type: "text",
       property: "imoveis",
       placeholder: "Digite o CEP do imóvel",
-      customFilter: (user, filterValue) => {
+      customFilter: (user: IUser, filterValue: string) => {
         // Logica personalizada para filtrar os usaurios que possuem imoveis com um certo cep
         const lower = String(filterValue).toLowerCase();
         const cepOk = user.imoveis?.some((imovel) =>

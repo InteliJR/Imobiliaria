@@ -10,7 +10,7 @@ export type FieldType =
   | "number"
   | "numberRange";
 
-export interface IFilterField {
+export interface IFilterField<T> {
   // Nome do campo
   name: string;
 
@@ -21,7 +21,7 @@ export interface IFilterField {
   type: FieldType;
 
   // Aqui é a propiredade que ta na interface que eu quero filtrar
-  property: keyof IUser;
+  property: keyof T;
 
   // Se for select vc pode passar as opç~oes
   options?: string[];
@@ -30,5 +30,5 @@ export interface IFilterField {
   placeholder?: string;
   
   // Posso passar uma função customizada de filtro que vai ser chamada
-  customFilter?: (item: IUser, filterValue: any) => boolean;
+  customFilter?: (item: T, filterValue: any) => boolean;
 }
