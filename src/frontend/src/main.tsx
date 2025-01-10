@@ -75,8 +75,12 @@ const Root = () => {
           }
         />
         <Route
-          path="/teste"
-          element={<PagamentosImovel/>}
+          path="/pagamentos"
+          element={
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
+              {<PagamentosImovel/>}
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/imoveis/criar"
