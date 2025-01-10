@@ -29,7 +29,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   };
 
   // Exibe o campo "valor_multa" somente se "tipo_pagamento" for "multa"
-  const isMulta = newPayment.tipo_pagamento === "multa";
+  const isMulta = newPayment.TipoPagamento === "multa";
 
   return (
     <form
@@ -89,32 +89,26 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         {isLoadingPayers ? (
           <p>Carregando pagantes...</p>
         ) : (
-          <select
+          <input
+            type="text"
             id="pagante"
             name="pagante"
             value={newPayment.pagante || ""}
             onChange={(e) => handlePaymentChange("pagante", e.target.value)}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
+            placeholder="Digite o nome do pagante"
             required
-          >
-            <option value="">Selecione um pagante</option>
-            {payers.map((payer) => (
-              <option key={payer.id} value={payer.id}>
-                {payer.name}
-              </option>
-            ))}
-          </select>
+          />
         )}
       </div>
-
       {/* Método de Pagamento */}
       <div className="flex flex-col">
-        <label htmlFor="metodo_pagamento">Método de Pagamento:</label>
+        <label htmlFor="MetodoPagamento">Método de Pagamento:</label>
         <select
-          id="metodo_pagamento"
-          name="metodo_pagamento"
-          value={newPayment.metodo_pagamento || ""}
-          onChange={(e) => handlePaymentChange("metodo_pagamento", e.target.value)}
+          id="MetodoPagamento"
+          name="MetodoPagamento"
+          value={newPayment.MetodoPagamento || ""}
+          onChange={(e) => handlePaymentChange("MetodoPagamento", e.target.value)}
           className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
           required
         >
@@ -130,12 +124,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 
       {/* Tipo de Pagamento */}
       <div className="flex flex-col">
-        <label htmlFor="tipo_pagamento">Tipo de Pagamento:</label>
+        <label htmlFor="TipoPagamento">Tipo de Pagamento:</label>
         <select
-          id="tipo_pagamento"
-          name="tipo_pagamento"
-          value={newPayment.tipo_pagamento || ""}
-          onChange={(e) => handlePaymentChange("tipo_pagamento", e.target.value)}
+          id="TipoPagamento"
+          name="TipoPagamento"
+          value={newPayment.TipoPagamento || ""}
+          onChange={(e) => handlePaymentChange("TipoPagamento", e.target.value)}
           className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
           required
         >

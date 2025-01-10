@@ -227,7 +227,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <label htmlFor="dataPagamento">Data de Pagamento:</label>
           <input
             id="dataPagamento"
-            type="date"
+            type="text"
             name="dataPagamento"
             value={formatDate(contract?.dataPagamento) || ""}
             onChange={onInputChange}

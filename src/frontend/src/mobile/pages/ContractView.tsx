@@ -38,9 +38,9 @@ export interface Payment {
   valor: number;
   data: string;
   pagante: string;
-  metodo_pagamento: string;
+  MetodoPagamento: string;
   descricao: string;
-  tipo_pagamento: string;
+  TipoPagamento: string;
   multa: boolean; // Alterado para boolean
   valor_multa: number;
 }
@@ -172,7 +172,7 @@ export default function Contrato() {
   const fetchPayments = async () => {
     try {
       // Simulação de chamada de API
-      const response = await axiosInstance.get(`payment/payment/ByImovel/${selectedPropertyId}`);
+      const response = await axiosInstance.get(`payment/payment/ByImovel/${contract?.imovelId}`);
 //payment/payment/criar-pagamentos
       console.log("Pagamentos:", response.data);
       setPayments(response.data);
@@ -180,41 +180,41 @@ export default function Contrato() {
       setLoadingPayments(false);
     } catch (error) {
       console.error(error);
-      showErrorToast("Erro ao carregar pagamentos.");
-    }
-  };
-
-  // Carrega os pagantes para as options do formulário de adição de pagamentos
-  const fetchPayers = async () => {
-    try {
-      setIsLoadingPayers(true);
-      const response = await axiosInstance.get("auth/Payers/PegarTodosPayers"); // Endpoint hipotético
-      setPayers(response.data || []);
-      console.log("Pagantes:", response.data);
-    } catch (error) {
-      showErrorToast("Erro ao carregar pagantes.");
-    } finally {
-      setIsLoadingPayers(false);
+      // showErrorToast("Erro ao carregar pagamentos.");
     }
   };
 
   useEffect(() => {
-    fetchContract();
-    fetchPayments();
-    fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
-    fetchPayers(); // Chamada à API para carregar os pagantes
-
-    setLoading(false);
-    setLoadingPayments(false);
-  }, []);
-
-  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setLoadingPayments(true);
+  
+      try {
+        // Primeiro, faça a requisição para os contratos e aguarde a resposta
+        await fetchContract();
+  
+        // Após a requisição de contrato, faça a requisição de pagamentos
+        await fetchPayments();
+        
+        // Se necessário, adicione outras requisições aqui
+        await fetchSelectOptions();
+  
+      } catch (error) {
+        console.error("Erro durante a requisição de dados:", error);
+      } finally {
+        setLoading(false);
+        setLoadingPayments(false);
+      }
+    };
+  
+    // Verifique se userRole está definido para evitar chamadas desnecessárias
     if (userRole) {
+      fetchData();
       setIsEditable(userRole === "Admin");
-      setCanAddPayments(userRole === "Admin" || userRole === "legal");
+      setCanAddPayments(userRole === "Admin");
     }
-  }, [userRole]);
-
+  }, [userRole, contract?.imovelId]);  // Garanta que o contract ou imovelId mudem de forma controlada
+  
   // Condicional para verificar se o usuário pode editar os campos ou visualizar o formulário de pagamentos
   // É necessário ajustar isto para atender às regras de negócios.
 
@@ -312,6 +312,12 @@ export default function Contrato() {
 
 
   const handleAddPayment = async () => {
+
+    if (!newPayment.contratoId) {
+      // Atribuir o contratoId se não estiver preenchido
+      newPayment.contratoId = id; // ID do contrato da URL
+    }
+
     setLoadingSpinner(true);
 
     // Verifica se todos os campos obrigatórios estão preenchidos e válidos
@@ -322,11 +328,11 @@ export default function Contrato() {
       isNaN(new Date(newPayment.data).getTime()) || // Valida se é uma data válida
       !newPayment.pagante || // Pagante não pode ser vazio
       newPayment.pagante.trim() === "" ||
-      !newPayment.metodo_pagamento || // Método de pagamento não pode ser vazio
-      newPayment.metodo_pagamento.trim() === "" ||
-      !newPayment.tipo_pagamento || // Tipo de pagamento não pode ser vazio
-      newPayment.tipo_pagamento.trim() === "" ||
-      (newPayment.tipo_pagamento === "multa" && // Para tipo "multa", valor_multa deve ser maior que 0
+      !newPayment.MetodoPagamento || // Método de pagamento não pode ser vazio
+      newPayment.MetodoPagamento.trim() === "" ||
+      !newPayment.TipoPagamento || // Tipo de pagamento não pode ser vazio
+      newPayment.TipoPagamento.trim() === "" ||
+      (newPayment.TipoPagamento === "multa" && // Para tipo "multa", valor_multa deve ser maior que 0
         (!newPayment.valor_multa || newPayment.valor_multa <= 0));
 
     if (isInvalid) {
@@ -336,18 +342,13 @@ export default function Contrato() {
     }
 
     try {
-      // Simulação da chamada para adicionar o pagamento
-      console.log("Adicionar pagamento:", newPayment);
-
-      // Faça a chamada à API para adicionar o pagamento
-      await axiosInstance.post(`property/Contratos/AdicionarPagamento`, newPayment);
-
-      // Limpa o formulário de pagamento
-      setNewPayment({});
-
-      // Atualiza a lista de pagamentos
-      await fetchPayments();
-      showSuccessToast("Pagamento adicionado com sucesso!");
+      // Realiza a requisição para adicionar o pagamento
+      const response = await axiosInstance.post("payment/payment/criar-pagamentos", newPayment);
+      if (response.status === 200) {
+        showSuccessToast("Pagamento adicionado com sucesso!");
+        setNewPayment({ data: getTodayDate() }); // Reseta o estado do novo pagamento
+        fetchPayments(); // Atualiza a lista de pagamentos
+      }
     } catch (error) {
       console.error("Erro ao adicionar pagamento:", error);
       showErrorToast("Erro ao adicionar pagamento.");
