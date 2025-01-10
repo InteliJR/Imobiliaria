@@ -198,7 +198,7 @@ export const GenericFilterModal = <T,>({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
-      <div className="bg-white p-4 rounded w-[400px] max-h-[80vh] overflow-y-auto">
+      <div className="bg-white p-4 rounded w-[90%] sm:w-[400px] max-h-[80vh] overflow-y-auto">
         <h2 className="text-lg font-bold mb-4">Filtros</h2>
 
         {fields.map((field) => {
@@ -208,9 +208,7 @@ export const GenericFilterModal = <T,>({
             case "text":
               return (
                 <div className="mb-3" key={field.name}>
-                  <label className="block mb-1 font-medium">
-                    {field.label}
-                  </label>
+                  <label className="block mb-1 font-medium">{field.label}</label>
                   <input
                     type="text"
                     className="border rounded p-2 w-full"
@@ -224,9 +222,7 @@ export const GenericFilterModal = <T,>({
             case "select":
               return (
                 <div className="mb-3" key={field.name}>
-                  <label className="block mb-1 font-medium">
-                    {field.label}
-                  </label>
+                  <label className="block mb-1 font-medium">{field.label}</label>
                   <select
                     className="border rounded p-2 w-full"
                     value={value}
@@ -262,9 +258,7 @@ export const GenericFilterModal = <T,>({
             case "date":
               return (
                 <div className="mb-3" key={field.name}>
-                  <label className="block mb-1 font-medium">
-                    {field.label}
-                  </label>
+                  <label className="block mb-1 font-medium">{field.label}</label>
                   <input
                     type="date"
                     className="border rounded p-2 w-full"
@@ -282,7 +276,7 @@ export const GenericFilterModal = <T,>({
                   <label className="block mb-1 font-medium">
                     {field.label} (intervalo)
                   </label>
-                  <div className="flex gap-2 mt-1">
+                  <div className="flex flex-col gap-2 sm:flex-row mt-1">
                     <input
                       type="date"
                       className="border rounded p-2 w-full"
@@ -303,110 +297,107 @@ export const GenericFilterModal = <T,>({
                 </div>
               );
 
-              case "number":
-                return (
-                  <div className="mb-3" key={field.name}>
-                    <label className="block mb-1 font-medium">{field.label}</label>
-              
-                    <select
-                      className="border rounded p-2 mb-1"
-                      value={filterValues[field.name + "_comparison"] || "eq"}
-                      onChange={(e) => {
-                        setFilterValues((prev) => ({
-                          ...prev,
-                          [field.name + "_comparison"]: e.target.value,
-                        }));
-                      }}
-                    >
-                      <option value="eq">{"Igual"}</option>
-                      <option value="gt">{"Maior"}</option>
-                      <option value="gte">{"Maior e igual"}</option>
-                      <option value="lt">{"Menor"}</option>
-                      <option value="lte">{"Menor e igual"}</option>
-                    </select>
-              
+            case "number":
+              return (
+                <div className="mb-3" key={field.name}>
+                  <label className="block mb-1 font-medium">{field.label}</label>
+                  <select
+                    className="border rounded p-2 mb-1 w-full"
+                    value={filterValues[field.name + "_comparison"] || "eq"}
+                    onChange={(e) => {
+                      setFilterValues((prev) => ({
+                        ...prev,
+                        [field.name + "_comparison"]: e.target.value,
+                      }));
+                    }}
+                  >
+                    <option value="eq">{"Igual"}</option>
+                    <option value="gt">{"Maior"}</option>
+                    <option value="gte">{"Maior e igual"}</option>
+                    <option value="lt">{"Menor"}</option>
+                    <option value="lte">{"Menor e igual"}</option>
+                  </select>
+                  <input
+                    type="number"
+                    className="border rounded p-2 w-full"
+                    value={value}
+                    placeholder={field.placeholder}
+                    onChange={(e) => handleChange(field.name, e.target.value)}
+                  />
+                </div>
+              );
+
+            case "numberRange":
+              const minVal = value?.min || "";
+              const maxVal = value?.max || "";
+
+              return (
+                <div className="mb-3" key={field.name}>
+                  <label className="block mb-1 font-medium">
+                    {field.label} (intervalo)
+                  </label>
+                  <div className="flex flex-col gap-2 sm:flex-row mt-1">
                     <input
                       type="number"
                       className="border rounded p-2 w-full"
-                      value={value}
-                      placeholder={field.placeholder}
-                      onChange={(e) => handleChange(field.name, e.target.value)}
+                      placeholder="Mínimo"
+                      value={minVal}
+                      onChange={(e) => {
+                        setFilterValues((prev) => {
+                          const oldRange = prev[field.name] ?? {};
+                          return {
+                            ...prev,
+                            [field.name]: {
+                              ...oldRange,
+                              min: e.target.value,
+                            },
+                          };
+                        });
+                      }}
+                    />
+                    <input
+                      type="number"
+                      className="border rounded p-2 w-full"
+                      placeholder="Máximo"
+                      value={maxVal}
+                      onChange={(e) => {
+                        setFilterValues((prev) => {
+                          const oldRange = prev[field.name] ?? {};
+                          return {
+                            ...prev,
+                            [field.name]: {
+                              ...oldRange,
+                              max: e.target.value,
+                            },
+                          };
+                        });
+                      }}
                     />
                   </div>
-                );
+                </div>
+              );
 
-            case "numberRange":
-                const minVal = value?.min || "";
-                const maxVal = value?.max || "";
-                
-                return (
-                    <div className="mb-3" key={field.name}>
-                    <label className="block mb-1 font-medium">
-                        {field.label} (intervalo)
-                    </label>
-                    <div className="flex gap-2 mt-1">
-                        <input
-                        type="number"
-                        className="border rounded p-2 w-full"
-                        placeholder="Mínimo"
-                        value={minVal}
-                        onChange={(e) => {
-                            setFilterValues((prev) => {
-                            const oldRange = prev[field.name] ?? {};
-                            return {
-                                ...prev,
-                                [field.name]: {
-                                ...oldRange,
-                                min: e.target.value,
-                                },
-                            };
-                            });
-                        }}
-                        />
-                        <input
-                        type="number"
-                        className="border rounded p-2 w-full"
-                        placeholder="Máximo"
-                        value={maxVal}
-                        onChange={(e) => {
-                            setFilterValues((prev) => {
-                            const oldRange = prev[field.name] ?? {};
-                            return {
-                                ...prev,
-                                [field.name]: {
-                                ...oldRange,
-                                max: e.target.value,
-                                },
-                            };
-                            });
-                        }}
-                        />
-                    </div>
-                    </div>
-                );
-                
-            
             default:
               return null;
           }
         })}
 
-        <div className="mt-4 flex justify-end space-x-2">
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end sm:space-x-2">
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-full sm:w-auto"
           >
             Buscar
           </button>
           <button
             onClick={handleClearAll}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
           >
             Limpar
           </button>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 w-full sm:w-auto"
           >
             Fechar
           </button>
