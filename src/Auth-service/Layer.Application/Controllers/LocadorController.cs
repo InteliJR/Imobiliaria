@@ -29,7 +29,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarTodosLocadores")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetAllLocadors()
         {
             var locadors = await _locadorService.GetAllLocadorsAsync();

@@ -142,5 +142,14 @@ namespace property_management.Controllers
             throw new NotImplementedException();
         }
 
+        [HttpPost("AssinarPdfs")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> GenerateSignedUrlOfPdfs(List<string> idImages)
+        {
+            var urls = await _contratoService.GenerateSignedUrlsOfPdfsAsync(idImages);
+            return Ok(urls);
+        }
+
+
     }
 }

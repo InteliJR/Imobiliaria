@@ -55,6 +55,23 @@ export const ContractForm: React.FC<ContractFormProps> = ({
     return <p>Contrato não encontrado.</p>;
   }
 
+  console.log('Tipo de contract.documentos:', typeof contract?.documentos);
+  console.log('Valor de contract.documentos:', contract?.documentos);
+
+  const documentos = contract?.documentos
+    ? (typeof contract.documentos === "string" ? [contract.documentos] : contract.documentos)
+    : [];
+
+  const formatDate = (dateString:any) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
   return (
     <>
       <h1 className="text-title font-strong mb-2">Contrato: {contract?.contratoId}</h1>
@@ -82,9 +99,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
         <div className="flex flex-col">
           <label>Data de Início:</label>
           <input
-            type="date"
+            type="text"
             name="dataInicio"
-            value={contract?.dataInicio || ""}
+            value={formatDate(contract?.dataInicio) || ""}
             disabled={true}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
           />
@@ -95,9 +112,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <label htmlFor="dataEncerramento">Data de Encerramento:</label>
           <input
             id="dataEncerramento"
-            type="date"
+            type="text"
             name="dataEncerramento"
-            value={contract?.dataEncerramento || ""}
+            value={formatDate(contract?.dataEncerramento) || ""}
             onChange={onInputChange}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
@@ -162,7 +179,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
               id="dataRescisao"
               type="date"
               name="dataRescisao"
-              value={contract?.dataRescisao || new Date().toISOString().split("T")[0]}
+              value={formatDate(contract?.dataRescisao) || new Date().toISOString().split("T")[0]}
               onChange={onInputChange}
               disabled={!isEditable}
               className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
@@ -178,7 +195,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
               id="dataEncerramentoRenovacao"
               type="date"
               name="dataEncerramentoRenovacao"
-              value={contract?.dataEncerramentoRenovacao || new Date().toISOString().split("T")[0]}
+              value={formatDate(contract?.dataEncerramentoRenovacao) || new Date().toISOString().split("T")[0]}
               onChange={onInputChange}
               disabled={!isEditable}
               className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
@@ -210,9 +227,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <label htmlFor="dataPagamento">Data de Pagamento:</label>
           <input
             id="dataPagamento"
-            type="date"
+            type="text"
             name="dataPagamento"
-            value={contract?.dataPagamento || ""}
+            value={formatDate(contract?.dataPagamento) || ""}
             onChange={onInputChange}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
@@ -313,34 +330,34 @@ export const ContractForm: React.FC<ContractFormProps> = ({
 
         {/* Documentos */}
         <div className="w-full">
-          <h3>Documentos</h3>
-          {contract?.documentos && contract.documentos.length > 0 ? (
-            contract.documentos.map((docUrl: string, index: number) => (
-              <div
-                key={index}
-                className="relative bg-gray-100 mt-3 p-2 flex flex-col items-center rounded-[.5rem]"
-              >
-                <h4 className="text-neutral-800 mb-4">Documento {index + 1}</h4>
+  <h3>Documentos</h3>
+  {documentos.length > 0 ? (
+    documentos.map((docUrl: string, index: number) => (
+      <div
+        key={index}
+        className="relative bg-gray-100 mt-3 p-2 flex flex-col items-center rounded-[.5rem]"
+      >
+        <h4 className="text-neutral-800 mb-4">Documento {index + 1}</h4>
+        <DocumentViewer fileUrl={docUrl} />
 
-                <DocumentViewer fileUrl={docUrl} />
+        {isEditable && (
+          <button
+            type="button"
+            onClick={() => handleRemoveDocument(index)}
+            className="absolute top-3 right-3 text-neutral-600 hover:text-neutral-800 duration-200 ease-in-out"
+            aria-label={`Remover documento ${index + 1}`}
+            title={`Remover documento ${index + 1}`}
+          >
+            <FaTrash size={24} />
+          </button>
+        )}
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-500 mt-3">Nenhum documento associado.</p>
+  )}
+</div>
 
-                {isEditable && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveDocument(index)}
-                    className="absolute top-3 right-3 text-neutral-600 hover:text-neutral-800 duration-200 ease-in-out"
-                    aria-label={`Remover documento ${index + 1}`}
-                    title={`Remover documento ${index + 1}`}
-                  >
-                    <FaTrash size={24} />
-                  </button>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 mt-3">Nenhum documento associado.</p>
-          )}
-        </div>
 
         {isEditable && <p className="cursor-pointer">Enviar documento</p>}
 

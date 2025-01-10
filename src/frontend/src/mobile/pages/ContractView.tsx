@@ -8,6 +8,8 @@ import Loading from "../../components/Loading";
 import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosConfig";
+import { useAtom } from "jotai";
+import { userRoleAtom } from "../../store/atoms";
 
 export interface Contract {
   contratoId: string;
@@ -36,17 +38,16 @@ export interface Payment {
   valor: number;
   data: string;
   pagante: string;
-  metodo_pagamento: string;
+  MetodoPagamento: string;
   descricao: string;
-  tipo_pagamento: string;
+  TipoPagamento: string;
   multa: boolean; // Alterado para boolean
   valor_multa: number;
 }
 
 export default function Contrato() {
   const navigate = useNavigate();
-  const { id } = useParams(); // Obtém o ID do contrato pela URL
-  const [role, setRole] = useState("admin"); // Simulação da role do usuário
+  const { id } = useParams(); // Obtém o ID do contrato pela URLe
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [loadingSpinner, setLoadingSpinner] = useState(false); // estado para controlar o componente de carregamento
   const [loadingPayments, setLoadingPayments] = useState(true); // estado para controlar o carregamento dos pagamentos
@@ -72,64 +73,38 @@ export default function Contrato() {
   const [isLoadingLessor, setIsLoadingLessor] = useState(false);
   const [isLoadingRenter, setIsLoadingRenter] = useState(false);
   const [isLoadingProperty, setIsLoadingProperty] = useState(false);
-  const [isLoadingPayers, setIsLoadingPayers] = useState(false);
-  const [payers, setPayers] = useState([]); // Lista de pagantes
+  const [isLoadingPayers] = useState(false);
+  const [payers] = useState([]); // Lista de pagantes
   const [lessors, setLessors] = useState([]); // Lista de lessors
   const [renters, setRenters] = useState([]); // Lista de locatários
   const [properties, setProperties] = useState([]);
   const [selectedLessorId, setSelectedLessorId] = useState<string | null>(null);
   const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
-
-  const fetchContract = async () => {
-    try {
-      const response = await axiosInstance.get(`property/Contratos/PegarContratoPorId/${id}`);
-
-      console.log("Contrato:", response.data);
-      setContract(response.data);
-      setOriginalContract(response.data);
-
-      // Define os valores iniciais dos selects
-      setSelectedPropertyId(response.data.imovelId);
-      setSelectedLessorId(response.data.locadorId);
-      setSelectedRenterId(response.data.locatarioId);
-
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      showErrorToast("Erro ao se conectar com o servidor.");
-    }
-  };
-
-  const fetchPayments = async () => {
-    try {
-      // Simulação de chamada de API
-      const response = await axiosInstance.get(`property/Contratos/Pagamentos/${id}`);
-
-      console.log("Pagamentos:", response.data);
-      setPayments(response.data);
-
-      setLoadingPayments(false);
-    } catch (error) {
-      console.error(error);
-      showErrorToast("Erro ao carregar pagamentos.");
-    }
-  };
+  const [canAddPayments, setCanAddPayments] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
+  // const userRole = localStorage.getItem("userRole");
+  const [userRole] = useAtom(userRoleAtom);
 
   const fetchSelectOptions = async () => {
     try {
       setIsLoadingLessor(true);
       setIsLoadingRenter(true);
       setIsLoadingProperty(true);
-      const lessorsResponse = await axiosInstance.get("auth/Lessor/PegarTodosLessors");
-      const rentersResponse = await axiosInstance.get("auth/Renter/PegarTodosRenters");
-      const propertiesResponse = await axiosInstance.get(
-        "property/Properties/PegarTodosProperties"
+      const lessorResponse = await axiosInstance.get(
+        "auth/Locador/PegarTodosLocadores"
       );
-      setLessors(lessorsResponse.data || []);
-      setRenters(rentersResponse.data || []);
-      setProperties(propertiesResponse.data || []);
-      console.log(lessorsResponse.data, rentersResponse.data, propertiesResponse.data);
+      const renterResponse = await axiosInstance.get(
+        "auth/Locatario/PegarTodosLocatarios"
+      );
+      const propertyResponse = await axiosInstance.get(
+        "property/Imoveis/PegarTodosImoveis"
+      );
+
+      setLessors(lessorResponse.data || []);
+      setRenters(renterResponse.data || []);
+      setProperties(propertyResponse.data || []);
+      // console.log(lessorResponse.data, renterResponse.data, propertyResponse.data);
     } catch (error) {
       showErrorToast("Erro ao carregar lessors, locatários e properties.");
     } finally {
@@ -139,97 +114,124 @@ export default function Contrato() {
     }
   };
 
-  // Carrega os pagantes para as options do formulário de adição de pagamentos
-  const fetchPayers = async () => {
+  const fetchContract = async () => {
     try {
-      setIsLoadingPayers(true);
-      const response = await axiosInstance.get("auth/Payers/PegarTodosPayers"); // Endpoint hipotético
-      setPayers(response.data || []);
-      console.log("Pagantes:", response.data);
+      const response = await axiosInstance.get(`property/Contratos/PegarContratoPorId/${id}`);
+      // console.log("Contrato:", response.data);
+
+      const contractData = response.data;
+
+      // Se 'documentos' for uma string, transformá-la em um array
+      let allDocuments = [];
+      if (typeof contractData.documentos === "string" && contractData.documentos.length > 0) {
+        allDocuments = contractData.documentos.split(",").map((documento: string) =>
+          decodeURIComponent(
+            documento.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
+          )
+        );
+      }
+
+      // console.log("Este é o valor de allDocuments: ", allDocuments)
+
+      if (allDocuments.length > 0) {
+        try {
+          const responseDocumentos = await axiosInstance.post(
+            "property/Contratos/AssinarPdfs",
+            allDocuments
+          );
+
+          if (!responseDocumentos.data) {
+            // console.log("Dados de resposta inválidos do endpoint de assinatura");
+            throw new Error("Erro ao assinar documentos.");
+          }
+
+          // Atualizar o contrato com os documentos assinados
+          contractData.documentos = responseDocumentos.data;
+        } catch (error) {
+          console.error("Erro ao assinar documentos:", error);
+          showErrorToast("Erro ao assinar documentos.");
+          return;
+        }
+      }
+
+      // Atualizar o estado com o contrato assinado
+      setContract(contractData);
+
+      // Define os valores iniciais dos selects
+      setSelectedPropertyId(contractData.imovelId);
+      setSelectedLessorId(contractData.locadorId);
+      setSelectedRenterId(contractData.locatarioId);
+
+      setLoading(false);
     } catch (error) {
-      showErrorToast("Erro ao carregar pagantes.");
-    } finally {
-      setIsLoadingPayers(false);
+      console.error("Erro ao carregar contrato:", error);
+      showErrorToast("Erro ao carregar contrato.");
+    }
+  };
+
+  const fetchPayments = async () => {
+    try {
+      // Simulação de chamada de API
+      const response = await axiosInstance.get(`payment/payment/ByImovel/${contract?.imovelId}`);
+//payment/payment/criar-pagamentos
+      console.log("Pagamentos:", response.data);
+      setPayments(response.data);
+
+      setLoadingPayments(false);
+    } catch (error) {
+      console.error(error);
+      // showErrorToast("Erro ao carregar pagamentos.");
     }
   };
 
   useEffect(() => {
-    // Mock de dados para teste de contrato
-    const mockContract: Contract = {
-      contratoId: "12345",
-      documentos: [
-        "https://www.thecampusqdl.com/uploads/files/pdf_sample_2.pdf",
-        "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf",
-        "urlInvalida",
-      ],
-      valorAluguel: 1500,
-      dataInicio: "2024-01-05",
-      dataEncerramento: "2024-12-31",
-      locadorId: "locador_001",
-      locatarioId: "locatario_001",
-      imovelId: "imovel_001",
-      tipoGarantia: "Fiador",
-      condicoesEspeciais: "Nenhuma",
-      status: "Ativo",
-      iptu: 300,
-      dataPagamento: "2024-01-05",
-      taxaAdm: 100,
-      renovado: false,
+    const fetchData = async () => {
+      setLoading(true);
+      setLoadingPayments(true);
+  
+      try {
+        // Primeiro, faça a requisição para os contratos e aguarde a resposta
+        await fetchContract();
+  
+        // Após a requisição de contrato, faça a requisição de pagamentos
+        await fetchPayments();
+        
+        // Se necessário, adicione outras requisições aqui
+        await fetchSelectOptions();
+  
+      } catch (error) {
+        console.error("Erro durante a requisição de dados:", error);
+      } finally {
+        setLoading(false);
+        setLoadingPayments(false);
+      }
     };
-
-    const mockPayments: Payment[] = [
-      {
-        pagamentoId: "pay_001",
-        contratoId: "12345",
-        valor: 1500,
-        data: "2024-01-05",
-        pagante: "João Silva",
-        metodo_pagamento: "Cartão de Crédito",
-        descricao: "Pagamento mensal",
-        tipo_pagamento: "Mensalidade",
-        multa: false,
-        valor_multa: 0,
-      },
-      {
-        pagamentoId: "pay_002",
-        contratoId: "12345",
-        valor: 1500,
-        data: "2024-02-05",
-        pagante: "João Silva",
-        metodo_pagamento: "Boleto",
-        descricao: "Pagamento mensal",
-        tipo_pagamento: "Mensalidade",
-        multa: true,
-        valor_multa: 50,
-      },
-    ];
-
-    // Quando esta página for devidamente integrada ao back:
-    // fetchContract();
-    // fetchPayments();
-    // fetchSelectOptions(); // busca imóveis, lessors e locatários para dispor nos campos de select
-    // fetchPayers(); // Chamada à API para carregar os pagantes
-
-    // Simulando a captura da role do usuário
-    setRole("admin");
-
-    setContract(mockContract);
-    setOriginalContract(mockContract);
-    setPayments(mockPayments);
-
-    // Define os valores iniciais dos selects
-    setSelectedPropertyId(mockContract.imovelId);
-    setSelectedLessorId(mockContract.locadorId);
-    setSelectedRenterId(mockContract.locatarioId);
-
-    setLoading(false);
-    setLoadingPayments(false);
-  }, []);
-
+  
+    // Verifique se userRole está definido para evitar chamadas desnecessárias
+    if (userRole) {
+      fetchData();
+      setIsEditable(userRole === "Admin");
+      setCanAddPayments(userRole === "Admin");
+    }
+  }, [userRole, contract?.imovelId]);  // Garanta que o contract ou imovelId mudem de forma controlada
+  
   // Condicional para verificar se o usuário pode editar os campos ou visualizar o formulário de pagamentos
   // É necessário ajustar isto para atender às regras de negócios.
-  const isEditable = role === "admin"; // Supondo que só adm pode editar um contrato
-  const canAddPayments = role === "admin" || role === "legal"; // Supondo que adm e o jurídico podem editar um contrato
+
+  const renderPaymentForm = () => {
+    const canAddPayments = userRole === "Admin";
+    if (canAddPayments) {
+      return <PaymentForm
+        newPayment={newPayment}
+        setNewPayment={setNewPayment}
+        handleAddPayment={handleAddPayment}
+        setShowPaymentForm={setShowPaymentForm}
+        payers={payers}
+        isLoadingPayers={isLoadingPayers}
+      />;
+    }
+    return null;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (contract) {
@@ -246,25 +248,25 @@ export default function Contrato() {
 
   const handleSave = (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     if (!contract) {
       showErrorToast("Contrato não encontrado.");
       return;
     }
-  
+
     setLoadingSpinner(true);
-  
+
     // Verifica se houve mudanças
     const hasChanges = Object.keys(originalContract || {}).some(
       (key) => originalContract![key as keyof Contract] !== contract[key as keyof Contract]
     );
-  
+
     if (!hasChanges) {
       showErrorToast("Nenhuma alteração foi feita.");
       setLoadingSpinner(false);
       return;
     }
-  
+
     // Verifica se todos os campos obrigatórios estão preenchidos e válidos
     if (
       !contract.valorAluguel ||
@@ -285,10 +287,10 @@ export default function Contrato() {
       setLoadingSpinner(false);
       return;
     }
-  
+
     // Ajusta os campos dependendo do status
     const updatedContract = { ...contract };
-  
+
     if (updatedContract.status === "Rescindido") {
       updatedContract.dataRescisao = updatedContract.dataRescisao || new Date().toISOString().split("T")[0];
       delete updatedContract.dataEncerramentoRenovacao;
@@ -300,16 +302,22 @@ export default function Contrato() {
       delete updatedContract.dataRescisao;
       delete updatedContract.dataEncerramentoRenovacao;
     }
-  
+
     // Aqui deve ficar a chamada ao serviço para salvar as alterações
     showSuccessToast("Contrato atualizado com sucesso!");
     setOriginalContract(updatedContract); // Seta os dados que foram devidamente atualizados como os originais
     console.log("Salvar contrato:", updatedContract);
     setLoadingSpinner(false);
   };
-  
+
 
   const handleAddPayment = async () => {
+
+    if (!newPayment.contratoId) {
+      // Atribuir o contratoId se não estiver preenchido
+      newPayment.contratoId = id; // ID do contrato da URL
+    }
+
     setLoadingSpinner(true);
 
     // Verifica se todos os campos obrigatórios estão preenchidos e válidos
@@ -320,11 +328,11 @@ export default function Contrato() {
       isNaN(new Date(newPayment.data).getTime()) || // Valida se é uma data válida
       !newPayment.pagante || // Pagante não pode ser vazio
       newPayment.pagante.trim() === "" ||
-      !newPayment.metodo_pagamento || // Método de pagamento não pode ser vazio
-      newPayment.metodo_pagamento.trim() === "" ||
-      !newPayment.tipo_pagamento || // Tipo de pagamento não pode ser vazio
-      newPayment.tipo_pagamento.trim() === "" ||
-      (newPayment.tipo_pagamento === "multa" && // Para tipo "multa", valor_multa deve ser maior que 0
+      !newPayment.MetodoPagamento || // Método de pagamento não pode ser vazio
+      newPayment.MetodoPagamento.trim() === "" ||
+      !newPayment.TipoPagamento || // Tipo de pagamento não pode ser vazio
+      newPayment.TipoPagamento.trim() === "" ||
+      (newPayment.TipoPagamento === "multa" && // Para tipo "multa", valor_multa deve ser maior que 0
         (!newPayment.valor_multa || newPayment.valor_multa <= 0));
 
     if (isInvalid) {
@@ -334,18 +342,13 @@ export default function Contrato() {
     }
 
     try {
-      // Simulação da chamada para adicionar o pagamento
-      console.log("Adicionar pagamento:", newPayment);
-
-      // Faça a chamada à API para adicionar o pagamento
-      await axiosInstance.post(`property/Contratos/AdicionarPagamento`, newPayment);
-
-      // Limpa o formulário de pagamento
-      setNewPayment({});
-
-      // Atualiza a lista de pagamentos
-      await fetchPayments();
-      showSuccessToast("Pagamento adicionado com sucesso!");
+      // Realiza a requisição para adicionar o pagamento
+      const response = await axiosInstance.post("payment/payment/criar-pagamentos", newPayment);
+      if (response.status === 200) {
+        showSuccessToast("Pagamento adicionado com sucesso!");
+        setNewPayment({ data: getTodayDate() }); // Reseta o estado do novo pagamento
+        fetchPayments(); // Atualiza a lista de pagamentos
+      }
     } catch (error) {
       console.error("Erro ao adicionar pagamento:", error);
       showErrorToast("Erro ao adicionar pagamento.");
@@ -431,14 +434,7 @@ export default function Contrato() {
 
               {/* Condicional para exibir o formulário de adição de pagamento */}
               {showPaymentForm && (
-                <PaymentForm
-                  newPayment={newPayment}
-                  setNewPayment={setNewPayment}
-                  handleAddPayment={handleAddPayment}
-                  setShowPaymentForm={setShowPaymentForm}
-                  payers={payers}
-                  isLoadingPayers={isLoadingPayers}
-                />
+                renderPaymentForm()
               )}
             </div>
           </div>
