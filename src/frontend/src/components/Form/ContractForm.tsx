@@ -62,7 +62,15 @@ export const ContractForm: React.FC<ContractFormProps> = ({
     ? (typeof contract.documentos === "string" ? [contract.documentos] : contract.documentos)
     : [];
 
-
+  const formatDate = (dateString:any) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
 
   return (
     <>
@@ -91,9 +99,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
         <div className="flex flex-col">
           <label>Data de Início:</label>
           <input
-            type="date"
+            type="text"
             name="dataInicio"
-            value={contract?.dataInicio || ""}
+            value={formatDate(contract?.dataInicio) || ""}
             disabled={true}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
           />
@@ -104,9 +112,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <label htmlFor="dataEncerramento">Data de Encerramento:</label>
           <input
             id="dataEncerramento"
-            type="date"
+            type="text"
             name="dataEncerramento"
-            value={contract?.dataEncerramento || ""}
+            value={formatDate(contract?.dataEncerramento) || ""}
             onChange={onInputChange}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
@@ -171,7 +179,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
               id="dataRescisao"
               type="date"
               name="dataRescisao"
-              value={contract?.dataRescisao || new Date().toISOString().split("T")[0]}
+              value={formatDate(contract?.dataRescisao) || new Date().toISOString().split("T")[0]}
               onChange={onInputChange}
               disabled={!isEditable}
               className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
@@ -187,7 +195,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
               id="dataEncerramentoRenovacao"
               type="date"
               name="dataEncerramentoRenovacao"
-              value={contract?.dataEncerramentoRenovacao || new Date().toISOString().split("T")[0]}
+              value={formatDate(contract?.dataEncerramentoRenovacao) || new Date().toISOString().split("T")[0]}
               onChange={onInputChange}
               disabled={!isEditable}
               className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
@@ -221,7 +229,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             id="dataPagamento"
             type="date"
             name="dataPagamento"
-            value={contract?.dataPagamento || ""}
+            value={formatDate(contract?.dataPagamento) || ""}
             onChange={onInputChange}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
