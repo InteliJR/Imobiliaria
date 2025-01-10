@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
 import Navbar from "../../../components/Navbar/Navbar";
 import Footer from "../../../components/Footer/FooterSmall";
@@ -17,22 +16,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,
 export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [paymentData, setPaymentData] = useState<any>(null); // Armazenar os dados dos pagamentos
-  const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
-  const [filteredData, setFilteredData] = useState<any[]>([]);
 
-  interface Pagamento {
-    paymentId: number;
-    contratoId: number;
-    valor: number;
-    data: string;
-    pagante: string;
-    metodoPagamento: string;
-    descricao: string;
-    tipoPagamento: string;
-    multa: boolean;
-    valorMulta: number;
-  }
   const [totalPagamentos, setTotalPagamentos] = useState(0);
   const [quantidadeMultas, setQuantidadeMultas] = useState(0);
   const [valorTotalAlugueis, setValorTotalAlugueis] = useState(0);

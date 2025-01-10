@@ -73,8 +73,8 @@ export default function Contrato() {
   const [isLoadingLessor, setIsLoadingLessor] = useState(false);
   const [isLoadingRenter, setIsLoadingRenter] = useState(false);
   const [isLoadingProperty, setIsLoadingProperty] = useState(false);
-  const [isLoadingPayers, setIsLoadingPayers] = useState(false);
-  const [payers, setPayers] = useState([]); // Lista de pagantes
+  const [isLoadingPayers] = useState(false);
+  const [payers] = useState([]); // Lista de pagantes
   const [lessors, setLessors] = useState([]); // Lista de lessors
   const [renters, setRenters] = useState([]); // Lista de locatários
   const [properties, setProperties] = useState([]);

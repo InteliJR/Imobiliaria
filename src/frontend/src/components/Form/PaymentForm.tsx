@@ -18,7 +18,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   setNewPayment,
   handleAddPayment,
   setShowPaymentForm,
-  payers,
   isLoadingPayers,
 }) => {
   const handlePaymentChange = (field: keyof Payment, value: any) => {

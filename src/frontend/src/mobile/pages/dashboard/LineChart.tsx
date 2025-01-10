@@ -71,7 +71,7 @@ export default function LineChart() {
     ],
   };
 
-  const chartOptions = {
+  const chartOptions:any = {
     responsive: true,
     plugins: {
       title: {
