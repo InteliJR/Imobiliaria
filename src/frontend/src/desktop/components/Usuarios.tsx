@@ -10,6 +10,7 @@ import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
 import { IUser } from "../../components/Filter/UserInterfaces";
 
+
 export default function UsuariosComponent() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
