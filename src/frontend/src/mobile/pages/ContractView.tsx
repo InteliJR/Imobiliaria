@@ -48,7 +48,6 @@ export interface Payment {
 export default function Contrato() {
   const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URLe
-  const [role, setRole] = useState(); // Simulação da role do usuário
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [loadingSpinner, setLoadingSpinner] = useState(false); // estado para controlar o componente de carregamento
   const [loadingPayments, setLoadingPayments] = useState(true); // estado para controlar o carregamento dos pagamentos
@@ -105,7 +104,7 @@ export default function Contrato() {
       setLessors(lessorResponse.data || []);
       setRenters(renterResponse.data || []);
       setProperties(propertyResponse.data || []);
-      console.log(lessorResponse.data, renterResponse.data, propertyResponse.data);
+      // console.log(lessorResponse.data, renterResponse.data, propertyResponse.data);
     } catch (error) {
       showErrorToast("Erro ao carregar lessors, locatários e properties.");
     } finally {
@@ -118,7 +117,7 @@ export default function Contrato() {
   const fetchContract = async () => {
     try {
       const response = await axiosInstance.get(`property/Contratos/PegarContratoPorId/${id}`);
-      console.log("Contrato:", response.data);
+      // console.log("Contrato:", response.data);
 
       const contractData = response.data;
 
@@ -132,7 +131,7 @@ export default function Contrato() {
         );
       }
 
-      console.log("Este é o valor de allDocuments: ", allDocuments)
+      // console.log("Este é o valor de allDocuments: ", allDocuments)
 
       if (allDocuments.length > 0) {
         try {
@@ -141,10 +140,8 @@ export default function Contrato() {
             allDocuments
           );
 
-          console.log("!!!!!!!!!!!!!!!!!!!!!!!11 Valor de responseDocumentos: ", responseDocumentos);
-
           if (!responseDocumentos.data) {
-            console.log("Dados de resposta inválidos do endpoint de assinatura");
+            // console.log("Dados de resposta inválidos do endpoint de assinatura");
             throw new Error("Erro ao assinar documentos.");
           }
 
@@ -175,8 +172,8 @@ export default function Contrato() {
   const fetchPayments = async () => {
     try {
       // Simulação de chamada de API
-      const response = await axiosInstance.get(`property/Contratos/Pagamentos/${id}`);
-
+      const response = await axiosInstance.get(`payment/payment/ByImovel/${selectedPropertyId}`);
+//payment/payment/criar-pagamentos
       console.log("Pagamentos:", response.data);
       setPayments(response.data);
 
@@ -222,7 +219,7 @@ export default function Contrato() {
   // É necessário ajustar isto para atender às regras de negócios.
 
   const renderPaymentForm = () => {
-    const canAddPayments = userRole === "Admin" || userRole === "legal";
+    const canAddPayments = userRole === "Admin";
     if (canAddPayments) {
       return <PaymentForm
         newPayment={newPayment}
