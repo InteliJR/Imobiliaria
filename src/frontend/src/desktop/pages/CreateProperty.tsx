@@ -1,11 +1,10 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import FormField from "../components/Form/FormField";
-import Navbar from "../../mobile/components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
+import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig.ts";
-import { getServiceUrl } from "../../services/apiService.ts";
-import debounce from "lodash.debounce";
 
 export default function CreateProperty() {
   const [propertyType, setPropertyType] = useState("Kitnet");
@@ -16,123 +15,96 @@ export default function CreateProperty() {
   const [rent, setRent] = useState("");
   const [condoFee, setCondoFee] = useState("");
   const [description, setDescription] = useState("");
-  const [locadorQuery, setLocadorQuery] = useState(""); // Para busca de locador
-  const [locadorResults, setLocadorResults] = useState([]); // Resultados da consulta de locador
-  const [locadorId, setLocadorId] = useState(null); // Armazena o ID do locador selecionado
-  const [locatarioQuery, setLocatarioQuery] = useState(""); // Para busca de locatário
-  const [locatarioResults, setLocatarioResults] = useState([]); // Resultados da consulta de locatário
-  const [locatarioId, setLocatarioId] = useState(null); // Armazena o ID do locatário selecionado
-  const [isLoading, setIsLoading] = useState(false); // Estado de carregamento
+  const [locadores, setLocadores] = useState([]); // Lista de locadores
+  const [locatarios, setLocatarios] = useState([]); // Lista de locatários
+  const [selectedLocadorId, setSelectedLocadorId] = useState<string | null>(null);
+  const [selectedLocatarioId, setSelectedLocatarioId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [photos, setPhotos] = useState<File[]>([]); // Estado para armazenar as fotos
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const locadoresResponse = await axiosInstance.get("auth/Locador/PegarTodosLocadores");
+        const locatariosResponse = await axiosInstance.get("auth/Locatario/PegarTodosLocatarios");
+        setLocadores(locadoresResponse.data || []);
+        setLocatarios(locatariosResponse.data || []);
+      } catch (error) {
+        showErrorToast("Erro ao carregar locadores e locatários.");
+      }
+    };
+    fetchData();
+  }, []);
+  
+    // Função para lidar com o upload das fotos
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const filesArray = Array.from(e.target.files); // Converter para array
+        console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
+        setPhotos(filesArray); // Atualize o estado
+      }
+    };
+  
+  // Função de envio do formulário
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+    setLoading(true);
+  
     try {
-      console.log({
-        propertyType,
-        cep,
-        address,
-        complement,
-        neighborhood,
-        rent,
-        condoFee,
-        description,
-        locadorId,
-        locatarioId,
-      });
+      const formData = new FormData();
+      formData.append("TipoImovel", propertyType);
+      formData.append("Cep", cep);
+      formData.append("Condominio", condoFee);
+      formData.append("ValorImovel", rent);
+      formData.append("Bairro", neighborhood);
+      formData.append("Descricao", description);
+      formData.append("Endereco", address);
+      formData.append("Complemento", complement);
+      formData.append("LocadorId", selectedLocadorId || "");
+      formData.append("LocatarioId", selectedLocatarioId || "");
+  
+      // Adicionar as fotos
+      photos.forEach((photo) => formData.append("files", photo));
 
-      const response = await axiosInstance.post(
-        getServiceUrl("propertyService", "/Imoveis/CriarUmNovoImovel"),
+      // Log detalhado
+      console.log("Verificar FormData:");
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
+  
+      const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData,
         {
-          TipoImovel: propertyType,
-          Cep: cep,
-          Condominio: condoFee,
-          ValorImovel: rent,
-          Bairro: neighborhood,
-          Descricao: description,
-          Endereco: address,
-          Complemento: complement,
-          LocadorId: locadorId || null,
-          LocatarioId: locatarioId || null,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
+      setPropertyType("Kitnet");
+      setCep("");
+      setAddress("");
+      setComplement("");
+      setNeighborhood("");
+      setRent("");
+      setCondoFee("");
+      setDescription("");
+      setSelectedLocadorId(null);
+      setSelectedLocatarioId(null);
+      setPhotos([]); // Limpar fotos após o envio
     } catch (error: any) {
       console.error(error);
-      showErrorToast(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
-      );
+      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+    } finally {
+      setLoading(false);
     }
-  };
-
-  // Função de busca de locadores
-  const fetchLocadorResults = useCallback(
-    debounce(async (searchTerm: string) => {
-      if (!searchTerm) {
-        setLocadorResults([]);
-        return;
-      }
-      setIsLoading(true);
-      try {
-        console.log("termo buscado:", searchTerm)
-        // Adicione a requisição ao backend aqui
-        // const response = await axiosInstance.get(
-          //   getServiceUrl("userService", "/Locadores/Buscar"),
-          //   { params: { query: searchTerm } }
-          // );
-          // setLocadorResults(response.data || []);
-        } catch (error) {
-          console.error("Erro ao buscar locadores:", error);
-          showErrorToast("Erro ao buscar resultados.");
-        } finally {
-          setIsLoading(false);
-        }
-      }, 300),
-      []
-    );
-    
-    // Função de busca de locatários
-    const fetchLocatarioResults = useCallback(
-      debounce(async (searchTerm: string) => {
-        if (!searchTerm) {
-          setLocatarioResults([]);
-          return;
-        }
-        setIsLoading(true);
-        try {
-        console.log("termo buscado:", searchTerm)
-        // Adicione a requisição ao backend aqui
-        // const response = await axiosInstance.get(
-        //   getServiceUrl("userService", "/Locatarios/Buscar"),
-        //   { params: { query: searchTerm } }
-        // );
-        // setLocatarioResults(response.data || []);
-      } catch (error) {
-        console.error("Erro ao buscar locatários:", error);
-        showErrorToast("Erro ao buscar resultados.");
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300),
-    []
-  );
-
-  useEffect(() => {
-    fetchLocadorResults(locadorQuery);
-  }, [locadorQuery, fetchLocadorResults]);
-
-  useEffect(() => {
-    fetchLocatarioResults(locatarioQuery);
-  }, [locatarioQuery, fetchLocatarioResults]);
+  };  
+  
 
   return (
     <div>
       <Navbar />
       <div className="mx-10 mt-10">
-        <h1 className="text-3xl font-bold text-yellow-darker mb-6">
-          Adicionar Imóvel
-        </h1>
+        <h1 className="text-3xl font-bold text-yellow-darker mb-6">Adicionar Imóvel</h1>
         <div className="min-h-screen flex flex-col items-center justify-center">
           <div className="w-full max-w-xl py-6 bg-white rounded-lg">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -141,7 +113,7 @@ export default function CreateProperty() {
                 <select
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value)}
-                  className="h-10 w-full flex-grow bg-transparent border border-neutral-200 focus:outline-none px-2 text-form-label placeholder:text-form-label placeholder:text-black/60 rounded"
+                  className="h-10 w-full bg-transparent border border-neutral-200 px-2 rounded"
                 >
                   <option>Kitnet</option>
                   <option>Apartamento</option>
@@ -150,120 +122,62 @@ export default function CreateProperty() {
                 </select>
               </div>
 
+              {/* Outros campos */}
+              <FormField label="CEP" placeholder="Digite o CEP" value={cep} onChange={(e) => setCep(e.target.value)} />
+              <FormField label="Endereço" placeholder="Digite o endereço" value={address} onChange={(e) => setAddress(e.target.value)} />
+              <FormField label="Complemento" placeholder="Digite o complemento" value={complement} onChange={(e) => setComplement(e.target.value)} />
+              <FormField label="Bairro" placeholder="Bairro do imóvel" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} />
+              <FormField label="Aluguel (R$)" value={rent} onChange={(e) => setRent(e.target.value)} />
+              <FormField label="Condomínio (R$)" value={condoFee} onChange={(e) => setCondoFee(e.target.value)} />
+
+              {/* Dropdown de Locador */}
               <div>
-                <FormField
-                  label="CEP"
-                  placeholder="Digite o CEP"
-                  value={cep}
-                  onChange={(e) => setCep(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <FormField
-                  label="Endereço"
-                  placeholder="Digite o endereço"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <FormField
-                  label="Complemento"
-                  placeholder="Digite o complemento"
-                  value={complement}
-                  onChange={(e) => setComplement(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <FormField
-                  label="Bairro"
-                  placeholder="Bairro do imóvel"
-                  value={neighborhood}
-                  onChange={(e) => setNeighborhood(e.target.value)}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <FormField
-                    label="Aluguel (R$)"
-                    placeholder=""
-                    value={rent}
-                    onChange={(e) => setRent(e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <FormField
-                    label="Condomínio (R$)"
-                    placeholder=""
-                    value={condoFee}
-                    onChange={(e) => setCondoFee(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Locador */}
-              <FormField
-                label="Locador"
-                placeholder="Digite para buscar"
-                value={locadorQuery}
-                onChange={(e) => setLocadorQuery(e.target.value)}
-              />
-              {isLoading && (
-                <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
-              )}
-              {locadorResults.length > 0 && (
-                <ul className="border border-neutral-200 rounded mt-2">
-                  {locadorResults.map((locador: any) => (
-                    <li
-                      key={locador.id}
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        setLocadorQuery(locador.nome); // Atualiza o campo de texto com o nome do locador
-                        setLocadorId(locador.id); // Define o ID do locador selecionado
-                      }}
-                    >
-                      {locador.nome}
-                    </li>
+                <label className="block text-neutral-600">Locador</label>
+                <select
+                  value={selectedLocadorId || ""}
+                  onChange={(e) => setSelectedLocadorId(e.target.value)}
+                  className="h-10 w-full bg-transparent border border-neutral-200 px-2 rounded"
+                >
+                  <option value="">Selecione um locador</option>
+                  {locadores.map((locador: any) => (
+                    <option key={locador.locadorId} value={locador.locadorId}>
+                      {locador.nomeCompletoLocador}
+                    </option>
                   ))}
-                </ul>
-              )}
+                </select>
+              </div>
 
-              {/* Locatário */}
-              <FormField
-                label="Locatário"
-                placeholder="Digite para buscar"
-                value={locatarioQuery}
-                onChange={(e) => setLocatarioQuery(e.target.value)}
-              />
-              {isLoading && (
-                <p className="text-sm text-neutral-500 mt-1">Carregando...</p>
-              )}
-              {locatarioResults.length > 0 && (
-                <ul className="border border-neutral-200 rounded mt-2">
-                  {locatarioResults.map((locatario: any) => (
-                    <li
-                      key={locatario.id}
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        setLocatarioQuery(locatario.nome); // Atualiza o campo de texto com o nome do locatário
-                        setLocatarioId(locatario.id); // Define o ID do locatário selecionado
-                      }}
-                    >
-                      {locatario.nome}
-                    </li>
+              {/* Dropdown de Locatário */}
+              <div>
+                <label className="block text-neutral-600">Locatário</label>
+                <select
+                  value={selectedLocatarioId || ""}
+                  onChange={(e) => setSelectedLocatarioId(e.target.value)}
+                  className="h-10 w-full bg-transparent border border-neutral-200 px-2 rounded"
+                >
+                  <option value="">Selecione um locatário</option>
+                  {locatarios.map((locatario: any) => (
+                    <option key={locatario.locatarioId} value={locatario.locatarioId}>
+                      {locatario.nomeCompletoLocatario}
+                    </option>
                   ))}
-                </ul>
-              )}
+                </select>
+              </div>
+              
+              {/* Campo para envio de fotos */}
+              <div>
+                <label className="block text-neutral-600">Fotos do Imóvel</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  multiple
+                  className="h-10 w-full bg-transparent border border-neutral-200 px-2 rounded"
+                />
+              </div>
 
               <div>
-                <label className="block text-neutral-600 font-medium">
-                  Descrição
-                </label>
+                <label className="block text-neutral-600 font-medium">Descrição</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -271,18 +185,19 @@ export default function CreateProperty() {
                   rows={3}
                 ></textarea>
               </div>
-              <div className="w-full max-w-xl py-6 bg-white rounded-lg space-y-6">
-                <button
-                  type="submit"
-                  className="w-full py-2 px-4 bg-yellow-darker text-white rounded-md hover:bg-yellow-dark transition duration-300 focus:outline-none focus:bg-yellow-dark mt-4"
-                >
-                  Confirmar
-                </button>
-              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-yellow-darker text-white rounded-md hover:bg-yellow-dark transition duration-300 focus:outline-none focus:bg-yellow-dark mt-4"
+                disabled={loading}
+              >
+                {loading ? "Enviando..." : "Adicionar Imóvel"}
+              </button>
             </form>
           </div>
         </div>
       </div>
+      {loading && <Loading type="spinner" />}
       <Footer />
     </div>
   );

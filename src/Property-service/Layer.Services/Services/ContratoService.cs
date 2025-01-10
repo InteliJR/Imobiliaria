@@ -52,6 +52,12 @@ namespace Layer.Services.Services
             return contrato;
         }
 
+        public async Task<List<string>> GenerateSignedUrlsOfPdfsAsync(List<string> objectNames)
+        {
+            return await _storageService.GenerateSignedUrlsAsync(objectNames, 5);
+        }
+
+
         public async Task<Contratos> AddAsyncWithMultipleFiles(Contratos contrato, IFormFileCollection files)
         {
             var documentos = new List<string>();
@@ -69,6 +75,8 @@ namespace Layer.Services.Services
                         }
 
                         var objectName = $"uploads/{file.FileName}";
+                        // Printar o nome do arquivo temporário
+                        Console.WriteLine($"Nome do arquivo temporário: {tempFilePath}");
                         var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
 
                         documentos.Add(publicUrl);

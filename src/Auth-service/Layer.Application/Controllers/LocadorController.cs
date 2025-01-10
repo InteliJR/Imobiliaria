@@ -29,7 +29,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarTodosLocadores")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetAllLocadors()
         {
             var locadors = await _locadorService.GetAllLocadorsAsync();
@@ -100,9 +100,9 @@ namespace Layer.Application.Controllers
             return Ok(locador);
         }
 
-        [HttpGet("PegarLocadorPorUserId")]
+        [HttpGet("PegarLocadorPorUserId/{userId}")]
         [Authorize(Policy = "AdminORLocador")]
-        public async Task<IActionResult> GetLocadorByUserId([FromQuery] int userId)
+        public async Task<IActionResult> GetLocadorByUserId(int userId)
         {
             try
             {

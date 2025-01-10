@@ -1,35 +1,81 @@
 import React from 'react';
 
 interface CardProps {
-  title: string;
-  line1: string;
-  line2: string;
-  line3: string;
-  imageUrl: string;
+  id: number;
+  address: string;
+  neighborhood: string;
+  postalCode: string;
+  propertyType: string;
+  landlord: string;
+  tenant: string | null;
+  imageSrc: string;
+  price: string;
+  condominio: string;
+  onClick?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ title, line1, line2, line3, imageUrl }) => {
+const Card: React.FC<CardProps> = ({
+  id,
+  address,
+  neighborhood,
+  postalCode,
+  propertyType,
+  landlord,
+  tenant,
+  imageSrc,
+  price,
+  condominio,
+  onClick,
+}) => {
   return (
-    <div className="flex flex-row-reverse shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden h-[120px]">
-      {/* Imagem do Card */}
-      <div className="w-1/4">
-        <img src={imageUrl} alt={title} className="h-full w-full object-cover rounded-r" />
-      </div>
-      
-      {/* Conteúdo do Card */}
-      <div className="w-3/4 p-4 text-[#363430]">
-        <h3 className="text-form-label mb-2 text-[#363430]">{title}</h3>
-        <p className="text-normal-text mb-1">
-          <span className="text-[#76726A]">Locatário:</span> {line1}
-        </p>
-        <p className="text-normal-text mb-1">
-          <span className="text-[#76726A]">Imóvel:</span> {line2}
-        </p>
-        <p className="text-normal-text">
-          <span className="text-[#76726A]">Início:</span> {line3}
-        </p>
+    <div>
+      {/* Make the container clickable by adding onClick and cursor-pointer */}
+      <div
+        className="flex flex-col sm:flex-row sm:space-x-4 shadow-md rounded-md overflow-hidden cursor-pointer"
+        onClick={onClick}
+        role="button"
+        tabIndex={0} // optional for accessibility
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && onClick) onClick();
+        }}
+      >
+        {/* Imagem do Card */}
+        <div className="w-full sm:w-1/4">
+          <img
+            src={imageSrc}
+            alt={`Imagem do imóvel ${id}`}
+            className="h-[200px] sm:h-full w-full object-cover"
+          />
+        </div>
+
+        {/* Conteúdo do Card */}
+        <div className="w-full sm:w-3/4 p-4 text-[#363430]">
+          <h3 className="text-lg sm:text-xl font-semibold mb-2">{address}</h3>
+          <p className="text-sm sm:text-base text-[#76726A]">
+            <span className="font-semibold">Locador:</span> {landlord}
+          </p>
+          <p className="text-sm sm:text-base text-[#76726A]">
+            <span className="font-semibold">Locatário:</span> {tenant || 'Não disponível'}
+          </p>
+          <p className="text-sm sm:text-base text-[#76726A]">
+            <span className="font-semibold">Bairro:</span> {neighborhood}
+          </p>
+          <p className="text-sm sm:text-base text-[#76726A]">
+            <span className="font-semibold">CEP:</span> {postalCode}
+          </p>
+          <p className="text-sm sm:text-base text-[#76726A]">
+            <span className="font-semibold">Tipo de imóvel:</span> {propertyType}
+          </p>
+          <p className="text-sm sm:text-base text-[#76726A]">
+            <span className="font-semibold">Preço:</span> {price}
+          </p>
+          <p className="text-sm sm:text-base text-[#76726A]">
+            <span className="font-semibold">Condomínio:</span> {condominio}
+          </p>
+        </div>
       </div>
     </div>
+    
   );
 };
 

@@ -89,7 +89,7 @@ namespace property_management.Controllers
 
             await _emailSender.SendEmailAsync(emailLocatario, locatarioUserType, contractDetails);
 
-            await _applicationLog.LogAsync($"Criação de contrato com id: {novoContrato.ContratoId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            // await _applicationLog.LogAsync($"Criação de contrato com id: {novoContrato.ContratoId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(novoContrato);
         }
@@ -141,6 +141,15 @@ namespace property_management.Controllers
         {
             throw new NotImplementedException();
         }
+
+        [HttpPost("AssinarPdfs")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> GenerateSignedUrlOfPdfs(List<string> idImages)
+        {
+            var urls = await _contratoService.GenerateSignedUrlsOfPdfsAsync(idImages);
+            return Ok(urls);
+        }
+
 
     }
 }

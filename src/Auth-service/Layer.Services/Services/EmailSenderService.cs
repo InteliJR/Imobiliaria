@@ -35,10 +35,10 @@ namespace Layer.Services.Services
                     mailMessage.Subject = "Novo usuário plataforma KK";
                     mailMessage.IsBodyHtml = true;
                     StringBuilder mailBody = new StringBuilder();
-                    mailBody.AppendFormat("<h1>Você foi registrado na plataforma que mais paga atualmente</h1>");
+                    mailBody.AppendFormat("<h1>Você foi registrado na plataforma da Imobiliária KK!</h1>");
                     mailBody.AppendFormat("<p>Sua senha temporária é: {0}</p>", mensage);
                     mailBody.AppendFormat("<br />");
-                    mailBody.AppendFormat("<p>Vá na plataforma www.kk.com.br</p>");
+                    mailBody.AppendFormat("<p>Vá na plataforma https://frontend-ajbn.onrender.com/</p>");
                     mailMessage.Body = mailBody.ToString();
 
                     // Send email
@@ -68,7 +68,7 @@ namespace Layer.Services.Services
                     mailBody.AppendFormat("<h1>Sua senha foi redenifida por um administrador.</h1>");
                     mailBody.AppendFormat("<p>Sua nova senha é: {0}</p>", mensage);
                     mailBody.AppendFormat("<br />");
-                    mailBody.AppendFormat("<p>Vá na plataforma www.kk.com.br</p>");
+                    mailBody.AppendFormat("<p>Vá na plataforma https://frontend-ajbn.onrender.com/</p>");
                     mailMessage.Body = mailBody.ToString();
 
                     // Send email
