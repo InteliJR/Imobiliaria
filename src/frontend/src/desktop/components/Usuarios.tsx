@@ -99,6 +99,9 @@ export default function UsuariosComponent() {
           const isLocatario = Number(imovel.locatarioId) === Number(user.roleId);
           return isLocador || isLocatario;
         });
+
+        console.log(`Usuário: ${user.nome}, Imóveis encontrados:`, imoveis);
+        // console.log("Este é o valor de user.usuarioId ",user.usuarioId);
         return {
           ...user,
           nImoveis: imoveis.length,

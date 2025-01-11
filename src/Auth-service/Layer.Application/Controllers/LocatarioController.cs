@@ -37,7 +37,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("PegarTodosLocatarios")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = "AdminORJudiciario")]
         public async Task<IActionResult> GetAllLocatarios()
         {
             var locatarios = await _locatarioService.GetAllLocatariosAsync();

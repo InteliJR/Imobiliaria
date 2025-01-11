@@ -27,13 +27,14 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
     setPageNumber(1); // Resetar para a primeira página ao carregar um novo documento
   };
 
-  const goToPreviousPage = () => {
+  const goToPreviousPage = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Evita o reload
     if (pageNumber > 1) {
       setPageNumber(pageNumber - 1);
     }
   };
-
-  const goToNextPage = () => {
+  const goToNextPage = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Evita o reload
     if (numPages && pageNumber < numPages) {
       setPageNumber(pageNumber + 1);
     }
@@ -95,6 +96,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
         >
           <div className="flex items-center gap-1.5">
             <button
+              type="button"
               onClick={goToPreviousPage}
               disabled={pageNumber <= 1}
               className="px-2 py-1 bg-neutral-800 text-white rounded disabled:bg-neutral-300 hover:bg-neutral-700"
@@ -105,6 +107,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl }) => {
               {pageNumber} de {numPages || "?"}
             </span>
             <button
+              type="button"
               onClick={goToNextPage}
               disabled={numPages ? pageNumber >= numPages : true}
               className="px-2 py-1 bg-neutral-800 text-white rounded disabled:bg-neutral-300 hover:bg-neutral-700"

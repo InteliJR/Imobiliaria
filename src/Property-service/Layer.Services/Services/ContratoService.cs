@@ -21,6 +21,11 @@ namespace Layer.Services.Services
         {
             _dbcontext = dbcontext;
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json");
+
+            if (!File.Exists(filePath))
+            {
+                filePath = "/etc/secrets/administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json";
+            }
             //var credentialsPath = @"C:\Users\Inteli\Desktop\Imobiliaria\src\Property-service\Layer.Application\imobiliaria-kk-firebase-adminsdk-f1416-d5111edc74.json";
             var bucketName = "administradora-kk.appspot.com"; // Substitua pelo nome correto do seu bucket
             _storageService = new GoogleCloudStorageService(filePath, bucketName);
@@ -46,6 +51,12 @@ namespace Layer.Services.Services
             await _dbcontext.SaveChangesAsync();
             return contrato;
         }
+
+        public async Task<List<string>> GenerateSignedUrlsOfPdfsAsync(List<string> objectNames)
+        {
+            return await _storageService.GenerateSignedUrlsAsync(objectNames, 5);
+        }
+
 
         public async Task<Contratos> AddAsyncWithMultipleFiles(Contratos contrato, IFormFileCollection files)
         {

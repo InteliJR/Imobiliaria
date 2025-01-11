@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 interface CardProps {
   id: number;
@@ -11,19 +11,19 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({
-  id,
+  // id,
   title,
   line1,
   line2,
   line3,
   status,
 }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Função para redirecionar ao chamado
-  const handleClick = () => {
-    navigate(`/chamado/${id}`);
-  };
+  // const handleClick = () => {
+  //   navigate(`/chamados`);
+  // };
 
   return (
     <div
@@ -31,7 +31,7 @@ const Card: React.FC<CardProps> = ({
                  rounded-[4px] overflow-hidden h-[120px] cursor-pointer
                  transition-transform hover:shadow-[2px_2px_4px_rgba(0,0,0,0.8)] 
                  hover:scale-[1.01] transition-all duration-300 ease-in-out"
-      onClick={handleClick} // Evento de clique para redirecionar
+      // onClick={handleClick} // Evento de clique para redirecionar
     >
       {/* Conteúdo do Card */}
       <div className="w-3/4 p-4 text-[#363430]">

@@ -16,5 +16,6 @@ namespace Layer.Domain.Interfaces
         Task<Contratos> AddAsyncWithMultipleFiles(Contratos contrato, IFormFileCollection files);
         Task<int> UpdateAsync(int id, Contratos contrato);
         Task<int> DeleteAsync(int id);
+        Task<List<string>> GenerateSignedUrlsOfPdfsAsync(List<string> objectNames);
     }
 }
