@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { IUser } from "./UserInterfaces";
+import { useState } from "react";
 import { IFilterField } from "./InputsInterfaces";
 
 // Função genérica de filtragem

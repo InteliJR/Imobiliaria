@@ -10,7 +10,6 @@ import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
-import { ITicket } from "../../components/Filter/TicketInterface.ts";
 
 
 export default function Tickets() {
@@ -23,7 +22,6 @@ export default function Tickets() {
     open: boolean;
   }
 
-  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [data, setData] = useState<any[]>([]);
@@ -35,7 +33,7 @@ export default function Tickets() {
   // Controle do modal
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const TicketFilterFields: IFilterField<ITicket>[] = [
+  const TicketFilterFields: IFilterField<Ticket>[] = [
     {
       name: "title",
       label: "Título",
@@ -127,7 +125,6 @@ export default function Tickets() {
         }
       );
 
-      setTickets(mergedData);
       setFilteredData(mergedData);
       setData(mergedData);
       setAdvancedFiltered(mergedData);

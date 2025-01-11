@@ -1,4 +1,3 @@
-import { IUser } from "./UserInterfaces";
 
 // Tipos de input
 export type FieldType =

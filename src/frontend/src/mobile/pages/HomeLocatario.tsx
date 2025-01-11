@@ -29,7 +29,6 @@ export default function LocatarioPage() {
     onClick: () => void;
   }
 
-  const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState<Property[]>([]);
   const [data, setData] = useState<any[]>([]);
@@ -127,7 +126,6 @@ export default function LocatarioPage() {
         });
         
 
-        setProperties(imoveisData);
         setFilteredData(imoveisData);
         setAdvancedFiltered(imoveisData);
         setData(imoveisData);
