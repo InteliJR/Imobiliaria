@@ -229,8 +229,8 @@ export default function LocatarioPage() {
                     landlord="Proprietário Desconhecido"
                     tenant="Você"
                     imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/ImovelSemFoto.png"}
-                    price={`R$${property.valorImovel.toFixed(2)}`}
-                    condominio={property.condominio?.toString() ?? "0"}
+                    price={`R$ ${property.valorImovel.toFixed(2)}`}
+                    condominio={`R$ ${property.condominio?.toString() ?? "R$ 0"}`}
                     onClick={() => navigate(`/imovel/${property.imovelId}`)}
                   />
                 ))}
