@@ -8,11 +8,77 @@ import { showErrorToast } from "../../utils/toastMessage";
 import { useState, useEffect } from "react";
 import Loading from "../../components/Loading";
 import axiosInstance from "../../services/axiosConfig";
+import { IUser } from "../../components/Filter/UserInterfaces";
+import { IFilterField } from "../../components/Filter/InputsInterfaces";
+import { GenericFilterModal } from "../../components/Filter/Filter";  
 
 export default function Users() {
   const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
+
+  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+
+
+  // Busca textual
+  const [search, setSearch] = useState("");
+
+  // Controle do modal
+  const [isModalOpen, setModalOpen] = useState(false);
+
+
+  // Campos do filtro avançado (property-based)
+  const userFilterFields: IFilterField<IUser>[] = [
+    {
+      name: "perfil",
+      label: "Perfil",
+      type: "select",
+      options: ["Admin", "Locatario", "Locador"],
+      property: "role",
+    },
+    { name: "cnpj", label: "CNPJ", type: "text", property: "cnpj" },
+    { name: "cpf", label: "CPF", type: "text", property: "cpf" },
+    { name: "email", label: "Email", type: "text", property: "email" },
+    { name: "rg", label: "RG", type: "text", property: "rg" },
+    { name: "telefone", label: "Telefone", type: "text", property: "telefone" },
+    {
+      name: "dataCriacao",
+      label: "Data de Criação",
+      type: "dateRange",
+      property: "dataCriacao",
+    },
+    {
+      name: "numeroImoveis",
+      label: "Número de Imóveis",
+      type: "number",
+      property: "nImoveis",
+      placeholder: "Digite o número de imóveis",
+    },
+    {
+      name: "numeroImoveisRange",
+      label: "Número de Imóveis",
+      type: "numberRange",
+      property: "nImoveis",
+      placeholder: "Digite a faixa de numeros de imoveis",
+    },
+    {
+      name: "filtroImovel",
+      label: "Filtrar por CEP",
+      type: "text",
+      property: "imoveis",
+      placeholder: "Digite o CEP do imóvel",
+      customFilter: (user: IUser, filterValue: string) => {
+        // Logica personalizada para filtrar os usaurios que possuem imoveis com um certo cep
+        const lower = String(filterValue).toLowerCase();
+        const cepOk = user.imoveis?.some((imovel) =>
+          imovel.cep?.toLowerCase().includes(lower)
+        );
+        return cepOk;
+      },
+    }
+  ];
+
+
 
   const getAllInfo = async () => {
     try {
@@ -51,6 +117,7 @@ export default function Users() {
 
       setData(combinedData);
       setFilteredData(combinedData); // Inicialmente exibir todos os usuários
+      setAdvancedFiltered(combinedData); // Inicialmente exibir todos os usuários
       console.log("Dados combinados:", combinedData);
     } catch (error: any) {
       showErrorToast(
@@ -69,6 +136,31 @@ export default function Users() {
     getAllInfo();
   }, []);
 
+  useEffect(() => {
+    // Se search estiver vazio, "filteredData" = "advancedFiltered"
+    if (!search.trim()) {
+      setFilteredData(advancedFiltered);
+      return;
+    }
+    const lower = search.toLowerCase();
+    const finalResult = advancedFiltered.filter((user: any) =>
+      user.nome?.toLowerCase().includes(lower)
+    );
+    setFilteredData(finalResult);
+  }, [search, advancedFiltered]);
+
+  // Abrir modal
+  const openFilterModal = () => {
+    setModalOpen(true);
+  };
+
+  // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
+  const handleFilteredResult = (resultado: any[]) => {
+    // Esse "resultado" já está filtrado pelos campos avançados
+    setAdvancedFiltered(resultado);
+  };
+
+
   return (
     <main className="main-custom">
       <Navbar />
@@ -85,27 +177,34 @@ export default function Users() {
           {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
-              <FormFieldFilter
-                label="Buscar usuário"
-                onFilter={(searchTerm) => {
-                  console.log(searchTerm);
-                  const filtered = data.filter((user) =>
-                    user.nome.toLowerCase().includes(searchTerm.toLowerCase())
-                  );
-                  setFilteredData(filtered);
-                }}
-              />
+            <FormFieldFilter
+              label="Buscar pelo nome"
+              onFilter={(searchTerm) => {
+                // Apenas guardamos em search
+                setSearch(searchTerm);
+              }}
+            />
             </div>
             {/* TODO: Colocar outra tela com detalhes de filtro, podendo filtrar de outras maneiras */}
             <button
-              type="submit"
+              type="button"
               className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+              onClick={openFilterModal}
             >
               Filtrar
               {/* Ícone SVG importado */}
               <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
             </button>
           </div>
+
+          <GenericFilterModal
+            isOpen={isModalOpen}
+            onClose={() => setModalOpen(false)}
+            fields={userFilterFields}
+            data={data}
+            onFilteredResult={handleFilteredResult}
+          />
+
         </form>
 
         {/* Cards */}

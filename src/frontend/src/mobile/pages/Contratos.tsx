@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../../components/CardContratos";
-import FormField from "../components/Form/FormField";
+import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../../components/Botoes/Voltar";
 import Botao from "../../components/Botoes/Botao";
@@ -11,6 +11,10 @@ import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { AxiosError } from "axios";
+import { GenericFilterModal } from "../../components/Filter/Filter";
+import { IFilterField } from "../../components/Filter/InputsInterfaces";
+import { IContract } from "../../components/Filter/ConstractInterface";
+
 
 interface Contrato {
   contratoId: string;
@@ -36,7 +40,61 @@ export default function Contratos() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [contratos, setContratos] = useState<Contrato[]>([]);
-  const [filtro, setFiltro] = useState("");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [data, setData] = useState<any[]>([]);
+  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+
+  // Busca textual
+  const [search, setSearch] = useState("");
+  // Controle do modal
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const ContractFilterFields: IFilterField<IContract>[] = [
+    {
+      name: "locadorId",
+      label: "Locador",
+      type: "text",
+      property: "locadorId",
+    },
+    {
+      name: "locatarioId",
+      label: "Locatário",
+      type: "text",
+      property: "locatarioId",
+    },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      property: "status",
+      options: ["Ativo", "Inativo"],
+    },
+    {
+      name: "dataEncerramento",
+      label: "Data de Encerramento",
+      type: "dateRange",
+      property: "dataEncerramento",
+    },
+    {
+      name: "imovelId",
+      label: "Imóvel",
+      type: "text",
+      property: "imovelId",
+    },
+    {
+      name: "iptu",
+      label: "IPTU",
+      type: "numberRange",
+      property: "iptu",
+    },
+    {
+      name: "valorAluguel",
+      label: "Valor do Aluguel",
+      type: "numberRange",
+      property: "valorAluguel",
+    },
+  ];
+
 
   const fetchContratos = async () => {
     try {
@@ -44,7 +102,14 @@ export default function Contratos() {
       const response = await axiosInstance.get("property/Contratos/PegarTodosOsContratos");
   
       if (response.data) {
-        setContratos(response.data); // Atualiza o estado com os contratos recebidos
+        // Transformar o contratoId em número
+        response.data.forEach((contrato: any) => {
+          contrato.contratoId = Number(contrato.contratoId);
+        });
+        setContratos(response.data); // Atualiza o estado com os contratos recebidoos
+        setFilteredData(response.data); // Atualiza o estado de contratos filtrados
+        setData(response.data); // Atualiza o estado de dados
+        setAdvancedFiltered(response.data); // Atualiza o estado de contratos filtrados avançados
       } else {
         setContratos([]); // Garante que contratos seja uma lista vazia se não houver dados
       }
@@ -64,29 +129,39 @@ export default function Contratos() {
       setLoading(false); // Finaliza o estado de carregamento em caso de erro
     }
   };
+
+  useEffect(() => {
+    // Se search estiver vazio, "filteredData" = "advancedFiltered"
+    if (!search.trim()) {
+      setFilteredData(advancedFiltered);
+      return;
+    }
+  
+    const searchAsNumber = Number(search);
+  
+    const finalResult = advancedFiltered.filter((contract: IContract) => {
+      return contract.contratoId === searchAsNumber;
+    });
+  
+    setFilteredData(finalResult);
+    // console.log("Final result:", finalResult);
+  }, [search, advancedFiltered]);
+
+
+  // Abrir modal
+  const openFilterModal = () => {
+    setModalOpen(true);
+  };
+
+  // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
+  const handleFilteredResult = (resultado: any[]) => {
+    // Esse "resultado" já está filtrado pelos campos avançados
+    setAdvancedFiltered(resultado);
+  };
   
   useEffect(() => {
     fetchContratos();
   }, []);
-
-  const handleSearch = async () => {
-    setLoading(true);
-
-    console.log("filtrar por: ", filtro)
-
-    try {
-      // Simulação de busca no "banco"
-      const filtered = contratos.filter((contrato) =>
-        contrato.contratoId.toLowerCase().includes(filtro.toLowerCase())
-      );
-      setContratos(filtered);
-    } catch (error: any) {
-      console.error(error);
-      showErrorToast("Erro ao buscar contratos.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <main className="main-custom">
@@ -101,28 +176,35 @@ export default function Contratos() {
         <h2 className="text-2xl font-semibold">Contratos</h2>
         <form
           className="grid grid-cols-1 gap-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSearch();
-          }}
         >
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
-              <FormField
-                label="Buscar contrato"
-                onChange={setFiltro}
-                value={filtro}
-              />
+            <FormFieldFilter
+              label="Buscar chamado pelo título"
+              onFilter={(searchTerm) => {
+                setSearch(searchTerm);
+              }}
+            />
             </div>
             <button
-              type="submit"
+              type="button"
               className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+              onClick={openFilterModal}
             >
               Filtrar
               <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
             </button>
           </div>
         </form>
+
+        <GenericFilterModal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          fields={ContractFilterFields}
+          data={data}
+          onFilteredResult={handleFilteredResult}
+        />
+
 
         {loading ? (
           <Loading type="skeleton" />
@@ -136,7 +218,7 @@ export default function Contratos() {
               </p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {contratos.map((contrato) => (
+                {filteredData.map((contrato) => (
                   <Card
                     key={contrato.contratoId}
                     id={contrato.contratoId}

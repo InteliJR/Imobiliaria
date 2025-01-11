@@ -9,6 +9,11 @@ import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { GenericFilterModal } from "../../components/Filter/Filter";
+import { IFilterField } from "../../components/Filter/InputsInterfaces";
+import { IProperty } from "../../components/Filter/PropertyInterfaces.ts";
+
+
 
 export default function Properties() {
   const navigate = useNavigate();
@@ -34,7 +39,34 @@ export default function Properties() {
 
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [properties, setProperties] = useState<Property[]>([]);
+
+  const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+
+  // Busca textual
+  const [search, setSearch] = useState("");
+
+  // Controle do modal
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const PropertyFilterFields: IFilterField<IProperty>[] = [
+    {
+      name: "tipoImovel",
+      label: "Tipo de Imóvel",
+      type: "select",
+      options: ["Casa", "Apartamento", "Sala Comercial", "Loja"],
+      property: "propertyType",
+    },
+    { name: "bairro", label: "Bairro", type: "text", property: "neighborhood" },
+    { name: "endereco", label: "Endereço", type: "text", property: "address" },
+    { name: "valorImovel", label: "Valor do Imóvel", type: "number", property: "price" },
+    { name: "condominio", label: "Condomínio", type: "number", property: "condominio" },
+    { name: "locador", label: "Locador", type: "text", property: "landlord" },
+    { name: "locatario", label: "Locatário", type: "text", property: "tenant" },
+
+  ];
+
 
   const fetchProperties = async () => {
     try {
@@ -85,8 +117,8 @@ export default function Properties() {
             landlord: landlord,
             tenant: tenant,
             imageSrc: property.fotos,
-            price: `R$ ${property.valorImovel.toLocaleString("pt-BR")}`,
-            condominio: property.condominio != 0 ? `R$ ${property.condominio}` : "Este imóvel não tem condominio"
+            price: property.valorImovel,
+            condominio: property.condominio != 0 ? property.condominio : "Este imóvel não tem condominio"
           };
         }
       );
@@ -140,12 +172,39 @@ export default function Properties() {
       setProperties(mergedProperties);
       setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
       setFilteredData(mergedProperties);
+      setData(mergedProperties)
       console.log(mergedProperties);
     } catch (error: any) {
       console.error(error);
       showErrorToast("Erro ao se conectar com o servidor.");
     }
   };
+
+  useEffect(() => {
+    // Se search estiver vazio, "filteredData" = "advancedFiltered"
+    if (!search.trim()) {
+      setFilteredData(advancedFiltered);
+      return;
+    }
+    const lower = search.toLowerCase();
+    const finalResult = advancedFiltered.filter((property: any) =>
+      property.postalCode?.toLowerCase().includes(lower)
+    );
+    setFilteredData(finalResult);
+  }, [search, advancedFiltered]);
+
+
+  // Abrir modal
+  const openFilterModal = () => {
+    setModalOpen(true);
+  };
+
+  // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
+  const handleFilteredResult = (resultado: any[]) => {
+    // Esse "resultado" já está filtrado pelos campos avançados
+    setAdvancedFiltered(resultado);
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -171,27 +230,33 @@ export default function Properties() {
         <form className="grid grid-cols-1 gap-4">
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
-              <FormFieldFilter
-                label="Buscar imóvel"
-                onFilter={(searchTerm) => {
-                  const filtered = properties.filter((property) =>
-                    property.endereco.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    property.bairro.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    property.tipoImovel.toLowerCase().includes(searchTerm.toLowerCase())
-                  );
-                  setFilteredData(filtered);
-                }}
-              />
+            <FormFieldFilter
+              label="Buscar imóvel pelo cep"
+              onFilter={(searchTerm) => {
+                setSearch(searchTerm);
+              }}
+            />
             </div>
             <button
-              type="submit"
+              type="button"
               className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+              onClick={openFilterModal}
             >
               Filtrar
               <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
             </button>
           </div>
         </form>
+
+
+        <GenericFilterModal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          fields={PropertyFilterFields}
+          data={data}
+          onFilteredResult={handleFilteredResult}
+        />
+
 
         {loading ? (
           <Loading type="skeleton" />
@@ -218,8 +283,8 @@ export default function Properties() {
                   propertyType={property.propertyType}
                   landlord={property.landlord}
                   tenant={property.tenant}
-                  price={property.price}
-                  condominio={property.condominio} 
+                  price={`R$ ${property.price}`}
+                  condominio={`R$ ${property.condominio}`}
                   imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../public/ImovelSemFoto.png"}
                   />
                   

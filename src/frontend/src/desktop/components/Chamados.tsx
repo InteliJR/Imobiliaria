@@ -6,6 +6,8 @@ import FilterIcon from "/Filter.svg";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
+import { GenericFilterModal } from "../../components/Filter/Filter";
+import { IFilterField } from "../../components/Filter/InputsInterfaces";
 
 export default function ChamadosComponent() {
   interface Ticket {
@@ -17,11 +19,59 @@ export default function ChamadosComponent() {
     open: boolean;
     description: string;
   }
+  
 
   const navigate = useNavigate();
-  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
+  const [data, setData] = useState<any[]>([]);
+  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+
+  // Busca textual
+  const [search, setSearch] = useState("");
+
+  // Controle do modal
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const TicketFilterFields: IFilterField<Ticket>[] = [
+    {
+      name: "title",
+      label: "Título",
+      type: "text",
+      property: "title",
+    },
+    {
+      name: "solicitor",
+      label: "Solicitante",
+      type: "text",
+      property: "solicitor",
+    },
+    {
+      name: "address",
+      label: "Endereço",
+      type: "text",
+      property: "address",
+    },
+    {
+      name: "date",
+      label: "Data",
+      type: "dateRange",
+      property: "date",
+    },
+    {
+      name: "open",
+      label: "Aberto",
+      type: "checkbox",
+      property: "open",
+    },
+    {
+      name: "description",
+      label: "Descrição",
+      type: "text",
+      property: "description",
+    },
+  ];
+
 
   const fetchTickets = async () => {
     try {
@@ -79,21 +129,47 @@ export default function ChamadosComponent() {
             solicitor: user.nome || "Usuário desconhecido",
             address: property.endereco || "Endereço desconhecido",
             date: chamado.dataSolicitacao || "Data não informada",
-            open: chamado.status === "Aberto" ? true : false,
+            open: chamado.status === "aberto" ? true : false,
             description: chamado.descricao || "Descrição não informada",
           };
         }
       );
 
-      setTickets(mergedData);
       setFilteredData(mergedData);
-
+      setAdvancedFiltered(mergedData);
+      console.log(mergedData);
+      setData(mergedData);
       setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
     } catch (error) {
       console.error(error);
 
       showErrorToast("Erro ao se conectar com o servidor.");
     }
+  };
+
+  useEffect(() => {
+    // Se search estiver vazio, "filteredData" = "advancedFiltered"
+    if (!search.trim()) {
+      setFilteredData(advancedFiltered);
+      return;
+    }
+    const lower = search.toLowerCase();
+    const finalResult = advancedFiltered.filter((ticket: any) =>
+      ticket.title?.toLowerCase().includes(lower)
+    );
+    setFilteredData(finalResult);
+  }, [search, advancedFiltered]);
+
+
+  // Abrir modal
+  const openFilterModal = () => {
+    setModalOpen(true);
+  };
+
+  // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
+  const handleFilteredResult = (resultado: any[]) => {
+    // Esse "resultado" já está filtrado pelos campos avançados
+    setAdvancedFiltered(resultado);
   };
 
   useEffect(() => {
@@ -119,27 +195,30 @@ export default function ChamadosComponent() {
         <div className="flex-grow">
           <div className="w-full">
             <FormFieldFilter
-              label="Buscar chamado"
+              label="Buscar chamado pelo título"
               onFilter={(searchTerm) => {
-                // console.log(searchTerm);
-                const filtered = tickets.filter((chamados) =>
-                  chamados.title
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                );
-                setFilteredData(filtered);
+                setSearch(searchTerm);
               }}
             />
           </div>
         </div>
         <button
-          type="submit"
+          type="button"
           className="flex items-center justify-center hover:bg-neutral-800 gap-2 px-6 h-10 bg-[#1F1E1C] text-neutral-50 text-sm font-medium rounded"
+          onClick={openFilterModal}
         >
           Filtrar
           <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
         </button>
       </form>
+
+      <GenericFilterModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        fields={TicketFilterFields}
+        data={data}
+        onFilteredResult={handleFilteredResult}
+      />
 
       {/* Cards */}
       <section className="flex flex-col gap-y-5">
