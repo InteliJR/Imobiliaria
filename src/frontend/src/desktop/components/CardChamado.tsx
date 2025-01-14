@@ -9,6 +9,7 @@ interface ProblemCardProps {
   description: string;
   date: string;
   time: string;
+  status: "Aberto" | "Fechado";
 }
 
 const ProblemCard: React.FC<ProblemCardProps> = ({
@@ -19,6 +20,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
   description,
   date,
   time,
+  status
 }) => {
   const navigate = useNavigate();
 
@@ -41,6 +43,12 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
       <p className="text-sm text-neutral-700 mb-4">
         <strong>Criado por:</strong> {creator} &middot; <strong>Contato:</strong> {contact}
       </p>
+
+      {/* Status */}
+      <p className="text-sm text-neutral-700 mb-4">
+        <strong>Status:</strong> <span className={status === "Aberto" ? "text-green-500" : "text-red-500"}>{status}</span>
+      </p>
+
 
       {/* Description */}
       <p className="text-sm text-neutral-700 mb-4 truncate">

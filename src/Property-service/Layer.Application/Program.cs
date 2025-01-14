@@ -160,6 +160,9 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod();
         });
 });
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 // Registrar o dbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

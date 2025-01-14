@@ -243,6 +243,7 @@ export default function ChamadosComponent() {
                 description={ticket.description}
                 date={ticket.date.split("T")[0]}
                 time={ticket.date.split("T")[1].split(".")[0]}
+                status={ticket.open ? "Aberto" : "Fechado"}
               />
             ))}
           </div>
