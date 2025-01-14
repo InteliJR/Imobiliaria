@@ -112,6 +112,52 @@ namespace property_management.Controllers
 
             return NoContent();
         }
+
+        [HttpPut("AtualizarStatus/{id}")]
+        [Authorize(Policy = "AdminORLocatario")]
+        public async Task<IActionResult> UpdateStatus(int id, string Status)
+        {
+
+            var chamadoExistente = await _chamadosService.GetByIdAsync(id);
+            if (chamadoExistente == null)
+            {
+                return NotFound("Chamado não encontrado.");
+            }
+
+            if(Status != "aberto" && Status != "fechado")
+            {
+                return BadRequest("Status inválido.");
+            }
+
+            if(chamadoExistente.Status == Status)
+            {
+                return BadRequest("Status já está atualizado.");
+            }
+
+            chamadoExistente.Status = Status;
+
+            var saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+
+            if (chamadoExistente.DataInicio.HasValue)
+            {
+                chamadoExistente.DataInicio = TimeZoneInfo.ConvertTime(chamadoExistente.DataInicio.Value, saoPauloTimeZone);
+            }
+            if (chamadoExistente.DataFim.HasValue)
+            {
+                chamadoExistente.DataFim = TimeZoneInfo.ConvertTime(chamadoExistente.DataFim.Value, saoPauloTimeZone);
+            }
+
+            var result = await _chamadosService.UpdateAsync(chamadoExistente);
+            if (result == 0)
+            {
+                return NotFound("Erro ao atualizar o chamado.");
+            }
+
+            // await _applicationLog.LogAsync($"Atualização de status do chamado com id: {id} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+
+            return Ok(chamadoExistente);
+        }
+
         // PUT: api/chamados/imovel/{imovelId}
         [HttpPut("AtualizarChamadoPorImovel/{imovelId}")]
         [Authorize(Policy = "AdminORLocatario")]
