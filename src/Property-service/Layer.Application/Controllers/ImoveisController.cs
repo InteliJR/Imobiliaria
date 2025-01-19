@@ -265,12 +265,59 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> GetImovelByIdDoLocatario(int locatarioId)
         {
-            var imovel = await _imoveisService.GetImoveisByIdLocatario(locatarioId);
-            if (imovel == null)
+            // Busca os imóveis do locador
+            var imoveis = await _imoveisService.GetImoveisByIdLocatario(locatarioId);
+            if (imoveis == null || !imoveis.Any())
             {
-                return NotFound();
+                return NotFound("Nenhum imóvel encontrado.");
             }
-            return Ok(imovel);
+
+            Console.WriteLine($"Imóveis encontrados: {imoveis.Count()}");
+
+            // Cria tarefas para buscar as informações do locador
+            var imovelInfos = new List<ImovelInfo>();
+
+            foreach (var imovel in imoveis)
+            {
+                UserInfo locadorInfo = null;
+                UserInfo locatarioInfo = null;
+
+                try
+                {
+                    locadorInfo = await GetUserInfo(imovel.LocadorId.ToString(), "Locador");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter informações do LocadorId {imovel.LocadorId}: {ex.Message}");
+                }
+
+                try
+                {
+                    locatarioInfo = await GetUserInfo(imovel.LocatarioId.ToString(), "Locatario");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter informações do LocatarioId {imovel.LocatarioId}: {ex.Message}");
+                }
+
+                imovelInfos.Add(new ImovelInfo
+                {
+                    ImovelId = imovel.ImovelId,
+                    Fotos = imovel.Fotos,
+                    TipoImovel = imovel.TipoImovel,
+                    Cep = imovel.Cep,
+                    Condominio = imovel.Condominio,
+                    ValorImovel = imovel.ValorImovel,
+                    Bairro = imovel.Bairro,
+                    Descricao = imovel.Descricao,
+                    Endereco = imovel.Endereco,
+                    Complemento = imovel.Complemento,
+                    NomeLocador = locadorInfo?.Nome,
+                    NomeLocatario = locatarioInfo?.Nome
+                });
+            }
+
+            return Ok(imovelInfos);
         }
 
 

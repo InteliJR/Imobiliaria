@@ -26,6 +26,8 @@ export default function LocatarioPage() {
     endereco: string;
     complemento: string;
     fotos: string | string[];
+    nomeLocador: string;
+    nomeLocatario: string;
     onClick: () => void;
   }
 
@@ -224,7 +226,7 @@ export default function LocatarioPage() {
                     neighborhood={property.bairro}
                     address={property.endereco}
                     postalCode={property.cep}
-                    landlord="Proprietário Desconhecido"
+                    landlord={property.nomeLocador}
                     tenant="Você"
                     imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/ImovelSemFoto.png"}
                     price={`R$ ${property.valorImovel.toFixed(2)}`}

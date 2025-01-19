@@ -137,7 +137,7 @@ export default function MainPage() {
         // Logica para assinar imagens
         const imoveisData = response.data;
 
-        console.log(imoveisData);
+        // console.log(imoveisData);
 
         // Arrumar imagens para serem exibidas
         // separar string por vírgula
@@ -294,7 +294,7 @@ export default function MainPage() {
                     neighborhood={property.bairro}
                     address={property.endereco}
                     postalCode={property.cep}
-                    landlord={property.nomeLocador}          // or property.landlord if it exists
+                    landlord={"Você"}          // or property.landlord if it exists
                     tenant={property.nomeLocatario}                     // or property.tenant if it exists
                     imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/ImovelSemFoto.png"}
                     price={`R$ ${property.valorImovel.toFixed(2)}`}
