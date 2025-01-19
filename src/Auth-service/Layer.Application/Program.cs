@@ -108,6 +108,7 @@ builder.Services.AddScoped<ILocatarioService, LocatarioService>();
 builder.Services.AddScoped<IColaboradorService, ColaboradorService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IHashingPasswordService, HashingPasswordService>();
+builder.Services.AddScoped<IHmacService, HmacService>();
 builder.Services.AddScoped<ApplicationLog>();
 
 // Configura JWT settings

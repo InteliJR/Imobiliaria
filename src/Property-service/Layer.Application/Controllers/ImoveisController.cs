@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Layer.Infrastructure.Database;
 using System.Security.Claims;
+using Layer.Infrastructure.ExternalAPIs;
+using Newtonsoft.Json;
 
 namespace Layer.Application.Controllers
 {
@@ -18,12 +20,15 @@ namespace Layer.Application.Controllers
         // Chamar o serviço de usuário e o serviço de log
         private readonly IimoveisRepository _imoveisService;
         private readonly ApplicationLog _applicationLog;
+        private readonly IUsersAPI _usersAPI;
+
 
         // Construtor
-        public ImoveisController(IimoveisRepository imovelService, ApplicationLog applicationLog)
+        public ImoveisController(IimoveisRepository imovelService, ApplicationLog applicationLog, IUsersAPI usersAPI)
         {
             _imoveisService = imovelService;
             _applicationLog = applicationLog;
+            _usersAPI = usersAPI;
         }
 
         // Rota de pegar todos os imóveis
@@ -163,13 +168,98 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> GetImovelByIdDoLocador(int locadorId)
         {
-            var imovel = await _imoveisService.GetImoveisByIdLocador(locadorId);
-            if (imovel == null)
+            // Busca os imóveis do locador
+            var imoveis = await _imoveisService.GetImoveisByIdLocador(locadorId);
+            if (imoveis == null || !imoveis.Any())
             {
-                return NotFound();
+                return NotFound("Nenhum imóvel encontrado.");
             }
-            return Ok(imovel);
+
+            Console.WriteLine($"Imóveis encontrados: {imoveis.Count()}");
+
+            // Cria tarefas para buscar as informações do locador
+            var imovelInfos = new List<ImovelInfo>();
+
+            foreach (var imovel in imoveis)
+            {
+                UserInfo locadorInfo = null;
+                UserInfo locatarioInfo = null;
+
+                try
+                {
+                    locadorInfo = await GetUserInfo(imovel.LocadorId.ToString(), "Locador");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter informações do LocadorId {imovel.LocadorId}: {ex.Message}");
+                }
+
+                try
+                {
+                    locatarioInfo = await GetUserInfo(imovel.LocatarioId.ToString(), "Locatario");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter informações do LocatarioId {imovel.LocatarioId}: {ex.Message}");
+                }
+
+                imovelInfos.Add(new ImovelInfo
+                {
+                    ImovelId = imovel.ImovelId,
+                    Fotos = imovel.Fotos,
+                    TipoImovel = imovel.TipoImovel,
+                    Cep = imovel.Cep,
+                    Condominio = imovel.Condominio,
+                    ValorImovel = imovel.ValorImovel,
+                    Bairro = imovel.Bairro,
+                    Descricao = imovel.Descricao,
+                    Endereco = imovel.Endereco,
+                    Complemento = imovel.Complemento,
+                    NomeLocador = locadorInfo?.Nome,
+                    NomeLocatario = locatarioInfo?.Nome
+                });
+            }
+
+            return Ok(imovelInfos);
         }
+
+        private async Task<UserInfo> GetUserInfo(string userId, string role)
+        {
+            var endpoint = "";
+
+            if(role == "Locador")
+            {
+                endpoint = $"/User/infoLocador/{userId}"; // URL do serviço de usuários
+            }
+            else if(role == "Locatario")
+            {
+                endpoint = $"/User/infoLocatario/{userId}"; // URL do serviço de usuários
+            }
+            else{
+                return null;
+            }
+
+            // Console.WriteLine($"Buscando informações do usuário com ID {userId}...");
+
+            try
+            {
+                // Faz a requisição ao serviço de usuários
+                var response = await _usersAPI.SendHMACRequestQueryAsync(endpoint, userId);
+
+                // Console.WriteLine($"Resposta do servidor: {response}");
+
+                // Desserializa o JSON na classe UserInfo
+                var userInfo = JsonConvert.DeserializeObject<UserInfo>(response);
+
+                return userInfo;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao buscar informações do usuário: {ex.Message}");
+                return null; // Retorna null em caso de erro
+            }
+        }
+
 
         [HttpGet("PegarImovelPorIdDoLocatario/{locatarioId}")]
         [Authorize(Policy = "AllRoles")]
