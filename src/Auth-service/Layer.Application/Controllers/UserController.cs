@@ -121,18 +121,21 @@ namespace Layer.Application.Controllers
 
         }
 
+        // Esse ednpoint e outros não tem policy de role, pois são endpoints que outros serviços podem acessar
+        // Eles são protegidos por HMAC
+        // Então, ambos serviços devem ter a mesma secret key e o mesmo clientId
         [HttpGet("infoUser/{userId}")]
         public async Task<IActionResult> GetUser(int userId, [FromHeader(Name = "X-Client-Id")] string clientId,
                                     [FromHeader(Name = "X-Signature")] string signature,
                                     [FromHeader(Name = "X-Timestamp")] string timestamp)
         {
-            // 1. Validar o cliente
+            // Validar o cliente
             if(_hmacService.CheckClientName(clientId) == false)
             {
                 return BadRequest("Invalid Client");
             }
 
-            // 2. Validar o timestamp (prevenir ataques de replay)
+            // Validar o timestamp (prevenir ataques de replay)
             if (!long.TryParse(timestamp, out var timestampValue))
             {
                 Console.WriteLine("Timestamp is not a valid number.");
@@ -150,7 +153,7 @@ namespace Layer.Application.Controllers
 
             var secretKey = _hmacService.GetServiceSecret(clientId);
 
-            // 3. Recalcular a assinatura
+            // Recalcular a assinatura, por que ela tem que ser igual a que foi enviada, já que tem a mesma chave secreta de criptografia
             var payload = $"{userId}:{timestamp}";
 
             Console.WriteLine("Payload: " + payload);
@@ -163,7 +166,7 @@ namespace Layer.Application.Controllers
 
             Console.WriteLine("Signature: " + signature);   
 
-            // 4. Obter o usuário
+            // Obter o usuário
             var user = await _userService.GetUserById(userId);
 
             if (user == null)
@@ -256,13 +259,13 @@ namespace Layer.Application.Controllers
                         [FromHeader(Name = "X-Signature")] string signature,
                         [FromHeader(Name = "X-Timestamp")] string timestamp)
         {
-            // 1. Validar o cliente
+            //  Validar o cliente
             if(_hmacService.CheckClientName(clientId) == false)
             {
             return BadRequest("Invalid Client");
             }
 
-            // 2. Validar o timestamp (prevenir ataques de replay)
+            // Validar o timestamp (prevenir ataques de replay)
             if (!long.TryParse(timestamp, out var timestampValue))
             {
             Console.WriteLine("Timestamp is not a valid number.");
@@ -279,7 +282,7 @@ namespace Layer.Application.Controllers
 
             var secretKey = _hmacService.GetServiceSecret(clientId);
 
-            // 3. Recalcular a assinatura
+            // Recalcular a assinatura
             var payload = $"{locadorId}:{timestamp}";
 
             Console.WriteLine("Payload: " + payload);
@@ -292,7 +295,7 @@ namespace Layer.Application.Controllers
 
             Console.WriteLine("Signature: " + signature);   
 
-            // 4. Obter o locador
+            // Obter o locador
             var locador = await _locadorService.GetLocadorByLocadorID(locadorId);
 
             if (locador == null)
@@ -327,19 +330,19 @@ namespace Layer.Application.Controllers
             return Ok(locadorResult);
         }
 
-
+        // Endpoint para outros serviços pegarem a info de um locatario, por isso não tem policy de role
         [HttpGet("infoLocatario/{locatarioId}")]
         public async Task<IActionResult> GetLocatario(int locatarioId, [FromHeader(Name = "X-Client-Id")] string clientId,
                 [FromHeader(Name = "X-Signature")] string signature,
                 [FromHeader(Name = "X-Timestamp")] string timestamp)
         {
-            // 1. Validar o cliente
+            // Validar o cliente
             if(_hmacService.CheckClientName(clientId) == false)
             {
             return BadRequest("Invalid Client");
             }
 
-            // 2. Validar o timestamp (prevenir ataques de replay)
+            // Validar o timestamp (prevenir ataques de replay)
             if (!long.TryParse(timestamp, out var timestampValue))
             {
             Console.WriteLine("Timestamp is not a valid number.");
@@ -356,7 +359,7 @@ namespace Layer.Application.Controllers
 
             var secretKey = _hmacService.GetServiceSecret(clientId);
 
-            // 3. Recalcular a assinatura
+            // Recalcular a assinatura
             var payload = $"{locatarioId}:{timestamp}";
 
             Console.WriteLine("Payload: " + payload);
@@ -369,7 +372,7 @@ namespace Layer.Application.Controllers
 
             Console.WriteLine("Signature: " + signature);   
 
-            // 4. Obter o locatario
+            // Obter o locatario
             var locatario = await _locatarioService.GetLocatarioByLocatarioID(locatarioId);
 
             if (locatario == null)

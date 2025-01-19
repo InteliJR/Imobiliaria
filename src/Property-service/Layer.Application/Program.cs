@@ -100,14 +100,16 @@ builder.Services.AddScoped<IChamadosRepository, ChamadosService>();
 builder.Services.AddScoped<ApplicationLog>();
 builder.Services.AddHttpClient<IUsersAPI, UsersAPI>((client) =>
 {
+    // Configuração do HttpClient
     client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("AUTH_SERVICE_URL")); // URL base do serviço
     client.Timeout = TimeSpan.FromSeconds(30); // Timeout
 })
 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler())
 .AddTypedClient<IUsersAPI>((httpClient, serviceProvider) =>
 {
-    var clientId = "service_imoveis"; // Identificador do cliente
-    var secretKey = Environment.GetEnvironmentVariable("HMAC_KEY") ?? "default-secret-key"; // Chave secreta
+    // Configuração de informações do cliente HMAC
+    var clientId = "service_imoveis";
+    var secretKey = Environment.GetEnvironmentVariable("HMAC_KEY") ?? "default-secret-key";
     return new UsersAPI(httpClient, clientId, secretKey);
 });
 

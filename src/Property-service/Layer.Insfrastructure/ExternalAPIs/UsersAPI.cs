@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 namespace Layer.Infrastructure.ExternalAPIs
 {
     public class UsersAPI : IUsersAPI
-    {
+    {   
+        // Essas varaiveis estão sendo populadas lá no Program.cs
         private readonly HttpClient _httpClient;
-        private readonly string _secretKey; // Chave secreta compartilhada
-        private readonly string _clientId;  // Identificador do cliente (serviço)
+        private readonly string _secretKey; // Chave secreta que tem que estar também no serviço que vai receber a chamada
+        private readonly string _clientId; // Client ID que tem que estar também no serviço que vai receber a chamada
 
         public UsersAPI(HttpClient httpClient, string clientId, string secretKey)
         {
@@ -18,7 +19,8 @@ namespace Layer.Infrastructure.ExternalAPIs
             _clientId = clientId;
             _secretKey = secretKey;
         }
-        // Método para enviar uma requisição HMAC
+
+        // Método para enviar uma requisição post com payload HMAC
         public async Task<string> SendHMACRequestAsync(string endpoint, object payload)
         {
             // Serializa o payload para JSON
@@ -56,6 +58,7 @@ namespace Layer.Infrastructure.ExternalAPIs
             return await response.Content.ReadAsStringAsync();
         }
 
+        // Método para enviar uma requisição GET com query HMAC
         public async Task<string> SendHMACRequestQueryAsync(string endpoint, string userId)
         {
             // Gera o timestamp (para evitar replay attacks)

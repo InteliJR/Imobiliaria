@@ -177,7 +177,6 @@ namespace Layer.Application.Controllers
 
             Console.WriteLine($"Imóveis encontrados: {imoveis.Count()}");
 
-            // Cria tarefas para buscar as informações do locador
             var imovelInfos = new List<ImovelInfo>();
 
             foreach (var imovel in imoveis)
@@ -187,6 +186,7 @@ namespace Layer.Application.Controllers
 
                 try
                 {
+                    // Chamar o serviço que conecta com o serviço de usuários
                     locadorInfo = await GetUserInfo(imovel.LocadorId.ToString(), "Locador");
                 }
                 catch (Exception ex)
@@ -223,17 +223,18 @@ namespace Layer.Application.Controllers
             return Ok(imovelInfos);
         }
 
+        // Metodo legal para pegar informações do usuário lá no auth-service
         private async Task<UserInfo> GetUserInfo(string userId, string role)
         {
             var endpoint = "";
 
             if(role == "Locador")
             {
-                endpoint = $"/User/infoLocador/{userId}"; // URL do serviço de usuários
+                endpoint = $"/User/infoLocador/{userId}";
             }
             else if(role == "Locatario")
             {
-                endpoint = $"/User/infoLocatario/{userId}"; // URL do serviço de usuários
+                endpoint = $"/User/infoLocatario/{userId}";
             }
             else{
                 return null;
@@ -256,7 +257,7 @@ namespace Layer.Application.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Erro ao buscar informações do usuário: {ex.Message}");
-                return null; // Retorna null em caso de erro
+                return null;
             }
         }
 
