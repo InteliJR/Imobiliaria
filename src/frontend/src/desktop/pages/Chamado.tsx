@@ -1,7 +1,6 @@
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
-import VisualizarItem from "../../mobile/components/VisualizarItem";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import { useEffect, useState } from "react";
