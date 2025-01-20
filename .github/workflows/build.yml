@@ -25,11 +25,11 @@ jobs:
       # Step 3: Instalar dependências.
       - name: Install dependencies
         run: npm install
-        working-directory: ../../src/frontend/
+        working-directory: src/frontend/
 
       # Step 4: Executar o comando de build.
       - name: Run build
         run: npm run build
-        working-directory: ../../src/frontend/
+        working-directory: src/frontend/
 
 
