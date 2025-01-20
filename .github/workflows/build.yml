@@ -1,0 +1,32 @@
+name: Build Verification
+
+# Dispara o workflow quando há eventos de pull request.
+on:
+  pull_request:
+    branches:
+      - main  # Altere para a branch que você usa como base principal.
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Máquina virtual onde o script será executado.
+
+    steps:
+      # Step 1: Checkout do código.
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Configuração do Node.js.
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Escolha a versão do Node.js usada no seu projeto.
+
+      # Step 3: Instalar dependências.
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Executar o comando de build.
+      - name: Run build
+        run: npm run build
+
