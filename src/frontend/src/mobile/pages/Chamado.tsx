@@ -24,6 +24,7 @@ export default function Chamado() {
     DateStart: string;
     DateEnd: string;
     Description: string;
+    Status: string
   }
 
   const [ticket, setTicket] = useState<Ticket | null>(null);
@@ -91,6 +92,7 @@ export default function Chamado() {
         DateEnd: chamadosResponse.data.dataFim || "Data não informada",
         Description:
           chamadosResponse.data.descricao || "Descrição não informada",
+        Status: chamadosResponse.data.status || "Status não informado"
       };
 
       // Formatar data e hora para o padrão brasileiro
@@ -120,6 +122,31 @@ export default function Chamado() {
       showErrorToast("Erro ao se conectar com o servidor.");
     }
   };
+
+  const closeTicket = async () => {
+    try {
+      const id = window.location.pathname.split("/").pop();
+
+      const response = await axiosInstance.put(
+        `property/Chamados/AtualizarStatus/${id}?Status=fechado`
+      );
+
+      if (!response.data) {
+        console.error("Dados de resposta inválidos");
+        showErrorToast("Erro ao se conectar com o servidor.");
+        return;
+      }
+
+      console.log("Chamado fechado com sucesso!");
+
+      // Redirecionar para a página de chamados
+      window.location.href = "/chamados";
+    } catch (error) {
+      console.error(error);
+
+      showErrorToast("Erro ao se conectar com o servidor.");
+    }
+  }
 
   useEffect(() => {
     fetchTicket();
@@ -203,7 +230,7 @@ export default function Chamado() {
                 }
               />
 
-              {/* Período do chamado */}
+              {/* Período do chamado
               <div>
                 <h2 className="text-neutral-600">Período</h2>
                 <div className="flex flex-row gap-10">
@@ -218,7 +245,7 @@ export default function Chamado() {
                     <span className="text-neutral-900">{ticket?.DateEnd}</span>
                   </p>
                 </div>
-              </div>
+              </div> */}
 
               {/* Descrição do chamado */}
               <div>
@@ -228,9 +255,16 @@ export default function Chamado() {
 
               {/* Status do chamado */}
               <p className="absolute top-1 right-2 text-neutral-600 italic">
-                Aberto
+                {ticket?.Status === "aberto" ? "Aberto" : "Fechado"}
               </p>
             </div>
+
+            {/* Botao para fechar o chamado */}
+            {ticket?.Status === "aberto" && (
+              <button className="h-10 px-6 bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50 text-sm font-medium rounded" onClick={closeTicket}>
+              Fechar Chamado
+              </button>
+            )}
           </>
         )}
       </section>
