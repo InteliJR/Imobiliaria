@@ -23,17 +23,17 @@ var env = builder.Environment.EnvironmentName;
 
 if (env == "Development")
 {
-    Env.Load(".env.development");
+    Env.Load("etc/secrets/.env.development");
 }
 else if (env == "Production")
 {
-    Env.Load(".env.production");
+    Env.Load("etc/secrets/.env.production");
 }
 else
 {
-    // Env.Load();  // Caso você tenha um `.env` padrão
-    Env.Load("etc/secrets/.env.production");
+    Env.Load();  // Caso você tenha um `.env` padrão
 }
+
 
 // Sobrepor os valores das variáveis no appsettings.json com as variáveis do ambiente
 builder.Configuration.AddEnvironmentVariables();

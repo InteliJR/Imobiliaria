@@ -22,17 +22,17 @@ var env = builder.Environment.EnvironmentName;
 
 if (env == "Development")
 {
-    Env.Load(".env.development");
+    Env.Load("etc/secrets/.env.development");
 }
 else if (env == "Production")
 {
-    // Env.Load(".env.production");
     Env.Load("etc/secrets/.env.production");
 }
 else
 {
     Env.Load();  // Caso você tenha um `.env` padrão
 }
+
 
 
 var mongoSettings = new MongoDbSettings

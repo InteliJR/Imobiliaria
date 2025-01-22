@@ -172,7 +172,7 @@ export default function MainPage() {
             property.fotos = signedPhotos.slice(offset, offset + count); // Atualiza com URLs assinadas
             offset += count; // Atualiza o offset
           } else {
-            property.fotos = ["../../../public/ImovelSemFoto.png"]; // Define imagem padrão caso não existam fotos
+            property.fotos = ["../../../ImovelSemFoto.png"]; // Define imagem padrão caso não existam fotos
           }
         });
         
@@ -296,7 +296,7 @@ export default function MainPage() {
                     postalCode={property.cep}
                     landlord={"Você"}          // or property.landlord if it exists
                     tenant={property.nomeLocatario}                     // or property.tenant if it exists
-                    imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/ImovelSemFoto.png"}
+                    imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../ImovelSemFoto.png"}
                     price={`R$ ${property.valorImovel.toFixed(2)}`}
                     condominio={`R$ ${property.condominio?.toString() ?? "R$ 0"}`}
     
