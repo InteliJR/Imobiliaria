@@ -26,6 +26,8 @@ export default function LocatarioPage() {
     endereco: string;
     complemento: string;
     fotos: string | string[];
+    nomeLocador: string;
+    nomeLocatario: string;
     onClick: () => void;
   }
 
@@ -121,7 +123,7 @@ export default function LocatarioPage() {
             property.fotos = signedPhotos.slice(offset, offset + count); // Atualiza com URLs assinadas
             offset += count; // Atualiza o offset
           } else {
-            property.fotos = ["../../../public/ImovelSemFoto.png"]; // Define imagem padrão caso não existam fotos
+            property.fotos = ["../../../ImovelSemFoto.png"]; // Define imagem padrão caso não existam fotos
           }
         });
         
@@ -224,9 +226,9 @@ export default function LocatarioPage() {
                     neighborhood={property.bairro}
                     address={property.endereco}
                     postalCode={property.cep}
-                    landlord="Proprietário Desconhecido"
+                    landlord={property.nomeLocador}
                     tenant="Você"
-                    imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/ImovelSemFoto.png"}
+                    imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../ImovelSemFoto.png"}
                     price={`R$ ${property.valorImovel.toFixed(2)}`}
                     condominio={`R$ ${property.condominio?.toString() ?? "R$ 0"}`}
                     onClick={() => navigate(`/imovel/${property.imovelId}`)}

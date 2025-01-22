@@ -25,15 +25,17 @@ namespace Layer.Application.Controllers
         private readonly ILocadorService _locadorService;
         private readonly ILocatarioService _locatarioService;
         private readonly IColaboradorService _colaboradorService;
+        private readonly IHmacService _hmacService;
 
         // Construtor
-        public UserController(IUserService userService, ApplicationLog applicationLog, ILocadorService locadorService, ILocatarioService locatarioService, IColaboradorService colaboradorService)
+        public UserController(IUserService userService, ApplicationLog applicationLog, ILocadorService locadorService, ILocatarioService locatarioService, IColaboradorService colaboradorService, IHmacService hmacService)
         {
             _userService = userService;
             _applicationLog = applicationLog;
             _locadorService = locadorService;
             _locatarioService = locatarioService;
             _colaboradorService = colaboradorService;
+            _hmacService = hmacService;
         }
 
         [HttpGet("PegarUsuario")]
@@ -117,6 +119,292 @@ namespace Layer.Application.Controllers
                 return NotFound("Usuário não encontrado.");
             }
 
+        }
+
+        // Esse ednpoint e outros não tem policy de role, pois são endpoints que outros serviços podem acessar
+        // Eles são protegidos por HMAC
+        // Então, ambos serviços devem ter a mesma secret key e o mesmo clientId
+        [HttpGet("infoUser/{userId}")]
+        public async Task<IActionResult> GetUser(int userId, [FromHeader(Name = "X-Client-Id")] string clientId,
+                                    [FromHeader(Name = "X-Signature")] string signature,
+                                    [FromHeader(Name = "X-Timestamp")] string timestamp)
+        {
+            // Validar o cliente
+            if(_hmacService.CheckClientName(clientId) == false)
+            {
+                return BadRequest("Invalid Client");
+            }
+
+            // Validar o timestamp (prevenir ataques de replay)
+            if (!long.TryParse(timestamp, out var timestampValue))
+            {
+                Console.WriteLine("Timestamp is not a valid number.");
+                return BadRequest("Timestamp is not a valid number.");
+            }
+
+            var timestampDateTime = DateTimeOffset.FromUnixTimeSeconds(timestampValue).UtcDateTime;
+            Console.WriteLine("Timestamp: " + timestampDateTime);
+            if (Math.Abs((DateTime.UtcNow - timestampDateTime).TotalMinutes) > 5)
+            {
+                Console.WriteLine("Timestamp is invalid or expired.");
+                return BadRequest("Timestamp is invalid or expired.");
+            }
+
+
+            var secretKey = _hmacService.GetServiceSecret(clientId);
+
+            // Recalcular a assinatura, por que ela tem que ser igual a que foi enviada, já que tem a mesma chave secreta de criptografia
+            var payload = $"{userId}:{timestamp}";
+
+            Console.WriteLine("Payload: " + payload);
+            var expectedSignature = _hmacService.GenerateHMACSignature(payload, secretKey);
+
+            if (signature != expectedSignature)
+            {
+                return Unauthorized("Invalid signature");
+            }
+
+            Console.WriteLine("Signature: " + signature);   
+
+            // Obter o usuário
+            var user = await _userService.GetUserById(userId);
+
+            if (user == null)
+            {
+                Console.WriteLine("User não achado");
+                return NotFound("Usuário não encontrado.");
+            }else{
+                Console.WriteLine("User achado");
+            }
+
+            // Verificar qual o tipo de usuário
+
+            if (user.TipoUsuario == Roles.Locador.ToString())
+            {
+                var locador = await _locadorService.GetLocadorByEmail(user.Email);
+                
+                var noColaborador = new NoColaboradorUserModel {
+                    UsuarioId = user.UsuarioId,
+                    RoleId = locador.LocadorId,
+                    Role = Roles.Locador.ToString(),
+                    Nome = locador.NomeCompletoLocador,
+                    CPF = locador.CPF,
+                    Telefone = locador.NumeroTelefone,
+                    Nacionalidade = locador.Nacionalidade,
+                    Endereco = locador.Endereco,
+                    CNPJ = locador.CNPJ,
+                    Passaporte = locador.Passaporte,
+                    RG = locador.RG,
+                    Email = user.Email,
+                    Ativo = user.Ativo,
+                    DataCriacao = user.DataRegistro,
+                };
+
+                Console.WriteLine("User: " + noColaborador);
+
+                return Ok(noColaborador);
+            }
+            else if (user.TipoUsuario == Roles.Locatario.ToString())
+            {
+                var locatario = await _locatarioService.GetLocatarioByEmail(user.Email);
+
+                var noColaborador = new NoColaboradorUserModel {
+                    UsuarioId = user.UsuarioId,
+                    RoleId = locatario.LocatarioId,
+                    Role = Roles.Locatario.ToString(),
+                    Nome = locatario.NomeCompletoLocatario,
+                    CPF = locatario.CPF,
+                    Telefone = locatario.NumeroTelefone,
+                    Nacionalidade = locatario.Nacionalidade,
+                    Endereco = locatario.Endereco,
+                    CNPJ = locatario.CNPJ,
+                    Passaporte = locatario.Passaporte,
+                    RG = locatario.RG,
+                    Email = user.Email,
+                    Ativo = user.Ativo,
+                    DataCriacao = user.DataRegistro,
+                };
+
+                Console.WriteLine("User: " + noColaborador); 
+
+                return Ok(noColaborador);
+            }
+            else if (user.TipoUsuario == Roles.Admin.ToString() || user.TipoUsuario == Roles.Judiciario.ToString())
+            {
+                var colaborador = await _colaboradorService.GetColaboradorByEmail(user.Email);
+                
+                var colaboradorResult = new ColaboradorUserModel {
+                    UsuarioId = user.UsuarioId,
+                    ColaboradorIdId = colaborador.ColaboradorId,
+                    Role = Roles.Admin.ToString(),
+                    Nome = colaborador.NomeCompleto,
+                    TipoColaborador = colaborador.TipoColaborador,
+                    Email = user.Email,
+                    Ativo = user.Ativo,
+                    DataCriacao = user.DataRegistro
+                };
+
+                Console.WriteLine("User: " + colaboradorResult);
+
+                return Ok(colaboradorResult);
+
+            } else
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+        }
+
+        [HttpGet("infoLocador/{locadorId}")]
+        public async Task<IActionResult> GetLocador(int locadorId, [FromHeader(Name = "X-Client-Id")] string clientId,
+                        [FromHeader(Name = "X-Signature")] string signature,
+                        [FromHeader(Name = "X-Timestamp")] string timestamp)
+        {
+            //  Validar o cliente
+            if(_hmacService.CheckClientName(clientId) == false)
+            {
+            return BadRequest("Invalid Client");
+            }
+
+            // Validar o timestamp (prevenir ataques de replay)
+            if (!long.TryParse(timestamp, out var timestampValue))
+            {
+            Console.WriteLine("Timestamp is not a valid number.");
+            return BadRequest("Timestamp is not a valid number.");
+            }
+
+            var timestampDateTime = DateTimeOffset.FromUnixTimeSeconds(timestampValue).UtcDateTime;
+            Console.WriteLine("Timestamp: " + timestampDateTime);
+            if (Math.Abs((DateTime.UtcNow - timestampDateTime).TotalMinutes) > 5)
+            {
+            Console.WriteLine("Timestamp is invalid or expired.");
+            return BadRequest("Timestamp is invalid or expired.");
+            }
+
+            var secretKey = _hmacService.GetServiceSecret(clientId);
+
+            // Recalcular a assinatura
+            var payload = $"{locadorId}:{timestamp}";
+
+            Console.WriteLine("Payload: " + payload);
+            var expectedSignature = _hmacService.GenerateHMACSignature(payload, secretKey);
+
+            if (signature != expectedSignature)
+            {
+            return Unauthorized("Invalid signature");
+            }
+
+            Console.WriteLine("Signature: " + signature);   
+
+            // Obter o locador
+            var locador = await _locadorService.GetLocadorByLocadorID(locadorId);
+
+            if (locador == null)
+            {
+            Console.WriteLine("Locador não encontrado");
+            return NotFound("Locador não encontrado.");
+            }else{
+            Console.WriteLine("Locador encontrado");
+            }
+
+            var user = await _userService.GetUserById((int)locador.UsuarioId);
+
+            var locadorResult = new NoColaboradorUserModel {
+            UsuarioId = (int)locador.UsuarioId,
+            RoleId = locador.LocadorId,
+            Role = Roles.Locador.ToString(),
+            Nome = locador.NomeCompletoLocador,
+            CPF = locador.CPF,
+            Telefone = locador.NumeroTelefone,
+            Nacionalidade = locador.Nacionalidade,
+            Endereco = locador.Endereco,
+            CNPJ = locador.CNPJ,
+            Passaporte = locador.Passaporte,
+            RG = locador.RG,
+            Email = user.Email,
+            Ativo = user.Ativo,
+            DataCriacao = user.DataRegistro,
+            };
+
+            Console.WriteLine("Locador: " + locadorResult);
+
+            return Ok(locadorResult);
+        }
+
+        // Endpoint para outros serviços pegarem a info de um locatario, por isso não tem policy de role
+        [HttpGet("infoLocatario/{locatarioId}")]
+        public async Task<IActionResult> GetLocatario(int locatarioId, [FromHeader(Name = "X-Client-Id")] string clientId,
+                [FromHeader(Name = "X-Signature")] string signature,
+                [FromHeader(Name = "X-Timestamp")] string timestamp)
+        {
+            // Validar o cliente
+            if(_hmacService.CheckClientName(clientId) == false)
+            {
+            return BadRequest("Invalid Client");
+            }
+
+            // Validar o timestamp (prevenir ataques de replay)
+            if (!long.TryParse(timestamp, out var timestampValue))
+            {
+            Console.WriteLine("Timestamp is not a valid number.");
+            return BadRequest("Timestamp is not a valid number.");
+            }
+
+            var timestampDateTime = DateTimeOffset.FromUnixTimeSeconds(timestampValue).UtcDateTime;
+            Console.WriteLine("Timestamp: " + timestampDateTime);
+            if (Math.Abs((DateTime.UtcNow - timestampDateTime).TotalMinutes) > 5)
+            {
+            Console.WriteLine("Timestamp is invalid or expired.");
+            return BadRequest("Timestamp is invalid or expired.");
+            }
+
+            var secretKey = _hmacService.GetServiceSecret(clientId);
+
+            // Recalcular a assinatura
+            var payload = $"{locatarioId}:{timestamp}";
+
+            Console.WriteLine("Payload: " + payload);
+            var expectedSignature = _hmacService.GenerateHMACSignature(payload, secretKey);
+
+            if (signature != expectedSignature)
+            {
+            return Unauthorized("Invalid signature");
+            }
+
+            Console.WriteLine("Signature: " + signature);   
+
+            // Obter o locatario
+            var locatario = await _locatarioService.GetLocatarioByLocatarioID(locatarioId);
+
+            if (locatario == null)
+            {
+            Console.WriteLine("Locatario não encontrado");
+            return NotFound("Locatario não encontrado.");
+            }else{
+            Console.WriteLine("Locatario encontrado");
+            }
+
+            var user = await _userService.GetUserById((int)locatario.UsuarioId);
+
+            var locatarioResult = new NoColaboradorUserModel {
+            UsuarioId = (int)locatario.UsuarioId,
+            RoleId = locatario.LocatarioId,
+            Role = Roles.Locatario.ToString(),
+            Nome = locatario.NomeCompletoLocatario,
+            CPF = locatario.CPF,
+            Telefone = locatario.NumeroTelefone,
+            Nacionalidade = locatario.Nacionalidade,
+            Endereco = locatario.Endereco,
+            CNPJ = locatario.CNPJ,
+            Passaporte = locatario.Passaporte,
+            RG = locatario.RG,
+            Email = user.Email,
+            Ativo = user.Ativo,
+            DataCriacao = user.DataRegistro,
+            };
+
+            Console.WriteLine("Locatario: " + locatarioResult);
+
+            return Ok(locatarioResult);
         }
 
         [HttpGet("PegarTodosUsuarios")]

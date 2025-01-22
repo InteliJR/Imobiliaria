@@ -285,7 +285,7 @@ export default function Properties() {
                   tenant={property.tenant}
                   price={`R$ ${property.price}`}
                   condominio={`R$ ${property.condominio}`}
-                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../public/ImovelSemFoto.png"}
+                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../ImovelSemFoto.png"}
                   />
                   
               );

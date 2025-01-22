@@ -13,7 +13,7 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using MongoDB.Driver;
 using Layer.Domain.Entities;
-
+using Layer.Infrastructure.ExternalAPIs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,17 +22,17 @@ var env = builder.Environment.EnvironmentName;
 
 if (env == "Development")
 {
-    Env.Load(".env.development");
+    Env.Load("etc/secrets/.env.development");
 }
 else if (env == "Production")
 {
-    // Env.Load(".env.production");
     Env.Load("etc/secrets/.env.production");
 }
 else
 {
     Env.Load();  // Caso você tenha um `.env` padrão
 }
+
 
 
 var mongoSettings = new MongoDbSettings
@@ -98,6 +98,21 @@ builder.Services.AddScoped<IContratosRepository, ContratoService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IChamadosRepository, ChamadosService>();
 builder.Services.AddScoped<ApplicationLog>();
+builder.Services.AddHttpClient<IUsersAPI, UsersAPI>((client) =>
+{
+    // Configuração do HttpClient
+    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("AUTH_SERVICE_URL")); // URL base do serviço
+    client.Timeout = TimeSpan.FromSeconds(30); // Timeout
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler())
+.AddTypedClient<IUsersAPI>((httpClient, serviceProvider) =>
+{
+    // Configuração de informações do cliente HMAC
+    var clientId = "service_imoveis";
+    var secretKey = Environment.GetEnvironmentVariable("HMAC_KEY") ?? "default-secret-key";
+    return new UsersAPI(httpClient, clientId, secretKey);
+});
+
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings

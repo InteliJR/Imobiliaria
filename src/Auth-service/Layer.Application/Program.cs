@@ -24,7 +24,7 @@ var env = builder.Environment.EnvironmentName;
 
 if (env == "Development")
 {
-    Env.Load(".env.development");
+    Env.Load("etc/secrets/.env.development");
 }
 else if (env == "Production")
 {
@@ -108,6 +108,7 @@ builder.Services.AddScoped<ILocatarioService, LocatarioService>();
 builder.Services.AddScoped<IColaboradorService, ColaboradorService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IHashingPasswordService, HashingPasswordService>();
+builder.Services.AddScoped<IHmacService, HmacService>();
 builder.Services.AddScoped<ApplicationLog>();
 
 // Configura JWT settings
