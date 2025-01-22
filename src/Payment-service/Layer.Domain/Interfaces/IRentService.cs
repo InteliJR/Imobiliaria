@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Layer.Domain.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Layer.Domain.Entities;
+
+namespace Layer.Domain.Interfaces
+{
+    public interface IRentService
+    {
+        Task<IEnumerable<Rent>> GetAllRentsAsync();
+        Task<Rent> GetRentByIdAsync(int id);
+        Task<IEnumerable<Rent>> GetRentsDueByDateAsync(DateTime dueDate);
+        Task<Rent> AddRentAsync(Rent rent);
+        Task<Rent> UpdateRentAsync(Rent rent);
+        Task DeleteRentAsync(int id);
+        Task<IEnumerable<Rent>> GetAllRentsByIdImovel(int imovelid);
+        Task<IEnumerable<Rent>> GetAllRentsByIdLocatario(int locatarioid);
+        Task<IEnumerable<Rent>> GetAllRentsByIdLocador(int locadorid);
+        Task<IEnumerable<Rent>> GetAllRentsByContractId(int contractid);
+        Task<Rent> GetAllRentByPaymentId(int paymentid);
+        Task<Rent> UpdateRentToPaidAsync(int Rentid, int Paymentid);
+        Task<List<Rent>> CreateRentNextMonthAsync(int contratoId, int numberOfMonthsAhead);
+    }
+}

@@ -21,6 +21,8 @@ namespace Layer.Infrastructure.Database
 
         public DbSet<Contratos> Contratos { get; set; }
 
+        public DbSet<Rent> Alugueis { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -29,7 +31,7 @@ namespace Layer.Infrastructure.Database
             modelBuilder.Entity<Payment>().ToTable("pagamentos").HasOne<Contratos>().WithMany().HasForeignKey(p => p.ContratoId);
 
             // Mapeamento para Usuários
-            modelBuilder.Entity<User>().ToTable("usuarios"); 
+            modelBuilder.Entity<User>().ToTable("usuarios");
         }
     }
 }

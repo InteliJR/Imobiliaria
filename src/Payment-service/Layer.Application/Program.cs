@@ -23,11 +23,11 @@ var env = builder.Environment.EnvironmentName;
 
 if (env == "Development")
 {
-    Env.Load("etc/secrets/.env.development");
+    Env.Load(".env.development");
 }
 else if (env == "Production")
 {
-    Env.Load("etc/secrets/.env.production");
+    Env.Load(".env.production");
 }
 else
 {
@@ -79,6 +79,7 @@ builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<CountryService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
+builder.Services.AddScoped<IRentService, RentService>();
 builder.Services.AddSingleton<ApplicationLog>();
 
 // Configura JWT settings
