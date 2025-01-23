@@ -140,7 +140,7 @@ namespace Layer.Application.Controllers
 
         [HttpPost("atualizarComoPago/")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<ActionResult> UpdateRentToPaid(PaymentToRent payment)
+        public async Task<ActionResult> UpdateRentToPaid([FromForm] PaymentToRent payment, IFormFileCollection files)
         {
             // Pegar rent
             var rent = await _rentService.GetRentByIdAsync(payment.RentId);
@@ -168,7 +168,7 @@ namespace Layer.Application.Controllers
                 return BadRequest(ex.Message);
             }
 
-            var updatedRent = await _rentService.UpdateRentToPaidAsync(payment.RentId, resultPayment.PaymentId);
+            var updatedRent = await _rentService.UpdateRentToPaidAsync(payment.RentId, resultPayment.PaymentId, files);
             return Ok(updatedRent);
         }
 
@@ -222,5 +222,15 @@ namespace Layer.Application.Controllers
             }
 
         }
+
+        [HttpGet("assinarComprovantes")]
+        [Authorize (Policy = "AllRoles")]
+        public async Task<IActionResult> GenerateSignedUrlOfContracts(string contractUrl)
+        {
+            var urls = await _rentService.GenerateSignedUrlOfContractsAsync(contractUrl);
+            return Ok(urls);
+        }
+
+
     }
 }

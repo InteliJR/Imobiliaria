@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Layer.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Layer.Domain.Interfaces
 {
@@ -26,10 +27,11 @@ namespace Layer.Domain.Interfaces
         Task<IEnumerable<Rent>> GetAllRentsByIdLocador(int locadorid);
         Task<IEnumerable<Rent>> GetAllRentsByContractId(int contractid);
         Task<Rent> GetAllRentByPaymentId(int paymentid);
-        Task<Rent> UpdateRentToPaidAsync(int Rentid, int Paymentid);
+        Task<Rent> UpdateRentToPaidAsync(int Rentid, int Paymentid, IFormFileCollection file);
         Task<List<Rent>> CreateRentNextMonthAsync(int contratoId, int numberOfMonthsAhead);
         Task<Contratos> ContractById(int contractId);
         Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByIdImovel(int imovelid);
         Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByContractId(int contractId);
+        Task<string> GenerateSignedUrlOfContractsAsync(string objectName);
     }
 }

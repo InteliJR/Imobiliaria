@@ -10,6 +10,7 @@ using System.Data;
 using System;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 
 namespace Layer.Services.Services
@@ -17,10 +18,22 @@ namespace Layer.Services.Services
     public class RentService : IRentService
     {
         private readonly AppDbContext _dbcontext;
+        
+        private readonly GoogleCloudStorageService _storageService;
 
         public RentService(AppDbContext context)
         {
             _dbcontext = context;
+
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json");
+
+            if (!File.Exists(filePath))
+            {
+                filePath = "/etc/secrets/administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json";
+            }
+
+            var bucketName = "administradora-kk.appspot.com"; // Substitua pelo nome correto do seu bucket
+            _storageService = new GoogleCloudStorageService(filePath, bucketName);
         }
 
         public async Task<IEnumerable<Rent>> GetAllRentsAsync()
@@ -248,19 +261,47 @@ namespace Layer.Services.Services
 
         }
 
-        public async Task<Rent> UpdateRentToPaidAsync(int Rentid, int Paymentid)
+        public async Task<Rent> UpdateRentToPaidAsync(int Rentid, int Paymentid, IFormFileCollection file)
         {
             var rent = await _dbcontext.Alugueis.FindAsync(Rentid);
             var payment = await _dbcontext.Pagamentos.FindAsync(Paymentid);
+
             if (payment == null)
             {
                 throw new Exception("Pagamento não encontrado.");
             }
-            
+
+            string fileUrl= "";
+
+            try
+            {
+                if (file != null)
+                {
+                    var tempFilePath = Path.GetTempFileName();
+                    using (var stream = new FileStream(tempFilePath, FileMode.Create))
+                    {
+                        foreach (var formFile in file)
+                        {
+                            await formFile.CopyToAsync(stream);
+                        }
+                    }
+
+                    var objectName = $"comprovantes/{file.First().FileName}";
+                    var publicUrl = await _storageService.UploadFileAsync(tempFilePath, objectName);
+
+                    fileUrl = publicUrl;
+                }
+
+            } catch (Exception ex){
+                throw new Exception("Erro ao salvar arquivo: " + ex.Message);
+            }
+
+
             if (rent != null)
             {
                 rent.PagamentoId = Paymentid;
                 rent.Status = true;
+                rent.BoletoDoc = fileUrl;
                 _dbcontext.Alugueis.Update(rent);
                 await _dbcontext.SaveChangesAsync();
                 return rent;
@@ -358,6 +399,12 @@ namespace Layer.Services.Services
 
             return contract;
         }
+
+        public async Task<string> GenerateSignedUrlOfContractsAsync(string objectName)
+        {
+            return await _storageService.GenerateSignedUrlAsync(objectName, 5);
+        }
+
 
     }
 
