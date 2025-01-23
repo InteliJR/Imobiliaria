@@ -45,7 +45,7 @@ namespace Layer.Application.Controllers
             return Ok(rent);
         }
 
-        [HttpGet("alugueis/imovel/{imovelid}")]
+        [HttpGet("alugueisPorImovel/{imovelid}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<IEnumerable<Rent>>> GetAllRentsByIdImovel(int imovelid)
         {
@@ -53,7 +53,7 @@ namespace Layer.Application.Controllers
             return Ok(rents);
         }
 
-        [HttpGet("alugueis/locatario/{locatarioid}")]
+        [HttpGet("alugueisPorLocatario/{locatarioid}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<IEnumerable<Rent>>> GetAllRentsByIdLocatario(int locatarioid)
         {
@@ -61,7 +61,7 @@ namespace Layer.Application.Controllers
             return Ok(rents);
         }
 
-        [HttpGet("alugueis/locador/{locadorid}")]
+        [HttpGet("alugueisPorLocador/{locadorid}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<IEnumerable<Rent>>> GetAllRentsByIdLocador(int locadorid)
         {
@@ -69,7 +69,7 @@ namespace Layer.Application.Controllers
             return Ok(rents);
         }
 
-        [HttpGet("alugueis/contrato/{contractid}")]
+        [HttpGet("alugueisPorContrato/{contractid}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<IEnumerable<Rent>>> GetAllRentsByContractId(int contractid)
         {
@@ -78,7 +78,7 @@ namespace Layer.Application.Controllers
             return Ok(rents);
         }
 
-        [HttpGet("alugueis/pagamento/{paymentid}")]
+        [HttpGet("alugueisPorPagamento/{paymentid}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<Rent>> GetAllRentByPaymentId(int paymentid)
         {
@@ -86,7 +86,7 @@ namespace Layer.Application.Controllers
             return Ok(rent);
         }
 
-        [HttpGet("alugueis/vencimento/{dueDate}")]
+        [HttpGet("alugueisPorvencimento/{dueDate}")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<IEnumerable<Rent>>> GetRentsDueByDate(DateTime dueDate)
         {
@@ -138,7 +138,7 @@ namespace Layer.Application.Controllers
             return Ok();
         }
 
-        [HttpPost("atualizar/pago/")]
+        [HttpPost("atualizarComoPago/")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult> UpdateRentToPaid(PaymentToRent payment)
         {
