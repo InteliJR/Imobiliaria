@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Layer.Domain.Entities;
+using Layer.Domain.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,5 +28,8 @@ namespace Layer.Domain.Interfaces
         Task<Rent> GetAllRentByPaymentId(int paymentid);
         Task<Rent> UpdateRentToPaidAsync(int Rentid, int Paymentid);
         Task<List<Rent>> CreateRentNextMonthAsync(int contratoId, int numberOfMonthsAhead);
+        Task<Contratos> ContractById(int contractId);
+        Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByIdImovel(int imovelid);
+        Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByContractId(int contractId);
     }
 }

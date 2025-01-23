@@ -49,7 +49,7 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<IEnumerable<Rent>>> GetAllRentsByIdImovel(int imovelid)
         {
-            var rents = await _rentService.GetAllRentsByIdImovel(imovelid);
+            var rents = await _rentService.GetAllRentsWithPaymentsByIdImovel(imovelid);
             return Ok(rents);
         }
 
@@ -73,7 +73,8 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<ActionResult<IEnumerable<Rent>>> GetAllRentsByContractId(int contractid)
         {
-            var rents = await _rentService.GetAllRentsByContractId(contractid);
+            var contract = await _rentService.ContractById(contractid);
+            var rents = await _rentService.GetAllRentsWithPaymentsByContractId(contractid);
             return Ok(rents);
         }
 
@@ -177,6 +178,49 @@ namespace Layer.Application.Controllers
         {
             var newRent = await _rentService.CreateRentNextMonthAsync(contratoId, numberOfMonthsAhead);
             return Ok(newRent);
+        }
+
+        [HttpGet("meusAlugueis")]
+        [Authorize(Policy = "AllRoles")]
+        public async Task<ActionResult<IEnumerable<Rent>>> GetMyRents(int contratoId)
+        {
+            var role = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+            var roleId = int.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type == "RoleID")?.Value);
+
+            var contract = await _rentService.ContractById(contratoId);
+
+
+            if (role == Roles.Admin.ToString())
+            {
+                return Ok("Você não tem nenhum aluguel.");
+            }else if(role == Roles.Locatario.ToString())
+            {
+                // Verificar se o contratoId é do locatario
+                Console.WriteLine("LocatarioId: " + contract.LocatarioId);
+                Console.WriteLine("RoleId: " + roleId);
+                if(contract.LocatarioId != roleId)
+                {
+                    return BadRequest("Você não tem permissão para acessar esses alugueis.");
+                }
+
+                var rents = await _rentService.GetAllRentsWithPaymentsByContractId(contratoId);
+                return Ok(rents);
+            }else if(role == Roles.Locador.ToString())
+            {
+                // Verificar se o contratoId é do locador
+                Console.WriteLine("LocadorId: " + contract.LocadorId);
+                Console.WriteLine("RoleId: " + roleId);
+                if(contract.LocadorId != roleId)
+                {
+                    return BadRequest("Você não tem permissão para acessar esses alugueis.");
+                }
+
+                var rents = await _rentService.GetAllRentsWithPaymentsByContractId(contratoId);
+                return Ok(rents);
+            }else{
+                return BadRequest("Erro ao fazer a requisição.");
+            }
+
         }
     }
 }

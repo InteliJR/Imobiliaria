@@ -1,5 +1,6 @@
 using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
+using Layer.Domain.DTO;
 using Layer.Infrastructure;
 using Layer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +66,81 @@ namespace Layer.Services.Services
             return rents;
         }
 
+        public async Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByIdImovel(int imovelid)
+        {
+            var rentsWithPayments = await _dbcontext.Alugueis
+            .Join(_dbcontext.Contratos,
+                rent => rent.ContratoId,
+                contrato => contrato.ContratoId,
+                (rent, contrato) => new { Rent = rent, Contrato = contrato })
+            .Where(rc => rc.Contrato.ImovelId == imovelid)
+            .GroupJoin(_dbcontext.Pagamentos,
+                rc => rc.Rent.PagamentoId,
+                pagamento => pagamento.PaymentId,
+                (rc, pagamento) => new { Rent = rc.Rent, Pagamento = pagamento.FirstOrDefault() })
+            .Select(rp => new RentsWithPayment
+            {
+                Rent = rp.Rent,
+                Payment = rp.Pagamento
+            })
+            .ToListAsync();
+
+            if (!rentsWithPayments.Any())
+            {
+            throw new KeyNotFoundException("Nenhum aluguel encontrado para este imovelId");
+            }
+
+            return rentsWithPayments;
+        }
+        public async Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByContractId(int contractId)
+        {
+            var rentsWithPayments = await _dbcontext.Alugueis
+            .Where(r => r.ContratoId == contractId)
+            .GroupJoin(_dbcontext.Pagamentos,
+            rent => rent.PagamentoId,
+            pagamento => pagamento.PaymentId,
+            (rent, pagamento) => new { Rent = rent, Pagamento = pagamento.FirstOrDefault() })
+            .Select(rp => new RentsWithPayment
+            {
+            Rent = rp.Rent,
+            Payment = rp.Pagamento
+            })
+            .ToListAsync();
+
+            if (!rentsWithPayments.Any())
+            {
+            throw new KeyNotFoundException("Nenhum aluguel encontrado para este contractId");
+            }
+
+            return rentsWithPayments;
+        }
+
+        public async Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByIdLocatario(int locatarioid)
+        {
+            var rentsWithPayments = await _dbcontext.Alugueis
+            .Join(_dbcontext.Contratos,
+            rent => rent.ContratoId,
+            contrato => contrato.ContratoId,
+            (rent, contrato) => new { Rent = rent, Contrato = contrato })
+            .Where(rc => rc.Contrato.LocatarioId == locatarioid)
+            .GroupJoin(_dbcontext.Pagamentos,
+            rc => rc.Rent.PagamentoId,
+            pagamento => pagamento.PaymentId,
+            (rc, pagamento) => new { Rent = rc.Rent, Pagamento = pagamento.FirstOrDefault() })
+            .Select(rp => new RentsWithPayment
+            {
+            Rent = rp.Rent,
+            Payment = rp.Pagamento
+            })
+            .ToListAsync();
+
+            if (!rentsWithPayments.Any())
+            {
+            throw new KeyNotFoundException("Nenhum aluguel encontrado para este locatarioId");
+            }
+
+            return rentsWithPayments;
+        }
         public async Task<IEnumerable<Rent>> GetAllRentsByIdLocador(int locadorid)
         {
             var rents = await _dbcontext.Alugueis
@@ -197,81 +273,92 @@ namespace Layer.Services.Services
         }
 
 
-    public async Task<List<Rent>> CreateRentNextMonthAsync(int contratoId, int numberOfMonthsAhead)
-    {
-        var newRents = new List<Rent>();
-
-        // Pegar todos os aluguéis de um certo contrato
-        var lastRentMonth = await GetLastRentMonthAsync(contratoId);
-
-        if(lastRentMonth == null)
+        public async Task<List<Rent>> CreateRentNextMonthAsync(int contratoId, int numberOfMonthsAhead)
         {
-            var currentMonth = DateTime.Now.ToString("MM/yyyy");
+            var newRents = new List<Rent>();
 
-            var firstRent = new Rent
+            // Pegar todos os aluguéis de um certo contrato
+            var lastRentMonth = await GetLastRentMonthAsync(contratoId);
+
+            if(lastRentMonth == null)
             {
-                ContratoId = contratoId,
-                Mes = currentMonth,
-                Status = false
-            };
-            await AddRentAsync(firstRent);
-            newRents.Add(firstRent);
+                var currentMonth = DateTime.Now.ToString("MM/yyyy");
 
-            lastRentMonth = currentMonth;
-        }
-
-        Console.WriteLine($"Último mês registrado: {lastRentMonth}");
-
-        // Converter o ultimo mês para DateTime
-        var lastRentDate = DateTime.ParseExact(lastRentMonth, "MM/yyyy", null);
-
-        var nextMonths = new List<string>();
-
-        // Criar uma list com os proximos mês para depois interar na criação dos aluguéis
-        for (int month = 1; month <= numberOfMonthsAhead; month++){
-            nextMonths.Add(lastRentDate.AddMonths(month).ToString("MM/yyyy"));
-        }
-
-        try
-        {
-            foreach (var month in nextMonths)
-            {
-                var rent = new Rent
+                var firstRent = new Rent
                 {
                     ContratoId = contratoId,
-                    Mes = month,
+                    Mes = currentMonth,
                     Status = false
                 };
-                await AddRentAsync(rent);
-                newRents.Add(rent);
+                await AddRentAsync(firstRent);
+                newRents.Add(firstRent);
+
+                lastRentMonth = currentMonth;
             }
 
-            return newRents;
+            Console.WriteLine($"Último mês registrado: {lastRentMonth}");
+
+            // Converter o ultimo mês para DateTime
+            var lastRentDate = DateTime.ParseExact(lastRentMonth, "MM/yyyy", null);
+
+            var nextMonths = new List<string>();
+
+            // Criar uma list com os proximos mês para depois interar na criação dos aluguéis
+            for (int month = 1; month <= numberOfMonthsAhead; month++){
+                nextMonths.Add(lastRentDate.AddMonths(month).ToString("MM/yyyy"));
+            }
+
+            try
+            {
+                foreach (var month in nextMonths)
+                {
+                    var rent = new Rent
+                    {
+                        ContratoId = contratoId,
+                        Mes = month,
+                        Status = false
+                    };
+                    await AddRentAsync(rent);
+                    newRents.Add(rent);
+                }
+
+                return newRents;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao adicionar aluguel: " + ex.Message);
+            }
+
         }
-        catch (Exception ex)
+
+        private async Task<string> GetLastRentMonthAsync(int contractId)
         {
-            throw new Exception("Erro ao adicionar aluguel: " + ex.Message);
+            var rents = await _dbcontext.Alugueis
+                .Where(r => r.ContratoId == contractId)
+                .ToListAsync();
+
+            if (!rents.Any())
+            {
+                return null;
+            }
+
+            // Ordenar e pegar o último mês
+            var lastRent = rents.OrderByDescending(r => DateTime.ParseExact(r.Mes, "MM/yyyy", null)).FirstOrDefault();
+            return lastRent.Mes;
         }
 
-    }
-
-    private async Task<string> GetLastRentMonthAsync(int contractId)
-    {
-        var rents = await _dbcontext.Alugueis
-            .Where(r => r.ContratoId == contractId)
-            .ToListAsync();
-
-        if (!rents.Any())
+        public async Task<Contratos> ContractById(int contractId)
         {
-            return null;
+            var contract = await _dbcontext.Contratos.FindAsync(contractId);
+
+            if (contract == null)
+            {
+                throw new Exception("Contrato não encontrado.");
+            }
+
+            return contract;
         }
 
-        // Ordenar e pegar o último mês
-        var lastRent = rents.OrderByDescending(r => DateTime.ParseExact(r.Mes, "MM/yyyy", null)).FirstOrDefault();
-        return lastRent.Mes;
     }
 
-
-
-    }
 }
