@@ -14,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Layer.Infrastructure.ServicesExternal;
 using Layer.Infrastructure.ServicesInternal;
+using Google.Apis.Auth.OAuth2;
+using FirebaseAdmin;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +46,43 @@ var mongoSettings = new MongoDbSettings
     DatabaseName = Environment.GetEnvironmentVariable("MONGO_DATABASE_NAME"),
     LogsCollectionName = Environment.GetEnvironmentVariable("MONGO_LOGS_COLLECTION_NAME") ?? "Logs"
 };
+
+// Definir o caminho do arquivo de credenciais Firebase corretamente
+string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json");
+
+if (!File.Exists(filePath))
+{
+    filePath = "/etc/secrets/administradora-kk-firebase-adminsdk-1fa3k-7b4c700bd8.json";
+}
+
+// Definir a variável de ambiente GOOGLE_APPLICATION_CREDENTIALS
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
+
+
+
+
+// Verificar se a variável de ambiente FIREBASE_CREDENTIALS_PATH foi configurada corretamente
+var firebaseCredentialsPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+
+// Verificar se o caminho está correto antes de usar o arquivo
+if (!string.IsNullOrEmpty(firebaseCredentialsPath) && File.Exists(firebaseCredentialsPath))
+{
+    // Criar a credencial do Google a partir do arquivo de credenciais
+    var googleCredential = GoogleCredential.FromFile(firebaseCredentialsPath);
+
+    // Inicializar o FirebaseApp usando as credenciais
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = googleCredential
+    });
+
+    Console.WriteLine("Firebase initialized with credentials from: " + firebaseCredentialsPath);
+}
+else
+{
+    // Lidar com erro de arquivo não encontrado ou variável de ambiente não configurada corretamente
+    Console.WriteLine("Error: Firebase credentials file not found or environment variable not set.");
+}
 
 
 builder.Services.AddHttpClient();
@@ -79,6 +118,7 @@ builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<CountryService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
+builder.Services.AddScoped<IRentService, RentService>();
 builder.Services.AddSingleton<ApplicationLog>();
 
 // Configura JWT settings
