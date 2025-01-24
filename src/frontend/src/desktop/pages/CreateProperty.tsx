@@ -107,7 +107,6 @@ export default function CreateProperty() {
         // Erro com resposta do servidor (ex: 400, 500)
         if (error.response) {
           const errorPayload = error.response.data; // Captura o payload de resposta
-          const errorMessage = errorPayload.message || "Erro ao processar a requisição.";
           showErrorToast(errorPayload)
   
           // Log detalhado do payload de erro
