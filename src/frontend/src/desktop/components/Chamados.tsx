@@ -8,6 +8,7 @@ import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
+import axios from "axios";
 
 export default function ChamadosComponent() {
   interface Ticket {
@@ -74,35 +75,33 @@ export default function ChamadosComponent() {
 
 
   const fetchTickets = async () => {
+    setLoading(true); // Inicia o estado de carregamento
+  
     try {
-      const chamadosResponse = await axiosInstance.get(
-        "property/Chamados/PegarTodosOsChamados"
-      );
-      const usersResponse = await axiosInstance.get(
-        "auth/User/PegarTodosUsuarios"
-      );
-      const propertiesResponse = await axiosInstance.get(
-        "property/Imoveis/PegarTodosImoveis"
-      );
-
+      // Faz as requisições simultaneamente
+      const [chamadosResponse, usersResponse, propertiesResponse] = await Promise.all([
+        axiosInstance.get("property/Chamados/PegarTodosOsChamados"),
+        axiosInstance.get("auth/User/PegarTodosUsuarios"),
+        axiosInstance.get("property/Imoveis/PegarTodosImoveis"),
+      ]);
+  
+      // Verifica se os dados de resposta são válidos
       if (
         !chamadosResponse.data ||
         !usersResponse.data ||
         !propertiesResponse.data
       ) {
         console.error("Dados de resposta inválidos");
+        showErrorToast("Dados recebidos são inválidos. Tente novamente.");
         return;
       }
-
-      // console.log("Chamados:", chamadosResponse.data);
-      // console.log("Usuários:", usersResponse.data);
-      // console.log("Imóveis:", propertiesResponse.data);
-
+  
+      // Extrai os dados das respostas
       const chamados = chamadosResponse.data;
       const users = usersResponse.data;
       const properties = propertiesResponse.data;
-
-      // Mesclando os dados
+  
+      // Mescla os dados
       const mergedData = chamados.map(
         (chamado: {
           descricao: string;
@@ -122,7 +121,7 @@ export default function ChamadosComponent() {
             properties.find(
               (p: { imovelId: any }) => p.imovelId === chamado.idImovel
             ) || {};
-
+  
           return {
             chamadoId: chamado.idChamado,
             title: chamado.titulo || "Título não informado",
@@ -134,19 +133,44 @@ export default function ChamadosComponent() {
           };
         }
       );
-
+  
+      // Atualiza os estados com os dados mesclados
       setFilteredData(mergedData);
       setAdvancedFiltered(mergedData);
-      console.log(mergedData);
       setData(mergedData);
-      setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
+  
     } catch (error) {
-      console.error(error);
-
-      showErrorToast("Erro ao se conectar com o servidor.");
+      console.error("Erro ao buscar dados:", error);
+  
+      // Tratamento de erros do Axios
+      if (axios.isAxiosError(error)) {
+        // Erro com resposta do servidor (ex: 400, 500)
+        if (error.response) {
+          const errorMessage = error.response.data || "Erro ao processar a requisição.";
+          showErrorToast(errorMessage);
+        }
+        // Erro de rede (ex: servidor indisponível)
+        else if (error.request) {
+          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+        }
+        // Erro inesperado
+        else {
+          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+      }
+      // Erro genérico (não relacionado ao Axios)
+      else if (error instanceof Error) {
+        showErrorToast(error.message);
+      }
+      // Erro desconhecido
+      else {
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
+    } finally {
+      setLoading(false); // Finaliza o estado de carregamento, independentemente de sucesso ou erro
     }
   };
-
+  
   useEffect(() => {
     // Se search estiver vazio, "filteredData" = "advancedFiltered"
     if (!search.trim()) {

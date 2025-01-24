@@ -5,7 +5,7 @@ import FormFieldFilter from "../components/Form/FormFieldFilter";
 import Loading from "../../components/Loading";
 import FilterIcon from "/Filter.svg";
 import { showErrorToast } from "../../utils/toastMessage";
-import { AxiosError } from "axios";
+import axios from "axios";
 import axiosInstance from "../../services/axiosConfig";
 import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
@@ -91,37 +91,61 @@ export default function ContratosComponent() {
   ];
 
   const fetchContratos = async () => {
+    setLoading(true); // Inicia o estado de carregamento
+  
     try {
-      setLoading(true); // Inicia o estado de carregamento
+      // Faz a requisição para obter os contratos
       const response = await axiosInstance.get("property/Contratos/PegarTodosOsContratos");
   
-      if (response.data) {
-        // Transformar o contratoId em número
-        response.data.forEach((contrato: any) => {
-          contrato.contratoId = Number(contrato.contratoId);
-        });
-        setContratos(response.data); // Atualiza o estado com os contratos recebidoos
-        setFilteredData(response.data); // Atualiza o estado de contratos filtrados
-        setData(response.data); // Atualiza o estado de dados
-        setAdvancedFiltered(response.data); // Atualiza o estado de contratos filtrados avançados
-        // console.log(response.data);
-      } else {
-        setContratos([]); // Garante que contratos seja uma lista vazia se não houver dados
+      // Verifica se os dados de resposta são válidos
+      if (!response.data || !Array.isArray(response.data)) {
+        console.error("Dados de resposta inválidos ou ausentes");
+        showErrorToast("Dados recebidos são inválidos. Tente novamente.");
+        setContratos([]); // Garante que contratos seja uma lista vazia
+        return;
       }
   
-      setLoading(false); // Finaliza o estado de carregamento
-    } catch (error) {
-      console.error(error);
+      // Transforma o contratoId em número
+      const contratos = response.data.map((contrato: any) => ({
+        ...contrato,
+        contratoId: Number(contrato.contratoId),
+      }));
   
-      if (error instanceof AxiosError) {
-        showErrorToast(
-          error.response?.data?.message || "Erro ao se conectar com o servidor."
-        );
-      } else {
+      // Atualiza os estados com os dados recebidos
+      setContratos(contratos);
+      setFilteredData(contratos);
+      setData(contratos);
+      setAdvancedFiltered(contratos);
+  
+    } catch (error) {
+      console.error("Erro ao buscar contratos:", error);
+  
+      // Tratamento de erros do Axios
+      if (axios.isAxiosError(error)) {
+        // Erro com resposta do servidor (ex: 400, 500)
+        if (error.response) {
+          const errorMessage = error.response.data?.message || "Erro ao processar a requisição.";
+          showErrorToast(errorMessage);
+        }
+        // Erro de rede (ex: servidor indisponível)
+        else if (error.request) {
+          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+        }
+        // Erro inesperado
+        else {
+          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+      }
+      // Erro genérico (não relacionado ao Axios)
+      else if (error instanceof Error) {
+        showErrorToast(error.message);
+      }
+      // Erro desconhecido
+      else {
         showErrorToast("Erro ao se conectar com o servidor.");
       }
-  
-      setLoading(false); // Finaliza o estado de carregamento em caso de erro
+    } finally {
+      setLoading(false); // Finaliza o estado de carregamento, independentemente de sucesso ou erro
     }
   };
 

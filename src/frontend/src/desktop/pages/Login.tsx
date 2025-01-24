@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { jwtDecode } from "jwt-decode";
+// import axios from "axios";
+// import { postData } from "../../services/api";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -30,7 +33,7 @@ export default function Login() {
       localStorage.setItem("jwtToken", token);
 
       const decodedToken: any = jwtDecode(token);
-      console.log(decodedToken);
+      // console.log(decodedToken);
       const roleClaim =
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"; // Era usado para impedir visualização de rotas protegidas
       const role = decodedToken[roleClaim]; // Era usado para impedir visualização de rotas protegidas
@@ -52,15 +55,35 @@ export default function Login() {
         navigate('/');
       }
 
-    } catch (error: any) {
-      showErrorToast(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
-      );
+    } catch (error) {
+      // Tratamento de erros do Axios
+      if (axios.isAxiosError(error)) {
+        // Erro com resposta do servidor (ex: credenciais inválidas)
+        if (error.response) {
+          const errorMessage = error.response.data || "Usuário ou senha inválidos.";
+          showErrorToast(errorMessage);
+        }
+        // Erro de rede (ex: servidor indisponível)
+        else if (error.request) {
+          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+        }
+        // Erro inesperado
+        else {
+          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+      }
+      // Erro genérico (não relacionado ao Axios)
+      else if (error instanceof Error) {
+        showErrorToast(error.message);
+      }
+      // Erro desconhecido
+      else {
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="bg-[#F0F0F0] flex flex-col min-h-screen">
       {/* Navbar */}
