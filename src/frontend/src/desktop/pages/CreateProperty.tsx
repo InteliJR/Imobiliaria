@@ -5,6 +5,7 @@ import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig.ts";
+import axios from "axios";
 
 export default function CreateProperty() {
   const [propertyType, setPropertyType] = useState("Kitnet");
@@ -46,11 +47,17 @@ export default function CreateProperty() {
     };
   
   // Função de envio do formulário
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
   
     try {
+      // Verificar campos obrigatórios
+      if (!propertyType || !cep || !address || !neighborhood || !rent || !description) {
+        showErrorToast("Por favor, preencha todos os campos obrigatórios.");
+        return;
+      }
+  
       const formData = new FormData();
       formData.append("TipoImovel", propertyType);
       formData.append("Cep", cep);
@@ -65,21 +72,22 @@ export default function CreateProperty() {
   
       // Adicionar as fotos
       photos.forEach((photo) => formData.append("files", photo));
-
+  
       // Log detalhado
       console.log("Verificar FormData:");
       formData.forEach((value, key) => {
         console.log(key, value);
       });
   
-      const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
+  
+      // Limpar formulário após o envio
       setPropertyType("Kitnet");
       setCep("");
       setAddress("");
@@ -91,13 +99,41 @@ export default function CreateProperty() {
       setSelectedLocadorId(null);
       setSelectedLocatarioId(null);
       setPhotos([]); // Limpar fotos após o envio
+  
     } catch (error: any) {
-      console.error(error);
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      console.error("Erro ao criar imóvel:", error);
+  
+      if (axios.isAxiosError(error)) {
+        // Erro com resposta do servidor (ex: 400, 500)
+        if (error.response) {
+          const errorPayload = error.response.data; // Captura o payload de resposta
+          const errorMessage = errorPayload.message || "Erro ao processar a requisição.";
+          showErrorToast(errorPayload)
+  
+          // Log detalhado do payload de erro
+          console.error("Payload de erro:", errorPayload);
+        }
+        // Erro de rede (ex: servidor indisponível)
+        else if (error.request) {
+          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+        }
+        // Erro inesperado
+        else {
+          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+      }
+      // Erro genérico (não relacionado ao Axios)
+      else if (error instanceof Error) {
+        showErrorToast(error.message);
+      }
+      // Erro desconhecido
+      else {
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
     } finally {
       setLoading(false);
     }
-  };  
+  };
   
 
   return (
