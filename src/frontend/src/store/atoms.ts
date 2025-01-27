@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 
 // Átomo para armazenar o papel do usuário (role)
-export const userRoleAtom = atom<any | null>(localStorage.getItem("userRole"));
+export const userRoleAtom = atom<string | null>(localStorage.getItem("userRole"));
 
 // Defina a interface do usuário
 export interface UserData {

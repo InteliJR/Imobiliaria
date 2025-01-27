@@ -187,7 +187,7 @@ const Root = () => {
         <Route
           path="/home-locador"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Locador"]}>
               <HomeLocador />
             </ProtectedRoute>
           }
@@ -196,7 +196,7 @@ const Root = () => {
         <Route
           path="/home-locatario"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Locatario"]}>
               <HomeLocatario />
             </ProtectedRoute>
           }
@@ -214,17 +214,17 @@ const Root = () => {
 
         {/* Contratos e pagamentos */}
         <Route
-          path="/pagamento/:id"
+          path="/pagamento/:imovelid"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}>
               <PaymentView />
             </ProtectedRoute>
-          }
+          } 
         />
         <Route
           path="/contratos/:id"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}>
               <ContractView />
             </ProtectedRoute>
           }
