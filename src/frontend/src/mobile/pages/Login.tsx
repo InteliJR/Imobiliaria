@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosConfig";
 import { showErrorToast } from "../../utils/toastMessage";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -49,8 +50,31 @@ export default function Login() {
                 navigate('/');
             }
         } catch (error: any) {
-            // Axios retorna erros no `response`
-            showErrorToast(error.response?.data?.message || 'Erro ao fazer login');
+          if (axios.isAxiosError(error)) {
+            // Erro com resposta do servidor (ex: credenciais inválidas)
+            if (error.response) {
+              const errorMessage = error.response.data || "Usuário ou senha inválidos.";
+              showErrorToast(errorMessage);
+            }
+            // Erro de rede (ex: servidor indisponível)
+            else if (error.request) {
+              showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+            }
+            // Erro inesperado
+            else {
+              showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+            }
+          }
+          // Erro genérico (não relacionado ao Axios)
+          else if (error instanceof Error) {
+            showErrorToast(error.message);
+          }
+          // Erro desconhecido
+          else {
+            showErrorToast("Erro ao se conectar com o servidor.");
+          }
+        } finally {
+          setLoading(false);
         }
     };
 

@@ -6,6 +6,9 @@ import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import getTokenData from "../../services/tokenConfig";
+import axios from "axios";
+import { userAtom } from "../../store/atoms";
+import { useAtom } from "jotai";
 
 export default function CreateTicket() {
   const [property, setProperty] = useState("");
@@ -14,10 +17,12 @@ export default function CreateTicket() {
   const [description, setDescription] = useState("");
   const [houseNames, setHouseNames] = useState("");
   const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
+  const [userData] = useAtom(userAtom);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Verificar campos obrigatórios
     if (!property || !title || !description) {
       showErrorToast("Por favor, preencha todos os campos obrigatórios.");
       return;
@@ -26,17 +31,6 @@ export default function CreateTicket() {
     setLoading(true);
 
     try {
-      // /Chamados/CriarUmNovoChamado
-      // {
-      //   "idImovel": 0,
-      //   "titulo": "string",
-      //   "solicitanteId": 0,
-      //   "dataSolicitacao": "2024-12-10T03:02:45.474Z",
-      //   "descricao": "string",
-      //   "tipoChamado": "string",
-      //   "status": "string"
-      // }
-
       const tokenData = getTokenData();
 
       console.log(tokenData.UserID);
@@ -65,13 +59,36 @@ export default function CreateTicket() {
       setHouseNames("");
 
       showSuccessToast("Chamado aberto com sucesso!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating ticket:", error);
-      showErrorToast(
-        error instanceof Error
-          ? error.message
-          : "Erro ao se conectar com o servidor."
-      );
+
+      if (axios.isAxiosError(error)) {
+        // Erro com resposta do servidor (ex: 400, 500)
+        if (error.response) {
+          const errorPayload = error.response.data; // Captura o payload de resposta
+          const errorMessage = errorPayload.message || "Erro ao processar a requisição.";
+          showErrorToast(errorMessage);
+
+          // Log detalhado do payload de erro
+          console.error("Payload de erro:", errorPayload);
+        }
+        // Erro de rede (ex: servidor indisponível)
+        else if (error.request) {
+          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+        }
+        // Erro inesperado
+        else {
+          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+      }
+      // Erro genérico (não relacionado ao Axios)
+      else if (error instanceof Error) {
+        showErrorToast(error.message);
+      }
+      // Erro desconhecido
+      else {
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
     } finally {
       setLoading(false);
     }
@@ -79,40 +96,67 @@ export default function CreateTicket() {
 
   const allHousesNames = async () => {
     try {
-      const imoveisResponse = await axiosInstance.get(
-        "property/Imoveis/PegarTodosImoveis"
-      );
-
+      let imoveisResponse;
+  
+      // Verifica o papel do usuário para decidir qual endpoint chamar
+      if (userData?.role === "Locatario") {
+        // Se o usuário for um Locatário, busca apenas os imóveis associados a ele
+        imoveisResponse = await axiosInstance.get(
+          `property/Imoveis/PegarImovelPorIdDoLocatario/${userData.roleId}`
+        );
+      } else {
+        // Para outros papéis (Admin, Locador, etc.), busca todos os imóveis
+        imoveisResponse = await axiosInstance.get(
+          "property/Imoveis/PegarTodosImoveis"
+        );
+      }
+  
       const imoveis = imoveisResponse.data;
-
-      console.log(imoveis);
-
+  
+      console.log("Imóveis encontrados:", imoveis);
+  
+      // Cria um array com os endereços dos imóveis
       const houseNamesArray = imoveis.map(
-        (imovel: { endereco: any }) => imovel.endereco
+        (imovel: { endereco: string }) => imovel.endereco
       );
-      setHouseNames(houseNamesArray.join("; "));
-
-      console.log(houseNamesArray);
+  
+      // Junta os endereços em uma string separada por ";"
+      const houseNamesString = houseNamesArray.join("; ");
+      setHouseNames(houseNamesString);
+  
+      console.log("Endereços dos imóveis:", houseNamesArray);
+  
+      // Cria um dicionário onde a chave é o ID do imóvel e o valor é o endereço
       const houseDictionary = imoveis.reduce(
-        (
-          acc: { [key: string]: string },
-          imovel: { imovelId: string; endereco: string }
-        ) => {
+        (acc: { [key: string]: string }, imovel: { imovelId: string; endereco: string }) => {
           acc[imovel.imovelId] = imovel.endereco;
           return acc;
         },
         {}
       );
-
-      console.log(houseDictionary);
-
+  
+      console.log("Dicionário de imóveis:", houseDictionary);
+  
+      // Atualiza o estado com o dicionário de imóveis
       setHouseNames(houseDictionary);
+  
     } catch (error) {
-      console.error("Error getting the houses:", error);
+      console.error("Erro ao buscar os imóveis:", error);
+  
+      // Exibe uma mensagem de erro ao usuário
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || "Erro ao buscar os imóveis.";
+        showErrorToast(errorMessage);
+      } else if (error instanceof Error) {
+        showErrorToast(error.message);
+      } else {
+        showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+      }
     }
   };
 
   useEffect(() => {
+
     allHousesNames();
   }, []);
 

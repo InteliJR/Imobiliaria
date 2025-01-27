@@ -7,12 +7,19 @@ import { useNavigate } from "react-router-dom";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { jwtDecode } from "jwt-decode";
+import { useAtom } from 'jotai'; // Importe o useAtom
+import { userAtom } from '../../store/atoms'; // Importe o atom
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
   const navigate = useNavigate();
+
+  // Use o hook useAtom para acessar e atualizar o atom
+  const [userData, setUserData] = useAtom(userAtom);
+
+  console.log(userData);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,42 +36,81 @@ export default function Login() {
       const token = response.data.token;
       localStorage.setItem("jwtToken", token);
 
+      // Decodifica o token JWT para obter o papel (role) do usuário
       const decodedToken: any = jwtDecode(token);
-      console.log(decodedToken);
-      const roleClaim =
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"; // Era usado para impedir visualização de rotas protegidas
-      const role = decodedToken[roleClaim]; // Era usado para impedir visualização de rotas protegidas
-      localStorage.setItem("userRole", role); // Era usado para impedir visualização de rotas protegidas
-      
-      if(role === 'Admin') {
-        navigate('/imoveis');
-      }
-      else if (role === 'Locatario') {
-        navigate('/home-locatario');
-      }
-      else if (role === 'Locador') {
-        navigate('/home-locador');
-      }
-      else if (role === 'Judiciario') {
-        navigate('/dashboard');
-      }
-      else {
-        navigate('/');
+      const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+      const role = decodedToken[roleClaim];
+      localStorage.setItem("userRole", role);
+
+      // Busca as informações do usuário após o login
+      await getUser();
+
+      // Redireciona o usuário com base no papel (role)
+      switch (role) {
+        case 'Admin':
+          navigate('/imoveis');
+          break;
+        case 'Locatario':
+          navigate('/home-locatario');
+          break;
+        case 'Locador':
+          navigate('/home-locador');
+          break;
+        case 'Judiciario':
+          navigate('/dashboard');
+          break;
+        default:
+          navigate('/');
+          break;
       }
 
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Erro no login:", error);
       showErrorToast(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
+        error instanceof Error
+          ? error.message
+          : "Erro ao se conectar com o servidor."
       );
     } finally {
       setLoading(false);
     }
   };
 
+  const getUser = async () => {
+    try {
+      const response = await axiosInstance.get("auth/Account/WhoAmI");
+      const UserInfo = response.data;
+
+      const userData = {
+        nome: UserInfo.nome,
+        telefone: UserInfo.telefone || null,
+        nacionalidade: UserInfo.nacionalidade || null,
+        cpf: UserInfo.cpf || null,
+        rg: UserInfo.rg || null,
+        passaporte: UserInfo.passaporte || null,
+        endereco: UserInfo.endereco || null,
+        CNPJ: UserInfo.cnpj || null,
+        email: UserInfo.email,
+        dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString("pt-BR"),
+        role: UserInfo.role,
+        roleId: UserInfo.roleId || null,
+      };
+
+      // Atualiza o atom com os dados do usuário
+      setUserData(userData);
+
+    } catch (error: any) {
+      console.error(error.response?.data?.message || "Erro ao buscar o usuário");
+      showErrorToast(
+        error?.response?.data?.message || "Erro ao se conectar com o servidor."
+      );
+    }
+  };
+
   return (
     <div className="bg-[#F0F0F0] flex flex-col min-h-screen">
       {/* Navbar */}
-      <Navbar showMenu={false}/>
+      <Navbar showMenu={false} />
 
       {/* Main Content */}
       <div className="flex-grow flex flex-col justify-center items-center px-4">
