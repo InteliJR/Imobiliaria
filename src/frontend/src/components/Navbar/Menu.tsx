@@ -68,6 +68,7 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
   const handleLogout = () => {
     console.log("sair da conta");
     navigate("/");
+    localStorage.clear();
   };
 
   const redirect = (url: string) => {
