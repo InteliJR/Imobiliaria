@@ -36,29 +36,25 @@ export default function PagamentosImovel() {
   const fetchPayments = async () => {
     setLoadingSkeleton(true);
     try {
-      // Faz a requisição para o endpoint com o imovelid
-
-      if (role === "Admin") {
-        console.log("The value of paymentId is: ", paymentid)
-      } else {
-        console.log("The value of imovelid is: ", imovelid)
-      }
-
-      console.log("The user role is: ", role);
       const requestUrl = role === "Admin"
         ? `payment/payment/pagamentos/${paymentid}`
         : `payment/payment/ByImovel/${imovelid}`;
-
+  
       const response = await axiosInstance.get(requestUrl);
-
+  
       if (!response.data) {
         console.error("Dados de resposta inválidos");
         return;
       }
-
+  
+      // Verifica o tipo de resposta e normaliza para um array
+      const normalizedPayments = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+  
       // Define os pagamentos retornados pela API
-      setPayments(response.data);
-      console.log(payments)
+      setPayments(normalizedPayments);
+      console.log("Pagamentos recebidos:", normalizedPayments);
     } catch (error) {
       console.error(error);
       showErrorToast("Não foi possível carregar os pagamentos.");
@@ -66,7 +62,7 @@ export default function PagamentosImovel() {
       setLoadingSkeleton(false);
     }
   };
-
+  
   useEffect(() => {
     
     fetchPayments();
