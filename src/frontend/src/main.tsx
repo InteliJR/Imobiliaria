@@ -222,6 +222,14 @@ const Root = () => {
           } 
         />
         <Route
+          path="/pagamento-for-admin/:paymentid"
+          element={
+            <ProtectedRoute requiredRole={["Admin"]}>
+              <PaymentView />
+            </ProtectedRoute>
+          } 
+        />
+        <Route
           path="/contratos/:id"
           element={
             <ProtectedRoute requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}>

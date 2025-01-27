@@ -26,6 +26,7 @@ interface Payment {
 
 export default function PagamentosImovel() {
   const { imovelid } = useParams<{ imovelid: string }>(); // Captura o imovelid da URL
+  const { paymentid } = useParams<{paymentid: string }>();
   const [isEditable, setIsEditable] = useState(false); // Controla se o formulário é editável
   const [payments, setPayments] = useState<Payment[]>([]); // Lista de pagamentos
   const [loadingSkeleton, setLoadingSkeleton] = useState(true); // Loading inicial
@@ -36,8 +37,19 @@ export default function PagamentosImovel() {
     setLoadingSkeleton(true);
     try {
       // Faz a requisição para o endpoint com o imovelid
-      console.log("The value of imovelid is: ", imovelid)
-      const response = await axiosInstance.get(`payment/payment/ByImovel/${imovelid}`);
+
+      if (role === "Admin") {
+        console.log("The value of paymentId is: ", paymentid)
+      } else {
+        console.log("The value of imovelid is: ", imovelid)
+      }
+
+      console.log("The user role is: ", role);
+      const requestUrl = role === "Admin"
+        ? `payment/payment/pagamentos/${paymentid}`
+        : `payment/payment/ByImovel/${imovelid}`;
+
+      const response = await axiosInstance.get(requestUrl);
 
       if (!response.data) {
         console.error("Dados de resposta inválidos");

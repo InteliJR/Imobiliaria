@@ -17,15 +17,19 @@ export default function Login() {
   const navigate = useNavigate();
 
   // Use o hook useAtom para acessar e atualizar o atom
-  const [userData, setUserData] = useAtom(userAtom);
-
-  console.log(userData);
+  const [, setUserData] = useAtom(userAtom);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setLoading(true);
     try {
+
+      if (!email || !senha) {
+        showErrorToast("Email e senha são campos obrigatórios");
+        return
+      };
+
       // Requisição de login
       const response = await axiosInstance.post("auth/Account/Login", {
         Email: email,
@@ -64,12 +68,10 @@ export default function Login() {
           break;
       }
 
-    } catch (error) {
-      console.error("Erro no login:", error);
+    } catch (error:any) {
+      console.log(error.response.data);
       showErrorToast(
-        error instanceof Error
-          ? error.message
-          : "Erro ao se conectar com o servidor."
+        error.response.data
       );
     } finally {
       setLoading(false);
@@ -81,7 +83,7 @@ export default function Login() {
       const response = await axiosInstance.get("auth/Account/WhoAmI");
       const UserInfo = response.data;
 
-      const userData = {
+      const userData1 = {
         nome: UserInfo.nome,
         telefone: UserInfo.telefone || null,
         nacionalidade: UserInfo.nacionalidade || null,
@@ -97,7 +99,7 @@ export default function Login() {
       };
 
       // Atualiza o atom com os dados do usuário
-      setUserData(userData);
+      setUserData(userData1);
 
     } catch (error: any) {
       console.error(error.response?.data?.message || "Erro ao buscar o usuário");

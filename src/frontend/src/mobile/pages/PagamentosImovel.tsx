@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 // import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
-import Card from "../components/Chamados/Card";
+import Card from "../components/Payments/CardPayments";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../../components/Botoes/Voltar";
@@ -109,7 +109,7 @@ export default function PagamentosImovel() {
                 {filteredData.map((pagamento) => (
                   <Card
                     key={pagamento.paymentId}
-                    id={pagamento.paymentId}
+                    paymentid={pagamento.paymentId}
                     title={pagamento.title}
                     line1={pagamento.line1}
                     line2={pagamento.line2}
