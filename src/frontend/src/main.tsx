@@ -232,7 +232,7 @@ const Root = () => {
         <Route
           path="/contratos/:id"
           element={
-            <ProtectedRoute requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}>
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
               <ContractView />
             </ProtectedRoute>
           }
@@ -240,7 +240,7 @@ const Root = () => {
         <Route
           path="/contratos"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
               {isDesktop ? <Contratos /> : <ContratosMobile />}
             </ProtectedRoute>
           }
