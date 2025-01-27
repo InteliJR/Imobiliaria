@@ -58,11 +58,12 @@ namespace Layer.Services.Services
             }
             return payment;
         }
-        public async Task AddPaymentAsync(Payment payment)
+        public async Task<Payment> AddPaymentAsync(Payment payment)
         {   
             try{
                 _context.Pagamentos.Add(payment);
                 await _context.SaveChangesAsync();
+                return payment;
             }
             catch (Exception ex){
                 throw new Exception("Error adding payment: " + ex.Message);

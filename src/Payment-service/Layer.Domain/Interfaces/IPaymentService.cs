@@ -17,7 +17,7 @@ namespace Layer.Domain.Interfaces
         Task<IEnumerable<Payment>> GetAllPaymentsAsync();
         Task<Payment> GetPaymentByIdAsync(int id);
         Task<IEnumerable<Payment>> GetPaymentsDueByDateAsync(DateTime dueDate);
-        Task AddPaymentAsync(Payment payment);
+        Task<Payment> AddPaymentAsync(Payment payment);
         Task UpdatePaymentAsync(Payment payment);
         Task DeletePaymentAsync(int id);
         Task<IEnumerable<Payment>> GetAllPaymentsByIdImovel(int imovelid);
