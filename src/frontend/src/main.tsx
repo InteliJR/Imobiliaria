@@ -1,4 +1,3 @@
-// main.tsx or main.js (depending on your setup)
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -42,7 +41,6 @@ import CreateContract from "./mobile/pages/CreateContract";
 import Dashboard from "./mobile/pages/dashboard/Dashboard";
 import HomeLocador from "./mobile/pages/HomeLocador";
 import HomeLocatario from "./mobile/pages/HomeLocatario";
-// import ChamadosImovel from "./mobile/pages/ChamadosImovel";
 import ImovelById from "./mobile/pages/Imovel";
 import PagamentosImovel from "./mobile/pages/PagamentosImovel";
 import ContratosMobile from "./mobile/pages/Contratos";
@@ -156,7 +154,7 @@ const Root = () => {
         <Route
           path="/perfil/:id"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin"]}>
               {isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />}
             </ProtectedRoute>
           }
@@ -181,7 +179,7 @@ const Root = () => {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
               <Dashboard />
             </ProtectedRoute>
           }
@@ -208,7 +206,7 @@ const Root = () => {
           path="/imovel/:imovelId"
           element={
             // ESTE COMPONENTE NÃO É 'MOBILE' 
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}>
               <ImovelById /> 
             </ProtectedRoute>
           }

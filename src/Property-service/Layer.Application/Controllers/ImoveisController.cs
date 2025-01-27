@@ -10,6 +10,7 @@ using Layer.Infrastructure.Database;
 using System.Security.Claims;
 using Layer.Infrastructure.ExternalAPIs;
 using Newtonsoft.Json;
+using System;
 
 namespace Layer.Application.Controllers
 {
@@ -74,12 +75,12 @@ namespace Layer.Application.Controllers
             // Verificar acesso com base no RoleID
             if (userRole == nameof(Roles.Locador) && imovel.LocadorId.ToString() != roleId)
             {
-                return Forbid("Acesso negado: você não é o locador deste imóvel.");
+                return Unauthorized("Acesso negado: você não é o locador deste imóvel.");
             }
 
             if (userRole == nameof(Roles.Locatario) && imovel.LocatarioId.ToString() != roleId)
             {
-                return Forbid("Acesso negado: você não é o locatário deste imóvel.");
+                return Unauthorized("Acesso negado: você não é o locatário deste imóvel.");
             }
 
             // Caso o usuário tenha permissão, retornar o imóvel
