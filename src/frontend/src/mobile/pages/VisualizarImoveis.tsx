@@ -13,8 +13,6 @@ import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
 import { IProperty } from "../../components/Filter/PropertyInterfaces.ts";
 
-
-
 export default function Properties() {
   const navigate = useNavigate();
 
@@ -224,8 +222,21 @@ export default function Properties() {
   // Total de páginas
   const totalPages = Math.ceil(filteredData.length / pageSize);
   
+    // Função de scroll para rolar até o #Target
+  const scrollToTarget = () => {
+    const targetElement = document.querySelector("#Target");
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  // useEffect para acionar o scroll toda vez que a página mudar
+  useEffect(() => {
+    scrollToTarget();
+  }, [currentPage]); // Quando a página mudar, o scroll será acionado
+
   return (
-    <main className="main-custom">
+    <main className="main-custom" id="Target">
       <Navbar />
   
       <section className="section-custom">
@@ -267,7 +278,7 @@ export default function Properties() {
           onFilteredResult={handleFilteredResult}
         />
   
-        {loading ? (
+  {loading ? (
           <Loading type="skeleton" />
         ) : (
           <section className="flex-grow flex flex-col gap-y-5">
@@ -309,24 +320,27 @@ export default function Properties() {
                         ? "bg-neutral-300 cursor-not-allowed"
                         : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
                     }`}
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    onClick={() => {
+                      setCurrentPage((prev) => Math.max(prev - 1, 1));
+                    }}
                     disabled={currentPage === 1}
                   >
                     Anterior
                   </button>
+
                   <span className="text-neutral-700">
                     Página {currentPage} de {totalPages}
                   </span>
+
                   <button
                     className={`px-4 py-2 text-sm font-medium rounded ${
                       currentPage === totalPages
                         ? "bg-neutral-300 cursor-not-allowed"
                         : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
                     }`}
-                    onClick={() =>{
+                    onClick={() => {
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-                    }
-                    }
+                    }}
                     disabled={currentPage === totalPages}
                   >
                     Próxima
