@@ -247,6 +247,7 @@ export default function ContratosComponent() {
                 title={contrato.contratoId}
                 locador={contrato.locadorId}
                 locatario={contrato.locatarioId}
+                reajuste={contrato.dataEncerramentoRenovacao}
                 status={contrato.status}
                 encerramento={contrato.dataEncerramento}
                 location={contrato.imovelId}

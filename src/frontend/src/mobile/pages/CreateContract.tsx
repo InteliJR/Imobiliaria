@@ -323,6 +323,12 @@ export default function CreateContractMobile() {
                 value={paymentDate}
                 onChange={(e) => setPaymentDate(e.target.value)}
               />
+              <FormField
+                label="Data de Reajuste"
+                type="date"
+                value={renewalEndDate}
+                onChange={(e) => setRenewalEndDate(e.target.value)}
+              />
               {/* Taxa Administrativa */}
               <div className="flex flex-col w-full">
                 <label
