@@ -383,6 +383,7 @@ export default function Contrato() {
                 isLoadingProperty={isLoadingProperty}
                 isLoadingLessor={isLoadingLessor}
                 isLoadingRenter={isLoadingRenter}
+                // reajust={dataReajuste}
                 onInputChange={handleInputChange}
                 onValueChange={handleValueChange}
                 setSelectedPropertyId={setSelectedPropertyId}
