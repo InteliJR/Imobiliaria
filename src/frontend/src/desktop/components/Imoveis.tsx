@@ -27,7 +27,7 @@ export default function Imoveis() {
   
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [, setProperties] = useState<Property[]>([]);
   const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
