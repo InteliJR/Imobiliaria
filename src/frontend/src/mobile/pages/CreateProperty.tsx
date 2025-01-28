@@ -5,6 +5,7 @@ import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig.ts";
+import axios from "axios";
 
 export default function CreateProperty() {
   interface Locador {
@@ -44,19 +45,44 @@ export default function CreateProperty() {
     };
     fetchData();
   }, []);
+  
     // Função para lidar com o upload das fotos
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setPhotos(Array.from(e.target.files)); // Converter FileList para array
-    }
-  };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const filesArray = Array.from(e.target.files); // Converter para array
+        console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
+        setPhotos(filesArray); // Atualize o estado
+      }
+    };
+  
+    const validateFields = () => {
+      const missingFields = [];
+    
+      if (!propertyType) missingFields.push("Tipo de imóvel");
+      if (!cep) missingFields.push("CEP");
+      if (!address) missingFields.push("Endereço");
+      if (!neighborhood) missingFields.push("Bairro");
+    
+      if (missingFields.length > 0) {
+        const message = `Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(", ")}.`;
+        showErrorToast(message);
+        return false; // Indica que a validação falhou
+      }
+    
+      return true; // Indica que a validação foi bem-sucedida
+    };
   
   // Função de envio do formulário
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
+      // Verificar campos obrigatórios
+      if (!validateFields()) {
+        return;
+      }
+  
       const formData = new FormData();
       formData.append("TipoImovel", propertyType);
       formData.append("Cep", cep);
@@ -68,24 +94,25 @@ export default function CreateProperty() {
       formData.append("Complemento", complement);
       formData.append("LocadorId", selectedLocadorId || "");
       formData.append("LocatarioId", selectedLocatarioId || "");
-
-      // Adicionar as fotos ao FormData
+  
+      // Adicionar as fotos
       photos.forEach((photo) => formData.append("files", photo));
-
+  
+      // Log detalhado
       console.log("Verificar FormData:");
       formData.forEach((value, key) => {
         console.log(key, value);
       });
   
-      const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
+      const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
       showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
+  
+      // Limpar formulário após o envio
       setPropertyType("Kitnet");
       setCep("");
       setAddress("");
@@ -97,9 +124,36 @@ export default function CreateProperty() {
       setSelectedLocadorId(null);
       setSelectedLocatarioId(null);
       setPhotos([]); // Limpar fotos após o envio
+  
     } catch (error: any) {
-      console.error(error);
-      showErrorToast(error?.response?.data?.message || "Erro ao se conectar com o servidor.");
+      console.error("Erro ao criar imóvel:", error);
+  
+      if (axios.isAxiosError(error)) {
+        // Erro com resposta do servidor (ex: 400, 500)
+        if (error.response) {
+          const errorPayload = error.response.data; // Captura o payload de resposta
+          showErrorToast(errorPayload)
+  
+          // Log detalhado do payload de erro
+          console.error("Payload de erro:", errorPayload);
+        }
+        // Erro de rede (ex: servidor indisponível)
+        else if (error.request) {
+          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+        }
+        // Erro inesperado
+        else {
+          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+      }
+      // Erro genérico (não relacionado ao Axios)
+      else if (error instanceof Error) {
+        showErrorToast(error.message);
+      }
+      // Erro desconhecido
+      else {
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
     } finally {
       setLoading(false);
     }
