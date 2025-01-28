@@ -50,7 +50,7 @@ namespace property_management.Controllers
 
         [HttpPost("CriarContratoComMultiplosArquivos")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> AddContratoWithMultipleFiles([FromForm] NewContratos newContrato, IFormFileCollection files, string emailLocador, string emailLocatario)
+        public async Task<IActionResult> AddContratoWithMultipleFiles([FromForm] NewContratos newContrato, IFormFileCollection files, string? emailLocador, string? emailLocatario)
         {
             if (!ModelState.IsValid)
             {
@@ -80,14 +80,21 @@ namespace property_management.Controllers
             var novoContrato = await _contratoService.AddAsyncWithMultipleFiles(contrato, files);
 
             string contractDetails = $"Contrato ID: {novoContrato.ContratoId}, Valor do Aluguel: {novoContrato.ValorAluguel}, Início: {novoContrato.DataInicio}, Término do contrato: {novoContrato.DataEncerramento}";
+            
+            if (!string.IsNullOrEmpty(emailLocador))
+            {
+                string locadorUserType = "Locador";
 
-            string locadorUserType = "Locador";
+                await _emailSender.SendEmailAsync(emailLocador, locadorUserType, contractDetails);
+            }
 
-            await _emailSender.SendEmailAsync(emailLocador, locadorUserType, contractDetails);
 
-            string locatarioUserType = "Locatário";
+            if (!string.IsNullOrEmpty(emailLocatario)) 
+            {
+                string locatarioUserType = "Locatário";
 
-            await _emailSender.SendEmailAsync(emailLocatario, locatarioUserType, contractDetails);
+                await _emailSender.SendEmailAsync(emailLocatario, locatarioUserType, contractDetails);
+            }
 
             // await _applicationLog.LogAsync($"Criação de contrato com id: {novoContrato.ContratoId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 

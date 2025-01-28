@@ -6,7 +6,6 @@ import Loading from "../../components/Loading";
 import Voltar from "../../components/Botoes/Voltar";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
-import axios from "axios";
 import CurrencyInput from "react-currency-input-field"; // máscara de valores monetários
 
 export default function CreateContractMobile() {
@@ -35,13 +34,13 @@ export default function CreateContractMobile() {
   const [locatarios, setLocatarios] = useState([]); // Lista de locatários
   const [imoveis, setImoveis] = useState([]);
 
-  const [selectedLocadorId, setSelectedLocadorId] = useState<string | null>(
-    null
+  const [selectedLocadorId, setSelectedLocadorId] = useState<string>(
+    ""
   );
-  const [selectedLocatarioId, setSelectedLocatarioId] = useState<string | null>(
-    null
+  const [selectedLocatarioId, setSelectedLocatarioId] = useState<string>(
+    ""
   );
-  const [selectedImovelId, setSelectedImovelId] = useState<string | null>(null);
+  const [selectedImovelId, setSelectedImovelId] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -93,33 +92,41 @@ export default function CreateContractMobile() {
     }
   };
 
+  const validateFields = () => {
+    const missingFields = [];
+  
+    if (!selectedLocatarioId) missingFields.push("Locatário");
+    if (!selectedLocadorId) missingFields.push("Locador");
+    if (!selectedImovelId) missingFields.push("Imóvel");
+    if (!paymentDate) missingFields.push("Data de pagamento");
+    if (!startDate) missingFields.push("Data de inicio");
+    if (!rentalValue) missingFields.push("Taxa de administração");
+  
+    if (missingFields.length > 0) {
+      const message = `Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(", ")}.`;
+      showErrorToast(message);
+      return false; // Indica que a validação falhou
+    }
+  
+    return true; // Indica que a validação foi bem-sucedida
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Verificações de validação
-    if (
-      !rentalValue.trim() ||
-      !startDate.trim() ||
-      !iptu.trim() ||
-      !paymentDate.trim() ||
-      !adminFee.trim() ||
-      !guaranteeType.trim() ||
-      !selectedLocadorId ||
-      !selectedLocatarioId ||
-      !selectedImovelId
-    ) {
-      showErrorToast("Por favor, preencha todos os campos.");
-      return;
-    }
-
+    
     setIsLoading(true);
-
+    
     try {
+      if (!validateFields()) {
+        return;
+      }
+
       const formData = new FormData();
 
-      formData.append("LocadorId", selectedLocadorId || "");
-      formData.append("LocatarioId", selectedLocatarioId || "");
-      formData.append("ImovelId", selectedImovelId || "");
+      formData.append("LocadorId", selectedLocadorId);
+      formData.append("LocatarioId", selectedLocatarioId);
+      formData.append("ImovelId", selectedImovelId);
       formData.append("ValorAluguel", cleanCurrencyValue(rentalValue));
       formData.append("Iptu", cleanCurrencyValue(iptu));
       formData.append("TaxaAdm", cleanCurrencyValue(adminFee));
@@ -194,12 +201,12 @@ export default function CreateContractMobile() {
       setDocuments([]);
       setLocadorEmail("");
       setLocatarioEmail("");
-    } catch (error) {
+    } catch (error:any) {
       console.error(error);
-      if (axios.isAxiosError(error) && error.response) {
-        showErrorToast(
-          error.response.data?.message || "Erro ao criar o contrato."
-        );
+      if (error.response) {
+        if (error.response.data?.title == "One or more validation errors occurred.") {
+          showErrorToast("O backend espera mais campos na requisição.")
+        } 
       } else {
         showErrorToast("Erro ao criar o contrato.");
       }
