@@ -143,7 +143,7 @@ export default function PropertyDetails() {
           </button>
           <button
             className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
-            onClick={() => navigate("/pagamentos")}
+            onClick={() => navigate(`/pagamento/${property.imovelId}`)}
           >
             Ver Pagamentos
           </button>

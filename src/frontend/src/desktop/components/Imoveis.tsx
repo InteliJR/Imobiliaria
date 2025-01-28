@@ -27,7 +27,7 @@ export default function Imoveis() {
   
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [, setProperties] = useState<Property[]>([]);
   const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
@@ -230,6 +230,18 @@ export default function Imoveis() {
     fetchData();
   }, []);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+
   return (
     <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">
       {/* Header */}
@@ -275,19 +287,20 @@ export default function Imoveis() {
       />
 
       {/* Cards */}
+      {/* Cards com paginação */}
       <section className="flex flex-col gap-y-5">
         <h2 className="text-2xl font-semibold">Resultados</h2>
         <div className="h-[1px] bg-neutral-400 mb-4"></div>
         {loading ? (
           <Loading type="skeleton" />
-        ) : properties.length === 0 ? (
+        ) : filteredData.length === 0 ? (
           <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
             Nenhum imóvel encontrado.
           </p>
         ) : (
-          <div className="flex flex-col gap-6">
-            {filteredData.map((property) => {
-                return (
+          <>
+            <div className="flex flex-col gap-6">
+              {getPagedData().map((property) => (
                 <Card
                   key={property.id}
                   id={property.id}
@@ -297,12 +310,48 @@ export default function Imoveis() {
                   propertyType={property.propertyType}
                   landlord={property.landlord}
                   tenant={property.tenant}
-                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "/ImovelSemFoto.png"}
+                  imageSrc={
+                    property.imageSrc && property.imageSrc.length > 0
+                      ? property.imageSrc[0]
+                      : "/ImovelSemFoto.png"
+                  }
                   price={`R$ ${property.price}`}
-                  condominio={`R$ ${property.condominio}`}/>
-                );
-            })}
-          </div>
+                  condominio={`R$ ${property.condominio}`}
+                />
+              ))}
+            </div>
+
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === 1
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <span className="text-neutral-700">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === totalPages
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Próxima
+              </button>
+            </div>
+          </>
         )}
       </section>
     </div>

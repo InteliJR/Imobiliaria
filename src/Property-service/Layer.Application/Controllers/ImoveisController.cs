@@ -10,6 +10,7 @@ using Layer.Infrastructure.Database;
 using System.Security.Claims;
 using Layer.Infrastructure.ExternalAPIs;
 using Newtonsoft.Json;
+using System;
 
 namespace Layer.Application.Controllers
 {
@@ -74,12 +75,12 @@ namespace Layer.Application.Controllers
             // Verificar acesso com base no RoleID
             if (userRole == nameof(Roles.Locador) && imovel.LocadorId.ToString() != roleId)
             {
-                return Forbid("Acesso negado: você não é o locador deste imóvel.");
+                return Unauthorized("Acesso negado: você não é o locador deste imóvel.");
             }
 
             if (userRole == nameof(Roles.Locatario) && imovel.LocatarioId.ToString() != roleId)
             {
-                return Forbid("Acesso negado: você não é o locatário deste imóvel.");
+                return Unauthorized("Acesso negado: você não é o locatário deste imóvel.");
             }
 
             // Caso o usuário tenha permissão, retornar o imóvel
@@ -101,7 +102,7 @@ namespace Layer.Application.Controllers
             {
                 TipoImovel = newImovel.TipoImovel,
                 Cep = newImovel.Cep,
-                Condominio = newImovel.Condominio,
+                Condominio = newImovel.Condominio ?? 0.0,
                 ValorImovel = newImovel.ValorImovel,
                 Bairro = newImovel.Bairro,
                 Descricao = newImovel.Descricao,
@@ -136,7 +137,7 @@ namespace Layer.Application.Controllers
 
             imovel.TipoImovel = updatedImovel.TipoImovel;
             imovel.Cep = updatedImovel.Cep;
-            imovel.Condominio = updatedImovel.Condominio;
+            imovel.Condominio = updatedImovel.Condominio ?? 0.0;
             imovel.ValorImovel = updatedImovel.ValorImovel;
             imovel.Bairro = updatedImovel.Bairro;
             imovel.Descricao = updatedImovel.Descricao;
@@ -209,7 +210,7 @@ namespace Layer.Application.Controllers
                     Fotos = imovel.Fotos,
                     TipoImovel = imovel.TipoImovel,
                     Cep = imovel.Cep,
-                    Condominio = imovel.Condominio,
+                    Condominio = imovel.Condominio ?? 0.0,
                     ValorImovel = imovel.ValorImovel,
                     Bairro = imovel.Bairro,
                     Descricao = imovel.Descricao,
@@ -307,7 +308,7 @@ namespace Layer.Application.Controllers
                     Fotos = imovel.Fotos,
                     TipoImovel = imovel.TipoImovel,
                     Cep = imovel.Cep,
-                    Condominio = imovel.Condominio,
+                    Condominio = imovel.Condominio ?? 0.0,
                     ValorImovel = imovel.ValorImovel,
                     Bairro = imovel.Bairro,
                     Descricao = imovel.Descricao,
@@ -343,16 +344,11 @@ namespace Layer.Application.Controllers
         [HttpPost("CriarImovelComFoto")]
         // [Consumes("multipart/form-data")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> PostImoveisWithPhoto([FromForm] NewImoveis newImovel, [FromForm] IFormFileCollection files)
+        public async Task<IActionResult> PostImoveisWithPhoto([FromForm] NewImoveis newImovel, [FromForm] IFormFileCollection? files)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (files == null || files.Count == 0)
-            {
-                return BadRequest("Nenhum arquivo foi enviado.");
             }
 
             // Criar o imóvel com o caminho da foto
@@ -360,7 +356,7 @@ namespace Layer.Application.Controllers
             {
                 TipoImovel = newImovel.TipoImovel,
                 Cep = newImovel.Cep,
-                Condominio = newImovel.Condominio,
+                Condominio = newImovel.Condominio ?? 0.0,
                 ValorImovel = newImovel.ValorImovel,
                 Bairro = newImovel.Bairro,
                 Descricao = newImovel.Descricao,
@@ -398,7 +394,7 @@ namespace Layer.Application.Controllers
         [HttpPost("AdicionarFotos/{id}")]
         [Consumes("multipart/form-data")]
         [Authorize (Policy = "AllRoles")]
-        public async Task<IActionResult> AddImovelPhotos(int id, IFormFileCollection files)
+        public async Task<IActionResult> AddImovelPhotos(int id, IFormFileCollection? files)
         {
             var urls = await _imoveisService.AddImovelPhotosAsync(id, files);
             return Ok(urls);

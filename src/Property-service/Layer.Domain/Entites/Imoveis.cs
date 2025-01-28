@@ -27,7 +27,7 @@ namespace Layer.Domain.Entities
         public string Cep { get; set; }
 
         [Column("condominio")]
-        public decimal Condominio { get; set; }
+        public double? Condominio { get; set; }
 
         [Column("valor_imovel")]
         public decimal ValorImovel { get; set; }
@@ -37,7 +37,7 @@ namespace Layer.Domain.Entities
         public string Bairro { get; set; }
 
         [Column("descricao")]
-        public string Descricao { get; set; }
+        public string? Descricao { get; set; }
 
         [Column("endereco")]
         [MaxLength(255)]
@@ -45,7 +45,7 @@ namespace Layer.Domain.Entities
 
         [Column("complemento")]
         [MaxLength(255)]
-        public string Complemento { get; set; }
+        public string? Complemento { get; set; }
 
         [Column("locatarioid")]
         public int? LocatarioId { get; set; }
