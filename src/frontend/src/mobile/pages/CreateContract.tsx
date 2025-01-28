@@ -12,7 +12,7 @@ export default function CreateContractMobile() {
   const [rentalValue, setRentalValue] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [guaranteeType, setGuaranteeType] = useState("Caução");
+  const [guaranteeType, setGuaranteeType] = useState("");
   const [specialConditions, setSpecialConditions] = useState("");
   const [status, setStatus] = useState("Ativo");
   const [iptu, setIptu] = useState("");
@@ -101,6 +101,8 @@ export default function CreateContractMobile() {
     if (!paymentDate) missingFields.push("Data de pagamento");
     if (!startDate) missingFields.push("Data de inicio");
     if (!rentalValue) missingFields.push("Taxa de administração");
+    if (!guaranteeType) missingFields.push("Tipo de garantia");
+    if (!endDate) missingFields.push("Data de encerramento");
   
     if (missingFields.length > 0) {
       const message = `Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(", ")}.`;
@@ -145,27 +147,27 @@ export default function CreateContractMobile() {
       // formData.append("files", documents || "");
 
       documents?.forEach((document) => formData.append("files", document));
-      console.log({
-        rentalValue,
-        startDate,
-        endDate,
-        guaranteeType,
-        specialConditions,
-        status,
-        iptu,
-        paymentDate,
-        adminFee,
-        terminationDate,
-        renewed,
-        renewalEndDate,
-        adjustmentValue,
-        selectedLocadorId,
-        selectedLocatarioId,
-        selectedImovelId,
-        documents,
-        locadorEmail,
-        locatarioEmail,
-      });
+      // console.log({
+      //   rentalValue,
+      //   startDate,
+      //   endDate,
+      //   guaranteeType,
+      //   specialConditions,
+      //   status,
+      //   iptu,
+      //   paymentDate,
+      //   adminFee,
+      //   terminationDate,
+      //   renewed,
+      //   renewalEndDate,
+      //   adjustmentValue,
+      //   selectedLocadorId,
+      //   selectedLocatarioId,
+      //   selectedImovelId,
+      //   documents,
+      //   locadorEmail,
+      //   locatarioEmail,
+      // });
       
 
       const response = await axiosInstance.post(
@@ -229,7 +231,7 @@ export default function CreateContractMobile() {
                   htmlFor="locatarioEmail"
                   className="text-sm text-neutral-600 mb-1"
                 >
-                  Email do Locatário
+                  Email do Locatário <span className="text-sm text-neutral-500">(Opcional)</span>
                 </label>
                 <input
                   type="email"
@@ -247,7 +249,7 @@ export default function CreateContractMobile() {
                   htmlFor="locadorEmail"
                   className="text-sm text-neutral-600 mb-1"
                 >
-                  Email do Locador
+                  Email do Locador <span className="text-sm text-neutral-500">(Opcional)</span>
                 </label>
                 <input
                   type="email"
@@ -299,7 +301,7 @@ export default function CreateContractMobile() {
               {/* IPTU */}
               <div className="flex flex-col w-full">
                 <label htmlFor="iptu" className="text-sm text-neutral-600 mb-1">
-                  IPTU (R$)
+                  IPTU (R$) <span className="text-sm text-neutral-500">(Opcional)</span>
                 </label>
                 <CurrencyInput
                   id="iptu"
@@ -368,12 +370,17 @@ export default function CreateContractMobile() {
                 />
               </div>
               <FormField
-                label="Condições Especiais"
+                label={
+                  <div className="flex justify-between items-center">
+                    <span>Condições especiais <span className="text-sm text-neutral-500">(Opcional)</span></span>
+                  </div>
+                }
                 value={specialConditions}
                 onChange={(e) => setSpecialConditions(e.target.value)}
               />
               <FormField
                 label="Garantia"
+                placeholder="Caução, fiador, depósito?"
                 value={guaranteeType}
                 onChange={(e) => setGuaranteeType(e.target.value)}
               />
@@ -444,7 +451,7 @@ export default function CreateContractMobile() {
               {/* Envio de documentos: */}
               <div className="flex flex-col">
                 {/* Label com fonte de 13px e margem inferior de 5px */}
-                <label className="block text-neutral-600">Documento</label>
+                <label className="block text-neutral-600">Documentos <span className="text-sm text-neutral-500">(Opcional)</span></label>
                 <input
                   type="file"
                   onChange={handleFileChange}
