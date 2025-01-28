@@ -212,11 +212,22 @@ export default function Properties() {
     }
     fetchData();
   }, []);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+  
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+  
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+  
   return (
     <main className="main-custom">
       <Navbar />
-
+  
       <section className="section-custom">
         <Voltar />
         <button
@@ -230,12 +241,12 @@ export default function Properties() {
         <form className="grid grid-cols-1 gap-4">
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
-            <FormFieldFilter
-              label="Buscar imóvel pelo cep"
-              onFilter={(searchTerm) => {
-                setSearch(searchTerm);
-              }}
-            />
+              <FormFieldFilter
+                label="Buscar imóvel pelo cep"
+                onFilter={(searchTerm) => {
+                  setSearch(searchTerm);
+                }}
+              />
             </div>
             <button
               type="button"
@@ -247,8 +258,7 @@ export default function Properties() {
             </button>
           </div>
         </form>
-
-
+  
         <GenericFilterModal
           isOpen={isModalOpen}
           onClose={() => setModalOpen(false)}
@@ -256,47 +266,79 @@ export default function Properties() {
           data={data}
           onFilteredResult={handleFilteredResult}
         />
-
-
+  
         {loading ? (
           <Loading type="skeleton" />
         ) : (
           <section className="flex-grow flex flex-col gap-y-5">
             <h2 className="text-2xl font-semibold">Resultados</h2>
             <div className="h-[1px] bg-black"></div>
-            {loading ? (
-          <Loading type="skeleton" />
-        ) : properties.length === 0 ? (
-          <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-            Nenhum imóvel encontrado.
-          </p>
-        ) : (
-          <div className="flex flex-col gap-6">
-            {filteredData.map((property) => {
-              return (
-                <Card
-                  key={property.id}
-                  id={property.id}
-                  address={property.address}
-                  neighborhood={property.neighborhood}
-                  postalCode={property.postalCode}
-                  propertyType={property.propertyType}
-                  landlord={property.landlord}
-                  tenant={property.tenant}
-                  price={`R$ ${property.price}`}
-                  condominio={`R$ ${property.condominio}`}
-                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../ImovelSemFoto.png"}
-                  />
-                  
-              );
-            })}
-          </div>
-        )}
+            {properties.length === 0 ? (
+              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+                Nenhum imóvel encontrado.
+              </p>
+            ) : (
+              <>
+                <div className="flex flex-col gap-6">
+                  {getPagedData().map((property) => (
+                    <Card
+                      key={property.id}
+                      id={property.id}
+                      address={property.address}
+                      neighborhood={property.neighborhood}
+                      postalCode={property.postalCode}
+                      propertyType={property.propertyType}
+                      landlord={property.landlord}
+                      tenant={property.tenant}
+                      price={`R$ ${property.price}`}
+                      condominio={`R$ ${property.condominio}`}
+                      imageSrc={
+                        property.imageSrc && property.imageSrc.length > 0
+                          ? property.imageSrc[0]
+                          : "../../../ImovelSemFoto.png"
+                      }
+                    />
+                  ))}
+                </div>
+  
+                {/* Paginação */}
+                <div className="flex justify-between items-center mt-6">
+                  <button
+                    className={`px-4 py-2 text-sm font-medium rounded ${
+                      currentPage === 1
+                        ? "bg-neutral-300 cursor-not-allowed"
+                        : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                    }`}
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Anterior
+                  </button>
+                  <span className="text-neutral-700">
+                    Página {currentPage} de {totalPages}
+                  </span>
+                  <button
+                    className={`px-4 py-2 text-sm font-medium rounded ${
+                      currentPage === totalPages
+                        ? "bg-neutral-300 cursor-not-allowed"
+                        : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                    }`}
+                    onClick={() =>{
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                    }
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    Próxima
+                  </button>
+                </div>
+              </>
+            )}
           </section>
         )}
       </section>
-
+  
       <Footer />
     </main>
   );
-}
+}  
