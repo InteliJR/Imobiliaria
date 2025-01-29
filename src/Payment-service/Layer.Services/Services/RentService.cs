@@ -407,62 +407,62 @@ namespace Layer.Services.Services
 
         public async Task<IEnumerable<RentAndContractInfoDTO>> GetAlugueisQueVencemEmXdias(int days)
         {
-            // Calcular data alvo: hoje + X dias
+            // Calcular data alvo, hoje + X dias
             var saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
-            // ou "America/Sao_Paulo" dependendo do SO
+            // Configurar o TimeZoneInfo para São Paulo
             var nowInSaoPaulo = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, saoPauloTimeZone);
 
             var targetDate = nowInSaoPaulo.Date.AddDays(5);
-            Console.WriteLine($"Data alvo em São Paulo: {targetDate:dd/MM/yyyy}");
-            Console.WriteLine($"[DEBUG] Dias solicitados: {days}");
-            Console.WriteLine($"[DEBUG] Data alvo calculada: {targetDate:dd/MM/yyyy}");
+            // Console.WriteLine($"Data alvo em São Paulo: {targetDate:dd/MM/yyyy}");
+            // Console.WriteLine($"[DEBUG] Dias solicitados: {days}");
+            // Console.WriteLine($"[DEBUG] Data alvo calculada: {targetDate:dd/MM/yyyy}");
 
-            // Buscar alugueis em aberto (não pagos)
+            // Alugueis não pagos
             var rents = await _dbcontext.Alugueis
                 .Where(r => r.Status == false)
                 .ToListAsync();
-            Console.WriteLine($"[DEBUG] Quantidade de aluguéis não pagos encontrados: {rents.Count}");
+            // Console.WriteLine($"[DEBUG] Quantidade de aluguéis não pagos encontrados: {rents.Count}");
 
             var result = new List<RentAndContractInfoDTO>();
 
             foreach (var rent in rents)
             {
-                Console.WriteLine($"[DEBUG] Iniciando processamento do Aluguel ID = {rent.AluguelId}, Mês = {rent.Mes}");
+                // Console.WriteLine($"[DEBUG] Iniciando processamento do Aluguel ID = {rent.AluguelId}, Mês = {rent.Mes}");
 
                 // Pegar o contrato
                 var contract = await _dbcontext.Contratos.FindAsync(rent.ContratoId);
                 if (contract == null)
                 {
-                    Console.WriteLine($"[DEBUG] Contrato não encontrado para Aluguel {rent.AluguelId} (ContratoId = {rent.ContratoId}). Ignorando.");
+                    // Console.WriteLine($"[DEBUG] Contrato não encontrado para Aluguel {rent.AluguelId} (ContratoId = {rent.ContratoId}). Ignorando.");
                     continue;
                 }
 
                 if (!contract.DataPagamento.HasValue)
                 {
-                    Console.WriteLine($"[DEBUG] Contrato {rent.ContratoId} não possui DataPagamento. Ignorando.");
+                    // Console.WriteLine($"[DEBUG] Contrato {rent.ContratoId} não possui DataPagamento. Ignorando.");
                     continue;
                 }
 
-                // Dia do contrato (ex.: 2 se for "2024-10-02")
+                // Dia do pagamento do aluguel, isso que importa pra gnt
                 var day = contract.DataPagamento.Value.Day;
-                Console.WriteLine($"[DEBUG] Dia fixo do contrato = {day}");
+                // Console.WriteLine($"[DEBUG] Dia fixo do contrato = {day}");
 
-                // Extrair mês/ano do Aluguel (ex.: "10/2024")
+                // Extrair mês/ano do Aluguel, pq salvamos como ex: 01/25
                 var splitted = rent.Mes.Split('/');
                 if (splitted.Length < 2)
                 {
-                    Console.WriteLine($"[DEBUG] Formato de 'Mes' inválido: {rent.Mes}");
+                    // Console.WriteLine($"[DEBUG] Formato de 'Mes' inválido: {rent.Mes}");
                     continue;
                 }
 
                 if (!int.TryParse(splitted[0], out var month) ||
                     !int.TryParse(splitted[1], out var year))
                 {
-                    Console.WriteLine($"[DEBUG] Erro ao fazer parse do mês ou ano em {rent.Mes}");
+                    // Console.WriteLine($"[DEBUG] Erro ao fazer parse do mês ou ano em {rent.Mes}");
                     continue;
                 }
 
-                Console.WriteLine($"[DEBUG] Mês extraído = {month}, Ano extraído = {year}");
+                // Console.WriteLine($"[DEBUG] Mês extraído = {month}, Ano extraído = {year}");
 
                 // Montar a data de vencimento
                 DateTime dueDate;
@@ -472,8 +472,7 @@ namespace Layer.Services.Services
                 }
                 catch
                 {
-                    // ex.: dia 31 para fevereiro
-                    Console.WriteLine($"[DEBUG] Data inválida (Dia:{day}, Mês:{month}, Ano:{year}). Ignorando Aluguel {rent.AluguelId}.");
+                    // Console.WriteLine($"[DEBUG] Data inválida (Dia:{day}, Mês:{month}, Ano:{year}). Ignorando Aluguel {rent.AluguelId}.");
                     continue;
                 }
 

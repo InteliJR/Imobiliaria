@@ -49,6 +49,11 @@ namespace Layer.Services.Services
                 {
                     var locatarioInfos = await GetUserInfo(payment.LocatarioId.ToString(), "Locatario");
 
+                    if(locatarioInfos == null){
+                        _logger.LogError($"Erro ao buscar informações do locatário com ID {payment.LocatarioId}");
+                        continue;
+                    }
+
                     if (stoppingToken.IsCancellationRequested) break;
 
                     string subject;
