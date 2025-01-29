@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Layer.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics.Contracts;
 
 namespace Layer.Domain.Interfaces
 {
@@ -33,5 +34,6 @@ namespace Layer.Domain.Interfaces
         Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByIdImovel(int imovelid);
         Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByContractId(int contractId);
         Task<string> GenerateSignedUrlOfContractsAsync(string objectName);
+        Task<IEnumerable<RentAndContractInfoDTO>> GetAlugueisQueVencemEmXdias(int days);
     }
 }
