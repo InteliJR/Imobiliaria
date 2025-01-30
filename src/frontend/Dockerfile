@@ -1,21 +1,26 @@
-    FROM node:16-alpine AS build
+# Dev stage
+FROM node:18-alpine AS dev
 
-    WORKDIR /app
+ENV PORT=5173
 
-    COPY package*.json ./
+WORKDIR /app
+COPY package*.json ./
+RUN npm install && npm cache clean --force
+COPY . .
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--host"]
 
-    RUN npm install
+# Build stage
+FROM node:18 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install && npm cache clean --force
+COPY . .
+WORKDIR /app/src
+RUN npm run build
 
-    COPY . . 
-
-    RUN npm run build
-
-    # Parte 2 exibir os arquivos estaticos com Nginx
-
-    FROM nginx:alpine
-
-    COPY --from=build /app/dist /usr/share/nginx/html
-
-    EXPOSE 83
-    CMD ["nginx", "-g", "daemon off;"]
-
+# Production stage
+FROM nginx:stable-alpine AS prod
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

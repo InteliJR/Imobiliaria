@@ -28,6 +28,9 @@ namespace Layer.Domain.Entites
         [Column("data_encerramento")] // Nome da coluna no banco de dados
         public DateTime? DataEncerramento { get; set; }
 
+        [Column("data_reajuste")]
+        public DateTime? DataReajuste { get; set; }
+
         [ForeignKey("Locador")]
         [Column("locadorid")] // Nome da coluna no banco de dados
         public int LocadorId { get; set; }
@@ -70,7 +73,5 @@ namespace Layer.Domain.Entites
         [Column("valor_reajuste")] // Nome da coluna no banco de dados
         public decimal? ValorReajuste { get; set; }
 
-        // Relacionamentos com outras entidades
-        //public virtual Imovel Imovel { get; set; }
     }
 }

@@ -74,6 +74,7 @@ namespace property_management.Controllers
                 DataRescisao = newContrato.DataRescisao,
                 Renovado = newContrato.Renovado,
                 DataEncerramentoRenovacao = newContrato.DataEncerramentoRenovacao,
+                DataReajuste = newContrato.DataReajuste,
                 ValorReajuste = newContrato.ValorReajuste
             };
 
@@ -131,6 +132,7 @@ namespace property_management.Controllers
             contrato.DataPagamento = novocontrato.DataPagamento;
             contrato.DataRescisao = novocontrato.DataRescisao;
             contrato.Renovado = novocontrato.Renovado;
+            contrato.DataReajuste = novocontrato.DataReajuste;
             contrato.DataEncerramentoRenovacao = novocontrato.DataEncerramentoRenovacao;
             contrato.ValorReajuste = novocontrato.ValorReajuste;
 
