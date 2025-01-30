@@ -405,6 +405,103 @@ namespace Layer.Services.Services
             return await _storageService.GenerateSignedUrlAsync(objectName, 5);
         }
 
+        public async Task<IEnumerable<RentAndContractInfoDTO>> GetAlugueisQueVencemEmXdias(int days)
+        {
+            // Calcular data alvo, hoje + X dias
+            var saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+            // Configurar o TimeZoneInfo para São Paulo
+            var nowInSaoPaulo = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, saoPauloTimeZone);
+
+            var targetDate = nowInSaoPaulo.Date.AddDays(5);
+            // Console.WriteLine($"Data alvo em São Paulo: {targetDate:dd/MM/yyyy}");
+            // Console.WriteLine($"[DEBUG] Dias solicitados: {days}");
+            // Console.WriteLine($"[DEBUG] Data alvo calculada: {targetDate:dd/MM/yyyy}");
+
+            // Alugueis não pagos
+            var rents = await _dbcontext.Alugueis
+                .Where(r => r.Status == false)
+                .ToListAsync();
+            // Console.WriteLine($"[DEBUG] Quantidade de aluguéis não pagos encontrados: {rents.Count}");
+
+            var result = new List<RentAndContractInfoDTO>();
+
+            foreach (var rent in rents)
+            {
+                // Console.WriteLine($"[DEBUG] Iniciando processamento do Aluguel ID = {rent.AluguelId}, Mês = {rent.Mes}");
+
+                // Pegar o contrato
+                var contract = await _dbcontext.Contratos.FindAsync(rent.ContratoId);
+                if (contract == null)
+                {
+                    // Console.WriteLine($"[DEBUG] Contrato não encontrado para Aluguel {rent.AluguelId} (ContratoId = {rent.ContratoId}). Ignorando.");
+                    continue;
+                }
+
+                if (!contract.DataPagamento.HasValue)
+                {
+                    // Console.WriteLine($"[DEBUG] Contrato {rent.ContratoId} não possui DataPagamento. Ignorando.");
+                    continue;
+                }
+
+                // Dia do pagamento do aluguel, isso que importa pra gnt
+                var day = contract.DataPagamento.Value.Day;
+                // Console.WriteLine($"[DEBUG] Dia fixo do contrato = {day}");
+
+                // Extrair mês/ano do Aluguel, pq salvamos como ex: 01/25
+                var splitted = rent.Mes.Split('/');
+                if (splitted.Length < 2)
+                {
+                    // Console.WriteLine($"[DEBUG] Formato de 'Mes' inválido: {rent.Mes}");
+                    continue;
+                }
+
+                if (!int.TryParse(splitted[0], out var month) ||
+                    !int.TryParse(splitted[1], out var year))
+                {
+                    // Console.WriteLine($"[DEBUG] Erro ao fazer parse do mês ou ano em {rent.Mes}");
+                    continue;
+                }
+
+                // Console.WriteLine($"[DEBUG] Mês extraído = {month}, Ano extraído = {year}");
+
+                // Montar a data de vencimento
+                DateTime dueDate;
+                try
+                {
+                    dueDate = new DateTime(year, month, day);
+                }
+                catch
+                {
+                    // Console.WriteLine($"[DEBUG] Data inválida (Dia:{day}, Mês:{month}, Ano:{year}). Ignorando Aluguel {rent.AluguelId}.");
+                    continue;
+                }
+
+                // Se a data de vencimento for IGUAL a 'targetDate', significa que vence daqui X dias
+                if (dueDate.Date == targetDate.Date)
+                {
+                    Console.WriteLine($"[DEBUG] Aluguel {rent.AluguelId} vence em {days} dias. (Data de vencimento: {dueDate:dd/MM/yyyy})");
+
+                    result.Add(new RentAndContractInfoDTO
+                    {
+                        AluguelId = rent.AluguelId,
+                        Mes = rent.Mes,
+                        ContratoId = rent.ContratoId,
+                        ValorAluguel = contract.ValorAluguel,
+                        LocadorId = contract.LocadorId,
+                        LocatarioId = contract.LocatarioId,
+                        DataPagamento = dueDate
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"[DEBUG] Aluguel {rent.AluguelId} NÃO vence em {days} dias. (Data de vencimento: {dueDate:dd/MM/yyyy}, DataTarget: {targetDate:dd/MM/yyyy})");
+                }
+            }
+
+            Console.WriteLine($"[DEBUG] Quantidade de aluguéis encontrados que vencem em {days} dias: {result.Count}");
+            return result;
+        }
+
 
     }
 

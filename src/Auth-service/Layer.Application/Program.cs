@@ -76,24 +76,24 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                 maxRetryCount: 5,
                 maxRetryDelay: TimeSpan.FromSeconds(30),
                 errorCodesToAdd: null);
-            npgsqlOptions.CommandTimeout(30); // Timeout de 30 segundos
+            npgsqlOptions.CommandTimeout(60); // Timeout de 30 segundos
         })
-    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
+    // .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
 );
 
 // Configurar HangFire
 
-builder.Services.AddHangfire(config =>
-{
-    config.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new Hangfire.PostgreSql.PostgreSqlStorageOptions
-    {
-        InvisibilityTimeout = TimeSpan.FromMinutes(5),
-        QueuePollInterval = TimeSpan.FromSeconds(15),
-        DistributedLockTimeout = TimeSpan.FromMinutes(10),
-    });
-});
+// builder.Services.AddHangfire(config =>
+// {
+//     config.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new Hangfire.PostgreSql.PostgreSqlStorageOptions
+//     {
+//         InvisibilityTimeout = TimeSpan.FromMinutes(10),
+//         QueuePollInterval = TimeSpan.FromSeconds(10),
+//         DistributedLockTimeout = TimeSpan.FromMinutes(5),
+//     });
+// });
 
-builder.Services.AddHangfireServer();
+// builder.Services.AddHangfireServer();
 
 /*builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 */
@@ -229,17 +229,17 @@ if (app.Environment.IsDevelopment())
 
 // Configurar o HangFire na aplicacao
 
-app.UseHangfireDashboard("/hangfire", new DashboardOptions
-{
-    Authorization = null // Temporariamente desabilitar autenticação para teste
-});
-app.UseHangfireServer();
+// app.UseHangfireDashboard("/hangfire", new DashboardOptions
+// {
+//     Authorization = null // Temporariamente desabilitar autenticação para teste
+// });
+// app.UseHangfireServer();
 
-RecurringJob.AddOrUpdate<HangfireJobsHelper>(
-    "verificar-usuarios-inativos",
-    x => x.VerificarUsuariosInativos(),
-    Cron.DayInterval(15));
-//Cron.Minutely);
+// RecurringJob.AddOrUpdate<HangfireJobsHelper>(
+//     "verificar-usuarios-inativos",
+//     x => x.VerificarUsuariosInativos(),
+//     Cron.DayInterval(15));
+// //Cron.Minutely);
 
 // Se tiver em prod pular isso
 
