@@ -154,5 +154,15 @@ namespace Layer.Services.Services
             // Salva as mudanças e retorna o número de registros afetados
             return await _dbcontext.SaveChangesAsync();
         }
+        public async Task<List<Contratos>> ObterContratosProximosReajusteAsync()
+        {
+            var dataAtual = DateTime.UtcNow.Date;
+            var dataLimite = dataAtual.AddDays(7); // Busca contratos com reajuste nos próximos 7 dias
+
+            return await _dbcontext.Contratos
+                .Where(c => c.DataReajuste >= dataAtual && c.DataReajuste <= dataLimite)
+                .Include(c => c.LocatarioId) // Inclui os dados do locatário
+                .ToListAsync();
+        }
     }
 }

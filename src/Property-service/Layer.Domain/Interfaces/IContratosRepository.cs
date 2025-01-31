@@ -17,5 +17,6 @@ namespace Layer.Domain.Interfaces
         Task<int> UpdateAsync(int id, Contratos contrato);
         Task<int> DeleteAsync(int id);
         Task<List<string>> GenerateSignedUrlsOfPdfsAsync(List<string> objectNames);
+        Task<List<Contratos>> ObterContratosProximosReajusteAsync();
     }
 }

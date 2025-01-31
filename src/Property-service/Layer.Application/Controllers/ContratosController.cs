@@ -8,6 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 using property_management.Models;
 using System.Security.Claims;
 using Layer.Infrastructure.Database;
+using System.Security.Principal;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Layer.Infrastructure.ExternalAPIs;
 
 namespace property_management.Controllers
 {
@@ -19,13 +23,15 @@ namespace property_management.Controllers
         private readonly IimoveisRepository _imoveisService;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationLog _applicationLog;
+        private readonly IUsersAPI _usersAPI;
 
-        public ContratosController(IContratosRepository contratoService, IimoveisRepository imoveisService, IEmailSender emailSender, ApplicationLog applicationLog)
+        public ContratosController(IContratosRepository contratoService, IimoveisRepository imoveisService, IEmailSender emailSender, ApplicationLog applicationLog, IUsersAPI usersAPI)
         {
             _contratoService = contratoService;
             _imoveisService = imoveisService;
             _emailSender = emailSender;
             _applicationLog = applicationLog;
+            _usersAPI = usersAPI;
         }
 
         [HttpGet("PegarContratoPorId/{id}")]
@@ -159,6 +165,82 @@ namespace property_management.Controllers
             return Ok(urls);
         }
 
+        [HttpPost("Enviar-Notificacao-Reajuste")]
+        [Authorize(Policy = nameof(Roles.Admin))]
+        public async Task<IActionResult> EnviarNotificacaoReajuste()
+        {
+            try
+            {
+                // Obtém contratos que estão próximos da data de reajuste
+                var contratosParaReajuste = await _contratoService.ObterContratosProximosReajusteAsync();
+
+                if (!contratosParaReajuste.Any())
+                {
+                    return NotFound("Nenhum contrato próximo do reajuste foi encontrado.");
+                }
+
+                List<string> emailsNotificados = new();
+
+                foreach (var contrato in contratosParaReajuste)
+                {
+                    // Obtém informações do locatário usando o serviço de autenticação
+                    var locatarioInfo = await GetUserInfo(contrato.LocatarioId.ToString(), "Locatario");
+
+                    if (locatarioInfo == null || string.IsNullOrEmpty(locatarioInfo.Email))
+                    {
+                        Console.WriteLine($"Não foi possível obter informações do locatário {contrato.LocatarioId}.");
+                        continue;
+                    }
+
+                    var email = locatarioInfo.Email;
+                    var assunto = "Aviso de Reajuste de Contrato";
+                    var mensagem = $"Olá {locatarioInfo.Nome}, seu contrato de aluguel será reajustado em {contrato.DataReajuste:dd/MM/yyyy}.";
+
+                    // Envia o e-mail de notificação
+                    var resultadoEnvio = await _emailSender.SendEmailAsync(email, assunto, mensagem);
+
+                    if (resultadoEnvio.StartsWith("E-mail enviado com sucesso!", StringComparison.OrdinalIgnoreCase)) 
+                    {
+                        emailsNotificados.Add(email);
+                    }
+
+                }
+
+                return Ok(new { Mensagem = "Notificações enviadas com sucesso.", Emails = emailsNotificados });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao enviar notificações: {ex.Message}");
+            }
+        }
+
+        // Método para obter informações do usuário no Auth-Service
+        private async Task<UserInfo> GetUserInfo(string userId, string role)
+        {
+            var endpoint = role switch
+            {
+                "Locador" => $"/User/infoLocador/{userId}",
+                "Locatario" => $"/User/infoLocatario/{userId}",
+                _ => null
+            };
+
+            if (endpoint == null)
+                return null;
+
+            try
+            {
+                // Faz a requisição ao serviço de usuários
+                var response = await _usersAPI.SendHMACRequestQueryAsync(endpoint, userId);
+
+                // Desserializa o JSON na classe UserInfo
+                return JsonConvert.DeserializeObject<UserInfo>(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao buscar informações do usuário: {ex.Message}");
+                return null;
+            }
+        }
 
     }
 }
