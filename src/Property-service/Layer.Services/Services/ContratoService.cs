@@ -164,5 +164,24 @@ namespace Layer.Services.Services
                 .Include(c => c.LocatarioId) // Inclui os dados do locatário
                 .ToListAsync();
         }
+
+        public async Task<List<Contratos>> GetContratosParaReajusteAsync(CancellationToken cancellationToken)
+        {
+            return await _dbcontext.Contratos
+                .Where(c => c.DataReajuste.HasValue 
+                            && c.DataReajuste.Value.Date == DateTime.UtcNow.Date 
+                            && c.ValorReajuste.HasValue)
+                .ToListAsync(cancellationToken);
+        }
+
+        // Método que aplica o reajuste no valor do aluguel e atualiza a data de reajuste
+        public async Task AplicarReajusteAsync(Contratos contrato, CancellationToken cancellationToken)
+        {
+            contrato.ValorAluguel += contrato.ValorReajuste.Value;
+            contrato.DataReajuste = DateTime.UtcNow.AddYears(1);  // Atualiza para o próximo ano
+
+            _dbcontext.Contratos.Update(contrato);
+            await _dbcontext.SaveChangesAsync(cancellationToken);
+        }
     }
 }
