@@ -12,6 +12,8 @@ interface ContractFormProps {
   lessors: any[];
   renters: any[];
   selectedPropertyId: string | null;
+  status: any;
+  DataReajuste: any;
   // reajust: string | null;
   selectedLessorId: string | null;
   selectedRenterId: string | null;
@@ -38,6 +40,8 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   isLoadingProperty,
   isLoadingLessor,
   isLoadingRenter,
+  // status,
+  // DataReajuste,
   onInputChange,
   onValueChange,
   setSelectedPropertyId,
@@ -189,7 +193,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
         )}
 
         {/* Campo de Data de Encerramento da Renovação */}
-        {/* {contract?.status === "Renovado" && (
+        {contract?.status === "Renovado" && (
           <div className="flex flex-col">
             <label htmlFor="dataEncerramentoRenovacao">Data de Encerramento da Renovação:</label>
             <input
@@ -202,7 +206,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
               className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
             />
           </div>
-        )} */}
+        )}
 
         {/* IPTU */}
         <div className="flex flex-col">
@@ -282,7 +286,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             id="dataReajuste"
             type="text"
             name="dataReajuste"
-            value={formatDate(contract?.dataEncerramentoRenovacao) || ""}
+            value={formatDate(contract?.DataReajuste) || ""}
             onChange={onInputChange}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"

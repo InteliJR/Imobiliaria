@@ -227,7 +227,7 @@ export default function Contratos() {
                     locatario={contrato.locatarioId}
                     status={contrato.status}
                     encerramento={contrato.dataEncerramento}
-                    reajuste={contrato.dataEncerramentoRenovacao}
+                    reajuste={contrato.DataReajuste ?? "data não disponível"}
                     location={contrato.imovelId}
                     iptu={contrato.iptu.toFixed(2)}
                     aluguel={contrato.valorAluguel.toFixed(2)}

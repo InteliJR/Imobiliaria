@@ -12,6 +12,7 @@ import { useAtom } from "jotai";
 import { userRoleAtom } from "../../store/atoms";
 
 export interface Contract {
+  DataReajuste: any;
   contratoId: string;
   documentos: string[];
   valorAluguel: number;
@@ -22,7 +23,7 @@ export interface Contract {
   imovelId: string;
   tipoGarantia: string;
   condicoesEspeciais: string;
-  status: string;
+  status: any;
   iptu: number;
   dataPagamento: string;
   taxaAdm: number;
@@ -383,6 +384,8 @@ export default function Contrato() {
                 isLoadingProperty={isLoadingProperty}
                 isLoadingLessor={isLoadingLessor}
                 isLoadingRenter={isLoadingRenter}
+                status={contract?.status || "defaultStatus"} // Forneça um valor padrão
+                DataReajuste={contract?.DataReajuste || null} 
                 // reajust={dataReajuste}
                 onInputChange={handleInputChange}
                 onValueChange={handleValueChange}
