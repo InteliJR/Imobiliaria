@@ -157,6 +157,17 @@ export default function UsuariosComponent() {
     // Esse "resultado" já está filtrado pelos campos avançados
     setAdvancedFiltered(resultado);
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
 
   return (
     <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">
@@ -217,20 +228,52 @@ export default function UsuariosComponent() {
             Nenhum usuário encontrado.
           </p>
         ) : (
-          <div className="flex flex-col gap-6">
-            {filteredData.map((user: any) => (
-              <LandlordCard
-                key={user.usuarioId}
-                id={user.usuarioId}
-                name={user.nome || "Nome não disponível"}
-                role={user.role || "Função não disponível"}
-                cpf={user.cpf || "não encontrado"}
-                rg={user.rg || "não encontrado"}
-                associatedProperties={user.nImoveis}
-              />
-            ))}
-          </div>
-        )}
+          <>
+            <div className="flex flex-col gap-6">
+              {getPagedData().map((user: any) => (
+                <LandlordCard
+                  key={user.usuarioId}
+                  id={user.usuarioId}
+                  name={user.nome || "Nome não disponível"}
+                  role={user.role || "Função não disponível"}
+                  cpf={user.cpf || "não encontrado"}
+                  rg={user.rg || "não encontrado"}
+                  associatedProperties={user.nImoveis}
+                />
+              ))}
+            </div>
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === 1
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <span className="text-neutral-700">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === totalPages
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Próxima
+              </button>
+            </div>
+          </>
+          )}
       </section>
     </div>
   );
