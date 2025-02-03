@@ -161,7 +161,7 @@ namespace Layer.Services.Services
 
             return await _dbcontext.Contratos
                 .Where(c => c.DataReajuste >= dataAtual && c.DataReajuste <= dataLimite)
-                .Include(c => c.LocatarioId) // Inclui os dados do locatário
+                .Include(c => c.Locatario) // Inclui os dados do locatário
                 .ToListAsync();
         }
 

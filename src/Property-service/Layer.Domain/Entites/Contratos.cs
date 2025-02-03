@@ -39,6 +39,8 @@ namespace Layer.Domain.Entites
         [Column("locatarioid")] // Nome da coluna no banco de dados
         public int LocatarioId { get; set; }
 
+        public virtual Locatario? Locatario { get; set; } 
+
         [ForeignKey("Imovel")]
         [Column("imovelid")] // Nome da coluna no banco de dados
         public int ImovelId { get; set; }
