@@ -139,16 +139,16 @@ export default function Tickets() {
   };
 
   useEffect(() => {
-    // Se search estiver vazio, "filteredData" = "advancedFiltered"
     if (!search.trim()) {
       setFilteredData(advancedFiltered);
-      return;
+    } else {
+      const lower = search.toLowerCase();
+      const finalResult = advancedFiltered.filter((user: any) =>
+        user.nome?.toLowerCase().includes(lower)
+      );
+      setFilteredData(finalResult);
     }
-    const lower = search.toLowerCase();
-    const finalResult = advancedFiltered.filter((ticket: any) =>
-      ticket.title?.toLowerCase().includes(lower)
-    );
-    setFilteredData(finalResult);
+    setCurrentPage(1); // Resetar página ao buscar/filtrar
   }, [search, advancedFiltered]);
 
 
@@ -163,6 +163,17 @@ export default function Tickets() {
     setAdvancedFiltered(resultado);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
 
   useEffect(() => {
     fetchTickets();
@@ -217,12 +228,13 @@ export default function Tickets() {
         {loading ? (
           <Loading type="skeleton" />
         ) : (
+        <>
           <section className="flex-grow flex flex-col gap-y-5">
             <h2 className="text-2xl font-semibold">Resultados</h2>
             <div className="h-[1px] bg-black"></div>
             {filteredData.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredData.map((ticket) => (
+                {getPagedData().map((ticket) => (
                   <Card
                     key={ticket.chamadoId} // Usar o idChamado real como chave
                     id={ticket.chamadoId} // Passar o idChamado real como número
@@ -240,6 +252,37 @@ export default function Tickets() {
               </p>
             )}
           </section>
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === 1
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <span className="text-neutral-700">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === totalPages
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Próxima
+              </button>
+            </div>
+        </>
         )}
       </section>
 
