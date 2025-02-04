@@ -45,6 +45,7 @@ import ImovelById from "./mobile/pages/Imovel";
 import PagamentosImovel from "./mobile/pages/PagamentosImovel";
 import ContratosMobile from "./mobile/pages/Contratos";
 import ContractView from "./mobile/pages/ContractView";
+import ContractViewLoc from "./mobile/pages/ContractView-loc";
 import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
@@ -246,6 +247,14 @@ const Root = () => {
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
               <ContractView />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contratos-loc/:id"
+          element={
+            <ProtectedRoute requiredRole={["Locador", "Locatario"]}>
+              <ContractViewLoc />
             </ProtectedRoute>
           }
         />

@@ -154,6 +154,20 @@ export default function PropertyDetails() {
               onClick={() => navigate(`/imovel-adm/${property.imovelId}`)}
             > Editar as informações do Imóvel</button>
           )}
+          {userRole === "Locatario" && (
+            <button
+            
+              className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
+              onClick={() => navigate(`/contratos-loc/${property.imovelId}`)}
+            > Visualizar o contrato de locação </button>
+          )}
+          {userRole === "Locador" && (
+            <button
+            
+              className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
+              onClick={() => navigate(`/contratos-loc/${property.imovelId}`)}
+            > Visualizar o contrato de locação </button>
+          )}
         </div>
       </section>
       <Footer />

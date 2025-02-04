@@ -20,5 +20,7 @@ namespace Layer.Domain.Interfaces
         Task<List<Contratos>> ObterContratosProximosReajusteAsync();
         Task<List<Contratos>> GetContratosParaReajusteAsync(CancellationToken cancellationToken);
         Task AplicarReajusteAsync(Contratos contrato, CancellationToken cancellationToken);
+        Task<Contratos> GetByIdContratoAsync(int id);
+        Task<List<Contratos>> GetByImovelIdAsync(int imovelId);
     }
 }

@@ -165,6 +165,55 @@ namespace property_management.Controllers
             return Ok(urls);
         }
 
+        [HttpGet("PegarContratoPorImovelIdComVerificacao/{imovelId}")]
+        [Authorize(Policy = "AllRoles")]
+        public async Task<IActionResult> GetContratoByImovelIdWithVerification(int imovelId)
+        {
+            // Obter o RoleID do usuário logado
+            var roleId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "RoleID")?.Value;
+            if (string.IsNullOrEmpty(roleId))
+            {
+                return Unauthorized("RoleID do usuário não encontrado.");
+            }
+
+            // Obter o papel do usuário logado (Locatário ou Locador)
+            var userRole = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value;
+            if (string.IsNullOrEmpty(userRole))
+            {
+                return Unauthorized("Papel do usuário não definido.");
+            }
+
+            // Permitir acesso apenas se o papel for Locador ou Locatário
+            if (userRole != nameof(Roles.Locador) && userRole != nameof(Roles.Locatario))
+            {
+                return Forbid("Acesso negado: apenas Locador ou Locatário têm permissão.");
+            }
+
+            // Buscar os contratos pelo ImovelId
+            var contratos = await _contratoService.GetByImovelIdAsync(imovelId);
+
+            // Verificar se há contratos
+            if (contratos == null || contratos.Count == 0)  // <-- Usando Count ao invés de Any()
+            {
+                return NotFound($"Não foram encontrados contratos para o Imóvel com ID {imovelId}.");
+            }
+
+            // Filtrar contratos que o usuário tem permissão para ver
+            var contratosComAcesso = contratos.Where(contrato =>
+                (userRole == nameof(Roles.Locador) && contrato.LocadorId.ToString() == roleId) ||
+                (userRole == nameof(Roles.Locatario) && contrato.LocatarioId.ToString() == roleId)
+            ).ToList();
+
+            if (contratosComAcesso.Count == 0)  // <-- Usando Count ao invés de Any()
+            {
+                return Unauthorized("Acesso negado: você não tem permissão para acessar os contratos deste imóvel.");
+            }
+
+            return Ok(contratosComAcesso);
+        }
+
+
+
         [HttpPost("Enviar-Notificacao-Reajuste")]
         [Authorize(Policy = nameof(Roles.Admin))]
         public async Task<IActionResult> EnviarNotificacaoReajuste()

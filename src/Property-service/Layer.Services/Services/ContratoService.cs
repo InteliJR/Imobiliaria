@@ -174,6 +174,24 @@ namespace Layer.Services.Services
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<Contratos> GetByIdContratoAsync(int id)
+        {
+            return await _dbcontext.Contratos
+                .Include(c => c.Locador)
+                .Include(c => c.Locatario)
+                .Include(c => c.Imovel)
+                .FirstOrDefaultAsync(c => c.ImovelId == id);
+        }
+
+        public async Task<List<Contratos>> GetByImovelIdAsync(int imovelId)
+        {
+            return await _dbcontext.Contratos
+                .Where(c => c.ImovelId == imovelId)
+                .ToListAsync();
+        }
+
+
+
         // Método que aplica o reajuste no valor do aluguel e atualiza a data de reajuste
         public async Task AplicarReajusteAsync(Contratos contrato, CancellationToken cancellationToken)
         {
