@@ -12,23 +12,23 @@ import { useAtom } from "jotai";
 import { userRoleAtom } from "../../store/atoms";
 
 export interface Contract {
-  DataReajuste: any;
-  contratoId: string;
-  documentos: string[];
-  valorAluguel: number;
-  dataInicio: string;
-  dataEncerramento: string;
-  locadorId: string;
-  locatarioId: string;
-  imovelId: string;
-  tipoGarantia: string;
-  condicoesEspeciais: string;
-  status: any;
-  iptu: number;
-  dataPagamento: string;
-  taxaAdm: number;
+  dataReajuste?: any;
+  contratoId?: string;
+  documentos?: string[];
+  valorAluguel?: number;
+  dataInicio?: string;
+  dataEncerramento?: string;
+  locadorId?: string;
+  locatarioId?: string;
+  imovelId?: string;
+  tipoGarantia?: string;
+  condicoesEspeciais?: string;
+  status?: any;
+  iptu?: number;
+  dataPagamento?: string;
+  taxaAdm?: number;
   dataRescisao?: string;
-  renovado: boolean;
+  renovado?: boolean;
   dataEncerramentoRenovacao?: string;
   valorReajuste?: number;
 }
@@ -53,6 +53,22 @@ export default function Contrato() {
   const [loadingSpinner, setLoadingSpinner] = useState(false); // estado para controlar o componente de carregamento
   const [loadingPayments, setLoadingPayments] = useState(true); // estado para controlar o carregamento dos pagamentos
   const [showPaymentForm, setShowPaymentForm] = useState(false); // Estado para controlar a visibilidade do formulário de adição de pagamentos
+  // Estados relacionados à busca em outras tabelas
+  const [isLoadingLessor, setIsLoadingLessor] = useState(false);
+  const [isLoadingRenter, setIsLoadingRenter] = useState(false);
+  const [isLoadingProperty, setIsLoadingProperty] = useState(false);
+  const [isLoadingPayers] = useState(false);
+  const [payers] = useState([]); // Lista de pagantes
+  const [lessors, setLessors] = useState([]); // Lista de lessors
+  const [renters, setRenters] = useState([]); // Lista de locatários
+  const [properties, setProperties] = useState([]);
+  const [selectedLessorId, setSelectedLessorId] = useState<string | null>(null);
+  const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
+  const [canAddPayments, setCanAddPayments] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
+  // const userRole = localStorage.getItem("userRole");
+  const [userRole] = useAtom(userRoleAtom);
 
   // Função para obter a data de hoje
   const getTodayDate = (): string => {
@@ -70,22 +86,6 @@ export default function Contrato() {
     data: getTodayDate(), // Inicializa com a data de hoje
   });
 
-  // Estados relacionados à busca em outras tabelas
-  const [isLoadingLessor, setIsLoadingLessor] = useState(false);
-  const [isLoadingRenter, setIsLoadingRenter] = useState(false);
-  const [isLoadingProperty, setIsLoadingProperty] = useState(false);
-  const [isLoadingPayers] = useState(false);
-  const [payers] = useState([]); // Lista de pagantes
-  const [lessors, setLessors] = useState([]); // Lista de lessors
-  const [renters, setRenters] = useState([]); // Lista de locatários
-  const [properties, setProperties] = useState([]);
-  const [selectedLessorId, setSelectedLessorId] = useState<string | null>(null);
-  const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
-  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
-  const [canAddPayments, setCanAddPayments] = useState(false);
-  const [isEditable, setIsEditable] = useState(false);
-  // const userRole = localStorage.getItem("userRole");
-  const [userRole] = useAtom(userRoleAtom);
 
   const fetchSelectOptions = async () => {
     try {
@@ -237,80 +237,89 @@ export default function Contrato() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (contract) {
       const { name, value } = e.target;
-      setContract({ ...contract, [name]: value });
+      setContract(prevContract => ({ ...prevContract, [name]: value }));
     }
   };
-
+  
   const handleValueChange = (field: string, value: number | string | string[]) => {
-    if (contract) {
-      setContract({ ...contract, [field]: value });
-    }
+    setContract(prevContract => ({ ...prevContract, [field]: value }));
   };
+  
 
-  const handleSave = (event: React.FormEvent) => {
+  const handleSave = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     if (!contract) {
       showErrorToast("Contrato não encontrado.");
       return;
     }
-
+  
     setLoadingSpinner(true);
-
-    // Verifica se houve mudanças
-    const hasChanges = Object.keys(originalContract || {}).some(
-      (key) => originalContract![key as keyof Contract] !== contract[key as keyof Contract]
-    );
-
-    if (!hasChanges) {
+  
+    // Verifica se houve mudanças nos campos
+    const updatedFields: Partial<Contract> = {};
+    Object.keys(contract).forEach((key) => {
+      const originalValue = originalContract?.[key as keyof Contract];
+      const currentValue = contract[key as keyof Contract];
+  
+      const normalize = (value: any) => {
+        if (typeof value === "string") return value.trim();
+        if (typeof value === "number") return value;
+        if (typeof value === "boolean") return value;
+        return value;
+      };
+  
+      // Compara os valores normalizados, considerando undefined como não alterado
+      if (normalize(originalValue) !== normalize(currentValue)) {
+        updatedFields[key as keyof Contract] = currentValue;
+      }
+    });
+  
+    // Verificação adicional para propriedades selecionadas
+    if (selectedPropertyId !== originalContract?.imovelId) {
+      updatedFields.imovelId = selectedPropertyId!;
+    }
+    if (selectedLessorId !== originalContract?.locadorId) {
+      updatedFields.locadorId = selectedLessorId!;
+    }
+    if (selectedRenterId !== originalContract?.locatarioId) {
+      updatedFields.locatarioId = selectedRenterId!;
+    }
+  
+    if (Object.keys(updatedFields).length === 0) {
       showErrorToast("Nenhuma alteração foi feita.");
       setLoadingSpinner(false);
       return;
     }
-
-    // Verifica se todos os campos obrigatórios estão preenchidos e válidos
-    if (
-      !contract.valorAluguel ||
-      contract.valorAluguel <= 0 || // Valor do aluguel precisa ser maior que zero
-      !contract.dataEncerramento ||
-      new Date(contract.dataEncerramento) <= new Date() || // Data de encerramento deve ser futura
-      !contract.tipoGarantia.trim() || // Tipo de garantia não pode ser vazio
-      !contract.iptu ||
-      contract.iptu <= 0 || // IPTU deve ser positivo
-      !contract.taxaAdm ||
-      contract.taxaAdm <= 0 || // Taxa administrativa deve ser positiva
-      !contract.dataPagamento || // Data de pagamento deve estar preenchida
-      !selectedPropertyId?.trim() || // Um imóvel precisa ser selecionado
-      !selectedLessorId?.trim() || // Um locador precisa ser selecionado
-      !selectedRenterId?.trim() // Um locatário precisa ser selecionado
-    ) {
-      showErrorToast("Preencha todos os campos obrigatórios corretamente.");
-      setLoadingSpinner(false);
-      return;
-    }
-
+  
     // Ajusta os campos dependendo do status
-    const updatedContract = { ...contract };
-
-    if (updatedContract.status === "Rescindido") {
-      updatedContract.dataRescisao = updatedContract.dataRescisao || new Date().toISOString().split("T")[0];
-      delete updatedContract.dataEncerramentoRenovacao;
-    } else if (updatedContract.status === "Renovado") {
-      updatedContract.dataEncerramentoRenovacao =
-        updatedContract.dataEncerramentoRenovacao || new Date().toISOString().split("T")[0];
-      delete updatedContract.dataRescisao;
+    if (contract.status === "Rescindido") {
+      updatedFields.dataRescisao = contract.dataRescisao || new Date().toISOString().split("T")[0];
+      delete updatedFields.dataEncerramentoRenovacao;
+    } else if (contract.status === "Renovado") {
+      updatedFields.dataEncerramentoRenovacao = contract.dataEncerramentoRenovacao || new Date().toISOString().split("T")[0];
+      delete updatedFields.dataRescisao;
     } else {
-      delete updatedContract.dataRescisao;
-      delete updatedContract.dataEncerramentoRenovacao;
+      delete updatedFields.dataRescisao;
+      delete updatedFields.dataEncerramentoRenovacao;
     }
+  
+    try {
+      await axiosInstance.put(`property/Contratos/AtualizarContrato/${id}`, updatedFields);
 
-    // Aqui deve ficar a chamada ao serviço para salvar as alterações
-    showSuccessToast("Contrato atualizado com sucesso!");
-    setOriginalContract(updatedContract); // Seta os dados que foram devidamente atualizados como os originais
-    console.log("Salvar contrato:", updatedContract);
-    setLoadingSpinner(false);
+      console.log("Campos alterados:", updatedFields);
+  
+      showSuccessToast("Contrato atualizado com sucesso!");
+      setOriginalContract({ ...contract, ...updatedFields }); // Atualiza o estado original com os novos dados
+    } catch (error) {
+      showErrorToast("Erro ao atualizar o contrato.");
+      console.error("Erro ao salvar contrato:", error);
+    } finally {
+      setLoadingSpinner(false);
+    }
   };
-
+  
+  
 
   const handleAddPayment = async () => {
 
@@ -385,7 +394,7 @@ export default function Contrato() {
                 isLoadingLessor={isLoadingLessor}
                 isLoadingRenter={isLoadingRenter}
                 status={contract?.status || "defaultStatus"} // Forneça um valor padrão
-                DataReajuste={contract?.DataReajuste || null} 
+                DataReajuste={contract?.dataReajuste || null} 
                 // reajust={dataReajuste}
                 onInputChange={handleInputChange}
                 onValueChange={handleValueChange}

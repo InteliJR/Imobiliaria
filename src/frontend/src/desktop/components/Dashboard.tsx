@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   const fetchData = () => {
     try {
-      console.log("traz os dados dos gráficos");
+      //console.log("traz os dados dos gráficos");
 
       // Requisição...
       setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida

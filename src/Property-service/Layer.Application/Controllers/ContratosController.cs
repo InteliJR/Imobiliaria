@@ -110,42 +110,42 @@ namespace property_management.Controllers
 
         [HttpPut("AtualizarContrato/{id}")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> UpdateContrato([FromBody] Contratos novocontrato)
+        public async Task<IActionResult> UpdateContrato(int id, [FromBody] UpdateContrato contratoDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var id = novocontrato.ContratoId;
-
             var contrato = await _contratoService.GetByIdAsync(id);
-
+            
             if (contrato == null)
             {
                 return NotFound();
             }
 
-            // Atualizando os campos do contrato existente com os valores do novo contrato
-            contrato.ValorAluguel = novocontrato.ValorAluguel;
-            contrato.Iptu = novocontrato.Iptu;
-            contrato.TaxaAdm = novocontrato.TaxaAdm;
-            contrato.DataInicio = novocontrato.DataInicio;
-            contrato.DataEncerramento = novocontrato.DataEncerramento;
-            contrato.TipoGarantia = novocontrato.TipoGarantia;
-            contrato.CondicoesEspeciais = novocontrato.CondicoesEspeciais;
-            contrato.Status = novocontrato.Status;
-            contrato.DataPagamento = novocontrato.DataPagamento;
-            contrato.DataRescisao = novocontrato.DataRescisao;
-            contrato.Renovado = novocontrato.Renovado;
-            contrato.DataReajuste = novocontrato.DataReajuste;
-            contrato.DataEncerramentoRenovacao = novocontrato.DataEncerramentoRenovacao;
-            contrato.ValorReajuste = novocontrato.ValorReajuste;
+            // Atualizando apenas os campos fornecidos
+            if (contratoDto.ValorAluguel.HasValue) contrato.ValorAluguel = contratoDto.ValorAluguel.Value;
+            if (contratoDto.Iptu.HasValue) contrato.Iptu = contratoDto.Iptu.Value;
+            if (contratoDto.TaxaAdm.HasValue) contrato.TaxaAdm = contratoDto.TaxaAdm.Value;
+            if (contratoDto.DataInicio.HasValue) contrato.DataInicio = contratoDto.DataInicio.Value;
+            if (contratoDto.DataEncerramento.HasValue) contrato.DataEncerramento = contratoDto.DataEncerramento.Value;
+            if (!string.IsNullOrEmpty(contratoDto.TipoGarantia)) contrato.TipoGarantia = contratoDto.TipoGarantia;
+            if (!string.IsNullOrEmpty(contratoDto.CondicoesEspeciais)) contrato.CondicoesEspeciais = contratoDto.CondicoesEspeciais;
+            if (!string.IsNullOrEmpty(contratoDto.Status)) contrato.Status = contratoDto.Status;
+            if (contratoDto.DataPagamento.HasValue) contrato.DataPagamento = contratoDto.DataPagamento.Value;
+            if (contratoDto.DataRescisao.HasValue) contrato.DataRescisao = contratoDto.DataRescisao.Value;
+            if (contratoDto.Renovado.HasValue) contrato.Renovado = contratoDto.Renovado.Value;
+            if (contratoDto.DataReajuste.HasValue) contrato.DataReajuste = contratoDto.DataReajuste.Value;
+            if (contratoDto.DataEncerramentoRenovacao.HasValue) contrato.DataEncerramentoRenovacao = contratoDto.DataEncerramentoRenovacao.Value;
+            if (contratoDto.ValorReajuste.HasValue) contrato.ValorReajuste = contratoDto.ValorReajuste.Value;
 
             // Salvando as alterações no banco de dados
             var result = await _contratoService.UpdateAsync(id, contrato);
 
-            await _applicationLog.LogAsync($"Atualização de contrato com id: {contrato.ContratoId} ", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+            await _applicationLog.LogAsync($"Atualização de contrato com id: {contrato.ContratoId}",
+                HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado",
+                HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
 
             return Ok(contrato);
         }

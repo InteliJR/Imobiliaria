@@ -51,7 +51,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
 }) => {
   const handleRemoveDocument = (index: number) => {
     if (!contract) return;
-    const updatedDocuments = [...contract.documentos];
+    const updatedDocuments = [...(contract.documentos ?? [])];
     updatedDocuments.splice(index, 1); // Remove o documento do array
     onValueChange("documentos", updatedDocuments); // Atualiza o estado do contrato
   };
@@ -60,8 +60,8 @@ export const ContractForm: React.FC<ContractFormProps> = ({
     return <p>Contrato não encontrado.</p>;
   }
 
-  console.log('Tipo de contract.documentos:', typeof contract?.documentos);
-  console.log('Valor de contract.documentos:', contract?.documentos);
+  // console.log('Tipo de contract.documentos:', typeof contract?.documentos);
+  // console.log('Valor de contract.documentos:', contract?.documentos);
 
   const documentos = contract?.documentos
     ? (typeof contract.documentos === "string" ? [contract.documentos] : contract.documentos)
@@ -232,9 +232,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <label htmlFor="dataPagamento">Data de Pagamento:</label>
           <input
             id="dataPagamento"
-            type="text"
+            type="date"
             name="dataPagamento"
-            value={formatDate(contract?.dataPagamento) || ""}
+            value={contract?.dataPagamento ? contract.dataPagamento.split("T")[0] : ""}
             onChange={onInputChange}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
@@ -281,12 +281,12 @@ export const ContractForm: React.FC<ContractFormProps> = ({
 
         {/* Data de Reajuste */}
         <div className="flex flex-col">
-          <label htmlFor="dataPagamento">Data de Reajuste:</label>
+          <label htmlFor="dataReajuste">Data de Reajuste:</label>
           <input
             id="dataReajuste"
-            type="text"
+            type="date"
             name="dataReajuste"
-            value={formatDate(contract?.DataReajuste) || ""}
+            value={contract?.dataReajuste ? contract.dataReajuste.split("T")[0] : ""}
             onChange={onInputChange}
             disabled={!isEditable}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm"
