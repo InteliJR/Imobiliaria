@@ -27,7 +27,7 @@ export interface Contract {
   iptu?: number;
   dataPagamento?: string;
   taxaAdm?: number;
-  dataRescisao?: string;
+  DataRescisao?: string;
   renovado?: boolean;
   dataEncerramentoRenovacao?: string;
   valorReajuste?: number;
@@ -294,13 +294,13 @@ export default function Contrato() {
   
     // Ajusta os campos dependendo do status
     if (contract.status === "Rescindido") {
-      updatedFields.dataRescisao = contract.dataRescisao || new Date().toISOString().split("T")[0];
+      updatedFields.DataRescisao = contract.DataRescisao || new Date().toISOString().split("T")[0];
       delete updatedFields.dataEncerramentoRenovacao;
     } else if (contract.status === "Renovado") {
       updatedFields.dataEncerramentoRenovacao = contract.dataEncerramentoRenovacao || new Date().toISOString().split("T")[0];
-      delete updatedFields.dataRescisao;
+      delete updatedFields.DataRescisao;
     } else {
-      delete updatedFields.dataRescisao;
+      delete updatedFields.DataRescisao;
       delete updatedFields.dataEncerramentoRenovacao;
     }
   
