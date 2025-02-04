@@ -249,7 +249,7 @@ export default function ContratosComponent() {
                 locatario={contrato.locatarioId}
                 reajuste={contrato.DataReajuste ?? "data não disponível"}
                 status={contrato.status}
-                encerramento={contrato.dataEncerramento}
+                encerramento={contrato.dataEncerramento ? contrato.dataEncerramento.split("T")[0] : ""}
                 location={contrato.imovelId}
                 iptu={contrato.iptu.toFixed(2)}
                 aluguel={contrato.valorAluguel.toFixed(2)}
