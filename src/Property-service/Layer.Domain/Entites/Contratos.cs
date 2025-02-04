@@ -28,6 +28,9 @@ namespace Layer.Domain.Entites
         [Column("data_encerramento")] // Nome da coluna no banco de dados
         public DateTime? DataEncerramento { get; set; }
 
+        [Column("data_reajuste")]
+        public DateTime? DataReajuste { get; set; }
+
         [ForeignKey("Locador")]
         [Column("locadorid")] // Nome da coluna no banco de dados
         public int LocadorId { get; set; }
@@ -36,6 +39,12 @@ namespace Layer.Domain.Entites
         [Column("locatarioid")] // Nome da coluna no banco de dados
         public int LocatarioId { get; set; }
 
+        public virtual Locatario? Locatario { get; set; } 
+
+        public virtual Locador? Locador { get; set; }
+
+        public virtual Imoveis? Imovel { get;set; }
+        
         [ForeignKey("Imovel")]
         [Column("imovelid")] // Nome da coluna no banco de dados
         public int ImovelId { get; set; }
@@ -70,7 +79,5 @@ namespace Layer.Domain.Entites
         [Column("valor_reajuste")] // Nome da coluna no banco de dados
         public decimal? ValorReajuste { get; set; }
 
-        // Relacionamentos com outras entidades
-        //public virtual Imovel Imovel { get; set; }
     }
 }

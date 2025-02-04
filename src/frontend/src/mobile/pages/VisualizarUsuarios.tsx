@@ -137,16 +137,16 @@ export default function Users() {
   }, []);
 
   useEffect(() => {
-    // Se search estiver vazio, "filteredData" = "advancedFiltered"
     if (!search.trim()) {
       setFilteredData(advancedFiltered);
-      return;
+    } else {
+      const lower = search.toLowerCase();
+      const finalResult = advancedFiltered.filter((user: any) =>
+        user.nome?.toLowerCase().includes(lower)
+      );
+      setFilteredData(finalResult);
     }
-    const lower = search.toLowerCase();
-    const finalResult = advancedFiltered.filter((user: any) =>
-      user.nome?.toLowerCase().includes(lower)
-    );
-    setFilteredData(finalResult);
+    setCurrentPage(1); // Resetar página ao buscar/filtrar
   }, [search, advancedFiltered]);
 
   // Abrir modal
@@ -160,6 +160,17 @@ export default function Users() {
     setAdvancedFiltered(resultado);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
 
   return (
     <main className="main-custom">
@@ -218,33 +229,65 @@ export default function Users() {
               Nenhum usuário encontrado.
             </p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredData.map((user, index) => {
-                const roleLower = user.role.toLowerCase();
-                const status =
-                  roleLower === "admin"
-                    ? "Admin"
-                    : roleLower === "judiciario"
-                    ? "Judiciário"
-                    : roleLower === "locador"
-                    ? "Locador"
-                    : roleLower === "locatario"
-                    ? "Locatário"
-                    : "Desconhecido";
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {getPagedData().map((user, index) => {
+                  const roleLower = user.role.toLowerCase();
+                  const status =
+                    roleLower === "admin"
+                      ? "Admin"
+                      : roleLower === "judiciario"
+                      ? "Judiciário"
+                      : roleLower === "locador"
+                      ? "Locador"
+                      : roleLower === "locatario"
+                      ? "Locatário"
+                      : "Desconhecido";
 
-                return (
-                  <Card
-                    key={index}
-                    id={user.usuarioId}
-                    title={user.nome || "Nome não disponível"}
-                    line1={user.nImoveis || "Número de imóveis não disponível"}
-                    line2={user.endereco || "Endereço não disponível"}
-                    line3={user.dataCriacao || "Data de criação não disponível"}
-                    status={status as "Locador" | "Locatário"}
-                  />
-                );
-              })}
+                  return (
+                    <Card
+                      key={index}
+                      id={user.usuarioId}
+                      title={user.nome || "Nome não disponível"}
+                      line1={user.nImoveis || "Número de imóveis não disponível"}
+                      line2={user.endereco || "Endereço não disponível"}
+                      line3={user.dataCriacao || "Data de criação não disponível"}
+                      status={status as "Locador" | "Locatário"}
+                    />
+                  );
+                })}
+              </div>
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === 1
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <span className="text-neutral-700">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === totalPages
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Próxima
+              </button>
             </div>
+            </>
           )}
         </section>
       </section>

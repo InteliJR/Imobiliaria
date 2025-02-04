@@ -172,18 +172,17 @@ export default function ChamadosComponent() {
   };
   
   useEffect(() => {
-    // Se search estiver vazio, "filteredData" = "advancedFiltered"
     if (!search.trim()) {
       setFilteredData(advancedFiltered);
-      return;
+    } else {
+      const lower = search.toLowerCase();
+      const finalResult = advancedFiltered.filter((user: any) =>
+        user.nome?.toLowerCase().includes(lower)
+      );
+      setFilteredData(finalResult);
     }
-    const lower = search.toLowerCase();
-    const finalResult = advancedFiltered.filter((ticket: any) =>
-      ticket.title?.toLowerCase().includes(lower)
-    );
-    setFilteredData(finalResult);
+    setCurrentPage(1); // Resetar página ao buscar/filtrar
   }, [search, advancedFiltered]);
-
 
   // Abrir modal
   const openFilterModal = () => {
@@ -195,6 +194,18 @@ export default function ChamadosComponent() {
     // Esse "resultado" já está filtrado pelos campos avançados
     setAdvancedFiltered(resultado);
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
 
   useEffect(() => {
     fetchTickets();
@@ -256,21 +267,53 @@ export default function ChamadosComponent() {
                 Nenhum usuário encontrado.
               </p>
             ) : */
-          <div className="flex flex-col gap-6">
-            {filteredData.map((ticket) => (
-              <ProblemCard
-                key={ticket.chamadoId}
-                id={ticket.chamadoId}
-                title={ticket.title}
-                creator={ticket.solicitor}
-                contact={ticket.address}
-                description={ticket.description}
-                date={ticket.date.split("T")[0]}
-                time={ticket.date.split("T")[1].split(".")[0]}
-                status={ticket.open ? "Aberto" : "Fechado"}
-              />
-            ))}
-          </div>
+          <>
+            <div className="flex flex-col gap-6">
+              {getPagedData().map((ticket) => (
+                <ProblemCard
+                  key={ticket.chamadoId}
+                  id={ticket.chamadoId}
+                  title={ticket.title}
+                  creator={ticket.solicitor}
+                  contact={ticket.address}
+                  description={ticket.description}
+                  date={ticket.date.split("T")[0]}
+                  time={ticket.date.split("T")[1].split(".")[0]}
+                  status={ticket.open ? "Aberto" : "Fechado"}
+                />
+              ))}
+            </div>
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === 1
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <span className="text-neutral-700">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === totalPages
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Próxima
+              </button>
+            </div>
+          </>
         )}
       </section>
     </div>

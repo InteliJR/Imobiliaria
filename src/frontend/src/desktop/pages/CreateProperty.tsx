@@ -183,8 +183,8 @@ export default function CreateProperty() {
             <FormField
               label={
                 <div className="flex justify-between items-center">
-                  <span>Complemento</span>
-                  <span className="text-sm text-neutral-500">Opcional</span>
+                  <span>Complemento <span className="text-sm text-neutral-500">(Opcional)</span></span>
+                  
                 </div>
               }
               placeholder="Digite o complemento"
@@ -194,8 +194,8 @@ export default function CreateProperty() {
             <FormField
               label={
                 <div className="flex justify-between items-center">
-                  <span>Condomínio (R$)</span>
-                  <span className="text-sm text-neutral-500">Opcional</span>
+                  <span>Condomínio (R$) <span className="text-sm text-neutral-500">(Opcional)</span></span>
+                  
                 </div>
               }
               value={condoFee}

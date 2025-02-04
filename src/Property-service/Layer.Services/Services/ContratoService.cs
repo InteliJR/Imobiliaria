@@ -154,5 +154,59 @@ namespace Layer.Services.Services
             // Salva as mudanças e retorna o número de registros afetados
             return await _dbcontext.SaveChangesAsync();
         }
+        public async Task<List<Contratos>> ObterContratosProximosReajusteAsync()
+        {
+            var dataAtual = DateTime.UtcNow.Date;
+            var dataLimite = dataAtual.AddDays(7); // Busca contratos com reajuste nos próximos 7 dias
+
+            return await _dbcontext.Contratos
+                .Where(c => c.DataReajuste >= dataAtual && c.DataReajuste <= dataLimite)
+                .Include(c => c.Locatario) // Inclui os dados do locatário
+                .ToListAsync();
+        }
+
+        public async Task<List<Contratos>> GetContratosParaReajusteAsync(CancellationToken cancellationToken)
+        {
+            return await _dbcontext.Contratos
+                .Where(c => c.DataReajuste.HasValue 
+                            && c.DataReajuste.Value.Date == DateTime.UtcNow.Date 
+                            && c.ValorReajuste.HasValue)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<Contratos> GetByIdContratoAsync(int id)
+        {
+            return await _dbcontext.Contratos
+                .Include(c => c.Locador)
+                .Include(c => c.Locatario)
+                .Include(c => c.Imovel)
+                .FirstOrDefaultAsync(c => c.ImovelId == id);
+        }
+
+        public async Task<List<Contratos>> GetByImovelIdAsync(int imovelId)
+        {
+            return await _dbcontext.Contratos
+                .Where(c => c.ImovelId == imovelId)
+                .ToListAsync();
+        }
+
+        public async Task<Contratos?> GetContratoAtivoPorImovelIdAsync(int imovelId)
+        {
+            return await _dbcontext.Contratos
+                .Where(c => c.ImovelId == imovelId && c.Status == "Ativo") // Filtra pelo status ativo
+                .FirstOrDefaultAsync(); // Pega apenas um contrato (se existir)
+        }
+
+
+
+        // Método que aplica o reajuste no valor do aluguel e atualiza a data de reajuste
+        public async Task AplicarReajusteAsync(Contratos contrato, CancellationToken cancellationToken)
+        {
+            contrato.ValorAluguel += contrato.ValorReajuste.Value;
+            contrato.DataReajuste = DateTime.UtcNow.AddYears(1);  // Atualiza para o próximo ano
+
+            _dbcontext.Contratos.Update(contrato);
+            await _dbcontext.SaveChangesAsync(cancellationToken);
+        }
     }
 }
