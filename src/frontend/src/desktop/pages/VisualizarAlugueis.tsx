@@ -50,6 +50,10 @@ export default function VisualizarAlugueis() {
   const fetchRents = async () => {
     try {
       const response = await axiosInstance.get(`payment/Rent/alugueisPorImovel/${id}`);
+      const contractIdResponse = await axiosInstance.get(`payment/Rent/pegarContratoIdPorImovelId/${id}`);
+
+      // console.log(contractIdResponse.data);
+      setContractId(contractIdResponse.data);
       if (!response.data) {
         console.error("Dados de resposta inválidos");
         return;
@@ -98,7 +102,6 @@ export default function VisualizarAlugueis() {
       });
 
       setContractId(newData[0].contratoId);
-      console.log(contractId);
       setData(newData);
       setFilteredData(newData);
     } catch (error) {
