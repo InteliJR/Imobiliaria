@@ -189,28 +189,28 @@ namespace property_management.Controllers
                 return Forbid("Acesso negado: apenas Locador ou Locatário têm permissão.");
             }
 
-            // Buscar os contratos pelo ImovelId
-            var contratos = await _contratoService.GetByImovelIdAsync(imovelId);
+            // Buscar o contrato pelo ImovelId
+            var contrato = await _contratoService.GetContratoAtivoPorImovelIdAsync(imovelId);
 
-            // Verificar se há contratos
-            if (contratos == null || contratos.Count == 0)  // <-- Usando Count ao invés de Any()
+            if (contrato == null)
             {
-                return NotFound($"Não foram encontrados contratos para o Imóvel com ID {imovelId}.");
+                return NotFound($"Nenhum contrato ativo encontrado para o Imóvel com ID {imovelId}.");
             }
 
-            // Filtrar contratos que o usuário tem permissão para ver
-            var contratosComAcesso = contratos.Where(contrato =>
-                (userRole == nameof(Roles.Locador) && contrato.LocadorId.ToString() == roleId) ||
-                (userRole == nameof(Roles.Locatario) && contrato.LocatarioId.ToString() == roleId)
-            ).ToList();
-
-            if (contratosComAcesso.Count == 0)  // <-- Usando Count ao invés de Any()
+            // Verificação de permissão baseada no papel
+            if (userRole == nameof(Roles.Locador) && contrato.LocadorId.ToString() != roleId)
             {
-                return Unauthorized("Acesso negado: você não tem permissão para acessar os contratos deste imóvel.");
+                return Unauthorized("Acesso negado: você não é o locador deste imóvel.");
             }
 
-            return Ok(contratosComAcesso);
+            if (userRole == nameof(Roles.Locatario) && contrato.LocatarioId.ToString() != roleId)
+            {
+                return Unauthorized("Acesso negado: você não é o locatário deste imóvel.");
+            }
+
+            return Ok(contrato);
         }
+
 
 
 

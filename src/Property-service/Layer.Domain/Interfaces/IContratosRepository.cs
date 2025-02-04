@@ -22,5 +22,6 @@ namespace Layer.Domain.Interfaces
         Task AplicarReajusteAsync(Contratos contrato, CancellationToken cancellationToken);
         Task<Contratos> GetByIdContratoAsync(int id);
         Task<List<Contratos>> GetByImovelIdAsync(int imovelId);
+        Task<Contratos?> GetContratoAtivoPorImovelIdAsync(int imovelId);
     }
 }

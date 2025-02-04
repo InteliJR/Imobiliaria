@@ -9,8 +9,8 @@ interface ContractFormProps {
   contract: Contract | null;
   isEditable: boolean;
   properties: any[];
-  lessors: any[];
-  renters: any[];
+  lessors?: any[];
+  renters?: any[];
   selectedPropertyId: string | null;
   status: any;
   DataReajuste: any;
@@ -22,9 +22,9 @@ interface ContractFormProps {
   isLoadingRenter: boolean;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   onValueChange: (field: string, value: string | number | string[]) => void;
-  setSelectedPropertyId: (value: string) => void;
-  setSelectedLessorId: (value: string) => void;
-  setSelectedRenterId: (value: string) => void;
+  setSelectedPropertyId?: (value: string) => void;
+  setSelectedLessorId?: (value: string) => void;
+  setSelectedRenterId?: (value: string) => void;
   handleSave: (event: React.FormEvent) => void;
 }
 
@@ -299,7 +299,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <label>Imóvel</label>
           <select
             value={selectedPropertyId || ""}
-            onChange={(e) => setSelectedPropertyId(e.target.value)}
+            onChange={(e) => setSelectedPropertyId??(e.target.value)}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
           >
             <option value="">Selecione um imóvel</option>
@@ -317,11 +317,11 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <label>Locador</label>
           <select
             value={selectedLessorId || ""}
-            onChange={(e) => setSelectedLessorId(e.target.value)}
+            onChange={(e) => setSelectedLessorId??(e.target.value)}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
           >
             <option value="">Selecione um locador</option>
-            {lessors.map((locador: any) => (
+            {lessors?.map((locador: any) => (
               <option key={locador.locadorId} value={locador.locadorId}>
                 {locador.nomeCompletoLessor || locador.locadorId}
               </option>
@@ -335,11 +335,11 @@ export const ContractForm: React.FC<ContractFormProps> = ({
           <label>Locatário</label>
           <select
             value={selectedRenterId || ""}
-            onChange={(e) => setSelectedRenterId(e.target.value)}
+            onChange={(e) => setSelectedRenterId??(e.target.value)}
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
           >
             <option value="">Selecione um locatário</option>
-            {renters.map((locatario: any) => (
+            {renters?.map((locatario: any) => (
               <option key={locatario.locatarioId} value={locatario.locatarioId}>
                 {locatario.nomeCompletoRenter || locatario.locatarioId}
               </option>

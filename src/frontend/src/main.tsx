@@ -253,7 +253,7 @@ const Root = () => {
         <Route
           path="/contratos-loc/:id"
           element={
-            <ProtectedRoute requiredRole={["Locador", "Locatario"]}>
+            <ProtectedRoute requiredRole={["Locatario", "Locador"]}>
               <ContractViewLoc />
             </ProtectedRoute>
           }

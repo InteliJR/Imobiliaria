@@ -190,6 +190,13 @@ namespace Layer.Services.Services
                 .ToListAsync();
         }
 
+        public async Task<Contratos?> GetContratoAtivoPorImovelIdAsync(int imovelId)
+        {
+            return await _dbcontext.Contratos
+                .Where(c => c.ImovelId == imovelId && c.Status == "Ativo") // Filtra pelo status ativo
+                .FirstOrDefaultAsync(); // Pega apenas um contrato (se existir)
+        }
+
 
 
         // Método que aplica o reajuste no valor do aluguel e atualiza a data de reajuste
