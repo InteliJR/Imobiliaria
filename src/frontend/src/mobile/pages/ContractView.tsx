@@ -29,7 +29,7 @@ export interface Contract {
   taxaAdm?: number;
   DataRescisao?: string;
   renovado?: boolean;
-  dataEncerramentoRenovacao?: string;
+  DataEncerramentoRenovacao?: string;
   valorReajuste?: number;
 }
 
@@ -295,13 +295,13 @@ export default function Contrato() {
     // Ajusta os campos dependendo do status
     if (contract.status === "Rescindido") {
       updatedFields.DataRescisao = contract.DataRescisao || new Date().toISOString().split("T")[0];
-      delete updatedFields.dataEncerramentoRenovacao;
+      delete updatedFields.DataEncerramentoRenovacao;
     } else if (contract.status === "Renovado") {
-      updatedFields.dataEncerramentoRenovacao = contract.dataEncerramentoRenovacao || new Date().toISOString().split("T")[0];
+      updatedFields.DataEncerramentoRenovacao = contract.DataEncerramentoRenovacao || new Date().toISOString().split("T")[0];
       delete updatedFields.DataRescisao;
     } else {
       delete updatedFields.DataRescisao;
-      delete updatedFields.dataEncerramentoRenovacao;
+      delete updatedFields.DataEncerramentoRenovacao;
     }
   
     try {
