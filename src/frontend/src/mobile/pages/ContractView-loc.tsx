@@ -10,7 +10,6 @@ import axiosInstance from "../../services/axiosConfig";
 import { Contract, Payment } from "./ContractView";
 
 export default function Contrato() {
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const [loading, setLoading] = useState(true);
