@@ -125,6 +125,8 @@ export default function Contrato() {
                 isEditable={false}
                 properties={properties}              
                 selectedPropertyId={selectedPropertyId}
+                lessors={lessors}
+                renters={renters}
                 selectedLessorId={selectedLessorId}
                 selectedRenterId={selectedRenterId}
                 isLoadingProperty={isLoadingProperty}
