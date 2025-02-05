@@ -7,6 +7,7 @@ interface CardProps {
   locatario: string;
   status: string;
   encerramento: string;
+  reajuste: string;
   location: string;
   iptu: string;
   aluguel: string;
@@ -19,6 +20,7 @@ const Card: React.FC<CardProps> = ({
   locatario,
   status,
   encerramento,
+  reajuste,
   location,
   iptu,
   aluguel,
@@ -40,6 +42,7 @@ const Card: React.FC<CardProps> = ({
       <p className="text-sm text-gray-700 mb-1">Localização: {location}</p>
       <p className="text-sm text-gray-700 mb-1">IPTU: R$ {iptu}</p>
       <p className="text-sm text-gray-700">Aluguel: R$ {aluguel}</p>
+      <p className="text-sm text-gray-700 mb-1">Data do Reajuste: {reajuste}</p>
     </div>
   );
 };

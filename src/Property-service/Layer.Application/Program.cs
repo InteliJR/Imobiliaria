@@ -98,6 +98,7 @@ builder.Services.AddScoped<IContratosRepository, ContratoService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IChamadosRepository, ChamadosService>();
 builder.Services.AddScoped<ApplicationLog>();
+builder.Services.AddHostedService<ContractsReminder>();
 builder.Services.AddHttpClient<IUsersAPI, UsersAPI>((client) =>
 {
     // Configuração do HttpClient

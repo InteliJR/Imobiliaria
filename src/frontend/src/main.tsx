@@ -45,9 +45,11 @@ import ImovelById from "./mobile/pages/Imovel";
 import PagamentosImovel from "./mobile/pages/PagamentosImovel";
 import ContratosMobile from "./mobile/pages/Contratos";
 import ContractView from "./mobile/pages/ContractView";
+import ContractViewLoc from "./mobile/pages/ContractView-loc";
 import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
+import ImovelByIdAdm from "./mobile/pages/Imovel-adm"
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -212,6 +214,17 @@ const Root = () => {
           }
         />
 
+        <Route
+          path="/imovel-adm/:imovelId"
+          element={
+            // ESTE COMPONENTE NÃO É 'MOBILE' 
+            <ProtectedRoute requiredRole={["Admin"]}>
+              <ImovelByIdAdm /> 
+            </ProtectedRoute>
+          }
+        />
+
+
         {/* Contratos e pagamentos */}
         <Route
           path="/pagamento/:imovelid"
@@ -234,6 +247,14 @@ const Root = () => {
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
               <ContractView />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contratos-loc/:id"
+          element={
+            <ProtectedRoute requiredRole={["Locatario", "Locador"]}>
+              <ContractViewLoc />
             </ProtectedRoute>
           }
         />
