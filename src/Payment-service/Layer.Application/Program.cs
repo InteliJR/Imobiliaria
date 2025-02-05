@@ -25,11 +25,11 @@ var env = builder.Environment.EnvironmentName;
 
 if (env == "Development")
 {
-    Env.Load("etc/secrets/.env.development");
+    Env.Load(".env.development");
 }
 else if (env == "Production")
 {
-    Env.Load("etc/secrets/.env.production");
+    Env.Load(".env.production");
 }
 else
 {

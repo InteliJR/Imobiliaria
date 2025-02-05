@@ -19,6 +19,7 @@ import VisualizarImoveis from "./desktop/pages/VisualizarImoveis";
 import VisualizarChamados from "./desktop/pages/VisualizarChamados";
 import VisualizarUsuarios from "./desktop/pages/VisualizarUsuarios";
 import Contratos from "./desktop/pages/VisualizarContratos";
+import VisualizarAlugueis from "./desktop/pages/VisualizarAlugueis";
 
 // Import mobile components and pages
 import LandingMobile from "./mobile/pages/Landing";
@@ -250,6 +251,14 @@ const Root = () => {
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
               <CreateContract />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/visualizar/alugueis/:id"
+          element={
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
+              <VisualizarAlugueis />
             </ProtectedRoute>
           }
         />

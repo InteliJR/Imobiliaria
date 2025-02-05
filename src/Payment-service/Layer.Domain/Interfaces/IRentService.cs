@@ -35,5 +35,6 @@ namespace Layer.Domain.Interfaces
         Task<IEnumerable<RentsWithPayment>> GetAllRentsWithPaymentsByContractId(int contractId);
         Task<string> GenerateSignedUrlOfContractsAsync(string objectName);
         Task<IEnumerable<RentAndContractInfoDTO>> GetAlugueisQueVencemEmXdias(int days);
+        Task<int> GetContractIdByImovelId(int imovelId);
     }
 }

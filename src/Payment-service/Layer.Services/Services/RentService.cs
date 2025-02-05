@@ -502,6 +502,20 @@ namespace Layer.Services.Services
             return result;
         }
 
+        public async Task<int> GetContractIdByImovelId(int imovelId)
+        {
+            var contract = await _dbcontext.Contratos
+                .Where(c => c.ImovelId == imovelId)
+                .FirstOrDefaultAsync();
+
+            if (contract == null)
+            {
+                throw new KeyNotFoundException("Contrato não encontrado para este imovelId");
+            }
+
+            return contract.ContratoId;
+        }
+
 
     }
 
