@@ -1,6 +1,6 @@
 // RentCard.tsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import PaymentModal, { PaymentData } from "./PaymentModal"; 
 import AddPaymentModal from "./AddPaymentModal";
 
@@ -24,7 +24,7 @@ const RentCard: React.FC<RentCardProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddPaymentOpen, setIsAddPaymentOpen] = useState(false);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Abre modal de visualização de pagamento
   const handleViewPayment = () => {

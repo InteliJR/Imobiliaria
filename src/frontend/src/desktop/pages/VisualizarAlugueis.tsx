@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+// import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosConfig";
 import CreateNextMonthsModal from "../components/CreateNextMonthsModal";
 import RentCard from "../components/CardAluguel";
@@ -35,7 +35,7 @@ payment: {
 }
 
 export default function VisualizarAlugueis() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URL
 
   // Estados
@@ -215,7 +215,8 @@ export default function VisualizarAlugueis() {
                         valorMulta: rent.payment?.valorMulta || 0,
                         boletoDoc: rent.boletoDoc, // ou rent.payment?.boletoDoc, dependendo da sua estrutura
                         mes: rent.mes,
-                        ano: rent.ano
+                        ano: rent.ano,
+                        status: rent.payment?.status || false
                     }}
                     />
                 ))
@@ -228,3 +229,7 @@ export default function VisualizarAlugueis() {
     </main>
   );
 }
+function useParams(): { id: any; } {
+  throw new Error("Function not implemented.");
+}
+
