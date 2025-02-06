@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-// import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosConfig";
 import CreateNextMonthsModal from "../components/CreateNextMonthsModal";
 import RentCard from "../components/CardAluguel";
@@ -228,8 +228,5 @@ export default function VisualizarAlugueis() {
       <Footer />
     </main>
   );
-}
-function useParams(): { id: any; } {
-  throw new Error("Function not implemented.");
 }
 
