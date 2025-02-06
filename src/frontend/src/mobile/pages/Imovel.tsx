@@ -78,7 +78,7 @@ export default function PropertyDetails() {
       // Substituir as URLs das fotos pelas URLs assinadas
       property.fotos = responsePhotos.data;
       // console.log(property.fotos);
-
+      console.log(property);
       setProperty(property);
       // console.log(property)
     } catch (error: any) {
@@ -143,7 +143,7 @@ export default function PropertyDetails() {
           </button>
           <button
             className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
-            onClick={() => navigate(`/pagamento/${property.imovelId}`)}
+            onClick={() => navigate(`/visualizar/alugueis/${property.imovelId}`)}
           >
             Ver Pagamentos
           </button>
