@@ -12,6 +12,8 @@ const WhatsAppBtn: React.FC<WhatsAppBtnProps> = ({ phoneNumber, message }) => {
     message
   )}`;
 
+  console.log(whatsappURL)
+
   return (
     <a
       href={whatsappURL}

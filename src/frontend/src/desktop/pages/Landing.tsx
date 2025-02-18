@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FeaturesSection from "../../components/Landing/FeaturesSection";
 import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../components/FooterBig";
+import Footer from "../../components/Footer/FooterBig";
 import Botao from "../components/Botao";
 import WhatsAppBtn from "../../components/Botoes/WhatsAppBtn";
 // Importações das imagens
