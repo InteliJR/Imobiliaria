@@ -12,14 +12,12 @@ const WhatsAppBtn: React.FC<WhatsAppBtnProps> = ({ phoneNumber, message }) => {
     message
   )}`;
 
-  console.log(whatsappURL)
-
   return (
     <a
       href={whatsappURL}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-8 right-8 flex justify-center items-center bg-green-500 text-white rounded-[100%] hover:bg-green-600 transition duration-300 z-40 drop-shadow-[0_0px_10px_rgba(34,197,94,.5)] text-4xl p-3text-5xl sm:text-5xl sm:p-4"
+      className="fixed bottom-8 right-8 flex justify-center items-center bg-green-500 text-white rounded-[100%] hover:bg-green-600 transition duration-300 z-40 drop-shadow-[0_0px_10px_rgba(34,197,94,.5)] text-4xl p-3 lg:text-5xl lg:p-4"
     >
       {/* Ícone do WhatsApp */}
       <FaWhatsapp />
