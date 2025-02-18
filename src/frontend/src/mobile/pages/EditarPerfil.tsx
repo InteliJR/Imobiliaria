@@ -3,7 +3,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
 import FormField from "../components/Form/FormField";
-import ModalConfirmacao from "../components/ModalConfirmacao";
+import ModalConfirmacao from "../../components/ModalConfirmacao";
 import Botao from "../../components/Botoes/Botao";
 import Loading from "../../components/Loading";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
