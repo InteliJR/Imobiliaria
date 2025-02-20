@@ -231,6 +231,13 @@ namespace Layer.Application.Controllers
             return Ok(urls);
         }
 
+        [HttpGet("pegarContratoIdPorImovelId/{imovelId}")]
+        [Authorize(Policy = "AllRoles")]
+        public async Task<ActionResult<int>> GetContractIdByImovelId(int imovelId)
+        {
+            var contractId = await _rentService.GetContractIdByImovelId(imovelId);
+            return Ok(contractId);
+        }
 
     }
 }
