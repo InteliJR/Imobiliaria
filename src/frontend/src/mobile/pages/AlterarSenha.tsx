@@ -5,7 +5,7 @@ import Voltar from "../../components/Botoes/Voltar";
 import FormField from "../components/Form/FormField";
 import Botao from "../../components/Botoes/Botao";
 import Loading from "../../components/Loading";
-import ModalConfirmacao from "../components/ModalConfirmacao";
+import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 

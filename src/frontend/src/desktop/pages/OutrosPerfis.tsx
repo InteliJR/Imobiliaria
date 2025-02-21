@@ -7,7 +7,7 @@ import VisualizarItem from "../../mobile/components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
 import Loading from "../../components/Loading";
 import BotaoAlterarSenha from "../../components/Botoes/BotaoAlterarSenha";
-import ModalConfirmacao from "../../mobile/components/ModalConfirmacao";
+import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
