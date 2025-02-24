@@ -92,6 +92,27 @@ export default function CreateContractMobile() {
     }
   };
 
+  const validateFields = () => {
+    const missingFields = [];
+
+    if (!selectedLocatarioId) missingFields.push("Locatário");
+    if (!selectedLocadorId) missingFields.push("Locador");
+    if (!selectedImovelId) missingFields.push("Imóvel");
+    if (!paymentDate) missingFields.push("Data de pagamento");
+    if (!startDate) missingFields.push("Data de inicio");
+    if (!rentalValue) missingFields.push("Taxa de administração");
+    if (!guaranteeType) missingFields.push("Tipo de garantia");
+    if (!endDate) missingFields.push("Data de encerramento");
+
+    if (missingFields.length > 0) {
+      const message = `Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(", ")}.`;
+      showErrorToast(message);
+      return false; // Indica que a validação falhou
+    }
+
+    return true; // Indica que a validação foi bem-sucedida
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
