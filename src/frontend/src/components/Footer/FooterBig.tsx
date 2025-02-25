@@ -1,4 +1,4 @@
-import { FaWhatsapp, FaInstagram } from "react-icons/fa";
+import { FaFacebookSquare, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -9,16 +9,16 @@ export default function Footer() {
             <img src="/LogoFooter.svg" alt="" className="w-64" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-white font-bold text-[15px]">Contate-nos</h1>
-            <p className="text-white text-[9px]/4 mb-2">
-              k&kimobiliaria@example.com
+            <h1 className="text-white font-bold text-[16px]">Contate-nos</h1>
+            <p className="text-white text-[12px]/5 mb-2">
+              contato@kekassessoria.com
               <br />
-              +55 (11) 00000-0000 <br />
+              +55 (11) 96592-2552 <br />
             </p>
-            <h1 className="text-white font-bold text-[15px]">Endereço</h1>
-            <p className="text-white text-[9px]/4">
-              Rua XXXXXXXXX, 000 <br />
-              00000-000 <br />
+            <h1 className="text-white font-bold text-[16px]">Endereço</h1>
+            <p className="text-white text-[12px]/5">
+              Rua Alvorada 1289, sala 1702 - Vila Olímpia <br />
+              04550-070 <br />
               São Paulo, Brasil <br />
             </p>
           </div>
@@ -27,14 +27,14 @@ export default function Footer() {
         {/* Social Media Icons */}
         <div className="flex space-x-4 justify-center mt-6">
           <a
-            href="https://wa.me/5511965922552?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20a%20K.K.%20Administradora"
+            href="https://www.facebook.com/578139995384085"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaWhatsapp className="text-white text-2xl" />
+            <FaFacebookSquare className="text-white text-2xl" />
           </a>
           <a
-            href="https://www.instagram.com/yourprofile/"
+            href="https://www.instagram.com/kkass_essoria/?utm_source=ig_web_button_share_sheet"
             target="_blank"
             rel="noopener noreferrer"
           >

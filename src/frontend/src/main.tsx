@@ -49,7 +49,7 @@ import ContractViewLoc from "./mobile/pages/ContractView-loc";
 import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
-import ImovelByIdAdm from "./mobile/pages/Imovel-adm"
+import ImovelByIdAdm from "./mobile/pages/Imovel-adm";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -78,7 +78,7 @@ const Root = () => {
           path="/pagamentos"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-              {<PagamentosImovel/>}
+              <PagamentosImovel />
             </ProtectedRoute>
           }
         />
@@ -86,11 +86,7 @@ const Root = () => {
           path="/imoveis/criar"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              {isDesktop ? (
-                <CreateProperty />
-              ) : (
-                <CreatePropertyMobile />
-              )}
+              {isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
             </ProtectedRoute>
           }
         />
@@ -194,7 +190,6 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/home-locatario"
           element={
@@ -203,36 +198,36 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/imovel/:imovelId"
           element={
-            // ESTE COMPONENTE NÃO É 'MOBILE' 
-            <ProtectedRoute requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}>
-              <ImovelById /> 
+            // ESTE COMPONENTE NÃO É 'MOBILE'
+            <ProtectedRoute
+              requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}
+            >
+              <ImovelById />
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/imovel-adm/:imovelId"
           element={
-            // ESTE COMPONENTE NÃO É 'MOBILE' 
+            // ESTE COMPONENTE NÃO É 'MOBILE'
             <ProtectedRoute requiredRole={["Admin"]}>
-              <ImovelByIdAdm /> 
+              <ImovelByIdAdm />
             </ProtectedRoute>
           }
         />
-
-
         {/* Contratos e pagamentos */}
         <Route
           path="/pagamento/:imovelid"
           element={
-            <ProtectedRoute requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}>
+            <ProtectedRoute
+              requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}
+            >
               <PaymentView />
             </ProtectedRoute>
-          } 
+          }
         />
         <Route
           path="/pagamento-for-admin/:paymentid"
@@ -240,7 +235,7 @@ const Root = () => {
             <ProtectedRoute requiredRole={["Admin"]}>
               <PaymentView />
             </ProtectedRoute>
-          } 
+          }
         />
         <Route
           path="/contratos/:id"
