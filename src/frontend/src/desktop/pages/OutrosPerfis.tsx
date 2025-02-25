@@ -12,7 +12,7 @@ import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
 export default function PerfilDesktop() {
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [loadingSkeleton, setLoadingSkeleton] = useState(true);
   const [loadingSpinner, setLoadingSpinner] = useState(false);
   const navigate = useNavigate();
@@ -95,7 +95,9 @@ export default function PerfilDesktop() {
           endereco: notApplicable,
           CNPJ: notApplicable,
           email: UserInfo.email,
-          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString("pt-BR"),
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString(
+            "pt-BR"
+          ),
           role: UserInfo.role,
         });
       } else {
@@ -109,13 +111,19 @@ export default function PerfilDesktop() {
           endereco: UserInfo.endereco,
           CNPJ: UserInfo.cnpj,
           email: UserInfo.email,
-          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString("pt-BR"),
+          dataCriacao: new Date(UserInfo.dataCriacao).toLocaleDateString(
+            "pt-BR"
+          ),
           role: UserInfo.role,
         });
       }
-    } catch (error:any) {
-      console.error(error.response?.data?.message || "Erro ao buscar o usuário");
-      showErrorToast(error.response?.data?.message || "Erro ao buscar o usuário");
+    } catch (error: any) {
+      console.error(
+        error.response?.data?.message || "Erro ao buscar o usuário"
+      );
+      showErrorToast(
+        error.response?.data?.message || "Erro ao buscar o usuário"
+      );
     }
   };
 
@@ -124,46 +132,64 @@ export default function PerfilDesktop() {
   }, []);
 
   return (
-    <div className="perfil-desktop-container bg-gray-50 min-h-screen flex flex-col">
+    <main className="main-custom">
       <Navbar />
 
-      <main className="perfil-desktop-main max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-md">
+      <section className="section-custom">
         <Voltar />
 
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">{userData.nome}</h1>
+        <h1 className="text-title font-strong mb-2">{userData.nome}</h1>
 
-        <div className="perfil-desktop-actions flex justify-center gap-4 mb-6">
-          <Botao label="Editar Perfil" onClick={profileEdit} />
+        <Botao label="Editar Perfil" onClick={profileEdit} />
+
+        <div className="flex flex-col gap-4 w-[42rem] m-auto">
+          <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
+            <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
+            {loadingSkeleton ? (
+              <Loading type="skeleton" />
+            ) : (
+              <>
+                <VisualizarItem
+                  label="Tipo do usuário"
+                  informacao={userData.role || ""}
+                />
+                <VisualizarItem
+                  label="E-mail"
+                  informacao={userData.email || ""}
+                />
+                <VisualizarItem
+                  label="Telefone"
+                  informacao={userData.telefone || ""}
+                />
+                <VisualizarItem
+                  label="Nacionalidade"
+                  informacao={userData.nacionalidade || ""}
+                />
+                <VisualizarItem label="CPF" informacao={userData.cpf || ""} />
+                <VisualizarItem label="RG" informacao={userData.rg || ""} />
+                <VisualizarItem
+                  label="Passaporte"
+                  informacao={userData.passaporte || ""}
+                />
+                <VisualizarItem
+                  label="Endereço"
+                  informacao={userData.endereco || ""}
+                />
+                <VisualizarItem label="CNPJ" informacao={userData.CNPJ || ""} />
+                <VisualizarItem
+                  label="Data de Criação"
+                  informacao={userData.dataCriacao || ""}
+                />
+              </>
+            )}
+          </div>
           <BotaoAlterarSenha label="Resetar Senha" onClick={showModal} />
         </div>
-
-        <div className="perfil-desktop-info">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Informações Pessoais</h2>
-
-          {loadingSkeleton ? (
-            <Loading type="skeleton" />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <VisualizarItem label="Tipo do usuário" informacao={userData.role || ""} />
-              <VisualizarItem label="E-mail" informacao={userData.email || ""} />
-              <VisualizarItem label="Telefone" informacao={userData.telefone || ""} />
-              <VisualizarItem label="Nacionalidade" informacao={userData.nacionalidade || ""} />
-              <VisualizarItem label="CPF" informacao={userData.cpf || ""} />
-              <VisualizarItem label="RG" informacao={userData.rg || ""} />
-              <VisualizarItem label="Passaporte" informacao={userData.passaporte || ""} />
-              <VisualizarItem label="Endereço" informacao={userData.endereco || ""} />
-              <VisualizarItem label="CNPJ" informacao={userData.CNPJ || ""} />
-              <VisualizarItem label="Data de Criação" informacao={userData.dataCriacao || ""} />
-            </div>
-          )}
-        </div>
-      </main>
+      </section>
 
       {loadingSpinner && <Loading type="spinner" />}
-      <div className="mt-auto">
 
-        <Footer />
-      </div>
+      <Footer />
 
       {isModalVisible && (
         <ModalConfirmacao
@@ -172,6 +198,6 @@ export default function PerfilDesktop() {
           onCancel={handleCancel}
         />
       )}
-    </div>
+    </main>
   );
 }
