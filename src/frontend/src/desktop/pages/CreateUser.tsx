@@ -132,7 +132,7 @@ export default function AddClient() {
                   <option>Judiciário</option>
                 </select>
               </div>
-                {userType === "Judiciário" || "Administrador"? (
+                {userType === "Judiciário" || userType === "Administrador"? (
                   <>
                     <FormField
                       label="Nome Completo"
