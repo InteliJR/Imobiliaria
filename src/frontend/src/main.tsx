@@ -11,7 +11,6 @@ import Landing from "./desktop/pages/Landing";
 import Login from "./desktop/pages/Login";
 import Perfil from "./desktop/pages/Perfil";
 import OutrosPerfis from "./desktop/pages/OutrosPerfis";
-import AlterarSenha from "./desktop/pages/AlterarSenha";
 import EditarPerfil from "./desktop/pages/EditarPerfil";
 import NotFound from "./desktop/pages/NotFound";
 import VisualizarImoveis from "./desktop/pages/VisualizarImoveis";
@@ -26,7 +25,7 @@ import LoginMobile from "./mobile/pages/Login";
 import PerfilMobile from "./mobile/pages/Perfil";
 import OutrosPerfisMobile from "./mobile/pages/OutrosPerfis";
 import EditarPerfilMobile from "./mobile/pages/EditarPerfil";
-import AlterarSenhaMobile from "./mobile/pages/AlterarSenha";
+import AlterarSenha from "./mobile/pages/AlterarSenha";
 import VisualizarImoveisMobile from "./mobile/pages/VisualizarImoveis";
 import CreateProperty from "./desktop/pages/CreateProperty";
 import VisualizarChamadosMobile from "./mobile/pages/VisualizarChamados";
@@ -169,7 +168,7 @@ const Root = () => {
           path="/perfil/alterar-senha"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              {isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile />}
+              <AlterarSenha />
             </ProtectedRoute>
           }
         />

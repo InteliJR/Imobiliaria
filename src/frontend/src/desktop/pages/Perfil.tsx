@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../components/FooterBig";
+import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
 import VisualizarItem from "../../mobile/components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
@@ -90,7 +90,9 @@ export default function PerfilDesktop() {
 
       setLoading(false);
     } catch (error: any) {
-      console.error(error.response?.data?.message || "Erro ao buscar o usuário");
+      console.error(
+        error.response?.data?.message || "Erro ao buscar o usuário"
+      );
       showErrorToast(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
       );
@@ -102,33 +104,26 @@ export default function PerfilDesktop() {
   }, []);
 
   return (
-    <main className="main-custom-desktop">
+    <main className="main-custom">
       <Navbar />
 
-      <section className="section-custom-desktop container mx-auto px-8">
+      <section className="section-custom">
         <Voltar />
 
         {loading ? (
           <Loading type="skeleton" />
         ) : (
-          <div className="flex flex-col lg:flex-row gap-12">
-            <div className="lg:w-1/3">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-800">
-                  {userData.nome || " "}
-                </h1>
-                <h2 className="text-lg text-gray-600">{userData.role || " "}</h2>
-              </div>
-
-              <Botao label="Editar Perfil" onClick={profileEdit} />
-
-              <BotaoAlterarSenha label="Alterar Senha" onClick={passwordEdit} />
+          <>
+            <div>
+              <h1 className="text-title font-strong">{userData.nome || " "}</h1>
+              <h2 className="text-sm text-gray-700">{userData.role || " "}</h2>
             </div>
 
-            <div className="lg:w-2/3 border-2 border-neutral-900 p-8 rounded">
-              <h1 className="mb-6 text-xl font-bold">Informações Pessoais</h1>
+            <Botao label="Editar Perfil" onClick={profileEdit} />
 
-              <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4 w-[42rem] m-auto">
+              <div className="flex flex-col gap-4 border-2 border-neutral-900 p-4 rounded">
+                <h1 className="mb-1 font-strong text-lg">Informações Pessoais</h1>
                 <VisualizarItem
                   label="E-mail"
                   informacao={userData.email || " "}
@@ -145,14 +140,8 @@ export default function PerfilDesktop() {
                   label="Nacionalidade"
                   informacao={userData.nacionalidade || " "}
                 />
-                <VisualizarItem
-                  label="CPF"
-                  informacao={userData.cpf || " "}
-                />
-                <VisualizarItem
-                  label="RG"
-                  informacao={userData.rg || " "}
-                />
+                <VisualizarItem label="CPF" informacao={userData.cpf || " "} />
+                <VisualizarItem label="RG" informacao={userData.rg || " "} />
                 <VisualizarItem
                   label="Passaporte"
                   informacao={userData.passaporte || " "}
@@ -161,13 +150,11 @@ export default function PerfilDesktop() {
                   label="Endereço"
                   informacao={userData.endereco || " "}
                 />
-                <VisualizarItem
-                  label="CNPJ"
-                  informacao={userData.CNPJ || " "}
-                />
+                <VisualizarItem label="CNPJ" informacao={userData.CNPJ || " "} />
               </div>
+              <BotaoAlterarSenha label="Alterar Senha" onClick={passwordEdit} />
             </div>
-          </div>
+          </>
         )}
       </section>
 
