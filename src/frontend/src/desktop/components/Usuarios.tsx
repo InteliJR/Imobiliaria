@@ -170,10 +170,10 @@ export default function UsuariosComponent() {
   const totalPages = Math.ceil(filteredData.length / pageSize);
 
   return (
-    <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">
+    <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 flex-grow max-w-6xl ">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-neutral-800">Usuários</h2>
+        <h2 className="text-3xl font-bold">Usuários</h2>
         <button
           type="button"
           className="h-10 px-6 bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50 text-sm font-medium rounded"

@@ -85,7 +85,7 @@ const Root = () => {
           path="/pagamentos"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-              <>{<PagamentosImovel />}</>
+              <PagamentosImovel />
             </ProtectedRoute>
           }
         />
@@ -133,13 +133,11 @@ const Root = () => {
           path="/usuarios"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              <>
-                {isDesktop ? (
-                  <VisualizarUsuarios />
-                ) : (
-                  <VisualizarUsuariosMobile />
-                )}
-              </>
+              {isDesktop ? (
+                <VisualizarUsuarios />
+              ) : (
+                <VisualizarUsuariosMobile />
+              )}
             </ProtectedRoute>
           }
         />
@@ -300,7 +298,7 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-        <Route 
+        <Route
           path="/visualizar/alugueis/:id"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
