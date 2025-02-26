@@ -12,7 +12,7 @@ import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
 export default function Perfil() {
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [loadingSkeleton, setLoadingSkeleton] = useState(true); // estado para controlar o componente de carregamento
   const [loadingSpinner, setLoadingSpinner] = useState(false); // estado para controlar o componente de carregamento
   const navigate = useNavigate(); // Obtendo a função navigate
