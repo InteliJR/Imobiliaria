@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../components/FooterBig";
+import Footer from "../../components/Footer/FooterBig";
 import Voltar from "../../components/Botoes/Voltar";
 import VisualizarItem from "../../mobile/components/VisualizarItem";
 import Botao from "../../components/Botoes/Botao";
