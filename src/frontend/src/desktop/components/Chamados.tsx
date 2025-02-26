@@ -20,7 +20,6 @@ export default function ChamadosComponent() {
     open: boolean;
     description: string;
   }
-  
 
   const navigate = useNavigate();
   const [filteredData, setFilteredData] = useState<any[]>([]);
@@ -73,18 +72,18 @@ export default function ChamadosComponent() {
     },
   ];
 
-
   const fetchTickets = async () => {
     setLoading(true); // Inicia o estado de carregamento
-  
+
     try {
       // Faz as requisições simultaneamente
-      const [chamadosResponse, usersResponse, propertiesResponse] = await Promise.all([
-        axiosInstance.get("property/Chamados/PegarTodosOsChamados"),
-        axiosInstance.get("auth/User/PegarTodosUsuarios"),
-        axiosInstance.get("property/Imoveis/PegarTodosImoveis"),
-      ]);
-  
+      const [chamadosResponse, usersResponse, propertiesResponse] =
+        await Promise.all([
+          axiosInstance.get("property/Chamados/PegarTodosOsChamados"),
+          axiosInstance.get("auth/User/PegarTodosUsuarios"),
+          axiosInstance.get("property/Imoveis/PegarTodosImoveis"),
+        ]);
+
       // Verifica se os dados de resposta são válidos
       if (
         !chamadosResponse.data ||
@@ -95,12 +94,16 @@ export default function ChamadosComponent() {
         showErrorToast("Dados recebidos são inválidos. Tente novamente.");
         return;
       }
-  
+
       // Extrai os dados das respostas
-      const chamados = chamadosResponse.data;
-      const users = usersResponse.data;
-      const properties = propertiesResponse.data;
-  
+      const chamados = Array.isArray(chamadosResponse.data)
+        ? chamadosResponse.data
+        : [];
+      const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
+      const properties = Array.isArray(propertiesResponse.data)
+        ? propertiesResponse.data
+        : [];
+
       // Mescla os dados
       const mergedData = chamados.map(
         (chamado: {
@@ -121,7 +124,7 @@ export default function ChamadosComponent() {
             properties.find(
               (p: { imovelId: any }) => p.imovelId === chamado.idImovel
             ) || {};
-  
+
           return {
             chamadoId: chamado.idChamado,
             title: chamado.titulo || "Título não informado",
@@ -133,29 +136,33 @@ export default function ChamadosComponent() {
           };
         }
       );
-  
+
       // Atualiza os estados com os dados mesclados
       setFilteredData(mergedData);
       setAdvancedFiltered(mergedData);
       setData(mergedData);
-  
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
-  
+
       // Tratamento de erros do Axios
       if (axios.isAxiosError(error)) {
         // Erro com resposta do servidor (ex: 400, 500)
         if (error.response) {
-          const errorMessage = error.response.data || "Erro ao processar a requisição.";
+          const errorMessage =
+            error.response.data || "Erro ao processar a requisição.";
           showErrorToast(errorMessage);
         }
         // Erro de rede (ex: servidor indisponível)
         else if (error.request) {
-          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+          showErrorToast(
+            "Erro de rede. Verifique sua conexão e tente novamente."
+          );
         }
         // Erro inesperado
         else {
-          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+          showErrorToast(
+            "Ocorreu um erro inesperado. Tente novamente mais tarde."
+          );
         }
       }
       // Erro genérico (não relacionado ao Axios)
@@ -170,7 +177,7 @@ export default function ChamadosComponent() {
       setLoading(false); // Finaliza o estado de carregamento, independentemente de sucesso ou erro
     }
   };
-  
+
   useEffect(() => {
     if (!search.trim()) {
       setFilteredData(advancedFiltered);
@@ -212,10 +219,10 @@ export default function ChamadosComponent() {
   }, []);
 
   return (
-    <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">
+    <div className="flex flex-col bg-[#F0F0F0]  max-w-6xl gap-y-5 p-6 flex-grow">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-neutral-800">Chamados</h2>
+        <h2 className="text-3xl font-bold ">Chamados</h2>
         <button
           type="button"
           className="h-10 px-6 bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50 text-sm font-medium rounded"
@@ -261,12 +268,11 @@ export default function ChamadosComponent() {
         <div className="h-[1px] bg-neutral-400 mb-4"></div>
         {loading ? (
           <Loading type="skeleton" />
+        ) : filteredData.length === 0 ? (
+          <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+            Nenhum chamado encontrado.
+          </p>
         ) : (
-          /* {users.length === 0 ? ( // Verifica se a lista de usuários está vazia
-              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum usuário encontrado.
-              </p>
-            ) : */
           <>
             <div className="flex flex-col gap-6">
               {getPagedData().map((ticket) => (

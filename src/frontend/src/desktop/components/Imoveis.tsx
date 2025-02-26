@@ -243,7 +243,7 @@ export default function Imoveis() {
   const totalPages = Math.ceil(filteredData.length / pageSize);
 
   return (
-    <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">
+    <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 flex-grow max-w-6xl">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-neutral-800">Imóveis</h2>

@@ -11,7 +11,6 @@ import axiosInstance from "../../services/axiosConfig";
 import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
 
-
 export default function Tickets() {
   interface Ticket {
     chamadoId: number;
@@ -63,7 +62,7 @@ export default function Tickets() {
       label: "Aberto",
       type: "checkbox",
       property: "open",
-    }
+    },
   ];
 
   const fetchTickets = async () => {
@@ -91,9 +90,13 @@ export default function Tickets() {
       // console.log("Usuários:", usersResponse.data);
       // console.log("Imóveis:", propertiesResponse.data);
 
-      const chamados = chamadosResponse.data;
-      const users = usersResponse.data;
-      const properties = propertiesResponse.data;
+      const chamados = Array.isArray(chamadosResponse.data)
+        ? chamadosResponse.data
+        : [];
+      const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
+      const properties = Array.isArray(propertiesResponse.data)
+        ? propertiesResponse.data
+        : [];
 
       // Mesclando os dados
       const mergedData = chamados.map(
@@ -151,7 +154,6 @@ export default function Tickets() {
     setCurrentPage(1); // Resetar página ao buscar/filtrar
   }, [search, advancedFiltered]);
 
-
   // Abrir modal
   const openFilterModal = () => {
     setModalOpen(true);
@@ -197,12 +199,12 @@ export default function Tickets() {
           {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
-            <FormFieldFilter
-              label="Buscar chamado pelo título"
-              onFilter={(searchTerm) => {
-                setSearch(searchTerm);
-              }}
-            />
+              <FormFieldFilter
+                label="Buscar chamado pelo título"
+                onFilter={(searchTerm) => {
+                  setSearch(searchTerm);
+                }}
+              />
             </div>
             <button
               type="button"
@@ -228,30 +230,30 @@ export default function Tickets() {
         {loading ? (
           <Loading type="skeleton" />
         ) : (
-        <>
-          <section className="flex-grow flex flex-col gap-y-5">
-            <h2 className="text-2xl font-semibold">Resultados</h2>
-            <div className="h-[1px] bg-black"></div>
-            {filteredData.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {getPagedData().map((ticket) => (
-                  <Card
-                    key={ticket.chamadoId} // Usar o idChamado real como chave
-                    id={ticket.chamadoId} // Passar o idChamado real como número
-                    title={ticket.title} // Título com o id real
-                    line1={ticket.solicitor} // Nome do solicitante
-                    line2={ticket.address} // Endereço do imóvel
-                    line3={new Date(ticket.date).toLocaleDateString("pt-BR")} // Data formatada
-                    status={ticket.open ? "Aberto" : "Fechado"} // Status com base no campo `open`
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum chamado encontrado.
-              </p>
-            )}
-          </section>
+          <>
+            <section className="flex-grow flex flex-col gap-y-5">
+              <h2 className="text-2xl font-semibold">Resultados</h2>
+              <div className="h-[1px] bg-black"></div>
+              {filteredData.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {getPagedData().map((ticket) => (
+                    <Card
+                      key={ticket.chamadoId} // Usar o idChamado real como chave
+                      id={ticket.chamadoId} // Passar o idChamado real como número
+                      title={ticket.title} // Título com o id real
+                      line1={ticket.solicitor} // Nome do solicitante
+                      line2={ticket.address} // Endereço do imóvel
+                      line3={new Date(ticket.date).toLocaleDateString("pt-BR")} // Data formatada
+                      status={ticket.open ? "Aberto" : "Fechado"} // Status com base no campo `open`
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+                  Nenhum chamado encontrado.
+                </p>
+              )}
+            </section>
             {/* Paginação */}
             <div className="flex justify-between items-center mt-6">
               <button
@@ -282,7 +284,7 @@ export default function Tickets() {
                 Próxima
               </button>
             </div>
-        </>
+          </>
         )}
       </section>
 
