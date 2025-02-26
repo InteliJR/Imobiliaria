@@ -24,7 +24,7 @@ export default function Chamado() {
     DateStart: string;
     DateEnd: string;
     Description: string;
-    Status: string
+    Status: string;
   }
 
   const [ticket, setTicket] = useState<Ticket | null>(null);
@@ -92,7 +92,7 @@ export default function Chamado() {
         DateEnd: chamadosResponse.data.dataFim || "Data não informada",
         Description:
           chamadosResponse.data.descricao || "Descrição não informada",
-        Status: chamadosResponse.data.status || "Status não informado"
+        Status: chamadosResponse.data.status || "Status não informado",
       };
 
       // Formatar data e hora para o padrão brasileiro
@@ -146,7 +146,7 @@ export default function Chamado() {
 
       showErrorToast("Erro ao se conectar com o servidor.");
     }
-  }
+  };
 
   useEffect(() => {
     fetchTicket();
@@ -157,116 +157,123 @@ export default function Chamado() {
       <Navbar />
 
       <section className="section-custom">
-        <Voltar />
+        <div className="w-full flex flex-col justify-center items-center">
+          <div className="max-w-6xl w-full">
+            <Voltar />
+            {loading ? (
+              <Loading type="skeleton" />
+            ) : (
+              <>
+                <h1 className="text-title font-strong mb-4 mt-4">
+                  Chamado: {ticket?.Titulo}
+                </h1>
+                <div className="relative flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded">
+                  <div className="flex flex-col md:flex-row md:gap-8">
+                    {/* Primeira coluna */}
+                    <div className="flex-1 flex flex-col gap-5">
+                      {/* Solicitante */}
+                      <div>
+                        <h2 className="text-neutral-600">Solicitante</h2>
+                        <p className="text-neutral-600">
+                          Nome:{" "}
+                          <span className="text-neutral-900">
+                            {ticket?.Solicitor}
+                          </span>
+                        </p>
+                      </div>
+                      {/* Locatário */}
+                      <div>
+                        <h2 className="text-neutral-600">Locatário</h2>
+                        <p className="text-neutral-600">
+                          Nome:{" "}
+                          <span className="text-neutral-900">
+                            {ticket?.LocatarioName}
+                          </span>
+                        </p>
+                        <p className="text-neutral-600">
+                          Contato:{" "}
+                          <span className="text-neutral-900">
+                            {ticket?.LocatarioContact}
+                          </span>
+                        </p>
+                      </div>
+                      {/* Locador */}
+                      <div>
+                        <h2 className="text-neutral-600">Locador</h2>
+                        <p className="text-neutral-600">
+                          Nome:{" "}
+                          <span className="text-neutral-900">
+                            {ticket?.LocadorName}
+                          </span>
+                        </p>
+                        <p className="text-neutral-600">
+                          Contato:{" "}
+                          <span className="text-neutral-900">
+                            {ticket?.LocadorContact}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
 
-        {loading ? (
-          <Loading type="skeleton" />
-        ) : (
-          <>
-            <h1 className="text-title font-strong">
-              Chamado: {ticket?.Titulo}
-            </h1>
-            {/* Solicitante */}
-            <div className="relative flex flex-col gap-5 border-2 border-neutral-500 p-4 rounded">
-              <div>
-                <h2 className="text-neutral-600">Solicitante</h2>
-                <p className="text-neutral-600">
-                  Nome:{" "}
-                  <span className="text-neutral-900">{ticket?.Solicitor}</span>
-                </p>
-              </div>
-              {/* Locatário */}
-              <div>
-                <h2 className="text-neutral-600">Locatário</h2>
-                <p className="text-neutral-600">
-                  Nome:{" "}
-                  <span className="text-neutral-900">
-                    {ticket?.LocatarioName}
-                  </span>
-                </p>
-                <p className="text-neutral-600">
-                  Contato:{" "}
-                  <span className="text-neutral-900">
-                    {ticket?.LocatarioContact}
-                  </span>
-                </p>
-              </div>
+                    {/* Segunda coluna */}
+                    <div className="flex-1 flex flex-col gap-5">
+                      {/* Tipo de chamado */}
+                      <VisualizarItem
+                        label="Tipo"
+                        informacao={
+                          ticket?.TypeTicket ?? "Tipo não especificado"
+                        }
+                      />
+                      {/* Endereço do imóvel */}
+                      <VisualizarItem
+                        label="Imóvel"
+                        informacao={
+                          ticket?.Address ?? "Endereço não especificado"
+                        }
+                      />
+                      {/* Datas */}
+                      <VisualizarItem
+                        label="Data da solicitação"
+                        informacao={
+                          ticket?.DateSolicitation ?? "Data não informada"
+                        }
+                      />
+                      <VisualizarItem
+                        label="Data de início"
+                        informacao={ticket?.DateStart ?? "Data não informada"}
+                      />
+                      <VisualizarItem
+                        label="Data de término"
+                        informacao={ticket?.DateEnd ?? "Data não informada"}
+                      />
+                    </div>
+                  </div>
 
-              {/* Locador */}
-              <div>
-                <h2 className="text-neutral-600">Locador</h2>
-                <p className="text-neutral-600">
-                  Nome:{" "}
-                  <span className="text-neutral-900">
-                    {ticket?.LocadorName}
-                  </span>
-                </p>
-                <p className="text-neutral-600">
-                  Contato:{" "}
-                  <span className="text-neutral-900">
-                    {ticket?.LocadorContact}
-                  </span>
-                </p>
-              </div>
+                  {/* Descrição */}
+                  <div>
+                    <h2 className="text-neutral-600">Descrição</h2>
+                    <p className="bg-gray-100 p-2 rounded-sm">{ticket?.Description}</p>
+                  </div>
 
-              {/* Tipo de manutenção */}
-              <VisualizarItem
-                label="Tipo"
-                informacao={ticket?.TypeTicket ?? "Tipo não especificado"}
-              />
-
-              {/* Endereço do Imóvel */}
-              <VisualizarItem
-                label="Imóvel"
-                informacao={ticket?.Address ?? "Endereço não especificado"}
-              />
-
-              {/* Data da solicitação do chamado */}
-              <VisualizarItem
-                label="Data da solicitação"
-                informacao={
-                  ticket?.DateSolicitation ??
-                  "Data da solicitação não especificada"
-                }
-              />
-
-              {/* Período do chamado
-              <div>
-                <h2 className="text-neutral-600">Período</h2>
-                <div className="flex flex-row gap-10">
-                  <p className="text-neutral-600">
-                    Início{" "}
-                    <span className="text-neutral-900">
-                      {ticket?.DateStart}
-                    </span>
-                  </p>
-                  <p className="text-neutral-600">
-                    Fim{" "}
-                    <span className="text-neutral-900">{ticket?.DateEnd}</span>
+                  {/* Status */}
+                  <p className="absolute top-1 right-2 text-neutral-600 italic">
+                    {ticket?.Status === "aberto" ? "Aberto" : "Fechado"}
                   </p>
                 </div>
-              </div> */}
 
-              {/* Descrição do chamado */}
-              <div>
-                <h2 className="text-neutral-600">Descrição</h2>
-                <p>{ticket?.Description}</p>
-              </div>
-
-              {/* Status do chamado */}
-              <p className="absolute top-1 right-2 text-neutral-600 italic">
-                {ticket?.Status === "aberto" ? "Aberto" : "Fechado"}
-              </p>
-            </div>
-
-            {/* Botao para fechar o chamado */}
-            {ticket?.Status === "aberto" && (
-              <button className="h-10 px-6 bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50 text-sm font-medium rounded" onClick={closeTicket}>
-              Fechar Chamado
-              </button>
+                {/* Botão para fechar chamado */}
+                {ticket?.Status === "aberto" && (
+                  <button
+                    className="h-10 px-6 bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50 text-sm font-medium rounded"
+                    onClick={closeTicket}
+                  >
+                    Fechar Chamado
+                  </button>
+                )}
+              </>
             )}
-          </>
-        )}
+          </div>
+        </div>
       </section>
 
       <Footer />
