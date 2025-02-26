@@ -110,12 +110,12 @@ export default function Landing() {
           }}
         />
 
-        <div className="fixed bottom-8 left-8 z-50">
-          <WhatsAppBtn
-            phoneNumber="5511965922552"
-            message="Olá, gostaria de mais informações sobre a plataforma K.K. Administradora."
-          />
-        </div>
+          <div className="fixed bottom-8 left-8 z-50">
+            <WhatsAppBtn
+              phoneNumber="5511965922552"
+              message="Olá, gostaria de mais informações sobre a plataforma K.K. Administradora."
+            />
+          </div>
 
         <img
           // Imagem deecorativa 

@@ -19,6 +19,7 @@ import VisualizarImoveis from "./desktop/pages/VisualizarImoveis";
 import VisualizarChamados from "./desktop/pages/VisualizarChamados";
 import VisualizarUsuarios from "./desktop/pages/VisualizarUsuarios";
 import Contratos from "./desktop/pages/VisualizarContratos";
+import VisualizarAlugueis from "./desktop/pages/VisualizarAlugueis";
 
 // Import mobile components and pages
 import LandingMobile from "./mobile/pages/Landing";
@@ -70,7 +71,13 @@ const Root = () => {
           path="/imoveis"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-              {isDesktop ? <VisualizarImoveis /> : <VisualizarImoveisMobile />}
+              <>
+                {isDesktop ? (
+                  <VisualizarImoveis />
+                ) : (
+                  <VisualizarImoveisMobile />
+                )}
+              </>
             </ProtectedRoute>
           }
         />
@@ -95,11 +102,13 @@ const Root = () => {
           path="/chamados"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              {isDesktop ? (
-                <VisualizarChamados />
-              ) : (
-                <VisualizarChamadosMobile />
-              )}
+              <>
+                {isDesktop ? (
+                  <VisualizarChamados />
+                ) : (
+                  <VisualizarChamadosMobile />
+                )}
+              </>
             </ProtectedRoute>
           }
         />
@@ -107,7 +116,7 @@ const Root = () => {
           path="/chamados/criar"
           element={
             <ProtectedRoute requiredRole={["Admin", "Locatario"]}>
-              {isDesktop ? <CreateTicket /> : <CreateTicketMobile />}
+              <>{isDesktop ? <CreateTicket /> : <CreateTicketMobile />}</>
             </ProtectedRoute>
           }
         />
@@ -115,7 +124,7 @@ const Root = () => {
           path="/chamado/:id"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-              {isDesktop ? <Chamado /> : <ChamadoMobile />}
+              <>{isDesktop ? <Chamado /> : <ChamadoMobile />}</>
             </ProtectedRoute>
           }
         />
@@ -124,11 +133,13 @@ const Root = () => {
           path="/usuarios"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              {isDesktop ? (
-                <VisualizarUsuarios />
-              ) : (
-                <VisualizarUsuariosMobile />
-              )}
+              <>
+                {isDesktop ? (
+                  <VisualizarUsuarios />
+                ) : (
+                  <VisualizarUsuariosMobile />
+                )}
+              </>
             </ProtectedRoute>
           }
         />
@@ -136,7 +147,7 @@ const Root = () => {
           path="/usuarios/criar"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              {isDesktop ? <CreateUser /> : <CreateUserMobile />}
+              <>{isDesktop ? <CreateUser /> : <CreateUserMobile />}</>
             </ProtectedRoute>
           }
         />
@@ -145,7 +156,7 @@ const Root = () => {
           path="/perfil"
           element={
             <ProtectedRoute>
-              {isDesktop ? <Perfil /> : <PerfilMobile />}
+              <>{isDesktop ? <Perfil /> : <PerfilMobile />}</>
             </ProtectedRoute>
           }
         />
@@ -153,7 +164,7 @@ const Root = () => {
           path="/perfil/:id"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              {isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />}
+              <>{isDesktop ? <OutrosPerfis /> : <OutrosPerfisMobile />}</>
             </ProtectedRoute>
           }
         />
@@ -161,7 +172,7 @@ const Root = () => {
           path="/perfil/editar"
           element={
             <ProtectedRoute>
-              {isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />}
+              <>{isDesktop ? <EditarPerfil /> : <EditarPerfilMobile />}</>
             </ProtectedRoute>
           }
         />
@@ -169,7 +180,7 @@ const Root = () => {
           path="/perfil/alterar-senha"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              {isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile />}
+              <>{isDesktop ? <AlterarSenha /> : <AlterarSenhaMobile />}</>
             </ProtectedRoute>
           }
         />
@@ -178,7 +189,9 @@ const Root = () => {
           path="/dashboard"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-              <Dashboard />
+              <>
+                <Dashboard />
+              </>
             </ProtectedRoute>
           }
         />
@@ -186,7 +199,9 @@ const Root = () => {
           path="/home-locador"
           element={
             <ProtectedRoute requiredRole={["Locador"]}>
-              <HomeLocador />
+              <>
+                <HomeLocador />
+              </>
             </ProtectedRoute>
           }
         />
@@ -194,7 +209,9 @@ const Root = () => {
           path="/home-locatario"
           element={
             <ProtectedRoute requiredRole={["Locatario"]}>
-              <HomeLocatario />
+              <>
+                <HomeLocatario />
+              </>
             </ProtectedRoute>
           }
         />
@@ -233,7 +250,9 @@ const Root = () => {
           path="/pagamento-for-admin/:paymentid"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              <PaymentView />
+              <>
+                <PaymentView />
+              </>
             </ProtectedRoute>
           }
         />
@@ -241,7 +260,9 @@ const Root = () => {
           path="/contratos/:id"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-              <ContractView />
+              <>
+                <ContractView />
+              </>
             </ProtectedRoute>
           }
         />
@@ -249,7 +270,9 @@ const Root = () => {
           path="/contratos-loc/:id"
           element={
             <ProtectedRoute requiredRole={["Locatario", "Locador"]}>
-              <ContractViewLoc />
+              <>
+                <ContractViewLoc />
+              </>
             </ProtectedRoute>
           }
         />
@@ -257,7 +280,7 @@ const Root = () => {
           path="/contratos"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-              {isDesktop ? <Contratos /> : <ContratosMobile />}
+              <>{isDesktop ? <Contratos /> : <ContratosMobile />}</>
             </ProtectedRoute>
           }
         />
@@ -265,7 +288,17 @@ const Root = () => {
           path="/contratos/criar"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              <CreateContract />
+              <>
+                <CreateContract />
+              </>
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/visualizar/alugueis/:id"
+          element={
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
+              <VisualizarAlugueis />
             </ProtectedRoute>
           }
         />
