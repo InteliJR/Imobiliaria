@@ -84,7 +84,7 @@ const Root = () => {
           path="/pagamentos"
           element={
             <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-              <>{<PagamentosImovel />}</>
+              <PagamentosImovel />
             </ProtectedRoute>
           }
         />
@@ -92,7 +92,7 @@ const Root = () => {
           path="/imoveis/criar"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
-              <>{isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}</>
+              {isDesktop ? <CreateProperty /> : <CreatePropertyMobile />}
             </ProtectedRoute>
           }
         />
@@ -221,9 +221,7 @@ const Root = () => {
             <ProtectedRoute
               requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}
             >
-              <>
-                <ImovelById />
-              </>
+              <ImovelById />
             </ProtectedRoute>
           }
         />
@@ -232,9 +230,7 @@ const Root = () => {
           element={
             // ESTE COMPONENTE NÃO É 'MOBILE'
             <ProtectedRoute requiredRole={["Admin"]}>
-              <>
-                <ImovelByIdAdm />
-              </>
+              <ImovelByIdAdm />
             </ProtectedRoute>
           }
         />
@@ -245,9 +241,7 @@ const Root = () => {
             <ProtectedRoute
               requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}
             >
-              <>
-                <PaymentView />
-              </>
+              <PaymentView />
             </ProtectedRoute>
           }
         />
