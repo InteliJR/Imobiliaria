@@ -1,9 +1,12 @@
+// Adicionar a página de Aluguéis na Navbar 
+// Arrumar filtro de alugueis (está só pelo mês)
+
 // Modified version of ChamadosImovel to display Pagamentos
 import { useEffect, useState } from "react";
 // import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
-import Card from "../components/Payments/CardPayments";
+import Card from "../components/Alugueis/CardAluguel";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../../components/Botoes/Voltar";
@@ -15,35 +18,32 @@ import {
   FaFileContract,
   FaHome,
   FaUsers,
+  FaFileInvoiceDollar
 } from "react-icons/fa";
-import { FaFileInvoiceDollar, FaMoneyBillTrendUp } from "react-icons/fa6";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
-export default function PagamentosImovel() {
+// Exporta a página de Alugueis relacionados a um Imóvel
+export default function AlugueisImovel() {
   const navigate = useNavigate();
-  interface Pagamento {
-    paymentId: number;
+  interface Aluguel {
+    aluguelId: number;
     contratoId: number;
-    valor: number;
-    data: string;
-    pagante: string;
-    metodoPagamento: string;
-    descricao: string;
-    tipoPagamento: string;
-    multa: boolean;
-    valorMulta: number;
+    pagamentoId: number;
+    status: boolean;
+    mes: string;
+    boleto_doc: string;
   }
 
-  // const { imovelId } = useParams();
-
-  const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
+  const [alugueis, setAlugueis] = useState<Aluguel[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); 
 
-  const fetchPagamentos = async () => {
+  // Buscar os dados 
+  const fetchAlugueis = async () => {
     try {
       const response = await axiosInstance.get(
-        "payment/Payment/listar-pagamentos"
+        "payment/Rent/PegarTodosAlugueis"
       );
 
       if (!response.data) {
@@ -51,20 +51,24 @@ export default function PagamentosImovel() {
         return;
       }
 
-      const pagamentosData = response.data;
+      const alugueisData = response.data;
 
-      const mappedData = pagamentosData.map((pagamento: Pagamento) => ({
-        paymentId: pagamento.paymentId,
-        title: pagamento.descricao || "Descrição não informada",
-        line1: pagamento.pagante || "Pagante desconhecido",
-        line2: pagamento.metodoPagamento || "Método não informado",
-        line3: new Date(pagamento.data).toLocaleDateString("pt-BR"),
-        status: pagamento.multa
-          ? `Multa: R$ ${pagamento.valorMulta.toFixed(2)}`
-          : "Sem multa",
+      // Trata as informações retornadas do back-end
+      const mappedData = alugueisData.map((aluguel: Aluguel) => ({
+        aluguelId: aluguel.aluguelId,
+        contratoId: aluguel.contratoId,
+        title: "Aluguel n° " + aluguel.aluguelId || "Aluguel não encontrado",
+        line1: aluguel.contratoId || "Contrato não encontrado",
+        line2: aluguel.mes || "Mês do aluguel não encontrado",
+        line3: aluguel.status
+          ? "Realizado"
+          : "Em Aberto",
+        status: aluguel.status
+          ? "Pago"
+          : "Em aberto",
       }));
 
-      setPagamentos(mappedData);
+      setAlugueis(mappedData);
       setFilteredData(mappedData);
     } catch (error: any) {
       console.error(error);
@@ -75,7 +79,7 @@ export default function PagamentosImovel() {
   };
 
   useEffect(() => {
-    fetchPagamentos();
+    fetchAlugueis();
   }, []);
 
   return (
@@ -136,22 +140,24 @@ export default function PagamentosImovel() {
           <FaClipboardList className="z-10" />
           <span className="z-10">Chamados</span>
         </button>
+
       </div>
 
+      {/* Botão de Voltar, Título da página e Filtro */}
       <div className="h-[1px] bg-neutral-400 mb-4"></div>
       <div className="flex-grow w-full flex justify-center">
         <section className="flex flex-col gap-y-5 bg-[#F0F0F0] max-w-6xl flex-grow p-6 rounded-lg ">
           <Voltar />
-          <h2 className="text-2xl font-semibold mb-4">Pagamentos</h2>
+          <h2 className="text-2xl font-semibold mb-4">Aluguéis</h2>
 
           <form className="grid grid-cols-1 gap-4 mb-6 ">
             <div className="flex w-full gap-2 items-end">
               <div className="w-full">
                 <FormFieldFilter
-                  label="Buscar pagamento"
+                  label="Buscar aluguel"
                   onFilter={(searchTerm) => {
-                    const filtered = pagamentos.filter((pagamento) =>
-                      pagamento.descricao
+                    const filtered = alugueis.filter((aluguel) =>
+                      aluguel.mes
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase())
                     );
@@ -169,6 +175,7 @@ export default function PagamentosImovel() {
             </div>
           </form>
 
+          {/* Retorna os resultados da pesquisa de filtro */}
           {loading ? (
             <Loading type="skeleton" />
           ) : (
@@ -177,21 +184,21 @@ export default function PagamentosImovel() {
               <div className="h-[1px] bg-neutral-300 mb-4"></div>
               {filteredData.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredData.map((pagamento) => (
+                  {filteredData.map((aluguel) => (
                     <Card
-                      key={pagamento.paymentId}
-                      paymentid={pagamento.paymentId}
-                      title={pagamento.title}
-                      line1={pagamento.line1}
-                      line2={pagamento.line2}
-                      line3={pagamento.line3}
-                      status={pagamento.status}
+                      key={aluguel.aluguelId}
+                      aluguelId={aluguel.aluguelId}
+                      title={aluguel.title}
+                      line1={aluguel.line1}
+                      line2={aluguel.line2}
+                      line3={aluguel.line3}
+                      status={aluguel.status}
                     />
                   ))}
                 </div>
               ) : (
                 <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                  Nenhum pagamento encontrado.
+                  Nenhum aluguel encontrado.
                 </p>
               )}
             </section>

@@ -9,7 +9,7 @@ import {
 import Imoveis from "../components/Imoveis";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
-import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { FaFileInvoiceDollar, FaMoneyBillTrendUp } from "react-icons/fa6";
 
 export default function VisualizarImoveis() {
   const navigate = useNavigate();
@@ -47,6 +47,14 @@ export default function VisualizarImoveis() {
           <span className="absolute inset-0 -m-2 bg-neutral-400 z-0 scale-0 group-hover:scale-100 transition-transform"></span>
           <FaFileContract className="z-10" />
           <span className="z-10">Contratos</span>
+        </button>
+        <button
+          className="relative group flex items-center gap-2 px-4 py-2 text-neutral-800 rounded-md overflow-hidden hover:bg-neutral-200 transition duration-200"
+          onClick={() => navigate("/alugueis")}
+        >
+          <span className="absolute inset-0 -m-2 bg-neutral-400 z-0 scale-0 group-hover:scale-100 transition-transform"></span>
+          <FaFileInvoiceDollar className="z-10" />
+          <span className="z-10 font-bold">Aluguéis</span>
         </button>
         <button
           className="relative group flex items-center gap-2 px-4 py-2 text-neutral-800 rounded-md overflow-hidden"
