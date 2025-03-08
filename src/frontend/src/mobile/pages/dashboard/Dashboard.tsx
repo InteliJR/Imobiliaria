@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
 import Navbar from "../../../components/Navbar/Navbar";
 import Footer from "../../../components/Footer/FooterSmall";
 import Voltar from "../../../components/Botoes/Voltar";
@@ -11,7 +20,15 @@ import axiosInstance from "../../../services/axiosConfig";
 import LineChart from "./LineChart";
 import BarChart from "./BarChart";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +40,9 @@ export default function Dashboard() {
 
   const fetchPagamentos = async () => {
     try {
-      const response = await axiosInstance.get("payment/Payment/listar-pagamentos");
+      const response = await axiosInstance.get(
+        "payment/Payment/listar-pagamentos"
+      );
 
       if (!response.data) {
         console.error("Dados de resposta inválidos");
@@ -37,7 +56,7 @@ export default function Dashboard() {
       let valorTotalAlugueis = 0;
 
       // Itera sobre os pagamentos para calcular as informações desejadas
-      pagamentosData.forEach((pagamento:any) => {
+      pagamentosData.forEach((pagamento: any) => {
         totalPagamentos += pagamento.valor; // Soma o valor total dos pagamentos
 
         if (pagamento.multa) {
@@ -53,7 +72,6 @@ export default function Dashboard() {
       setTotalPagamentos(totalPagamentos);
       setQuantidadeMultas(quantidadeMultas);
       setValorTotalAlugueis(valorTotalAlugueis);
-
     } catch (error) {
       console.error(error);
       showErrorToast("Erro ao se conectar com o servidor.");
@@ -66,112 +84,81 @@ export default function Dashboard() {
     fetchPagamentos();
   }, []);
 
-  // const fetchPagamentos = async () => {
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       "payment/Payment/listar-pagamentos"
-  //     );
-
-  //     if (!response.data) {
-  //       console.error("Dados de resposta inválidos");
-  //       return;
-  //     }
-
-  //     const pagamentosData = response.data;
-
-  //     const mappedData = pagamentosData.map((pagamento: Pagamento) => ({
-  //       paymentId: pagamento.paymentId,
-  //       title: pagamento.descricao || "Descrição não informada",
-  //       line1: pagamento.pagante || "Pagante desconhecido",
-  //       line2: pagamento.metodoPagamento || "Método não informado",
-  //       line3: new Date(pagamento.data).toLocaleDateString("pt-BR"),
-  //       status: pagamento.multa ? `Multa: R$ ${pagamento.valorMulta.toFixed(2)}` : "Sem multa",
-  //     }));
-
-  //     setPagamentos(mappedData);
-  //     setFilteredData(mappedData);
-
-  //   } catch (error: any) {
-  //     console.error(error);
-  //     showErrorToast("Erro ao se conectar com o servidor.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchPagamentos();
-  // }, []);
-
   return (
     <div className="flex flex-col bg-[#F0F0F0] gap-y-5 min-h-screen">
       <Navbar />
       <main className="px-4 gap-y-5 mt-4 flex flex-1 flex-col">
-        <Voltar />
-        {loading ? (
-          <Loading type="skeleton" />
-        ) : (
-          <>
-            {/* Formulário */}
-            <section className="flex flex-col gap-y-5">
-              <h2 className="text-2xl font-semibold">Monitoramento Financeiro</h2>
-              <form className="grid grid-cols-1 gap-4">
-                <div className="flex w-full gap-2 items-end">
-                  <div className="w-full">
-                    <FormField
-                      label="Buscar boleto"
-                      value={searchTerm}
-                      onChange={setSearchTerm}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
-                  >
-                    Filtrar
-                    <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
-                  </button>
-                </div>
-              </form>
-            </section>
+        <div className="max-w-6xl w-full m-auto">
+          <Voltar />
+          {loading ? (
+            <Loading type="skeleton" />
+          ) : (
+            <>
+              {/* Formulário */}
+              <section className="flex flex-col gap-y-5">
+                <h2 className="text-2xl font-semibold">
+                  Monitoramento Financeiro
+                </h2>
 
-            {/* Cards */}
-            <section className="flex-grow flex flex-col gap-y-5">
-              <div className="grid grid-cols-2 gap-4">
+                <form className="grid grid-cols-1 gap-4">
+                  <div className="flex w-full gap-2 items-end">
+                    <div className="w-full">
+                      <FormField
+                        label="Buscar boleto"
+                        value={searchTerm}
+                        onChange={setSearchTerm}
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+                    >
+                      Filtrar
+                      <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
+                    </button>
+                  </div>
+                </form>
+              </section>
+
+              {/* Cards */}
+              <section className="flex-grow flex flex-col">
+                <div className="grid grid-cols-2 gap-4 my-6">
+                  <div className="flex flex-col">
+                    <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">
+                      <h2 className="text-base">Total de Pagamentos</h2>
+                    </label>
+                    <div className="border border-gray-300 text-2xl font-bold shadow-[0px_0px_7px_rgba(0,0,0,0.2)] rounded-[6px] overflow-hidden h-[90px] flex items-center justify-center">
+                      {<p className="leading-none m-0 p-0">R$ {totalPagamentos.toFixed(2)}</p>}
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">
+                      <h2 className="text-base">Quantidade de Multas</h2>
+                    </label>
+                    <div className="border border-gray-300 text-2xl font-bold shadow-[0px_0px_7px_rgba(0,0,0,0.2)] rounded-[6px] overflow-hidden h-[90px] flex items-center justify-center">
+                      {<p className="leading-none m-0 p-0">{quantidadeMultas}</p>}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex flex-col">
-                  <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5"><h2>Total de Pagamentos</h2></label>
-                  <div className="border border-neutral-300 bg-[#D9D9D9] text-2xl font-bold shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden h-[120px] flex items-center justify-center">
-                    {<p>R$ {totalPagamentos.toFixed(2)}</p>}
+                  <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5">
+                    <h2 className="text-base">Valor Total de Aluguéis</h2>
+                  </label>
+                  <div className="border border-gray-300 text-2xl font-bold shadow-[0px_0px_7px_rgba(0,0,0,0.2)] rounded-[6px] overflow-hidden h-[90px] flex items-center justify-center">
+                    {<p className="leading-none m-0 p-0">R$ {valorTotalAlugueis.toFixed(2)}</p>}
                   </div>
                 </div>
-                <div className="flex flex-col">
-                  <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5"><h2>Quantidade de Multas</h2></label>
-                  <div className="border border-neutral-300 bg-[#D9D9D9] text-2xl font-bold shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden h-[120px] flex items-center justify-center">
-                    {<p>{quantidadeMultas}</p>}
-                  </div>
+                {/* Gráficos */}
+                <div className="flex flex-wrap lg:flex-nowrap w-full overflow-hidden mt-8 gap-4">
+                  <LineChart />
+                  <BarChart />
                 </div>
-              </div>
-              <div className="flex flex-col">
-                <label className="font-sans font-normal text-form-label text-neutral-900 mb-1.5"><h2>Valor Total de Aluguéis</h2></label>
-                <div className="border border-neutral-300 bg-[#D9D9D9] text-2xl font-bold shadow-[2px_2px_4px_rgba(0,0,0,0.4)] rounded-[4px] overflow-hidden h-[120px] flex items-center justify-center">
-                  {<p>R$ {valorTotalAlugueis.toFixed(2)}</p>}
-                </div>
-              </div>
-
-              {/* Gráficos */}
-              <div className="my-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                <LineChart />
-                <BarChart />
-
-                {/* Gráfico de pizza */}
-
-              </div>
-            </section>
-          </>
-        )}
+              </section>
+            </>
+          )}
+        </div>
       </main>
-
 
       {/* Footer */}
       <Footer />
