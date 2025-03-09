@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FeaturesSection from "../../components/Landing/FeaturesSection";
 import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../components/FooterBig";
+import Footer from "../../components/Footer/FooterBig";
 import Botao from "../components/Botao";
 import WhatsAppBtn from "../../components/Botoes/WhatsAppBtn";
 // Importações das imagens
@@ -110,12 +110,12 @@ export default function Landing() {
           }}
         />
 
-        <div className="fixed bottom-8 left-8 z-50">
-          <WhatsAppBtn
-            phoneNumber="5511965922552"
-            message="Olá, gostaria de mais informações sobre a plataforma K.K. Administradora."
-          />
-        </div>
+          <div className="fixed bottom-8 left-8 z-50">
+            <WhatsAppBtn
+              phoneNumber="5511965922552"
+              message="Olá, gostaria de mais informações sobre a plataforma K.K. Administradora."
+            />
+          </div>
 
         <img
           // Imagem deecorativa 

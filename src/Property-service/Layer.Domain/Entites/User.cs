@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -35,6 +35,7 @@ namespace Layer.Domain.Entities
 
         [Column("data_atualizacao")]
         public DateTime DataAtualizacao { get; set; }
+        public Locatario Locatario { get; set; }
 
     }
 }

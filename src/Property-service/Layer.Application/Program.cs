@@ -13,7 +13,7 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using MongoDB.Driver;
 using Layer.Domain.Entities;
-
+using Layer.Infrastructure.ExternalAPIs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,13 +26,13 @@ if (env == "Development")
 }
 else if (env == "Production")
 {
-    // Env.Load(".env.production");
-    Env.Load("etc/secrets/.env.production");
+    Env.Load(".env.production");
 }
 else
 {
     Env.Load();  // Caso você tenha um `.env` padrão
 }
+
 
 
 var mongoSettings = new MongoDbSettings
@@ -98,6 +98,22 @@ builder.Services.AddScoped<IContratosRepository, ContratoService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IChamadosRepository, ChamadosService>();
 builder.Services.AddScoped<ApplicationLog>();
+builder.Services.AddHostedService<ContractsReminder>();
+builder.Services.AddHttpClient<IUsersAPI, UsersAPI>((client) =>
+{
+    // Configuração do HttpClient
+    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("AUTH_SERVICE_URL")); // URL base do serviço
+    client.Timeout = TimeSpan.FromSeconds(30); // Timeout
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler())
+.AddTypedClient<IUsersAPI>((httpClient, serviceProvider) =>
+{
+    // Configuração de informações do cliente HMAC
+    var clientId = "service_imoveis";
+    var secretKey = Environment.GetEnvironmentVariable("HMAC_KEY") ?? "default-secret-key";
+    return new UsersAPI(httpClient, clientId, secretKey);
+});
+
 
 // Configura JWT settings
 var jwtSettings = new JwtSettings
@@ -154,12 +170,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com") // Substitua pelos domínios específicos que você deseja permitir
+            policy.WithOrigins("*", "http://localhost:5173", "https://frontend-ajbn.onrender.com") // Substitua pelos domínios específicos que você deseja permitir
                   .AllowCredentials()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
 });
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 // Registrar o dbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

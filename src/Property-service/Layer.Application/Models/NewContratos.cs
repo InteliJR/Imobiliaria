@@ -1,4 +1,6 @@
-﻿namespace property_management.Models
+﻿using System;
+
+namespace property_management.Models
 {
     public class NewContratos
     {
@@ -18,5 +20,6 @@
         public bool Renovado { get; set; }                // Indica se o contrato foi renovado
         public DateTime? DataEncerramentoRenovacao { get; set; } // Data de encerramento da renovação
         public decimal ValorReajuste { get; set; }
+        public DateTime? DataReajuste { get; set; } // Data do reajuste do aluguel
     }
 }

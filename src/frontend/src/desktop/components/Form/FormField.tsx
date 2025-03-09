@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface FormFieldProps {
-  label: string;
+  label: any;
   placeholder?: string; // Tornando o placeholder opcional
   type?: string; // Tipo opcional para suportar 'password', 'text', etc.
   value?: string; // Valor controlado

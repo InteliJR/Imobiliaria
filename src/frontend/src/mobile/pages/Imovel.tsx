@@ -27,10 +27,10 @@ export default function PropertyDetails() {
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const userRole = localStorage.getItem('userRole');
   const fetchPropertyDetails = async () => {
     try {
       
-      const userRole = localStorage.getItem('userRole');
       let response;
 
       if (userRole == "Admin" || userRole == "Judiciario"){
@@ -78,7 +78,7 @@ export default function PropertyDetails() {
       // Substituir as URLs das fotos pelas URLs assinadas
       property.fotos = responsePhotos.data;
       // console.log(property.fotos);
-
+      console.log(property);
       setProperty(property);
       // console.log(property)
     } catch (error: any) {
@@ -143,10 +143,31 @@ export default function PropertyDetails() {
           </button>
           <button
             className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
-            onClick={() => navigate("/pagamentos")}
+            onClick={() => navigate(`/visualizar/alugueis/${property.imovelId}`)}
           >
             Ver Pagamentos
           </button>
+          {userRole === "Admin" && (
+            <button
+            
+              className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
+              onClick={() => navigate(`/imovel-adm/${property.imovelId}`)}
+            > Editar as informações do Imóvel</button>
+          )}
+          {userRole === "Locatario" && (
+            <button
+            
+              className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
+              onClick={() => navigate(`/contratos-loc/${property.imovelId}`)}
+            > Visualizar o contrato de locação </button>
+          )}
+          {userRole === "Locador" && (
+            <button
+            
+              className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
+              onClick={() => navigate(`/contratos-loc/${property.imovelId}`)}
+            > Visualizar o contrato de locação </button>
+          )}
         </div>
       </section>
       <Footer />

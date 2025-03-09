@@ -8,11 +8,79 @@ import { showErrorToast } from "../../utils/toastMessage";
 import { useState, useEffect } from "react";
 import Loading from "../../components/Loading";
 import axiosInstance from "../../services/axiosConfig";
+import { IUser } from "../../components/Filter/UserInterfaces";
+import { IFilterField } from "../../components/Filter/InputsInterfaces";
+import { GenericFilterModal } from "../../components/Filter/Filter";  
+import { useNavigate } from "react-router-dom";
 
 export default function Users() {
   const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
+
+  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+
+  const navigate = useNavigate();
+
+  // Busca textual
+  const [search, setSearch] = useState("");
+
+  // Controle do modal
+  const [isModalOpen, setModalOpen] = useState(false);
+
+
+  // Campos do filtro avançado (property-based)
+  const userFilterFields: IFilterField<IUser>[] = [
+    {
+      name: "perfil",
+      label: "Perfil",
+      type: "select",
+      options: ["Admin", "Locatario", "Locador"],
+      property: "role",
+    },
+    { name: "cnpj", label: "CNPJ", type: "text", property: "cnpj" },
+    { name: "cpf", label: "CPF", type: "text", property: "cpf" },
+    { name: "email", label: "Email", type: "text", property: "email" },
+    { name: "rg", label: "RG", type: "text", property: "rg" },
+    { name: "telefone", label: "Telefone", type: "text", property: "telefone" },
+    {
+      name: "dataCriacao",
+      label: "Data de Criação",
+      type: "dateRange",
+      property: "dataCriacao",
+    },
+    {
+      name: "numeroImoveis",
+      label: "Número de Imóveis",
+      type: "number",
+      property: "nImoveis",
+      placeholder: "Digite o número de imóveis",
+    },
+    {
+      name: "numeroImoveisRange",
+      label: "Número de Imóveis",
+      type: "numberRange",
+      property: "nImoveis",
+      placeholder: "Digite a faixa de numeros de imoveis",
+    },
+    {
+      name: "filtroImovel",
+      label: "Filtrar por CEP",
+      type: "text",
+      property: "imoveis",
+      placeholder: "Digite o CEP do imóvel",
+      customFilter: (user: IUser, filterValue: string) => {
+        // Logica personalizada para filtrar os usaurios que possuem imoveis com um certo cep
+        const lower = String(filterValue).toLowerCase();
+        const cepOk = user.imoveis?.some((imovel) =>
+          imovel.cep?.toLowerCase().includes(lower)
+        );
+        return cepOk;
+      },
+    }
+  ];
+
+
 
   const getAllInfo = async () => {
     try {
@@ -51,6 +119,7 @@ export default function Users() {
 
       setData(combinedData);
       setFilteredData(combinedData); // Inicialmente exibir todos os usuários
+      setAdvancedFiltered(combinedData); // Inicialmente exibir todos os usuários
       console.log("Dados combinados:", combinedData);
     } catch (error: any) {
       showErrorToast(
@@ -69,6 +138,42 @@ export default function Users() {
     getAllInfo();
   }, []);
 
+  useEffect(() => {
+    if (!search.trim()) {
+      setFilteredData(advancedFiltered);
+    } else {
+      const lower = search.toLowerCase();
+      const finalResult = advancedFiltered.filter((user: any) =>
+        user.nome?.toLowerCase().includes(lower)
+      );
+      setFilteredData(finalResult);
+    }
+    setCurrentPage(1); // Resetar página ao buscar/filtrar
+  }, [search, advancedFiltered]);
+
+  // Abrir modal
+  const openFilterModal = () => {
+    setModalOpen(true);
+  };
+
+  // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
+  const handleFilteredResult = (resultado: any[]) => {
+    // Esse "resultado" já está filtrado pelos campos avançados
+    setAdvancedFiltered(resultado);
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+
   return (
     <main className="main-custom">
       <Navbar />
@@ -77,6 +182,7 @@ export default function Users() {
         <button
           type="submit"
           className="w-full h-10 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+          onClick={() => navigate("/usuarios/criar")}
         >
           Adicionar usuário
         </button>
@@ -85,27 +191,34 @@ export default function Users() {
           {/* Linha com FormField e botão Filtrar ocupando toda a largura */}
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
-              <FormFieldFilter
-                label="Buscar usuário"
-                onFilter={(searchTerm) => {
-                  console.log(searchTerm);
-                  const filtered = data.filter((user) =>
-                    user.nome.toLowerCase().includes(searchTerm.toLowerCase())
-                  );
-                  setFilteredData(filtered);
-                }}
-              />
+            <FormFieldFilter
+              label="Buscar pelo nome"
+              onFilter={(searchTerm) => {
+                // Apenas guardamos em search
+                setSearch(searchTerm);
+              }}
+            />
             </div>
             {/* TODO: Colocar outra tela com detalhes de filtro, podendo filtrar de outras maneiras */}
             <button
-              type="submit"
+              type="button"
               className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+              onClick={openFilterModal}
             >
               Filtrar
               {/* Ícone SVG importado */}
               <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
             </button>
           </div>
+
+          <GenericFilterModal
+            isOpen={isModalOpen}
+            onClose={() => setModalOpen(false)}
+            fields={userFilterFields}
+            data={data}
+            onFilteredResult={handleFilteredResult}
+          />
+
         </form>
 
         {/* Cards */}
@@ -119,33 +232,65 @@ export default function Users() {
               Nenhum usuário encontrado.
             </p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredData.map((user, index) => {
-                const roleLower = user.role.toLowerCase();
-                const status =
-                  roleLower === "admin"
-                    ? "Admin"
-                    : roleLower === "judiciario"
-                    ? "Judiciário"
-                    : roleLower === "locador"
-                    ? "Locador"
-                    : roleLower === "locatario"
-                    ? "Locatário"
-                    : "Desconhecido";
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {getPagedData().map((user, index) => {
+                  const roleLower = user.role.toLowerCase();
+                  const status =
+                    roleLower === "admin"
+                      ? "Admin"
+                      : roleLower === "judiciario"
+                      ? "Judiciário"
+                      : roleLower === "locador"
+                      ? "Locador"
+                      : roleLower === "locatario"
+                      ? "Locatário"
+                      : "Desconhecido";
 
-                return (
-                  <Card
-                    key={index}
-                    id={user.usuarioId}
-                    title={user.nome || "Nome não disponível"}
-                    line1={user.nImoveis || "Número de imóveis não disponível"}
-                    line2={user.endereco || "Endereço não disponível"}
-                    line3={user.dataCriacao || "Data de criação não disponível"}
-                    status={status as "Locador" | "Locatário"}
-                  />
-                );
-              })}
+                  return (
+                    <Card
+                      key={index}
+                      id={user.usuarioId}
+                      title={user.nome || "Nome não disponível"}
+                      line1={user.nImoveis || "Número de imóveis não disponível"}
+                      line2={user.endereco || "Endereço não disponível"}
+                      line3={user.dataCriacao || "Data de criação não disponível"}
+                      status={status as "Locador" | "Locatário"}
+                    />
+                  );
+                })}
+              </div>
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === 1
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <span className="text-neutral-700">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === totalPages
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Próxima
+              </button>
             </div>
+            </>
           )}
         </section>
       </section>

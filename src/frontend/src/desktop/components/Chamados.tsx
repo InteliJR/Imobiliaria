@@ -6,6 +6,9 @@ import FilterIcon from "/Filter.svg";
 import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
+import { GenericFilterModal } from "../../components/Filter/Filter";
+import { IFilterField } from "../../components/Filter/InputsInterfaces";
+import axios from "axios";
 
 export default function ChamadosComponent() {
   interface Ticket {
@@ -19,40 +22,89 @@ export default function ChamadosComponent() {
   }
 
   const navigate = useNavigate();
-  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
+  const [data, setData] = useState<any[]>([]);
+  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+
+  // Busca textual
+  const [search, setSearch] = useState("");
+
+  // Controle do modal
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const TicketFilterFields: IFilterField<Ticket>[] = [
+    {
+      name: "title",
+      label: "Título",
+      type: "text",
+      property: "title",
+    },
+    {
+      name: "solicitor",
+      label: "Solicitante",
+      type: "text",
+      property: "solicitor",
+    },
+    {
+      name: "address",
+      label: "Endereço",
+      type: "text",
+      property: "address",
+    },
+    {
+      name: "date",
+      label: "Data",
+      type: "dateRange",
+      property: "date",
+    },
+    {
+      name: "open",
+      label: "Aberto",
+      type: "checkbox",
+      property: "open",
+    },
+    {
+      name: "description",
+      label: "Descrição",
+      type: "text",
+      property: "description",
+    },
+  ];
 
   const fetchTickets = async () => {
-    try {
-      const chamadosResponse = await axiosInstance.get(
-        "property/Chamados/PegarTodosOsChamados"
-      );
-      const usersResponse = await axiosInstance.get(
-        "auth/User/PegarTodosUsuarios"
-      );
-      const propertiesResponse = await axiosInstance.get(
-        "property/Imoveis/PegarTodosImoveis"
-      );
+    setLoading(true); // Inicia o estado de carregamento
 
+    try {
+      // Faz as requisições simultaneamente
+      const [chamadosResponse, usersResponse, propertiesResponse] =
+        await Promise.all([
+          axiosInstance.get("property/Chamados/PegarTodosOsChamados"),
+          axiosInstance.get("auth/User/PegarTodosUsuarios"),
+          axiosInstance.get("property/Imoveis/PegarTodosImoveis"),
+        ]);
+
+      // Verifica se os dados de resposta são válidos
       if (
         !chamadosResponse.data ||
         !usersResponse.data ||
         !propertiesResponse.data
       ) {
         console.error("Dados de resposta inválidos");
+        showErrorToast("Dados recebidos são inválidos. Tente novamente.");
         return;
       }
 
-      // console.log("Chamados:", chamadosResponse.data);
-      // console.log("Usuários:", usersResponse.data);
-      // console.log("Imóveis:", propertiesResponse.data);
+      // Extrai os dados das respostas
+      const chamados = Array.isArray(chamadosResponse.data)
+        ? chamadosResponse.data
+        : [];
+      const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
+      const properties = Array.isArray(propertiesResponse.data)
+        ? propertiesResponse.data
+        : [];
 
-      const chamados = chamadosResponse.data;
-      const users = usersResponse.data;
-      const properties = propertiesResponse.data;
-
-      // Mesclando os dados
+      // Mescla os dados
       const mergedData = chamados.map(
         (chamado: {
           descricao: string;
@@ -79,32 +131,98 @@ export default function ChamadosComponent() {
             solicitor: user.nome || "Usuário desconhecido",
             address: property.endereco || "Endereço desconhecido",
             date: chamado.dataSolicitacao || "Data não informada",
-            open: chamado.status === "Aberto" ? true : false,
+            open: chamado.status === "aberto" ? true : false,
             description: chamado.descricao || "Descrição não informada",
           };
         }
       );
 
-      setTickets(mergedData);
+      // Atualiza os estados com os dados mesclados
       setFilteredData(mergedData);
-
-      setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
+      setAdvancedFiltered(mergedData);
+      setData(mergedData);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao buscar dados:", error);
 
-      showErrorToast("Erro ao se conectar com o servidor.");
+      // Tratamento de erros do Axios
+      if (axios.isAxiosError(error)) {
+        // Erro com resposta do servidor (ex: 400, 500)
+        if (error.response) {
+          const errorMessage =
+            error.response.data || "Erro ao processar a requisição.";
+          showErrorToast(errorMessage);
+        }
+        // Erro de rede (ex: servidor indisponível)
+        else if (error.request) {
+          showErrorToast(
+            "Erro de rede. Verifique sua conexão e tente novamente."
+          );
+        }
+        // Erro inesperado
+        else {
+          showErrorToast(
+            "Ocorreu um erro inesperado. Tente novamente mais tarde."
+          );
+        }
+      }
+      // Erro genérico (não relacionado ao Axios)
+      else if (error instanceof Error) {
+        showErrorToast(error.message);
+      }
+      // Erro desconhecido
+      else {
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
+    } finally {
+      setLoading(false); // Finaliza o estado de carregamento, independentemente de sucesso ou erro
     }
   };
+
+  useEffect(() => {
+    if (!search.trim()) {
+      setFilteredData(advancedFiltered);
+    } else {
+      const lower = search.toLowerCase();
+      const finalResult = advancedFiltered.filter((user: any) =>
+        user.nome?.toLowerCase().includes(lower)
+      );
+      setFilteredData(finalResult);
+    }
+    setCurrentPage(1); // Resetar página ao buscar/filtrar
+  }, [search, advancedFiltered]);
+
+  // Abrir modal
+  const openFilterModal = () => {
+    setModalOpen(true);
+  };
+
+  // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
+  const handleFilteredResult = (resultado: any[]) => {
+    // Esse "resultado" já está filtrado pelos campos avançados
+    setAdvancedFiltered(resultado);
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
 
   useEffect(() => {
     fetchTickets();
   }, []);
 
   return (
-    <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">
+    <div className="flex flex-col bg-[#F0F0F0]  max-w-6xl gap-y-5 p-6 flex-grow">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-neutral-800">Chamados</h2>
+        <h2 className="text-3xl font-bold ">Chamados</h2>
         <button
           type="button"
           className="h-10 px-6 bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50 text-sm font-medium rounded"
@@ -119,27 +237,30 @@ export default function ChamadosComponent() {
         <div className="flex-grow">
           <div className="w-full">
             <FormFieldFilter
-              label="Buscar chamado"
+              label="Buscar chamado pelo título"
               onFilter={(searchTerm) => {
-                // console.log(searchTerm);
-                const filtered = tickets.filter((chamados) =>
-                  chamados.title
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                );
-                setFilteredData(filtered);
+                setSearch(searchTerm);
               }}
             />
           </div>
         </div>
         <button
-          type="submit"
+          type="button"
           className="flex items-center justify-center hover:bg-neutral-800 gap-2 px-6 h-10 bg-[#1F1E1C] text-neutral-50 text-sm font-medium rounded"
+          onClick={openFilterModal}
         >
           Filtrar
           <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
         </button>
       </form>
+
+      <GenericFilterModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        fields={TicketFilterFields}
+        data={data}
+        onFilteredResult={handleFilteredResult}
+      />
 
       {/* Cards */}
       <section className="flex flex-col gap-y-5">
@@ -147,26 +268,58 @@ export default function ChamadosComponent() {
         <div className="h-[1px] bg-neutral-400 mb-4"></div>
         {loading ? (
           <Loading type="skeleton" />
+        ) : filteredData.length === 0 ? (
+          <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+            Nenhum chamado encontrado.
+          </p>
         ) : (
-          /* {users.length === 0 ? ( // Verifica se a lista de usuários está vazia
-              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-                Nenhum usuário encontrado.
-              </p>
-            ) : */
-          <div className="flex flex-col gap-6">
-            {filteredData.map((ticket) => (
-              <ProblemCard
-                key={ticket.chamadoId}
-                id={ticket.chamadoId}
-                title={ticket.title}
-                creator={ticket.solicitor}
-                contact={ticket.address}
-                description={ticket.description}
-                date={ticket.date.split("T")[0]}
-                time={ticket.date.split("T")[1].split(".")[0]}
-              />
-            ))}
-          </div>
+          <>
+            <div className="flex flex-col gap-6">
+              {getPagedData().map((ticket) => (
+                <ProblemCard
+                  key={ticket.chamadoId}
+                  id={ticket.chamadoId}
+                  title={ticket.title}
+                  creator={ticket.solicitor}
+                  contact={ticket.address}
+                  description={ticket.description}
+                  date={ticket.date.split("T")[0]}
+                  time={ticket.date.split("T")[1].split(".")[0]}
+                  status={ticket.open ? "Aberto" : "Fechado"}
+                />
+              ))}
+            </div>
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === 1
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <span className="text-neutral-700">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                className={`px-4 py-2 text-sm font-medium rounded ${
+                  currentPage === totalPages
+                    ? "bg-neutral-300 cursor-not-allowed"
+                    : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                }`}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Próxima
+              </button>
+            </div>
+          </>
         )}
       </section>
     </div>

@@ -16,10 +16,10 @@ namespace Layer.Infrastructure.Database
         // DbSet para Pagamentos
         public DbSet<Payment> Pagamentos { get; set; }
 
-        // DbSet para Usuários        
-        public DbSet<User> Usuarios { get; set; }
 
         public DbSet<Contratos> Contratos { get; set; }
+
+        public DbSet<Rent> Alugueis { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,9 +27,6 @@ namespace Layer.Infrastructure.Database
 
             // Mapeamento para Pagamentos
             modelBuilder.Entity<Payment>().ToTable("pagamentos").HasOne<Contratos>().WithMany().HasForeignKey(p => p.ContratoId);
-
-            // Mapeamento para Usuários
-            modelBuilder.Entity<User>().ToTable("usuarios"); 
         }
     }
 }

@@ -5,7 +5,7 @@ import Voltar from "../../components/Botoes/Voltar";
 import FormField from "../components/Form/FormField";
 import Botao from "../../components/Botoes/Botao";
 import Loading from "../../components/Loading";
-import ModalConfirmacao from "../components/ModalConfirmacao";
+import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 
@@ -15,7 +15,6 @@ export default function Senha() {
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false); // estado para controlar o componente de carregamento
-  const [result, setResult] = useState("");
 
   // Função para exibir o modal
   const showModal = () => {
@@ -43,7 +42,6 @@ export default function Senha() {
 
       console.log(response.data);
 
-      setResult("Senha alterada com sucesso");
       showSuccessToast(
         response?.data?.message || "Senha alterada com sucesso."
       );
@@ -53,7 +51,6 @@ export default function Senha() {
       );
 
       console.error(error?.response?.data?.message || "Erro ao alterar a senha");
-      setResult(error?.response?.data?.message || "Erro ao alterar a senha");
     } finally {
       setLoading(false);
     }
@@ -71,28 +68,28 @@ export default function Senha() {
       <section className="section-custom">
         <Voltar />
 
-        <form className="flex flex-col gap-4 mb-4">
-          <FormField
-            label="Senha Antiga"
-            value={senhaAntiga}
-            onChange={setSenhaAntiga}
-            isPassword
-          />
-          <FormField
-            label="Nova Senha"
-            value={novaSenha}
-            onChange={setNovaSenha}
-            isPassword
-          />
-          <FormField
-            label="Confirmar Nova Senha"
-            value={confirmarSenha}
-            onChange={setConfirmarSenha}
-            isPassword
-          />
-        </form>
-
-        {result && <p>{result}</p>}
+        <div className="w-fulll flex justify-center items-center">
+          <form className="flex flex-col gap-4 mb-4 w-[42rem]">
+            <FormField
+              label="Senha Antiga"
+              value={senhaAntiga}
+              onChange={setSenhaAntiga}
+              isPassword
+            />
+            <FormField
+              label="Nova Senha"
+              value={novaSenha}
+              onChange={setNovaSenha}
+              isPassword
+            />
+            <FormField
+              label="Confirmar Nova Senha"
+              value={confirmarSenha}
+              onChange={setConfirmarSenha}
+              isPassword
+            />
+          </form>
+        </div>
 
         <Botao label="Confirmar" onClick={showModal} />
       </section>

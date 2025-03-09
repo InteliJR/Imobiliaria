@@ -9,6 +9,9 @@ import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { GenericFilterModal } from "../../components/Filter/Filter";
+import { IFilterField } from "../../components/Filter/InputsInterfaces";
+import { IProperty } from "../../components/Filter/PropertyInterfaces.ts";
 
 export default function Properties() {
   const navigate = useNavigate();
@@ -34,7 +37,34 @@ export default function Properties() {
 
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
   const [properties, setProperties] = useState<Property[]>([]);
+
+  const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+
+  // Busca textual
+  const [search, setSearch] = useState("");
+
+  // Controle do modal
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const PropertyFilterFields: IFilterField<IProperty>[] = [
+    {
+      name: "tipoImovel",
+      label: "Tipo de Imóvel",
+      type: "select",
+      options: ["Casa", "Apartamento", "Sala Comercial", "Loja"],
+      property: "propertyType",
+    },
+    { name: "bairro", label: "Bairro", type: "text", property: "neighborhood" },
+    { name: "endereco", label: "Endereço", type: "text", property: "address" },
+    { name: "valorImovel", label: "Valor do Imóvel", type: "number", property: "price" },
+    { name: "condominio", label: "Condomínio", type: "number", property: "condominio" },
+    { name: "locador", label: "Locador", type: "text", property: "landlord" },
+    { name: "locatario", label: "Locatário", type: "text", property: "tenant" },
+
+  ];
+
 
   const fetchProperties = async () => {
     try {
@@ -85,8 +115,8 @@ export default function Properties() {
             landlord: landlord,
             tenant: tenant,
             imageSrc: property.fotos,
-            price: `R$ ${property.valorImovel.toLocaleString("pt-BR")}`,
-            condominio: property.condominio != 0 ? `R$ ${property.condominio}` : "Este imóvel não tem condominio"
+            price: property.valorImovel,
+            condominio: property.condominio != 0 ? property.condominio : "Este imóvel não tem condominio"
           };
         }
       );
@@ -140,6 +170,7 @@ export default function Properties() {
       setProperties(mergedProperties);
       setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
       setFilteredData(mergedProperties);
+      setData(mergedProperties)
       console.log(mergedProperties);
     } catch (error: any) {
       console.error(error);
@@ -148,16 +179,66 @@ export default function Properties() {
   };
 
   useEffect(() => {
+    // Se search estiver vazio, "filteredData" = "advancedFiltered"
+    if (!search.trim()) {
+      setFilteredData(advancedFiltered);
+      return;
+    }
+    const lower = search.toLowerCase();
+    const finalResult = advancedFiltered.filter((property: any) =>
+      property.postalCode?.toLowerCase().includes(lower)
+    );
+    setFilteredData(finalResult);
+  }, [search, advancedFiltered]);
+
+
+  // Abrir modal
+  const openFilterModal = () => {
+    setModalOpen(true);
+  };
+
+  // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
+  const handleFilteredResult = (resultado: any[]) => {
+    // Esse "resultado" já está filtrado pelos campos avançados
+    setAdvancedFiltered(resultado);
+  };
+
+
+  useEffect(() => {
     const fetchData = async () => {
       await fetchProperties();
     }
     fetchData();
   }, []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Número de imóveis por página
+  
+  // Função para calcular os dados paginados
+  const getPagedData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIndex, startIndex + pageSize);
+  };
+  
+  // Total de páginas
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+  
+    // Função de scroll para rolar até o #Target
+  const scrollToTarget = () => {
+    const targetElement = document.querySelector("#Target");
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  // useEffect para acionar o scroll toda vez que a página mudar
+  useEffect(() => {
+    scrollToTarget();
+  }, [currentPage]); // Quando a página mudar, o scroll será acionado
 
   return (
-    <main className="main-custom">
+    <main className="main-custom" id="Target">
       <Navbar />
-
+  
       <section className="section-custom">
         <Voltar />
         <button
@@ -172,66 +253,106 @@ export default function Properties() {
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
               <FormFieldFilter
-                label="Buscar imóvel"
+                label="Buscar imóvel pelo cep"
                 onFilter={(searchTerm) => {
-                  const filtered = properties.filter((property) =>
-                    property.endereco.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    property.bairro.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    property.tipoImovel.toLowerCase().includes(searchTerm.toLowerCase())
-                  );
-                  setFilteredData(filtered);
+                  setSearch(searchTerm);
                 }}
               />
             </div>
             <button
-              type="submit"
+              type="button"
               className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+              onClick={openFilterModal}
             >
               Filtrar
               <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
             </button>
           </div>
         </form>
-
-        {loading ? (
+  
+        <GenericFilterModal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          fields={PropertyFilterFields}
+          data={data}
+          onFilteredResult={handleFilteredResult}
+        />
+  
+  {loading ? (
           <Loading type="skeleton" />
         ) : (
           <section className="flex-grow flex flex-col gap-y-5">
             <h2 className="text-2xl font-semibold">Resultados</h2>
             <div className="h-[1px] bg-black"></div>
-            {loading ? (
-          <Loading type="skeleton" />
-        ) : properties.length === 0 ? (
-          <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
-            Nenhum imóvel encontrado.
-          </p>
-        ) : (
-          <div className="flex flex-col gap-6">
-            {filteredData.map((property) => {
-              return (
-                <Card
-                  key={property.id}
-                  id={property.id}
-                  address={property.address}
-                  neighborhood={property.neighborhood}
-                  postalCode={property.postalCode}
-                  propertyType={property.propertyType}
-                  landlord={property.landlord}
-                  tenant={property.tenant}
-                  price={property.price}
-                  condominio={property.condominio} 
-                  imageSrc={property.imageSrc && property.imageSrc.length > 0 ? property.imageSrc[0] : "../../../public/ImovelSemFoto.png"}
-                  />
-                  
-              );
-            })}
-          </div>
-        )}
+            {properties.length === 0 ? (
+              <p className="text-center text-lg text-neutral-500 mt-8 font-bold">
+                Nenhum imóvel encontrado.
+              </p>
+            ) : (
+              <>
+                <div className="flex flex-col gap-6">
+                  {getPagedData().map((property) => (
+                    <Card
+                      key={property.id}
+                      id={property.id}
+                      address={property.address}
+                      neighborhood={property.neighborhood}
+                      postalCode={property.postalCode}
+                      propertyType={property.propertyType}
+                      landlord={property.landlord}
+                      tenant={property.tenant}
+                      price={`R$ ${property.price}`}
+                      condominio={`R$ ${property.condominio}`}
+                      imageSrc={
+                        property.imageSrc && property.imageSrc.length > 0
+                          ? property.imageSrc[0]
+                          : "../../../ImovelSemFoto.png"
+                      }
+                    />
+                  ))}
+                </div>
+  
+                {/* Paginação */}
+                <div className="flex justify-between items-center mt-6">
+                  <button
+                    className={`px-4 py-2 text-sm font-medium rounded ${
+                      currentPage === 1
+                        ? "bg-neutral-300 cursor-not-allowed"
+                        : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                    }`}
+                    onClick={() => {
+                      setCurrentPage((prev) => Math.max(prev - 1, 1));
+                    }}
+                    disabled={currentPage === 1}
+                  >
+                    Anterior
+                  </button>
+
+                  <span className="text-neutral-700">
+                    Página {currentPage} de {totalPages}
+                  </span>
+
+                  <button
+                    className={`px-4 py-2 text-sm font-medium rounded ${
+                      currentPage === totalPages
+                        ? "bg-neutral-300 cursor-not-allowed"
+                        : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
+                    }`}
+                    onClick={() => {
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                    }}
+                    disabled={currentPage === totalPages}
+                  >
+                    Próxima
+                  </button>
+                </div>
+              </>
+            )}
           </section>
         )}
       </section>
-
+  
       <Footer />
     </main>
   );
-}
+}  

@@ -68,6 +68,7 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
   const handleLogout = () => {
     console.log("sair da conta");
     navigate("/");
+    localStorage.clear();
   };
 
   const redirect = (url: string) => {
@@ -124,6 +125,14 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
                 onClick={() => redirect("/usuarios")}
               >
                 Usuários
+              </button>
+            </li>
+            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
+              <button
+                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
+                onClick={() => redirect("/contratos")}
+              >
+                Contratos
               </button>
             </li>
             <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
@@ -277,14 +286,6 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
                 Imóveis
               </button>
             </li> */}
-            <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
-              <button
-                className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"
-                onClick={() => redirect("/dashboard")}
-              >
-                Dashboard
-              </button>
-            </li>
             {/* <li className="w-full h-16 hover:h-20 hover:bg-[#181716] transition-all duration-300 ease-in-out">
               <button
                 className="w-full h-full h-10 drop-shadow-[0_0px_10px_rgba(255,255,255,.5)]"

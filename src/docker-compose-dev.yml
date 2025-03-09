@@ -1,0 +1,106 @@
+services:
+  auth-service:
+    build:
+      context: ./Auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+    env_file:
+      - ./Auth-service/Layer.Application/.env.development
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    environment:
+      - PORT=5173
+    env_file:
+      - ./frontend/.env
+    container_name: frontend-imob
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: ["npm", "run", "dev", "--host"]
+  # frontend:
+  #  build:
+  #    context: ./frontend
+  #    target: dev
+  #    dockerfile: Dockerfile
+  #  ports:
+  #    - "5173:5173"
+  #    volumes:
+  #     - .:app
+  #     - /app/node_modules
+  #  environment:
+  #   - NODE_ENV=dev
+  #  networks:
+  #    - app-network
+     
+  mongodb:
+    build:
+        context: ./logging-mongodb
+        dockerfile: Dockerfile
+    container_name: mongodb-auth
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./logging-mongodb/.env  # Certifique-se de que o .env está em UTF-8 sem BOM
+    networks:
+      - app-network
+    command: ["--auth"]
+  
+  property-service:
+    build:
+      context: ./Property-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8083
+    env_file:
+      - ./Property-service/Layer.Application/.env.development
+    networks:
+      - app-network
+
+  payment-service:
+    build:
+      context: ./Payment-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8082
+    env_file:
+      - ./Payment-service/Layer.Application/.env.development
+    networks:
+      - app-network
+
+  gateway:
+    build: 
+      context: ./Gateway
+      dockerfile: DockerfileDev
+    ports:
+      - "8093:8093"
+      - "8094:8094"
+    depends_on:
+      - auth-service
+      - property-service
+      - payment-service
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+networks:
+  app-network:
+    driver: bridge

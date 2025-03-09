@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Layer.Infrastructure.Database;
 using System.Security.Claims;
+using Layer.Infrastructure.ExternalAPIs;
+using Newtonsoft.Json;
+using System;
 
 namespace Layer.Application.Controllers
 {
@@ -18,12 +21,15 @@ namespace Layer.Application.Controllers
         // Chamar o serviço de usuário e o serviço de log
         private readonly IimoveisRepository _imoveisService;
         private readonly ApplicationLog _applicationLog;
+        private readonly IUsersAPI _usersAPI;
+
 
         // Construtor
-        public ImoveisController(IimoveisRepository imovelService, ApplicationLog applicationLog)
+        public ImoveisController(IimoveisRepository imovelService, ApplicationLog applicationLog, IUsersAPI usersAPI)
         {
             _imoveisService = imovelService;
             _applicationLog = applicationLog;
+            _usersAPI = usersAPI;
         }
 
         // Rota de pegar todos os imóveis
@@ -69,12 +75,12 @@ namespace Layer.Application.Controllers
             // Verificar acesso com base no RoleID
             if (userRole == nameof(Roles.Locador) && imovel.LocadorId.ToString() != roleId)
             {
-                return Forbid("Acesso negado: você não é o locador deste imóvel.");
+                return Unauthorized("Acesso negado: você não é o locador deste imóvel.");
             }
 
             if (userRole == nameof(Roles.Locatario) && imovel.LocatarioId.ToString() != roleId)
             {
-                return Forbid("Acesso negado: você não é o locatário deste imóvel.");
+                return Unauthorized("Acesso negado: você não é o locatário deste imóvel.");
             }
 
             // Caso o usuário tenha permissão, retornar o imóvel
@@ -96,7 +102,7 @@ namespace Layer.Application.Controllers
             {
                 TipoImovel = newImovel.TipoImovel,
                 Cep = newImovel.Cep,
-                Condominio = newImovel.Condominio,
+                Condominio = newImovel.Condominio ?? 0.0,
                 ValorImovel = newImovel.ValorImovel,
                 Bairro = newImovel.Bairro,
                 Descricao = newImovel.Descricao,
@@ -131,7 +137,7 @@ namespace Layer.Application.Controllers
 
             imovel.TipoImovel = updatedImovel.TipoImovel;
             imovel.Cep = updatedImovel.Cep;
-            imovel.Condominio = updatedImovel.Condominio;
+            imovel.Condominio = updatedImovel.Condominio ?? 0.0;
             imovel.ValorImovel = updatedImovel.ValorImovel;
             imovel.Bairro = updatedImovel.Bairro;
             imovel.Descricao = updatedImovel.Descricao;
@@ -163,24 +169,157 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> GetImovelByIdDoLocador(int locadorId)
         {
-            var imovel = await _imoveisService.GetImoveisByIdLocador(locadorId);
-            if (imovel == null)
+            // Busca os imóveis do locador
+            var imoveis = await _imoveisService.GetImoveisByIdLocador(locadorId);
+            if (imoveis == null || !imoveis.Any())
             {
-                return NotFound();
+                return NotFound("Nenhum imóvel encontrado.");
             }
-            return Ok(imovel);
+
+            Console.WriteLine($"Imóveis encontrados: {imoveis.Count()}");
+
+            var imovelInfos = new List<ImovelInfo>();
+
+            foreach (var imovel in imoveis)
+            {
+                UserInfo locadorInfo = null;
+                UserInfo locatarioInfo = null;
+
+                try
+                {
+                    // Chamar o serviço que conecta com o serviço de usuários
+                    locadorInfo = await GetUserInfo(imovel.LocadorId.ToString(), "Locador");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter informações do LocadorId {imovel.LocadorId}: {ex.Message}");
+                }
+
+                try
+                {
+                    locatarioInfo = await GetUserInfo(imovel.LocatarioId.ToString(), "Locatario");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter informações do LocatarioId {imovel.LocatarioId}: {ex.Message}");
+                }
+
+                imovelInfos.Add(new ImovelInfo
+                {
+                    ImovelId = imovel.ImovelId,
+                    Fotos = imovel.Fotos,
+                    TipoImovel = imovel.TipoImovel,
+                    Cep = imovel.Cep,
+                    Condominio = imovel.Condominio ?? 0.0,
+                    ValorImovel = imovel.ValorImovel,
+                    Bairro = imovel.Bairro,
+                    Descricao = imovel.Descricao,
+                    Endereco = imovel.Endereco,
+                    Complemento = imovel.Complemento,
+                    NomeLocador = locadorInfo?.Nome,
+                    NomeLocatario = locatarioInfo?.Nome
+                });
+            }
+
+            return Ok(imovelInfos);
         }
+
+        // Metodo legal para pegar informações do usuário lá no auth-service
+        private async Task<UserInfo> GetUserInfo(string userId, string role)
+        {
+            var endpoint = "";
+
+            if(role == "Locador")
+            {
+                endpoint = $"/User/infoLocador/{userId}";
+            }
+            else if(role == "Locatario")
+            {
+                endpoint = $"/User/infoLocatario/{userId}";
+            }
+            else{
+                return null;
+            }
+
+            // Console.WriteLine($"Buscando informações do usuário com ID {userId}...");
+
+            try
+            {
+                // Faz a requisição ao serviço de usuários
+                var response = await _usersAPI.SendHMACRequestQueryAsync(endpoint, userId);
+
+                // Console.WriteLine($"Resposta do servidor: {response}");
+
+                // Desserializa o JSON na classe UserInfo
+                var userInfo = JsonConvert.DeserializeObject<UserInfo>(response);
+
+                return userInfo;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao buscar informações do usuário: {ex.Message}");
+                return null;
+            }
+        }
+
 
         [HttpGet("PegarImovelPorIdDoLocatario/{locatarioId}")]
         [Authorize(Policy = "AllRoles")]
         public async Task<IActionResult> GetImovelByIdDoLocatario(int locatarioId)
         {
-            var imovel = await _imoveisService.GetImoveisByIdLocatario(locatarioId);
-            if (imovel == null)
+            // Busca os imóveis do locador
+            var imoveis = await _imoveisService.GetImoveisByIdLocatario(locatarioId);
+            if (imoveis == null || !imoveis.Any())
             {
-                return NotFound();
+                return NotFound("Nenhum imóvel encontrado.");
             }
-            return Ok(imovel);
+
+            Console.WriteLine($"Imóveis encontrados: {imoveis.Count()}");
+
+            // Cria tarefas para buscar as informações do locador
+            var imovelInfos = new List<ImovelInfo>();
+
+            foreach (var imovel in imoveis)
+            {
+                UserInfo locadorInfo = null;
+                UserInfo locatarioInfo = null;
+
+                try
+                {
+                    locadorInfo = await GetUserInfo(imovel.LocadorId.ToString(), "Locador");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter informações do LocadorId {imovel.LocadorId}: {ex.Message}");
+                }
+
+                try
+                {
+                    locatarioInfo = await GetUserInfo(imovel.LocatarioId.ToString(), "Locatario");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter informações do LocatarioId {imovel.LocatarioId}: {ex.Message}");
+                }
+
+                imovelInfos.Add(new ImovelInfo
+                {
+                    ImovelId = imovel.ImovelId,
+                    Fotos = imovel.Fotos,
+                    TipoImovel = imovel.TipoImovel,
+                    Cep = imovel.Cep,
+                    Condominio = imovel.Condominio ?? 0.0,
+                    ValorImovel = imovel.ValorImovel,
+                    Bairro = imovel.Bairro,
+                    Descricao = imovel.Descricao,
+                    Endereco = imovel.Endereco,
+                    Complemento = imovel.Complemento,
+                    NomeLocador = locadorInfo?.Nome,
+                    NomeLocatario = locatarioInfo?.Nome
+                });
+            }
+
+            return Ok(imovelInfos);
         }
 
 
@@ -205,16 +344,11 @@ namespace Layer.Application.Controllers
         [HttpPost("CriarImovelComFoto")]
         // [Consumes("multipart/form-data")]
         [Authorize(Policy = nameof(Roles.Admin))]
-        public async Task<IActionResult> PostImoveisWithPhoto([FromForm] NewImoveis newImovel, [FromForm] IFormFileCollection files)
+        public async Task<IActionResult> PostImoveisWithPhoto([FromForm] NewImoveis newImovel, [FromForm] IFormFileCollection? files)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (files == null || files.Count == 0)
-            {
-                return BadRequest("Nenhum arquivo foi enviado.");
             }
 
             // Criar o imóvel com o caminho da foto
@@ -222,7 +356,7 @@ namespace Layer.Application.Controllers
             {
                 TipoImovel = newImovel.TipoImovel,
                 Cep = newImovel.Cep,
-                Condominio = newImovel.Condominio,
+                Condominio = newImovel.Condominio ?? 0.0,
                 ValorImovel = newImovel.ValorImovel,
                 Bairro = newImovel.Bairro,
                 Descricao = newImovel.Descricao,
@@ -260,7 +394,7 @@ namespace Layer.Application.Controllers
         [HttpPost("AdicionarFotos/{id}")]
         [Consumes("multipart/form-data")]
         [Authorize (Policy = "AllRoles")]
-        public async Task<IActionResult> AddImovelPhotos(int id, IFormFileCollection files)
+        public async Task<IActionResult> AddImovelPhotos(int id, IFormFileCollection? files)
         {
             var urls = await _imoveisService.AddImovelPhotosAsync(id, files);
             return Ok(urls);

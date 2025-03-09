@@ -9,6 +9,8 @@ import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import getTokenData from "../../services/tokenConfig";
+import { GenericFilterModal } from "../../components/Filter/Filter";
+import { IFilterField } from "../../components/Filter/InputsInterfaces";
 
 export default function LocatarioPage() {
   const navigate = useNavigate();
@@ -24,13 +26,45 @@ export default function LocatarioPage() {
     endereco: string;
     complemento: string;
     fotos: string | string[];
+    nomeLocador: string;
+    nomeLocatario: string;
     onClick: () => void;
   }
 
-  const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState<Property[]>([]);
+  const [data, setData] = useState<any[]>([]);
+  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+
+  // Busca textual
+  const [search, setSearch] = useState("");
+  // Controle do modal
+  const [isModalOpen, setModalOpen] = useState(false);
+
   // const [roleId, setRoleId] = useState<number | null>(null);
+
+  const PropertyFilterFields: IFilterField<Property>[] = [
+    {
+      name: "tipoImovel",
+      label: "Tipo de Imóvel",
+      type: "select",
+      options: ["Casa", "Apartamento", "Sala Comercial", "Loja"],
+      property: "tipoImovel",
+    },
+    {
+      name: "bairro",
+      label: "Bairro",
+      type: "text",
+      property: "bairro",
+    },
+    {
+      name: "endereco",
+      label: "Endereço",
+      type: "text",
+      property: "endereco",
+    },
+    { name: "valorImovel", label: "Valor do Imóvel", type: "number", property: "valorImovel" },
+  ];
 
   const tokenData = getTokenData();
   const roleID = tokenData.RoleID;
@@ -89,13 +123,14 @@ export default function LocatarioPage() {
             property.fotos = signedPhotos.slice(offset, offset + count); // Atualiza com URLs assinadas
             offset += count; // Atualiza o offset
           } else {
-            property.fotos = ["../../../public/ImovelSemFoto.png"]; // Define imagem padrão caso não existam fotos
+            property.fotos = ["../../../ImovelSemFoto.png"]; // Define imagem padrão caso não existam fotos
           }
         });
         
 
-        setProperties(imoveisData);
         setFilteredData(imoveisData);
+        setAdvancedFiltered(imoveisData);
+        setData(imoveisData);
       } catch (error: any) {
         console.error(error);
         showErrorToast(
@@ -109,6 +144,32 @@ export default function LocatarioPage() {
     fetchPropertiesForLocatario();
   }, [roleID]);
 
+
+  useEffect(() => {
+    // Se search estiver vazio, "filteredData" = "advancedFiltered"
+    if (!search.trim()) {
+      setFilteredData(advancedFiltered);
+      return;
+    }
+    const lower = search.toLowerCase();
+    const finalResult = advancedFiltered.filter((property: any) =>
+      property.cep?.toLowerCase().includes(lower)
+    );
+    setFilteredData(finalResult);
+  }, [search, advancedFiltered]);
+
+  // Abrir modal
+  const openFilterModal = () => {
+    setModalOpen(true);
+  };
+
+  // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
+  const handleFilteredResult = (resultado: any[]) => {
+    // Esse "resultado" já está filtrado pelos campos avançados
+    setAdvancedFiltered(resultado);
+  };
+
+
   return (
     <main className="main-custom">
       <Navbar />
@@ -118,27 +179,32 @@ export default function LocatarioPage() {
         <form className="grid grid-cols-1 gap-4">
           <div className="flex w-full gap-2 items-end">
             <div className="w-full">
-              <FormFieldFilter
-                label="Buscar imóvel"
-                onFilter={(searchTerm) => {
-                  const filtered = properties.filter((property) =>
-                    property.endereco.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    property.bairro.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    property.tipoImovel.toLowerCase().includes(searchTerm.toLowerCase())
-                  );
-                  setFilteredData(filtered);
-                }}
-              />
+            <FormFieldFilter
+              label="Buscar pelo cep"
+              onFilter={(searchTerm) => {
+                // Apenas guardamos em search
+                setSearch(searchTerm);
+              }}
+            />
             </div>
             <button
-              type="submit"
+              type="button"
               className="flex items-center justify-center gap-2 w-1/4 h-10 px-4 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
+              onClick={openFilterModal}
             >
               Filtrar
               <img src={FilterIcon} alt="Filtrar" className="w-5 h-5" />
             </button>
           </div>
         </form>
+
+        <GenericFilterModal
+            isOpen={isModalOpen}
+            onClose={() => setModalOpen(false)}
+            fields={PropertyFilterFields}
+            data={data}
+            onFilteredResult={handleFilteredResult}
+        />
 
         {loading ? (
           <Loading type="skeleton" />
@@ -160,11 +226,11 @@ export default function LocatarioPage() {
                     neighborhood={property.bairro}
                     address={property.endereco}
                     postalCode={property.cep}
-                    landlord="Proprietário Desconhecido"
+                    landlord={property.nomeLocador}
                     tenant="Você"
-                    imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../public/ImovelSemFoto.png"}
-                    price={`R$${property.valorImovel.toFixed(2)}`}
-                    condominio={property.condominio?.toString() ?? "0"}
+                    imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../ImovelSemFoto.png"}
+                    price={`R$ ${property.valorImovel.toFixed(2)}`}
+                    condominio={`R$ ${property.condominio?.toString() ?? "R$ 0"}`}
                     onClick={() => navigate(`/imovel/${property.imovelId}`)}
                   />
                 ))}

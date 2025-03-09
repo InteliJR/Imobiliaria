@@ -6,7 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Layer.Domain.Interfaces;
+using Layer.Domain.DTO;
+using Layer.Infrastructure.ServicesInternal;
 using Layer.Domain.Entities;
+using Newtonsoft.Json;
 
 namespace Layer.Services.Services
 {
@@ -14,11 +17,13 @@ namespace Layer.Services.Services
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<PaymentReminderService> _logger;
+        private readonly IUsersAPI _usersAPI;
 
-        public PaymentReminderService(IServiceProvider serviceProvider, ILogger<PaymentReminderService> logger)
+        public PaymentReminderService(IServiceProvider serviceProvider, ILogger<PaymentReminderService> logger, IUsersAPI usersAPI)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
+            _usersAPI = usersAPI;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -34,31 +39,77 @@ namespace Layer.Services.Services
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var paymentService = scope.ServiceProvider.GetRequiredService<IPaymentService>();
                 var emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
+                var rentService = scope.ServiceProvider.GetRequiredService<IRentService>();
 
-                // Obter a data de vencimento para daqui a 5 dias
-                var reminderDate = DateTime.Now.Date.AddDays(5);
+                // Buscar os pagamentos com vencimento em até 5 dias
+                var payments = await rentService.GetAlugueisQueVencemEmXdias(5);
 
-                // Buscar os pagamentos que vencem em 5 dias
-                var paymentsDueSoon = await paymentService.GetPaymentsDueByDateAsync(reminderDate);
-
-                foreach (var payment in paymentsDueSoon)
+                foreach (var payment in payments)
                 {
+                    var locatarioInfos = await GetUserInfo(payment.LocatarioId.ToString(), "Locatario");
+
+                    if(locatarioInfos == null){
+                        _logger.LogError($"Erro ao buscar informações do locatário com ID {payment.LocatarioId}");
+                        continue;
+                    }
+
                     if (stoppingToken.IsCancellationRequested) break;
 
-                    var subject = "Lembrete: Pagamento do Boleto Prestes a Vencer";
-                    var body = $@"
+                    string subject;
+                    string body;
+
+                    subject = "Lembrete: Pagamento do Boleto Prestes a Vencer";
+                    body = $@"
                         <h1>Lembrete de Pagamento</h1>
-                        <p>Prezado(a) {payment.Pagante},</p>
-                        <p>Este é um lembrete de que o seu boleto com o valor de <strong>{payment.Valor:C}</strong> está prestes a vencer.</p>
-                        <p>Data de Vencimento: {payment.Data:dd/MM/yyyy}</p>
+                        <p>Prezado(a) {locatarioInfos.Nome},</p>
+                        <p>Este é um lembrete de que o seu boleto com o valor de <strong>R${payment.ValorAluguel:C}</strong> do mês {payment.Mes} está prestes a vencer.</p>
+                        <p>Data de Vencimento: {payment.DataPagamento:dd/MM/yyyy}</p>
                         <p>Favor realizar o pagamento o mais breve possível para evitar quaisquer penalidades.</p>
                         <p>Atenciosamente,<br/>Equipe KK Imobiliária</p>";
 
-                    await emailSender.SendEmailAsync(payment.Pagante, subject, body);
-                    _logger.LogInformation($"Lembrete de pagamento enviado para {payment.Pagante} para o pagamento ID {payment.PaymentId}");
+
+                    // Enviar o email
+                    await emailSender.SendEmailAsync(locatarioInfos.Email, subject, body);
+                    _logger.LogInformation($"Email enviado para {locatarioInfos.Email} sobre o aluguel {payment.AluguelId} que está próximo do vencimento.");
                 }
+            }
+        }
+
+        private async Task<UserInfoDTO> GetUserInfo(string userId, string role)
+        {
+            var endpoint = "";
+
+            if(role == "Locador")
+            {
+                endpoint = $"/User/infoLocador/{userId}";
+            }
+            else if(role == "Locatario")
+            {
+                endpoint = $"/User/infoLocatario/{userId}";
+            }
+            else{
+                return null;
+            }
+
+            // Console.WriteLine($"Buscando informações do usuário com ID {userId}...");
+
+            try
+            {
+                // Faz a requisição ao serviço de usuários
+                var response = await _usersAPI.SendHMACRequestQueryAsync(endpoint, userId);
+
+                // Console.WriteLine($"Resposta do servidor: {response}");
+
+                // Desserializa o JSON na classe UserInfo
+                var userInfo = JsonConvert.DeserializeObject<UserInfoDTO>(response);
+
+                return userInfo;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao buscar informações do usuário: {ex.Message}");
+                return null;
             }
         }
     }

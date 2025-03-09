@@ -24,7 +24,7 @@ var env = builder.Environment.EnvironmentName;
 
 if (env == "Development")
 {
-    Env.Load(".env.development");
+    Env.Load("etc/secrets/.env.development");
 }
 else if (env == "Production")
 {
@@ -76,24 +76,24 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                 maxRetryCount: 5,
                 maxRetryDelay: TimeSpan.FromSeconds(30),
                 errorCodesToAdd: null);
-            npgsqlOptions.CommandTimeout(30); // Timeout de 30 segundos
+            npgsqlOptions.CommandTimeout(60); // Timeout de 30 segundos
         })
-    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
+    // .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Desabilitar rastreamento de mudanças para melhorar a performance
 );
 
 // Configurar HangFire
 
-builder.Services.AddHangfire(config =>
-{
-    config.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new Hangfire.PostgreSql.PostgreSqlStorageOptions
-    {
-        InvisibilityTimeout = TimeSpan.FromMinutes(5),
-        QueuePollInterval = TimeSpan.FromSeconds(15),
-        DistributedLockTimeout = TimeSpan.FromMinutes(10),
-    });
-});
+// builder.Services.AddHangfire(config =>
+// {
+//     config.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new Hangfire.PostgreSql.PostgreSqlStorageOptions
+//     {
+//         InvisibilityTimeout = TimeSpan.FromMinutes(10),
+//         QueuePollInterval = TimeSpan.FromSeconds(10),
+//         DistributedLockTimeout = TimeSpan.FromMinutes(5),
+//     });
+// });
 
-builder.Services.AddHangfireServer();
+// builder.Services.AddHangfireServer();
 
 /*builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 */
@@ -108,6 +108,7 @@ builder.Services.AddScoped<ILocatarioService, LocatarioService>();
 builder.Services.AddScoped<IColaboradorService, ColaboradorService>();
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 builder.Services.AddScoped<IHashingPasswordService, HashingPasswordService>();
+builder.Services.AddScoped<IHmacService, HmacService>();
 builder.Services.AddScoped<ApplicationLog>();
 
 // Configura JWT settings
@@ -200,7 +201,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
         {
-            policy.WithOrigins("http://localhost:5173", "https://frontend-ajbn.onrender.com") // Substitua pelos domínios específicos que você deseja permitir
+            policy.WithOrigins("*", "http://localhost:5173", "https://frontend-ajbn.onrender.com") // Substitua pelos domínios específicos que você deseja permitir
                   .AllowCredentials()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
@@ -228,17 +229,17 @@ if (app.Environment.IsDevelopment())
 
 // Configurar o HangFire na aplicacao
 
-app.UseHangfireDashboard("/hangfire", new DashboardOptions
-{
-    Authorization = null // Temporariamente desabilitar autenticação para teste
-});
-app.UseHangfireServer();
+// app.UseHangfireDashboard("/hangfire", new DashboardOptions
+// {
+//     Authorization = null // Temporariamente desabilitar autenticação para teste
+// });
+// app.UseHangfireServer();
 
-RecurringJob.AddOrUpdate<HangfireJobsHelper>(
-    "verificar-usuarios-inativos",
-    x => x.VerificarUsuariosInativos(),
-    Cron.DayInterval(15));
-//Cron.Minutely);
+// RecurringJob.AddOrUpdate<HangfireJobsHelper>(
+//     "verificar-usuarios-inativos",
+//     x => x.VerificarUsuariosInativos(),
+//     Cron.DayInterval(15));
+// //Cron.Minutely);
 
 // Se tiver em prod pular isso
 
