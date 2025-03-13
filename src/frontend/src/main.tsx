@@ -83,6 +83,7 @@ const Root = () => {
           }
         />
 
+          {/* Página de Lista Aluguéis */}
         <Route
           path="/alugueis"
           element={
@@ -279,6 +280,8 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Tela de visualizar alugueis por imovel */}
         <Route
           path="/visualizar/alugueis/:id"
           element={

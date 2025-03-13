@@ -129,7 +129,7 @@ export default function AlugueisImovel() {
         >
           <span className="absolute inset-0 -m-2 bg-neutral-400 z-0 scale-0 group-hover:scale-100 transition-transform"></span>
           <FaMoneyBillTrendUp className="z-10" />
-          <span className="z-10 font-bold">Pagamentos</span>
+          <span className="z-10">Pagamentos</span>
         </button>
 
         <button

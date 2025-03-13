@@ -54,7 +54,7 @@ export default function VisualizarContratos() {
         >
           <span className="absolute inset-0 -m-2 bg-neutral-400 z-0 scale-0 group-hover:scale-100 transition-transform"></span>
           <FaFileInvoiceDollar className="z-10" />
-          <span className="z-10 font-bold">Aluguéis</span>
+          <span className="z-10">Aluguéis</span>
         </button>
         <button
           className="relative group flex items-center gap-2 px-4 py-2 text-neutral-800 rounded-md overflow-hidden"
