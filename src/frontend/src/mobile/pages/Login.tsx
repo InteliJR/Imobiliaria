@@ -103,7 +103,7 @@ export default function Login() {
                 placeholder="Email"
                 label="Email:"
                 value={email}
-                onChange={(val) => setEmail(val)}
+                onChange={(val) => setEmail(val.trim())}
                 disabled={false}
               />
             </div>
@@ -113,7 +113,7 @@ export default function Login() {
                 label="Senha:"
                 isPassword={true}
                 value={senha}
-                onChange={(val) => setSenha(val)}
+                onChange={(val) => setSenha(val.trim())}
                 disabled={false}
               />
             </div>

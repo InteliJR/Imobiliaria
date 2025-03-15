@@ -126,7 +126,7 @@ export default function Login() {
                 placeholder="Email"
                 label="Email:"
                 value={email}
-                onChange={setEmail}
+                onChange={(email) => {setEmail(email.trim())}}
               />
             </div>
             <div className="mb-10">
@@ -134,7 +134,7 @@ export default function Login() {
                 placeholder="Senha"
                 label="Senha:"
                 value={senha}
-                onChange={setSenha}
+                onChange={(senha) => {setSenha(senha.trim())}}
                 isPassword={true}
               />
             </div>
