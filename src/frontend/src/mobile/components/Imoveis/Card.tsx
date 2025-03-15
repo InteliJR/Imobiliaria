@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface CardProps {
   id: number;
@@ -11,7 +12,6 @@ interface CardProps {
   imageSrc: string;
   price: string;
   condominio: string;
-  onClick?: () => void;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -25,18 +25,21 @@ const Card: React.FC<CardProps> = ({
   imageSrc,
   price,
   condominio,
-  onClick,
 }) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/imovel/${id}`)
+  }
   return (
     <div>
       {/* Make the container clickable by adding onClick and cursor-pointer */}
       <div
         className="flex flex-col sm:flex-row sm:space-x-4 shadow-md rounded-md overflow-hidden cursor-pointer"
-        onClick={onClick}
+        onClick={handleClick}
         role="button"
         tabIndex={0} // optional for accessibility
         onKeyDown={(e) => {
-          if (e.key === 'Enter' && onClick) onClick();
+          if (e.key === 'Enter' && handleClick) handleClick();
         }}
       >
         {/* Imagem do Card */}
