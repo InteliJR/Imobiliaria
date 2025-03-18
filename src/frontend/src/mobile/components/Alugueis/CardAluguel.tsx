@@ -10,11 +10,11 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({
-  aluguelId,
+  // aluguelId,
   title,
   line1,
   line2,
-  line3,
+  // line3,
   status,
 }) => {
 

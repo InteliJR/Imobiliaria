@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Imoveis/Card";
@@ -13,7 +12,6 @@ import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
 
 export default function LocatarioPage() {
-  const navigate = useNavigate();
 
   interface Property {
     imovelId: number;
@@ -28,7 +26,6 @@ export default function LocatarioPage() {
     fotos: string | string[];
     nomeLocador: string;
     nomeLocatario: string;
-    onClick: () => void;
   }
 
   const [loading, setLoading] = useState(true);
@@ -231,7 +228,6 @@ export default function LocatarioPage() {
                     imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../ImovelSemFoto.png"}
                     price={`R$ ${property.valorImovel.toFixed(2)}`}
                     condominio={`R$ ${property.condominio?.toString() ?? "R$ 0"}`}
-                    onClick={() => navigate(`/imovel/${property.imovelId}`)}
                   />
                 ))}
               </div>
