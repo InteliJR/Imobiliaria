@@ -23,7 +23,24 @@ services:
   #    - app-network
   #  depends_on:
   #    - auth-service
-     
+
+  frontend:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+        target: dev
+      environment:
+        - PORT=5173
+      env_file:
+        - ./frontend/.env
+      container_name: frontend-imob
+      volumes:
+        - ./frontend:/app
+        - /app/node_modules
+      ports:
+        - "5173:5173"
+      command: ["npm", "run", "dev", "--host"]
+      
   mongodb:
     build:
         context: ./logging-mongodb
