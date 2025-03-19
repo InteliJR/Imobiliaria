@@ -275,7 +275,7 @@ namespace Layer.Services.Services
 
             try
             {
-                if (file != null)
+                if (file != null && file.Any())
                 {
                     var tempFilePath = Path.GetTempFileName();
                     using (var stream = new FileStream(tempFilePath, FileMode.Create))

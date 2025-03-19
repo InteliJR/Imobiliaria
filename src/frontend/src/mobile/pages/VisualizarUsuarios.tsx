@@ -11,7 +11,6 @@ import axiosInstance from "../../services/axiosConfig";
 import { IUser } from "../../components/Filter/UserInterfaces";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
 import { GenericFilterModal } from "../../components/Filter/Filter";  
-import { useNavigate } from "react-router-dom";
 
 export default function Users() {
   const [data, setData] = useState<any[]>([]);
@@ -20,7 +19,6 @@ export default function Users() {
 
   const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
 
-  const navigate = useNavigate();
 
   // Busca textual
   const [search, setSearch] = useState("");
@@ -182,7 +180,6 @@ export default function Users() {
         <button
           type="submit"
           className="w-full h-10 bg-[#1F1E1C] text-neutral-50 text-form-label rounded"
-          onClick={() => navigate("/usuarios/criar")}
         >
           Adicionar usuário
         </button>
