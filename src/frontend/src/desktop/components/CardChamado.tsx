@@ -32,6 +32,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
   return (
     <div
       className="w-full flex flex-col border border-neutral-300 rounded shadow-md p-4 bg-white cursor-pointer transition-transform hover:shadow-lg hover:scale-[1.005] duration-300 ease-in-out"
+      onClick={handleClick}
     >
       {/* Header Section */}
       <div className="flex justify-between items-start mb-4">
@@ -58,7 +59,6 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
       {/* Button */}
       <div className="flex justify-start">
         <button
-          onClick={handleClick}
           className="px-4 py-2 text-sm font-medium text-neutral-800 border border-neutral-800 rounded-md hover:bg-neutral-800 hover:text-white transition-colors"
         >
           Visualizar detalhes

@@ -18,6 +18,7 @@ import VisualizarChamados from "./desktop/pages/VisualizarChamados";
 import VisualizarUsuarios from "./desktop/pages/VisualizarUsuarios";
 import Contratos from "./desktop/pages/VisualizarContratos";
 import VisualizarAlugueis from "./desktop/pages/VisualizarAlugueis";
+import DetalhesChamado from "./desktop/pages/DetalhesChamado";
 
 // Import mobile components and pages
 import LandingMobile from "./mobile/pages/Landing";
@@ -29,7 +30,6 @@ import AlterarSenha from "./mobile/pages/AlterarSenha";
 import VisualizarImoveisMobile from "./mobile/pages/VisualizarImoveis";
 import CreateProperty from "./desktop/pages/CreateProperty";
 import VisualizarChamadosMobile from "./mobile/pages/VisualizarChamados";
-import Chamado from "./mobile/pages/Chamado";
 import VisualizarUsuariosMobile from "./mobile/pages/VisualizarUsuarios";
 import CreateUser from "./desktop/pages/CreateUser";
 import CreateTicket from "./desktop/pages/CreateTicket";
@@ -49,6 +49,9 @@ import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
 import ImovelByIdAdm from "./mobile/pages/Imovel-adm";
+import DetalhesChamadoMobile from "./mobile/pages/DetalhesChamado";
+import VisualizarChamadosTeste from "./desktop/pages/VisualizarChamadosTeste";
+import VisualizarChamadosTesteMobile from "./mobile/pages/VisualizarChamadosTeste";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -113,8 +116,8 @@ const Root = () => {
         <Route
           path="/chamado/:id"
           element={
-            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-               <Chamado/>
+            <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
+              {isDesktop ? <DetalhesChamado /> : <DetalhesChamadoMobile />}
             </ProtectedRoute>
           }
         />
@@ -277,6 +280,14 @@ const Root = () => {
           }
         />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
+        <Route
+          path="/chamados-teste"
+          element={
+            <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
+              {isDesktop ? <VisualizarChamadosTeste /> : <VisualizarChamadosTesteMobile />}
+            </ProtectedRoute>
+          }
+        />
       </Routes>
 
       <ToastContainer />
