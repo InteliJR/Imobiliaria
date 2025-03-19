@@ -323,7 +323,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             <option value="">Selecione um locador</option>
             {lessors?.map((locador: any) => (
               <option key={locador.locadorId} value={locador.locadorId}>
-                {locador.nomeCompletoLocador || locador.locadorId}
+                {locador.nomeCompletoLessor || locador.locadorId}
               </option>
             ))}
           </select>
@@ -341,7 +341,7 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             <option value="">Selecione um locatário</option>
             {renters?.map((locatario: any) => (
               <option key={locatario.locatarioId} value={locatario.locatarioId}>
-                {locatario.nomeCompletoLocatario || locatario.locatarioId}
+                {locatario.nomeCompletoRenter || locatario.locatarioId}
               </option>
             ))}
           </select>

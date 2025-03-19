@@ -1,38 +1,19 @@
-import { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import Loading from "../../../components/Loading";
-import axiosInstance from "../../../services/axiosConfig"; // Certifique-se de que esse caminho está correto
+import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend } from "chart.js";
+import { useState, useEffect } from "react";
+import axiosInstance from "../../../services/axiosConfig";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
 
 export default function LineChart() {
   const [loading, setLoading] = useState(true);
-  const [paymentData, setPaymentData] = useState<any>(null);
-  const [chartKey, setChartKey] = useState(0); // Estado para forçar re-renderização com uma chave
+  const [paymentData, setPaymentData] = useState<any>(null); // Dados de pagamentos
 
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get("payment/Payment/listar-pagamentos");
 
-      // Verificar se os dados da API são válidos
+      // Se não houver dados, retornamos
       if (!response.data) {
         console.error("Dados de resposta inválidos");
         return;
@@ -59,47 +40,39 @@ export default function LineChart() {
       const values = labels.map(date => dataMap[date]);
 
       setPaymentData({ labels, values });
-      setLoading(false);
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData(); // Carregar os dados reais da API
+    fetchData();
   }, []);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setChartKey(prevKey => prevKey + 1); // Alterando a chave a cada redimensionamento para forçar re-renderização
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []); // Escuta redimensionamento sem afetar os dados
-
+  // Verifica se os dados estão carregados
   if (loading || !paymentData) {
-    return <Loading type="box" boxHeight={200} />;
+    return <div>Carregando...</div>;
   }
 
+  // Dados para o gráfico de linha
   const lineChartData = {
     labels: paymentData.labels,
     datasets: [
       {
         label: "Distribuição de Pagamentos",
         data: paymentData.values,
-        borderColor: "#4CAF50", // Cor da linha
-        backgroundColor: "rgba(76, 175, 80, 0.2)", // Cor de fundo da área abaixo da linha
-        fill: true, // Preenche a área abaixo da linha
-        tension: 0.3, // Suaviza a curva da linha
+        borderColor: "#4CAF50",  // Cor da linha
+        backgroundColor: "rgba(76, 175, 80, 0.2)",  // Cor de fundo da área abaixo da linha
+        fill: true,  // Preenche a área abaixo da linha
+        tension: 0.3,  // Suaviza a curva da linha
       },
     ],
   };
 
-  const chartOptions = {
+  const chartOptions:any = {
     responsive: true,
-    maintainAspectRatio: true, // Permite o redimensionamento
     plugins: {
       title: {
         display: true,
@@ -108,6 +81,7 @@ export default function LineChart() {
     },
     scales: {
       x: {
+        type: "category",  // Tipo de eixo X como categoria
         title: {
           display: true,
           text: "Data",
@@ -124,9 +98,13 @@ export default function LineChart() {
   };
 
   return (
-    <div className="w-full lg:w-1/2">
-      {/* Passando a chave para forçar o re-render */}
-      <Line key={chartKey} data={lineChartData} options={chartOptions} />
+    <div className="flex flex-col gap-y-5 min-h-screen">
+      <main className="px-4 gap-y-5 mt-4 flex flex-1 flex-col">
+        {/* Gráfico de linha */}
+        <div className="w-full h-[300px] md:h-[400px]">
+          <Line data={lineChartData} options={chartOptions} />
+        </div>
+      </main>
     </div>
   );
 }
