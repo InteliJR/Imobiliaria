@@ -179,7 +179,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       </div>
 
       {/* Botão de Adicionar Pagamento */}
-      <Botao label="Adicionar Pagamento" onClick={handleAddPayment} />
+      <Botao label="Adicionar Pagamento" type="submit" />
     </form>
   );
 };
