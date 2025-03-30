@@ -21,62 +21,55 @@ export default function Login() {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     setLoading(true);
+  
     try {
-
-      if (!email || !senha) {
+      // Limpeza dos inputs
+      const cleanedEmail = email.trim().toLowerCase();
+      const cleanedSenha = senha.trim();
+  
+      if (!cleanedEmail || !cleanedSenha) {
         showErrorToast("Email e senha são campos obrigatórios");
-        return
-      };
-
+        return;
+      }
+  
       // Requisição de login
       const response = await axiosInstance.post("auth/Account/Login", {
-        Email: email,
-        Senha: senha,
+        Email: cleanedEmail,
+        Senha: cleanedSenha,
       });
-
-      // Obtém token JWT se autenticação bem sucedida e armazena no localStorage
+  
+      // Obtém token JWT e armazena no localStorage
       const token = response.data.token;
       localStorage.setItem("jwtToken", token);
-
+  
       // Decodifica o token JWT para obter o papel (role) do usuário
       const decodedToken: any = jwtDecode(token);
       const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
       const role = decodedToken[roleClaim];
       localStorage.setItem("userRole", role);
-
+  
       // Busca as informações do usuário após o login
       await getUser();
-
+  
       // Redireciona o usuário com base no papel (role)
-      switch (role) {
-        case 'Admin':
-          navigate('/imoveis');
-          break;
-        case 'Locatario':
-          navigate('/home-locatario');
-          break;
-        case 'Locador':
-          navigate('/home-locador');
-          break;
-        case 'Judiciario':
-          navigate('/dashboard');
-          break;
-        default:
-          navigate('/');
-          break;
-      }
-
-    } catch (error:any) {
-      console.log(error.response.data);
-      showErrorToast(
-        error.response.data
-      );
+      const routes: Record<string, string> = {
+        Admin: '/imoveis',
+        Locatario: '/home-locatario',
+        Locador: '/home-locador',
+        Judiciario: '/dashboard',
+      };
+  
+      navigate(routes[role] || '/');
+  
+    } catch (error: any) {
+      console.error(error.response?.data);
+      showErrorToast(error.response?.data || "Erro ao tentar fazer login.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   const getUser = async () => {
     try {
