@@ -20,9 +20,18 @@ export default function Login() {
 
     setLoading(true);
     try {
+      const cleanedEmail = email.trim().toLowerCase();
+      const cleanedSenha = senha.trim();
+
+
+      if (!cleanedEmail || !cleanedSenha) {
+        showErrorToast("Email e senha são campos obrigatórios");
+        return;
+      }
+
       const response = await axiosInstance.post("auth/Account/Login", {
-        Email: email,
-        Senha: senha,
+        Email: cleanedEmail,
+        Senha: cleanedSenha,
       });
 
       // Obtém e decodifica o token JWT para obter a role do usuário
