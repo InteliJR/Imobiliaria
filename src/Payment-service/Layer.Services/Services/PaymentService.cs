@@ -1,5 +1,6 @@
 ﻿using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
+using Layer.Domain.DTO;
 using Layer.Infrastructure;
 using Layer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -49,15 +50,38 @@ namespace Layer.Services.Services
             return payments;
         }
 
-        public async Task<Payment> GetPaymentByIdAsync(int id)
+        public async Task<GetPaymentDTO> GetPaymentByIdAsync(int id)
         {
-            var payment = await _context.Pagamentos.FindAsync(id);
+            var payment = await _context.Pagamentos
+                .Include(p => p.Contrato)
+                .FirstOrDefaultAsync(p => p.PaymentId == id);
+
             if (payment == null)
             {
                 throw new Exception("Payment not found.");
             }
-            return payment;
+
+            var paymentDto = new GetPaymentDTO
+            {
+                PaymentId = payment.PaymentId,
+                ContratoId = payment.ContratoId,
+                Valor = payment.Valor,
+                Data = payment.Data,
+                Pagante = payment.Pagante,
+                MetodoPagamento = payment.MetodoPagamento,
+                Descricao = payment.Descricao,
+                TipoPagamento = payment.TipoPagamento,
+                Multa = payment.Multa,
+                ValorMulta = payment.ValorMulta,
+                ValorAluguel = payment.Contrato.ValorAluguel,
+                Iptu = payment.Contrato.Iptu,
+                TaxaAdministratia = payment.Contrato.TaxaAdm
+            };
+
+            return paymentDto;
         }
+
+
         public async Task<Payment> AddPaymentAsync(Payment payment)
         {   
             try{
