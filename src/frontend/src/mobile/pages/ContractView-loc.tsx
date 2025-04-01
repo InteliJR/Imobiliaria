@@ -7,7 +7,7 @@ import Loading from "../../components/Loading";
 import { ContractForm } from "../../components/Form/ContractForm"; // Importando o componente
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
-import { Contract, Payment } from "./ContractView";
+import type { Contract, Payment } from "../../types/contract";
 
 export default function Contrato() {
   const { id } = useParams();

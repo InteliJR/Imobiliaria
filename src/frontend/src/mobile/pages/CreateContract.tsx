@@ -27,9 +27,9 @@ export default function CreateContractMobile() {
   const [locadorEmail, setLocadorEmail] = useState("");
 
   // Estados relacionados à busca em outras tabelas
-  const [isLoadingLessor, setIsLoadingLessor] = useState(false);
-  const [isLoadingRenter, setIsLoadingRenter] = useState(false);
-  const [isLoadingProperty, setIsLoadingProperty] = useState(false);
+  const isLoadingLessor = false;
+  const isLoadingRenter = false;
+  const isLoadingProperty = false;
   const [locadores, setLocadores] = useState([]); // Lista de locadores
   const [locatarios, setLocatarios] = useState([]); // Lista de locatários
   const [imoveis, setImoveis] = useState([]);

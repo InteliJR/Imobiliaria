@@ -1,3 +1,6 @@
+import type { Property } from "./property";
+import type { Lessor, Renter } from "./user";
+
 export interface Contract {
   dataReajuste?: any;
   contratoId?: string;
