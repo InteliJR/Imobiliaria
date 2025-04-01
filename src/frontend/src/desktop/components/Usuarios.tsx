@@ -83,7 +83,7 @@ export default function UsuariosComponent() {
   const getAllInfo = async () => {
     try {
       const [responseAuth, responseProperty] = await Promise.all([
-        axiosInstance.ge  t("auth/User/PegarTodosUsuarios"),
+        axiosInstance.get("auth/User/PegarTodosUsuarios"),
         axiosInstance.get("property/Imoveis/PegarTodosImoveis"),
       ]);
 
