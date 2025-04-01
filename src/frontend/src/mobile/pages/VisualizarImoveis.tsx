@@ -79,10 +79,12 @@ export default function Properties() {
         console.error("Dados de resposta inválidos");
         return;
       }
-      const properties = propertiesResponse.data;
-      const users = usersResponse.data;
 
-      console.log(users);
+      const properties = Array.isArray(propertiesResponse.data) ? propertiesResponse.data : [];
+      const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
+
+      console.log("Properties:", properties);
+      console.log("Users:", users);
 
       const mergedProperties = properties.map(
         (property: {
@@ -99,12 +101,14 @@ export default function Properties() {
           complemento: any;
         }) => {
           // Encontrando os dados do locador
-            const landlord =
-            users.find((user: { roleId: any }) => user.roleId === property.locadorId)?.nome || "Locador não encontrado";
+          const landlord = users.find(
+            (user: { roleId: any }) => user.roleId === property.locadorId
+          )?.nome || "Locador não encontrado";
   
           // Encontrando os dados do locatário
-          const tenant =
-            users.find((user: { roleId: any  }) => user.roleId === property.locatarioId)?.nome || "Locatário não encontrado";
+          const tenant = users.find(
+            (user: { roleId: any }) => user.roleId === property.locatarioId
+          )?.nome || "Locatário não encontrado";
   
           return {
             id: property.imovelId,
