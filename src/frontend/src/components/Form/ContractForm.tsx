@@ -1,32 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CurrencyInput from "react-currency-input-field";
 import DocumentViewer from "../DocumentViewer";
 import Botao from "../Botoes/Botao";
-import { Contract } from "../../mobile/pages/ContractView";
+// import { Contract } from "../../mobile/pages/ContractView";
 import { FaTrash } from "react-icons/fa";
-
-interface ContractFormProps {
-  contract: Contract | null;
-  isEditable: boolean;
-  properties: any[];
-  lessors?: any[];
-  renters?: any[];
-  selectedPropertyId: string | null;
-  status: any;
-  DataReajuste: any;
-  // reajust: string | null;
-  selectedLessorId: string | null;
-  selectedRenterId: string | null;
-  isLoadingProperty: boolean;
-  isLoadingLessor: boolean;
-  isLoadingRenter: boolean;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  onValueChange: (field: string, value: string | number | string[]) => void;
-  setSelectedPropertyId?: (value: string) => void;
-  setSelectedLessorId?: (value: string) => void;
-  setSelectedRenterId?: (value: string) => void;
-  handleSave: (event: React.FormEvent) => void;
-}
+import { ContractFormProps } from '../../types';
 
 export const ContractForm: React.FC<ContractFormProps> = ({
   contract,
@@ -35,13 +13,13 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   lessors,
   renters,
   selectedPropertyId,
+  // status,
+  // DataReajuste,
   selectedLessorId,
   selectedRenterId,
   isLoadingProperty,
   isLoadingLessor,
   isLoadingRenter,
-  // status,
-  // DataReajuste,
   onInputChange,
   onValueChange,
   setSelectedPropertyId,
@@ -49,6 +27,11 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   setSelectedRenterId,
   handleSave,
 }) => {
+  useEffect(() => {
+    console.log('Lessors data:', lessors);
+    console.log('Renters data:', renters);
+  }, [lessors, renters]);
+
   const handleRemoveDocument = (index: number) => {
     if (!contract) return;
     const updatedDocuments = [...(contract.documentos ?? [])];
@@ -59,9 +42,6 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   if (!contract) {
     return <p>Contrato não encontrado.</p>;
   }
-
-  // console.log('Tipo de contract.documentos:', typeof contract?.documentos);
-  // console.log('Valor de contract.documentos:', contract?.documentos);
 
   const documentos = contract?.documentos
     ? (typeof contract.documentos === "string" ? [contract.documentos] : contract.documentos)
@@ -303,9 +283,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
           >
             <option value="">Selecione um imóvel</option>
-            {properties.map((imovel: any) => (
+            {properties.map((imovel) => (
               <option key={imovel.imovelId} value={imovel.imovelId}>
-                {imovel.nome || imovel.imovelId} {/* Exibe o nome ou ID do imóvel */}
+                {imovel.nome || imovel.imovelId}
               </option>
             ))}
           </select>
@@ -321,9 +301,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
           >
             <option value="">Selecione um locador</option>
-            {lessors?.map((locador: any) => (
+            {lessors.map((locador) => (
               <option key={locador.locadorId} value={locador.locadorId}>
-                {locador.nomeCompletoLocador || locador.locadorId}
+                {locador.nomeCompletoLocador}
               </option>
             ))}
           </select>
@@ -339,9 +319,9 @@ export const ContractForm: React.FC<ContractFormProps> = ({
             className="w-full p-2 h-10 border rounded-md focus:outline-none border-gray-300 focus:border-blue-500 tracking-wide text-neutral-700 font-light text-sm bg-white"
           >
             <option value="">Selecione um locatário</option>
-            {renters?.map((locatario: any) => (
+            {renters.map((locatario) => (
               <option key={locatario.locatarioId} value={locatario.locatarioId}>
-                {locatario.nomeCompletoLocatario || locatario.locatarioId}
+                {locatario.nomeCompletoLocatario}
               </option>
             ))}
           </select>

@@ -92,12 +92,14 @@ export default function Imoveis() {
           complemento: any;
         }) => {
           // Encontrando os dados do locador
-          const landlord =
-            users.find((user: { roleId: any }) => user.roleId === property.locadorId)?.nome || "Locador não encontrado";
+          const landlord = Array.isArray(users) 
+            ? users.find((user: { roleId: any }) => user.roleId === property.locadorId)?.nome || "Locador não encontrado"
+            : "Locador não encontrado";
   
           // Encontrando os dados do locatário
-          const tenant =
-            users.find((user: { roleId: any }) => user.roleId === property.locatarioId)?.nome || "Locatário não encontrado";
+          const tenant = Array.isArray(users)
+            ? users.find((user: { roleId: any }) => user.roleId === property.locatarioId)?.nome || "Locatário não encontrado"
+            : "Locatário não encontrado";
   
           return {
             id: property.imovelId,

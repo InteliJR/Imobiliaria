@@ -96,12 +96,17 @@ export default function Users() {
         return;
       }
 
-      // Você pode manter ou ajustar o filtro de usuários conforme necessário
-      const usersWithRelevantRoles = responseAuth.data;
+      // Extract the actual arrays from the API response structure
+      const usersWithRelevantRoles = responseAuth.data?.$values || [];
+      const properties = responseProperty.data || [];
 
+      console.log('Users raw data:', JSON.stringify(responseAuth.data, null, 2));
+      console.log('First user example:', JSON.stringify(usersWithRelevantRoles[0], null, 2));
+
+      // Remove the unnecessary setUsers call
       const combinedData = usersWithRelevantRoles.map((user: any) => {
         // Filtrar imóveis relacionados ao usuário usando roleId
-        const imoveis = responseProperty.data.filter((imovel: any) => {
+        const imoveis = properties.filter((imovel: any) => {
           const isLocador = Number(imovel.locadorId) === Number(user.roleId);
           const isLocatario =
             Number(imovel.locatarioId) === Number(user.roleId);

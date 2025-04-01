@@ -23,18 +23,34 @@ export default function CreateProperty() {
   const [loading, setLoading] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]); // Estado para armazenar as fotos
 
+  const fetchSelectOptions = async () => {
+    try {
+      const [lessorResponse, renterResponse] = await Promise.all([
+        axiosInstance.get("auth/Locador/PegarTodosLocadores"),
+        axiosInstance.get("auth/Locatario/PegarTodosLocatarios"),
+      ]);
+
+      // Extract the actual arrays from the API response structure
+      const lessorsData = lessorResponse.data?.$values || [];
+      const rentersData = renterResponse.data?.$values || [];
+
+      console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
+      console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
+      console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
+      console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
+
+      setLocadores(lessorsData);
+      setLocatarios(rentersData);
+    } catch (error) {
+      console.error("Erro ao buscar opções:", error);
+      setLocadores([]);
+      setLocatarios([]);
+      showErrorToast("Erro ao carregar dados. Tente novamente.");
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const locadoresResponse = await axiosInstance.get("auth/Locador/PegarTodosLocadores");
-        const locatariosResponse = await axiosInstance.get("auth/Locatario/PegarTodosLocatarios");
-        setLocadores(locadoresResponse.data || []);
-        setLocatarios(locatariosResponse.data || []);
-      } catch (error) {
-        showErrorToast("Erro ao carregar locadores e locatários.");
-      }
-    };
-    fetchData();
+    fetchSelectOptions();
   }, []);
   
     // Função para lidar com o upload das fotos

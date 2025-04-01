@@ -37,8 +37,8 @@ export default function CreateProperty() {
       try {
         const locadoresResponse = await axiosInstance.get("auth/Locador/PegarTodosLocadores");
         const locatariosResponse = await axiosInstance.get("auth/Locatario/PegarTodosLocatarios");
-        setLocadores(locadoresResponse.data || []);
-        setLocatarios(locatariosResponse.data || []);
+        setLocadores(locadoresResponse.data?.$values || []);
+        setLocatarios(locatariosResponse.data?.$values || []);
       } catch (error) {
         showErrorToast("Erro ao carregar locadores e locatários.");
       }
