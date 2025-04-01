@@ -28,26 +28,42 @@ namespace Layer.Services.Services
             return await _context.Pagamentos.ToListAsync();
         }
 
-        public async Task<IEnumerable<Payment>> GetAllPaymentsByIdImovel(int imovelid)
+        public async Task<IEnumerable<GetPaymentDTO>> GetAllPaymentsByIdImovel(int imovelid)
         {
             var contratos = new Contratos();
             var contratoId = contratos.ContratoId;
 
             var payments = await _context.Pagamentos
                 .Join(_context.Contratos,
-                        payment => payment.ContratoId,
-                        contrato => contrato.ContratoId,
-                        (payment, contrato) => new { Payment = payment, Contrato = contrato })
+                    payment => payment.ContratoId,
+                    contrato => contrato.ContratoId,
+                    (payment, contrato) => new { Payment = payment, Contrato = contrato })
                 .Where(pc => pc.Contrato.ImovelId == imovelid)
-                .Select(pc => pc.Payment)
                 .ToListAsync();
 
             if (!payments.Any())
             {
-                throw new KeyNotFoundException("No payments found for this locatarioId");
+                throw new KeyNotFoundException("No payments found for this imovelId");
             }
 
-            return payments;
+            var paymentsDTO = payments.Select(pc => new GetPaymentDTO
+            {
+                PaymentId = pc.Payment.PaymentId,
+                ContratoId = pc.Payment.ContratoId,
+                Valor = pc.Payment.Valor,
+                Data = pc.Payment.Data,
+                Pagante = pc.Payment.Pagante,
+                MetodoPagamento = pc.Payment.MetodoPagamento,
+                Descricao = pc.Payment.Descricao,
+                TipoPagamento = pc.Payment.TipoPagamento,
+                Multa = pc.Payment.Multa,
+                ValorMulta = pc.Payment.ValorMulta,
+                ValorAluguel = pc.Contrato.ValorAluguel,
+                Iptu = pc.Contrato.Iptu,
+                TaxaAdministratia = pc.Contrato.TaxaAdm
+            });
+
+            return paymentsDTO;
         }
 
         public async Task<GetPaymentDTO> GetPaymentByIdAsync(int id)

@@ -54,14 +54,20 @@ namespace Layer.Application.Controllers
 
         // GET: api/Payments/ByImovel/5
         [HttpGet("ByImovel/{imovelid}")]
-        public async Task<IActionResult> GetPaymentsByImovel(int imovelid)
+        [Authorize(Policy = "AllRoles")]
+        public async Task<ActionResult<List<GetPaymentDTO>>> GetPaymentsByImovel(int imovelid)
         {
-            var payment = await _paymentService.GetAllPaymentsByIdImovel(imovelid);
-            if (payment == null)
+            var payments = await _paymentService.GetAllPaymentsByIdImovel(imovelid);
+            if (payments != null)
             {
+ 
+                _applicationLog.LogAsync($"Payments retrieved for Imovel ID {imovelid}.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
+                return Ok(payments);
+            }else{
+                _applicationLog.LogAsync($"No payments found for Imovel ID {imovelid}.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
                 return NotFound();
             }
-            return Ok(payment);
+
         }
 
         // POST: api/payment/criar-pagamentos
