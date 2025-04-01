@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
@@ -6,47 +7,12 @@ import { ContractForm } from "../../components/Form/ContractForm";
 import PaymentForm from "../../components/Form/PaymentForm";
 import Loading from "../../components/Loading";
 import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
-import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosConfig";
 import { useAtom } from "jotai";
 import { userRoleAtom } from "../../store/atoms";
+import { Contract, Property, Lessor, Renter, Payment } from '../../types';
 
-export interface Contract {
-  dataReajuste?: any;
-  contratoId?: string;
-  documentos?: string[];
-  valorAluguel?: number;
-  dataInicio?: string;
-  dataEncerramento?: string;
-  locadorId?: string;
-  locatarioId?: string;
-  imovelId?: string;
-  tipoGarantia?: string;
-  condicoesEspeciais?: string;
-  status?: any;
-  iptu?: number;
-  dataPagamento?: string;
-  taxaAdm?: number;
-  DataRescisao?: string;
-  renovado?: boolean;
-  DataEncerramentoRenovacao?: string;
-  valorReajuste?: number;
-}
-
-export interface Payment {
-  pagamentoId: string;
-  contratoId: string;
-  valor: number;
-  data: string;
-  pagante: string;
-  MetodoPagamento: string;
-  descricao: string;
-  TipoPagamento: string;
-  multa: boolean; // Alterado para boolean
-  valor_multa: number;
-}
-
-export default function Contrato() {
+const ContractView: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URLe
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
@@ -59,9 +25,9 @@ export default function Contrato() {
   const [isLoadingProperty, setIsLoadingProperty] = useState(false);
   const [isLoadingPayers] = useState(false);
   const [payers] = useState([]); // Lista de pagantes
-  const [lessors, setLessors] = useState([]); // Lista de lessors
-  const [renters, setRenters] = useState([]); // Lista de locatários
-  const [properties, setProperties] = useState([]);
+  const [lessors, setLessors] = useState<Lessor[]>([]);
+  const [renters, setRenters] = useState<Renter[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
   const [selectedLessorId, setSelectedLessorId] = useState<string | null>(null);
   const [selectedRenterId, setSelectedRenterId] = useState<string | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
@@ -92,22 +58,37 @@ export default function Contrato() {
       setIsLoadingLessor(true);
       setIsLoadingRenter(true);
       setIsLoadingProperty(true);
-      const lessorResponse = await axiosInstance.get(
-        "auth/Locador/PegarTodosLocadores"
-      );
-      const renterResponse = await axiosInstance.get(
-        "auth/Locatario/PegarTodosLocatarios"
-      );
-      const propertyResponse = await axiosInstance.get(
-        "property/Imoveis/PegarTodosImoveis"
-      );
+      
+      const [lessorResponse, renterResponse, propertyResponse] = await Promise.all([
+        axiosInstance.get("auth/Locador/PegarTodosLocadores"),
+        axiosInstance.get("auth/Locatario/PegarTodosLocatarios"),
+        axiosInstance.get("property/Imoveis/PegarTodosImoveis")
+      ]);
 
-      setLessors(lessorResponse.data || []);
-      setRenters(renterResponse.data || []);
-      setProperties(propertyResponse.data || []);
-      // console.log(lessorResponse.data, renterResponse.data, propertyResponse.data);
+      // Extract the actual arrays from the API response structure
+      const lessorsData = lessorResponse.data?.$values || [];
+      const rentersData = renterResponse.data?.$values || [];
+      const propertiesData = propertyResponse.data || [];
+
+      console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
+      console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
+      console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
+      console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
+
+      setLessors(lessorsData);
+      setRenters(rentersData);
+      setProperties(propertiesData);
+
+      console.log('Lessors data:', lessorsData);
+      console.log('Renters data:', rentersData);
+      console.log('Properties data:', propertiesData);
     } catch (error) {
+      console.error('Error fetching select options:', error);
       showErrorToast("Erro ao carregar lessors, locatários e properties.");
+      // Set empty arrays on error
+      setLessors([]);
+      setRenters([]);
+      setProperties([]);
     } finally {
       setIsLoadingLessor(false);
       setIsLoadingRenter(false);
@@ -459,3 +440,5 @@ export default function Contrato() {
     </main>
   );
 }
+
+export default ContractView;

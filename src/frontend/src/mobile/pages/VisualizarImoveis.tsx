@@ -21,18 +21,16 @@ export default function Properties() {
   }
 
   interface Property {
-    imovelId: number;
-    tipoImovel: string;
-    cep: string;
-    condominio: number;
-    valorImovel: number;
-    bairro: string;
-    descricao: string;
-    endereco: string;
-    complemento: string;
-    locador: string;
-    locatario: string;
-    fotos: string | string[];
+    id: number;
+    address: string;
+    neighborhood: string;
+    postalCode: string;
+    propertyType: string;
+    landlord: string;
+    tenant: string;
+    imageSrc: string | string[];
+    price: number;
+    condominio: string | number;
   }
 
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
