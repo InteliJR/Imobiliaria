@@ -22,6 +22,10 @@ interface Payment {
   tipoPagamento: string;
   multa: boolean;
   valorMulta: number;
+  iptu?: number;
+  taxaCondominio?: number;
+  valorAluguel?: number;
+  taxaAdministratia?: number;
 }
 
 export default function PagamentosImovel() {
@@ -284,6 +288,52 @@ export default function PagamentosImovel() {
                         disabled={!isEditable}
                       />
                     </div>
+
+                    <div className="flex flex-col gap-2 bg-neutral-100 p-4 rounded-md mt-2">
+                        <p><strong>Multa:</strong> {payment.multa ? "Sim" : "Não"}</p>
+
+                        <p>
+                          <strong>Valor da Multa:</strong>{" "}
+                          {payment.valorMulta?.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }) ?? "R$ 0,00"}
+                        </p>
+
+                        <p>
+                          <strong>IPTU:</strong>{" "}
+                          {payment.iptu?.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }) ?? "R$ 0,00"}
+                        </p>
+
+                        {/* <p>
+                          <strong>Taxa de Condomínio:</strong>{" "}
+                          {payment.taxaCondominio?.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }) ?? "R$ 0,00"}
+                        </p> */}
+
+                        <p>
+                          <strong>Valor do Aluguel:</strong>{" "}
+                          {payment.valorAluguel?.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }) ?? "R$ 0,00"}
+                        </p>
+
+                        <p>
+                          <strong>Taxa Administrativa:</strong>{" "}
+                          {payment.taxaAdministratia?.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }) ?? "R$ 0,00"}
+                        </p>
+                      </div>
+
+
 
                     {/* Botão Salvar Alterações */}
                     {isEditable && (

@@ -16,7 +16,7 @@ namespace Layer.Domain.DTO
         public string? Descricao { get; set; }
         public string TipoPagamento { get; set; }
         public bool Multa { get; set; }
-        public decimal? ValorMulta { get; set; }
+        public decimal? ValorMulta { get; set; }                              
         public decimal? Iptu { get; set; }
         public decimal? TaxaCondominio { get; set; }
         public decimal? ValorAluguel { get; set; }

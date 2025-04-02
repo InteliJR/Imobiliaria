@@ -102,7 +102,7 @@ export default function Contrato() {
         "property/Imoveis/PegarTodosImoveis"
       );
 
-      console.log("Locadores:", lessorResponse.data);
+      // console.log("Locadores:", lessorResponse.data);
 
       setLessors(lessorResponse.data?.$values || []);
       setRenters(Array.isArray(renterResponse.data?.$values)
@@ -125,7 +125,7 @@ export default function Contrato() {
       // console.log("Contrato:", response.data);
 
       let contractData = response.data;
-      console.log("Contrato:", contractData);
+      // console.log("Contrato:", contractData);
 
       // Se 'documentos' for uma string, transformá-la em um array
       let allDocuments: string[] = [];
@@ -156,7 +156,7 @@ export default function Contrato() {
         return documento;
       });
 
-      console.log("Documentos:", allDocuments);
+      // console.log("Documentos:", allDocuments);
       
 
 
@@ -203,7 +203,7 @@ export default function Contrato() {
       // Simulação de chamada de API
       const response = await axiosInstance.get(`payment/payment/ByImovel/${imovelId}`);
 //payment/payment/criar-pagamentos
-      console.log("Pagamentos:", response.data);
+      // console.log("Pagamentos:", response.data);
       setPayments(response.data);
 
       setLoadingPayments(false);
@@ -342,7 +342,7 @@ export default function Contrato() {
     try {
       await axiosInstance.put(`property/Contratos/AtualizarContrato/${id}`, updatedFields);
 
-      console.log("Campos alterados:", updatedFields);
+      // console.log("Campos alterados:", updatedFields);
   
       showSuccessToast("Contrato atualizado com sucesso!");
       setOriginalContract({ ...contract, ...updatedFields }); // Atualiza o estado original com os novos dados
