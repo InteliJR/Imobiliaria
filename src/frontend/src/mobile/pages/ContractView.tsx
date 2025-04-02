@@ -34,7 +34,7 @@ export interface Contract {
 }
 
 export interface Payment {
-  pagamentoId: string;
+  paymentId: string;
   contratoId: string;
   valor: number;
   data: string;
@@ -457,9 +457,9 @@ export default function Contrato() {
                       .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime()) // Ordena as datas do mais recente para o mais antigo
                       .map((payment) => (
                         <li
-                          key={payment.pagamentoId}
+                          key={payment.paymentId}
                           className="mt-1 cursor-pointer hover:underline duration-300 ease-in-out"
-                          onClick={() => handleRedirect(`/pagamento/${payment.pagamentoId}`)}
+                          onClick={() => handleRedirect(`/pagamento/${payment.paymentId}`)}
                         >
                           <p className="inline">
                             <strong>Valor: R$</strong> {payment.valor}, <strong>Data:</strong>{" "}
