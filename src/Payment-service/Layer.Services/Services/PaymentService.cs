@@ -60,7 +60,8 @@ namespace Layer.Services.Services
                 ValorMulta = pc.Payment.ValorMulta,
                 ValorAluguel = pc.Contrato.ValorAluguel,
                 Iptu = pc.Contrato.Iptu,
-                TaxaAdministratia = pc.Contrato.TaxaAdm
+                TaxaAdministratia = pc.Contrato.TaxaAdm,
+                ImovelId = pc.Contrato.ImovelId
             });
 
             return paymentsDTO;
@@ -91,7 +92,8 @@ namespace Layer.Services.Services
                 ValorMulta = payment.ValorMulta,
                 ValorAluguel = payment.Contrato.ValorAluguel,
                 Iptu = payment.Contrato.Iptu,
-                TaxaAdministratia = payment.Contrato.TaxaAdm
+                TaxaAdministratia = payment.Contrato.TaxaAdm,
+                ImovelId = payment.Contrato.ImovelId
             };
 
             return paymentDto;

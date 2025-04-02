@@ -21,6 +21,7 @@ namespace Layer.Domain.DTO
         public decimal? TaxaCondominio { get; set; }
         public decimal? ValorAluguel { get; set; }
         public decimal? TaxaAdministratia { get; set; }
+        public int? ImovelId { get; set; }
     }
 
 }
