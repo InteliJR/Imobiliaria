@@ -150,7 +150,7 @@ export default function Contrato() {
                       .slice()
                       .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
                       .map((payment) => (
-                        <li key={payment.paymentId} className="mt-1">
+                        <li key={payment.pagamentoId} className="mt-1">
                           <p className="inline">
                             <strong>Valor: R$</strong> {payment.valor}, <strong>Data:</strong> {payment.data}, <strong>Pagante:</strong> {payment.pagante}
                           </p>

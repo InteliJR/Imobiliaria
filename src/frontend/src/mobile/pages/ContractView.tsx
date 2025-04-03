@@ -10,7 +10,7 @@ import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useAtom } from "jotai";
 import { userRoleAtom } from "../../store/atoms";
-import { Contract, Property, Lessor, Renter, Payment } from '../../types';
+import { Property, Lessor, Renter } from '../../types';
 
 export interface Contract {
   dataReajuste?: any;
@@ -47,7 +47,7 @@ export interface Payment {
   valor_multa: number;
 }
 
-export default function Contrato() {
+function ContractView() {
   const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URLe
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
