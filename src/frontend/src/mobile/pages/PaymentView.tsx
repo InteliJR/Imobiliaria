@@ -38,15 +38,16 @@ interface Property {
   endereco: string;
   descricao: string;
   complemento: string;
-  taxa
+  taxa: number;
   fotos: string | string[];
 }
 
 export default function PagamentosImovel() {
-  const { imovelid } = useParams<{ imovelid: string }>(); // Captura o imovelid da URL
-  const { paymentid } = useParams<{ paymentid: string }>();
+  const { id } = useParams<{ id: string }>(); // Captura o imovelid da URL
+  // const { id } = useParams<{ id: string }>();
   const [isEditable, setIsEditable] = useState(false); // Controla se o formulário é editável
   const [payments, setPayments] = useState<Payment[]>([]); // Lista de pagamentos
+  const [paymentId, setPaymentId] = useState<number>(0); // ID do pagamento
   const [loadingSkeleton, setLoadingSkeleton] = useState(true); // Loading inicial
   const [property, setProperty] = useState<Property | null>(null);
   const [imovelId, setImovelId] = useState<number>(0);
@@ -57,10 +58,11 @@ export default function PagamentosImovel() {
   const fetchPayments = async () => {
     setLoadingSkeleton(true);
     try {
+      const imovelIdParsed = id ? parseInt(id, 10) : 0;
       const requestUrl =
         role === "Admin"
-          ? `payment/payment/pagamentos/${paymentid}`
-          : `payment/payment/ByImovel/${imovelid}`;
+          ? `payment/payment/pagamentos/${imovelIdParsed}`
+          : `payment/payment/ByImovel/${imovelIdParsed}`;
 
       const response = await axiosInstance.get(requestUrl);
 
@@ -90,17 +92,17 @@ export default function PagamentosImovel() {
 
   const fetchPropertyDetails = async () => {
     try {
-      
+      const imovelIdParsed = parseInt(id ?? "0", 10);
       let response;
 
       if (userRole == "Admin" || userRole == "Judiciario"){
         response = await axiosInstance.get(
-          `property/Imoveis/PegarImovelPorId/${imovelId}`
+          `property/Imoveis/PegarImovelPorId/${imovelIdParsed}`
         );
       } 
       else{
         response = await axiosInstance.get(
-          `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
+          `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelIdParsed}`
         );
       }
 
@@ -121,16 +123,17 @@ export default function PagamentosImovel() {
 
 
   useEffect(() => {
-    fetchPayments();
-    setIsEditable(role === "Admin"); // Somente admin pode editar
-  }, [imovelid]);
-
+    if (id) {
+      fetchPayments();
+      setIsEditable(role === "Admin");
+    }
+  }, [id]);
+  
   useEffect(() => {
-    if (imovelId > 0) {
+    if (id) {
       fetchPropertyDetails();
     }
-  }
-  , [imovelId]);
+  }, [id]);
 
   const handleSave = async (payment: Payment) => {
     setLoadingSpinner(true);
@@ -164,7 +167,7 @@ export default function PagamentosImovel() {
           <div className="flex flex-col justify-center items-center">
             <div className="flex flex-col gap-4 w-[42rem] m-auto">
               <h1 className="w-full font-bold text-lg">
-                Pagamentos do Imóvel {imovelid}
+                Pagamentos do Imóvel {imovelId}
               </h1>
 
               {payments.length > 0 ? (

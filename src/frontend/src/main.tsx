@@ -219,7 +219,7 @@ const Root = () => {
         />
         {/* Contratos e pagamentos */}
         <Route
-          path="/pagamento/:paymentid"
+          path="/pagamento/:id"
           element={
             <ProtectedRoute
               requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}
