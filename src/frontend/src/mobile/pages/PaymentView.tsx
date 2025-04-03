@@ -47,7 +47,7 @@ export default function PagamentosImovel() {
   // const { id } = useParams<{ id: string }>();
   const [isEditable, setIsEditable] = useState(false); // Controla se o formulário é editável
   const [payments, setPayments] = useState<Payment[]>([]); // Lista de pagamentos
-  const [paymentId, setPaymentId] = useState<number>(0); // ID do pagamento
+  // const [paymentId, setPaymentId] = useState<number>(0); // ID do pagamento
   const [loadingSkeleton, setLoadingSkeleton] = useState(true); // Loading inicial
   const [property, setProperty] = useState<Property | null>(null);
   const [imovelId, setImovelId] = useState<number>(0);
@@ -75,6 +75,12 @@ export default function PagamentosImovel() {
       const normalizedPayments = Array.isArray(response.data)
         ? response.data
         : [response.data];
+
+
+      if(normalizedPayments.length === 0){
+        showErrorToast("Nenhum pagamento encontrado.");
+        return;
+      }
 
       // Define os pagamentos retornados pela API
       setPayments(normalizedPayments);

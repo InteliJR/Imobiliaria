@@ -42,9 +42,7 @@ namespace Layer.Services.Services
                 .ToListAsync();
 
             if (!payments.Any())
-            {
-                throw new KeyNotFoundException("No payments found for this imovelId");
-            }
+                return new List<GetPaymentDTO>();
 
             var paymentsDTO = payments.Select(pc => new GetPaymentDTO
             {

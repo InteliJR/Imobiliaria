@@ -57,18 +57,28 @@ namespace Layer.Application.Controllers
         [Authorize(Policy = "AllRoles")]
         public async Task<ActionResult<List<GetPaymentDTO>>> GetPaymentsByImovel(int imovelid)
         {
-            var payments = await _paymentService.GetAllPaymentsByIdImovel(imovelid);
-            if (payments != null)
-            {
- 
-                _applicationLog.LogAsync($"Payments retrieved for Imovel ID {imovelid}.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
-                return Ok(payments);
-            }else{
-                _applicationLog.LogAsync($"No payments found for Imovel ID {imovelid}.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
-                return NotFound();
-            }
+            var payments = (await _paymentService.GetAllPaymentsByIdImovel(imovelid)).ToList();
 
+            if (payments.Any())
+            {
+                await _applicationLog.LogAsync(
+                    $"Payments retrieved for Imovel ID {imovelid}.",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada"
+                );
+                return Ok(payments);
+            }
+            else
+            {
+                await _applicationLog.LogAsync(
+                    $"No payments found for Imovel ID {imovelid}.",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada"
+                );
+                return Ok(new List<GetPaymentDTO>()); // ← Retorna 200 com lista vazia
+            }
         }
+
 
         // POST: api/payment/criar-pagamentos
         [HttpPost("criar-pagamentos")]
