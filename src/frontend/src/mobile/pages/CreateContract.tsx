@@ -27,9 +27,9 @@ export default function CreateContractMobile() {
   const [locadorEmail, setLocadorEmail] = useState("");
 
   // Estados relacionados à busca em outras tabelas
-  const [isLoadingLessor, setIsLoadingLessor] = useState(false);
-  const [isLoadingRenter, setIsLoadingRenter] = useState(false);
-  const [isLoadingProperty, setIsLoadingProperty] = useState(false);
+  const isLoadingLessor = false;
+  const isLoadingRenter = false;
+  const isLoadingProperty = false;
   const [locadores, setLocadores] = useState([]); // Lista de locadores
   const [locatarios, setLocatarios] = useState([]); // Lista de locatários
   const [imoveis, setImoveis] = useState([]);
@@ -50,38 +50,38 @@ export default function CreateContractMobile() {
     return value.replace(/R\$|\./g, "").replace(",", ".");
   };
 
+  const fetchSelectOptions = async () => {
+    try {
+      const [lessorResponse, renterResponse, propertyResponse] = await Promise.all([
+        axiosInstance.get("auth/Locador/PegarTodosLocadores"),
+        axiosInstance.get("auth/Locatario/PegarTodosLocatarios"),
+        axiosInstance.get("property/Imoveis/PegarTodosImoveis"),
+      ]);
+
+      // Extract the actual arrays from the API response structure
+      const lessorsData = lessorResponse.data?.$values || [];
+      const rentersData = renterResponse.data?.$values || [];
+      const propertiesData = propertyResponse.data || [];
+
+      console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
+      console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
+      console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
+      console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
+
+      setLocadores(lessorsData);
+      setLocatarios(rentersData);
+      setImoveis(propertiesData);
+    } catch (error) {
+      console.error("Erro ao buscar opções:", error);
+      setLocadores([]);
+      setLocatarios([]);
+      setImoveis([]);
+      showErrorToast("Erro ao carregar dados. Tente novamente.");
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoadingLessor(true);
-        setIsLoadingRenter(true);
-        setIsLoadingProperty(true);
-        const locadoresResponse = await axiosInstance.get(
-          "auth/Locador/PegarTodosLocadores"
-        );
-        const locatariosResponse = await axiosInstance.get(
-          "auth/Locatario/PegarTodosLocatarios"
-        );
-        const imoveisResponse = await axiosInstance.get(
-          "property/Imoveis/PegarTodosImoveis"
-        );
-        setLocadores(locadoresResponse.data || []);
-        setLocatarios(locatariosResponse.data || []);
-        setImoveis(imoveisResponse.data || []);
-        console.log(
-          locadoresResponse.data,
-          locatariosResponse.data,
-          imoveisResponse.data
-        );
-      } catch (error) {
-        showErrorToast("Erro ao carregar locadores, locatários e imoveis.");
-      } finally {
-        setIsLoadingLessor(false);
-        setIsLoadingRenter(false);
-        setIsLoadingProperty(false);
-      }
-    };
-    fetchData();
+    fetchSelectOptions();
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

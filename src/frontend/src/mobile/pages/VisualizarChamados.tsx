@@ -94,9 +94,7 @@ export default function Tickets() {
         ? chamadosResponse.data
         : [];
       const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
-      const properties = Array.isArray(propertiesResponse.data)
-        ? propertiesResponse.data
-        : [];
+      const properties = Array.isArray(propertiesResponse.data) ? propertiesResponse.data : [];
 
       // Mesclando os dados
       const mergedData = chamados.map(
@@ -108,14 +106,16 @@ export default function Tickets() {
           dataSolicitacao: any;
           status: any;
         }) => {
-          const user =
-            users.find(
-              (u: { usuarioId: any }) => u.usuarioId === chamado.solicitanteId
-            ) || {};
-          const property =
-            properties.find(
-              (p: { imovelId: any }) => p.imovelId === chamado.idImovel
-            ) || {};
+          const user = Array.isArray(users)
+            ? users.find(
+                (u: { usuarioId: any }) => u.usuarioId === chamado.solicitanteId
+              ) || {}
+            : {};
+          const property = Array.isArray(properties)
+            ? properties.find(
+                (p: { imovelId: any }) => p.imovelId === chamado.idImovel
+              ) || {}
+            : {};
 
           return {
             chamadoId: chamado.idChamado,

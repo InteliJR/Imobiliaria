@@ -1,0 +1,37 @@
+export interface Property {
+  imovelId: string;
+  nome: string;
+  tipoImovel: string;
+  cep: string;
+  endereco: string;
+  numero: string;
+  complemento: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  area: number;
+  quartos: number;
+  banheiros: number;
+  vagas: number;
+  descricao: string;
+  valor: number;
+  status: string;
+  locadorId: string;
+  locatarioId: string;
+  imageSrc: string | string[];
+  condominio: number;
+  iptu: number;
+  taxaAdm: number;
+  valorAluguel: number;
+  dataInicio: string;
+  dataEncerramento: string;
+  tipoGarantia: string;
+  condicoesEspeciais: string;
+  documentos: string[];
+  statusContrato: string;
+  dataReajuste: string;
+  valorReajuste: number;
+  renovado: boolean;
+  dataEncerramentoRenovacao: string;
+  dataRescisao: string;
+} 

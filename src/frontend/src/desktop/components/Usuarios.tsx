@@ -92,19 +92,24 @@ export default function UsuariosComponent() {
         return;
       }
 
-      // Combina
-      const combinedData = responseAuth.data.map((user: any) => {
-        const imoveis = responseProperty.data.filter((imovel: any) => {
+      // Extract the actual arrays from the API response structure
+      const users = responseAuth.data?.$values || [];
+      const properties = responseProperty.data || [];
+
+      console.log('Users raw data:', JSON.stringify(responseAuth.data, null, 2));
+      console.log('First user example:', JSON.stringify(users[0], null, 2));
+
+      // Combina os dados
+      const combinedData = users.map((user: any) => {
+        // Filtrar imóveis relacionados ao usuário usando roleId
+        const imoveis = properties.filter((imovel: any) => {
           const isLocador = Number(imovel.locadorId) === Number(user.roleId);
           const isLocatario = Number(imovel.locatarioId) === Number(user.roleId);
           return isLocador || isLocatario;
         });
 
-        console.log(`Usuário: ${user.nome}, Imóveis encontrados:`, imoveis);
-        // console.log("Este é o valor de user.usuarioId ",user.usuarioId);
         return {
           ...user,
-          nImoveis: imoveis.length,
           imoveis,
         };
       });

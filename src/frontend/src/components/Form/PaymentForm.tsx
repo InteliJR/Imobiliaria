@@ -1,5 +1,5 @@
 import React from "react";
-import { Payment } from "../../mobile/pages/ContractView";
+import { Payment } from "../../types/contract";
 import CurrencyInput from "react-currency-input-field";
 import Botao from "../Botoes/Botao";
 import { IoIosClose } from "react-icons/io";
@@ -21,7 +21,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   isLoadingPayers,
 }) => {
   const handlePaymentChange = (field: keyof Payment, value: any) => {
-    setNewPayment((prev) => ({
+    setNewPayment((prev: Partial<Payment>) => ({
       ...prev,
       [field]: value,
     }));
