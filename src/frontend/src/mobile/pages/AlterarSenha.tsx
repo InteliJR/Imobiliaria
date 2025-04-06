@@ -6,7 +6,6 @@ import FormField from "../components/Form/FormField";
 import Botao from "../../components/Botoes/Botao";
 import Loading from "../../components/Loading";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
-import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { toast } from "react-toastify";
 export default function Senha() {
@@ -42,7 +41,7 @@ export default function Senha() {
 
       // console.log(response.data);
 
-      showSuccessToast(
+      toast.success(
         response?.data?.message || "Senha alterada com sucesso."
       );
     } catch (error: any) {

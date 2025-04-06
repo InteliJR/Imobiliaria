@@ -1,7 +1,7 @@
 // AddPaymentModal.tsx
 import React, { useState } from "react";
 import axiosInstance from "../../services/axiosConfig";
-import { showSuccessToast } from "../../utils/toastMessage";
+import { toast } from "react-toastify";
 
 interface AddPaymentModalProps {
   isOpen: boolean;
@@ -55,8 +55,13 @@ const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
 
       // console.log("Pagamento atualizado com sucesso:", response.data);
 
+      if (!response.data) {
+        toast.error("Erro ao se conectar com o servidor.");
+        return;
+      }
+
       // Fechar modal ao concluir
-      showSuccessToast("Pagamento adicionado com sucesso");
+      toast.success("Pagamento adicionado com sucesso");
       // Regarrega a página para atualizar os dados
       // Timeout para dar tempo de exibir o toast
         setTimeout(() => {
