@@ -208,5 +208,34 @@ namespace Layer.Services.Services
             _dbcontext.Contratos.Update(contrato);
             await _dbcontext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<bool> DeleteDocumentFromContractAsync(int contractId, string documentUrl)
+        {
+            var contrato = await _dbcontext.Contratos.FindAsync(contractId);
+            if (contrato == null)
+            {
+                return false;
+            }
+
+            // Extrai o nome do objeto do URL, removendo a parte da query string e pegando apenas o nome do arquivo
+            var uri = new Uri(documentUrl);
+            var objectName = Path.GetFileName(uri.LocalPath);
+            if (string.IsNullOrEmpty(objectName))
+            {
+                return false;
+            }
+
+            // Deleta o arquivo do storage
+            await _storageService.DeleteFileAsync($"uploads/{objectName}");
+
+            // Atualiza o campo Documentos no contrato
+            var documentos = contrato.Documentos?.Split(';').ToList() ?? new List<string>();
+            documentos.Remove(documentUrl);
+            contrato.Documentos = string.Join(";", documentos);
+
+            // Salva as alterações
+            await _dbcontext.SaveChangesAsync();
+            return true;
+        }
     }
 }

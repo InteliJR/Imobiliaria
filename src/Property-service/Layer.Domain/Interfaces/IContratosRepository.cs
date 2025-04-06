@@ -23,5 +23,6 @@ namespace Layer.Domain.Interfaces
         Task<Contratos> GetByIdContratoAsync(int id);
         Task<List<Contratos>> GetByImovelIdAsync(int imovelId);
         Task<Contratos?> GetContratoAtivoPorImovelIdAsync(int imovelId);
+        Task<bool> DeleteDocumentFromContractAsync(int contractId, string documentUrl);
     }
 }

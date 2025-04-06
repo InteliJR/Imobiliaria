@@ -6,6 +6,7 @@ import Botao from "../Botoes/Botao";
 import { FaTrash } from "react-icons/fa";
 import { ContractFormProps } from '../../types';
 import { toast } from "react-toastify";
+import axiosInstance from "../../services/axiosConfig";
 
 export const ContractForm: React.FC<ContractFormProps> = ({
   contract,
@@ -36,20 +37,23 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   const handleRemoveDocument = async (index: number) => {
     if (!contract) return;
     const updatedDocuments = [...(contract.documentos ?? [])];
-    updatedDocuments.splice(index, 1); // Remove o documento do array
+    const documentToRemove = updatedDocuments[index];
     
     try {
-      // Atualiza o estado local primeiro para uma resposta mais rápida
+      // Chama o endpoint para deletar o documento
+      await axiosInstance.delete(`property/Contratos/DeletarDocumento/${contract.contratoId}`, {
+        params: {
+          documentUrl: documentToRemove
+        }
+      });
+      
+      // Remove o documento do array local
+      updatedDocuments.splice(index, 1);
       onValueChange("documentos", updatedDocuments);
       
-      // Chama a função de salvamento para persistir a mudança
-      await handleSave({ preventDefault: () => {} } as React.FormEvent);
-      
-      // Mostra mensagem de sucesso
       toast.success("Documento removido com sucesso!");
     } catch (error) {
-      // Em caso de erro, reverte a mudança no estado local
-      onValueChange("documentos", contract.documentos ?? []);
+      console.error("Erro ao remover documento:", error);
       toast.error("Erro ao remover documento. Por favor, tente novamente.");
     }
   };
@@ -59,7 +63,14 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   }
 
   const documentos = contract?.documentos
-    ? (typeof contract.documentos === "string" ? [contract.documentos] : contract.documentos)
+    ? (typeof contract.documentos === "string" 
+        ? [contract.documentos] 
+        : contract.documentos.map(doc => 
+            doc.startsWith('https://') 
+              ? doc 
+              : `https://storage.googleapis.com/administradora-kk.appspot.com/${doc}`
+          )
+      )
     : [];
 
   const formatDate = (dateString:any) => {

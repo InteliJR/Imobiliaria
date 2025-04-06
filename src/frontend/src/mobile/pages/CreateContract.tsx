@@ -152,17 +152,7 @@ export default function CreateContractMobile() {
       formData.append("DataEncerramentoRenovacao", renewalEndDate ? new Date(renewalEndDate).toISOString() : "");
       formData.append("ValorReajuste", cleanCurrencyValue(adjustmentValue));
 
-      // Adiciona os documentos em chunks menores
-      if (documents && documents.length > 0) {
-        // Limita a 2 documentos por vez
-        const chunkSize = 2;
-        for (let i = 0; i < documents.length; i += chunkSize) {
-          const chunk = documents.slice(i, i + chunkSize);
-          chunk.forEach((document, index) => {
-            formData.append(`files[${i + index}]`, document);
-          });
-        }
-      }
+      documents?.forEach((document) => formData.append("files", document));
 
       // Só inclui os emails se eles não estiverem vazios
       const emailParams = [];
@@ -178,8 +168,6 @@ export default function CreateContractMobile() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          maxContentLength: 50 * 1024 * 1024, // 50MB
-          maxBodyLength: 50 * 1024 * 1024, // 50MB
         }
       );
 

@@ -291,5 +291,24 @@ namespace property_management.Controllers
             }
         }
 
+        [HttpDelete("DeletarDocumento/{contractId}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
+        public async Task<IActionResult> DeleteDocument(int contractId, [FromQuery] string documentUrl)
+        {
+            if (string.IsNullOrEmpty(documentUrl))
+            {
+                return BadRequest("URL do documento é obrigatória.");
+            }
+
+            var result = await _contratoService.DeleteDocumentFromContractAsync(contractId, documentUrl);
+            
+            if (!result)
+            {
+                return NotFound("Contrato não encontrado.");
+            }
+
+            return Ok("Documento removido com sucesso.");
+        }
+
     }
 }

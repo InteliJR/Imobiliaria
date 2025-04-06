@@ -108,9 +108,9 @@ const ContractView: React.FC = () => {
       let allDocuments = [];
       if (typeof contractData.documentos === "string" && contractData.documentos.length > 0) {
         allDocuments = contractData.documentos.split(",").map((documento: string) =>
-          decodeURIComponent(
-            documento.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
-          )
+          documento.startsWith('https://') 
+            ? documento 
+            : `https://storage.googleapis.com/administradora-kk.appspot.com/${decodeURIComponent(documento)}`
         );
       }
 
@@ -120,7 +120,9 @@ const ContractView: React.FC = () => {
         try {
           const responseDocumentos = await axiosInstance.post(
             "property/Contratos/AssinarPdfs",
-            allDocuments
+            allDocuments.map((doc: string) => 
+              doc.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
+            )
           );
 
           if (!responseDocumentos.data) {
@@ -231,7 +233,7 @@ const ContractView: React.FC = () => {
   const handleSave = async (event: React.FormEvent) => {
     event.preventDefault();
   
-    if (!contract) {
+    if (!contract || !id) {
       showErrorToast("Contrato não encontrado.");
       return;
     }
@@ -287,15 +289,19 @@ const ContractView: React.FC = () => {
     }
   
     try {
-      await axiosInstance.put(`property/Contratos/AtualizarContrato/${id}`, updatedFields);
+      // Inclui o contratoId no objeto de atualização
+      const updateData = {
+        ...updatedFields,
+        contratoId: parseInt(id)
+      };
 
-      // console.log("Campos alterados:", updatedFields);
+      await axiosInstance.put(`property/Contratos/AtualizarContrato/${id}`, updateData);
   
-      // showSuccessToast("Contrato atualizado com sucesso!");
-      setOriginalContract({ ...contract, ...updatedFields }); // Atualiza o estado original com os novos dados
+      // Atualiza o estado original com os novos dados
+      setOriginalContract({ ...contract, ...updatedFields });
+      toast.success("Contrato atualizado com sucesso!");
     } catch (error) {
-      // showErrorToast("Erro ao atualizar o contrato.");
-      // console.error("Erro ao salvar contrato:", error);
+      console.error("Erro ao salvar contrato:", error);
       toast.error("Erro ao atualizar o contrato.");
     } finally {
       setLoadingSpinner(false);
