@@ -229,10 +229,9 @@ namespace Layer.Services.Services
             await _storageService.DeleteFileAsync($"uploads/{objectName}");
 
             // Atualiza o campo Documentos no contrato
-            var documentos = contrato.Documentos?.Split(';').ToList() ?? new List<string>();
+            var documentos = contrato.Documentos?.Split(',').ToList() ?? new List<string>();
             documentos.Remove(documentUrl);
-            contrato.Documentos = string.Join(";", documentos);
-
+            contrato.Documentos = string.Join(",", documentos);
             // Salva as alterações
             await _dbcontext.SaveChangesAsync();
             return true;
