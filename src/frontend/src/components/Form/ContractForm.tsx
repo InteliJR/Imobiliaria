@@ -5,6 +5,7 @@ import Botao from "../Botoes/Botao";
 // import { Contract } from "../../mobile/pages/ContractView";
 import { FaTrash } from "react-icons/fa";
 import { ContractFormProps } from '../../types';
+import { toast } from "react-toastify";
 
 export const ContractForm: React.FC<ContractFormProps> = ({
   contract,
@@ -32,11 +33,25 @@ export const ContractForm: React.FC<ContractFormProps> = ({
     // console.log('Renters data:', renters);
   }, [lessors, renters]);
 
-  const handleRemoveDocument = (index: number) => {
+  const handleRemoveDocument = async (index: number) => {
     if (!contract) return;
     const updatedDocuments = [...(contract.documentos ?? [])];
     updatedDocuments.splice(index, 1); // Remove o documento do array
-    onValueChange("documentos", updatedDocuments); // Atualiza o estado do contrato
+    
+    try {
+      // Atualiza o estado local primeiro para uma resposta mais rápida
+      onValueChange("documentos", updatedDocuments);
+      
+      // Chama a função de salvamento para persistir a mudança
+      await handleSave({ preventDefault: () => {} } as React.FormEvent);
+      
+      // Mostra mensagem de sucesso
+      toast.success("Documento removido com sucesso!");
+    } catch (error) {
+      // Em caso de erro, reverte a mudança no estado local
+      onValueChange("documentos", contract.documentos ?? []);
+      toast.error("Erro ao remover documento. Por favor, tente novamente.");
+    }
   };
 
   if (!contract) {
