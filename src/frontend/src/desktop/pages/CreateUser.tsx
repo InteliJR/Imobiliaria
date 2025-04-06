@@ -32,7 +32,7 @@ export default function AddClient() {
     "Judiciário": "/auth/User/CriarUsuarioJudiciario",
   };
 
-  console.log(userType);
+  // console.log(userType);
   
   let fullNameField = '';
   if (userType === "Locatário") {
@@ -66,7 +66,7 @@ export default function AddClient() {
       rg,
     };
   
-    console.log(fullName);
+    // console.log(fullName);
   
     const endpoint = userTypeRoutes[userType];
     if (!endpoint) {

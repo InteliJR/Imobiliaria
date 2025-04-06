@@ -4,9 +4,9 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
-import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 export default function AddUser() {
   const [userType, setUserType] = useState("Administrador");
@@ -33,7 +33,7 @@ export default function AddUser() {
     "Judiciário": "/auth/User/CriarUsuarioJudiciario",
   };
 
-  console.log(userType);
+  // console.log(userType);
   
   let fullNameField = '';
   if (userType === "Locatário") {
@@ -50,8 +50,9 @@ export default function AddUser() {
   
     // Validação de campos obrigatórios
     if (!fullName.trim()) {
-      showErrorToast("O campo 'Nome Completo' é obrigatório.");
-      setLoading(false);
+      // showErrorToast("O campo 'Nome Completo' é obrigatório.");
+      toast.error("O campo 'Nome Completo' é obrigatório.");
+      setLoading(false);  
       return;
     }
   
@@ -67,18 +68,20 @@ export default function AddUser() {
       rg,
     };
   
-    console.log(fullName);
+    // console.log(fullName);
   
     const endpoint = userTypeRoutes[userType];
     if (!endpoint) {
-      showErrorToast("Tipo de usuário inválido.");
+      // showErrorToast("Tipo de usuário inválido.");
+      toast.error("Tipo de usuário inválido.");
       setLoading(false);
       return;
     }
   
     try {
       await axiosInstance.post(`${endpoint}?email=${email}`, requestBody);
-      showSuccessToast("Usuário criado com sucesso.");
+      // showSuccessToast("Usuário criado com sucesso.");
+      toast.success("Usuário criado com sucesso.");
       // Limpar o formulário
       setUserType("Administrador");
       setFullName("");
@@ -96,9 +99,13 @@ export default function AddUser() {
       setState("");
       setNationality("");
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       if (error instanceof AxiosError) {
-        showErrorToast(
+        // showErrorToast(
+        //   error?.response?.data?.message ||
+        //     "Erro ao se conectar com o servidor."
+        // );
+        toast.error(
           error?.response?.data?.message ||
             "Erro ao se conectar com o servidor."
         );

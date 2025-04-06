@@ -96,8 +96,8 @@ export default function UsuariosComponent() {
       const users = responseAuth.data?.$values || [];
       const properties = responseProperty.data || [];
 
-      console.log('Users raw data:', JSON.stringify(responseAuth.data, null, 2));
-      console.log('First user example:', JSON.stringify(users[0], null, 2));
+      // console.log('Users raw data:', JSON.stringify(responseAuth.data, null, 2));
+      // console.log('First user example:', JSON.stringify(users[0], null, 2));
 
       // Combina os dados
       const combinedData = users.map((user: any) => {

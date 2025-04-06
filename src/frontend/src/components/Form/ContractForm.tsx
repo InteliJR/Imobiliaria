@@ -28,8 +28,8 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   handleSave,
 }) => {
   useEffect(() => {
-    console.log('Lessors data:', lessors);
-    console.log('Renters data:', renters);
+    // console.log('Lessors data:', lessors);
+    // console.log('Renters data:', renters);
   }, [lessors, renters]);
 
   const handleRemoveDocument = (index: number) => {

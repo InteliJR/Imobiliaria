@@ -3,10 +3,9 @@ import FormFieldForMobile from "../components/Form/FormFieldForMobile.tsx";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
-import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig.ts";
 import axios from "axios";
-
+import { toast } from "react-toastify";
 export default function CreateProperty() {
   interface Locador {
     locadorId: string;
@@ -40,7 +39,8 @@ export default function CreateProperty() {
         setLocadores(locadoresResponse.data?.$values || []);
         setLocatarios(locatariosResponse.data?.$values || []);
       } catch (error) {
-        showErrorToast("Erro ao carregar locadores e locatários.");
+        // showErrorToast("Erro ao carregar locadores e locatários.");
+        toast.error("Erro ao carregar locadores e locatários.");
       }
     };
     fetchData();
@@ -50,7 +50,7 @@ export default function CreateProperty() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files) {
         const filesArray = Array.from(e.target.files); // Converter para array
-        console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
+        // console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
         setPhotos(filesArray); // Atualize o estado
       }
     };
@@ -65,7 +65,8 @@ export default function CreateProperty() {
     
       if (missingFields.length > 0) {
         const message = `Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(", ")}.`;
-        showErrorToast(message);
+        // showErrorToast(message);
+        toast.error(message);
         return false; // Indica que a validação falhou
       }
     
@@ -99,10 +100,10 @@ export default function CreateProperty() {
       photos.forEach((photo) => formData.append("files", photo));
   
       // Log detalhado
-      console.log("Verificar FormData:");
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
+      // console.log("Verificar FormData:");
+      // formData.forEach((value, key) => {
+      //   console.log(key, value);
+      // });
   
       const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData, {
         headers: {
@@ -110,7 +111,8 @@ export default function CreateProperty() {
         },
       });
   
-      showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
+      // showSuccessToast(response?.data?.message || "Imóvel criado com sucesso!");
+      toast.success(response?.data?.message || "Imóvel criado com sucesso!");
   
       // Limpar formulário após o envio
       setPropertyType("Kitnet");
@@ -126,33 +128,38 @@ export default function CreateProperty() {
       setPhotos([]); // Limpar fotos após o envio
   
     } catch (error: any) {
-      console.error("Erro ao criar imóvel:", error);
+      // console.error("Erro ao criar imóvel:", error);
   
       if (axios.isAxiosError(error)) {
         // Erro com resposta do servidor (ex: 400, 500)
         if (error.response) {
           const errorPayload = error.response.data; // Captura o payload de resposta
-          showErrorToast(errorPayload)
+          // showErrorToast(errorPayload)
+          toast.error(errorPayload)
   
           // Log detalhado do payload de erro
-          console.error("Payload de erro:", errorPayload);
+          // console.error("Payload de erro:", errorPayload);
         }
         // Erro de rede (ex: servidor indisponível)
         else if (error.request) {
-          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+          // showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+          toast.error("Erro de rede. Verifique sua conexão e tente novamente.");
         }
         // Erro inesperado
         else {
-          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+          // showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+          toast.error("Ocorreu um erro inesperado. Tente novamente mais tarde.");
         }
       }
       // Erro genérico (não relacionado ao Axios)
       else if (error instanceof Error) {
-        showErrorToast(error.message);
+        // showErrorToast(error.message);
+        toast.error(error.message);
       }
       // Erro desconhecido
       else {
-        showErrorToast("Erro ao se conectar com o servidor.");
+        // showErrorToast("Erro ao se conectar com o servidor.");
+        toast.error("Erro ao se conectar com o servidor.");
       }
     } finally {
       setLoading(false);

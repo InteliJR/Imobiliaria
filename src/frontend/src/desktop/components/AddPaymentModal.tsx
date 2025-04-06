@@ -53,7 +53,7 @@ const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Pagamento atualizado com sucesso:", response.data);
+      // console.log("Pagamento atualizado com sucesso:", response.data);
 
       // Fechar modal ao concluir
       showSuccessToast("Pagamento adicionado com sucesso");

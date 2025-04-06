@@ -8,7 +8,7 @@ import Loading from "../../components/Loading";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
-
+import { toast } from "react-toastify";
 export default function Senha() {
   const [senhaAntiga, setSenhaAntiga] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
@@ -27,30 +27,30 @@ export default function Senha() {
     setLoading(true);
     try {
       if (senhaAntiga === "" || novaSenha === "" || confirmarSenha === "") {
-        console.log("Preencha todos os campos");
-        return;
+        // console.log("Preencha todos os campos");
+        return false;
       }
 
       if (novaSenha !== confirmarSenha) {
-        console.log("As senhas não coincidem");
-        return;
+        // console.log("As senhas não coincidem");
+        return false;
       }
 
       const response = await axiosInstance.post(
         `auth/User/AlterarSenhaUsuario?oldPassword=${senhaAntiga}&newPassword=${confirmarSenha}`
       );
 
-      console.log(response.data);
+      // console.log(response.data);
 
       showSuccessToast(
         response?.data?.message || "Senha alterada com sucesso."
       );
     } catch (error: any) {
-      showErrorToast(
+      toast.error(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
       );
 
-      console.error(error?.response?.data?.message || "Erro ao alterar a senha");
+      // console.error(error?.response?.data?.message || "Erro ao alterar a senha");
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ export default function Senha() {
       <section className="section-custom">
         <Voltar />
 
-        <div className="w-fulll flex justify-center items-center">
+        <div className="w-full flex justify-center items-center">
           <form className="flex flex-col gap-4 mb-4 w-[42rem]">
             <FormField
               label="Senha Antiga"
