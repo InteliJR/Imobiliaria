@@ -1,82 +1,184 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import { FaArrowLeft } from "react-icons/fa";
+import axiosInstance from "../../services/axiosConfig";
+import Loading from "../../components/Loading";
+import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
+import axios from "axios";
+import getTokenData from "../../services/tokenConfig";
 
-// Dados mockados para teste
-const mockChamados = {
-  // Chamado para o Locador
-  "1": {
-    id: 1,
-    title: "Problema na torneira da cozinha",
-    solicitor: "João Silva (Locatário)",
-    property: "Apartamento 101, Ed. Solar",
-    address: "Rua das Flores, 123 - Centro",
-    date: "2023-04-15T10:30:00",
-    status: "aberto",
-    description: "A torneira da cozinha está vazando há dois dias. Já tentei fechar bem, mas continua pingando constantemente. Preciso de um encanador para resolver este problema o mais rápido possível.",
-    updates: [
-      { date: "2023-04-15T10:30:00", text: "Chamado aberto pelo locatário." },
-      { date: "2023-04-15T14:22:00", text: "Locador visualizou o chamado e está verificando disponibilidade de encanador." }
-    ],
-    viewType: "locador"
-  },
-  // Chamado para o Locatário
-  "2": {
-    id: 2,
-    title: "Infiltração no teto do banheiro",
-    solicitor: "Você",
-    property: "Apartamento 202, Ed. Brisa",
-    address: "Av. das Palmeiras, 456 - Jardim",
-    date: "2023-04-10T08:15:00", 
-    status: "aberto",
-    description: "Notei uma mancha de infiltração no teto do banheiro que está aumentando de tamanho. Parece vir do apartamento de cima. Por favor, verificar o mais rápido possível antes que cause danos maiores.",
-    updates: [
-      { date: "2023-04-10T08:15:00", text: "Chamado aberto." },
-      { date: "2023-04-10T15:30:00", text: "Locador confirmou recebimento e vai verificar com o síndico." },
-      { date: "2023-04-11T09:45:00", text: "Síndico agendou vistoria para amanhã às 14h." }
-    ],
-    viewType: "locatario"
-  }
-};
+interface Chamado {
+  chamadoId: number;
+  title: string;
+  solicitor: string;
+  solicitorId: number;
+  property: string;
+  address: string;
+  propertyId: number;
+  date: string;
+  status: string;
+  description: string;
+  updates: Array<{
+    date: string;
+    text: string;
+  }>;
+}
 
 export default function DetalhesChamadoMobile() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [chamado, setChamado] = useState(id ? mockChamados[id as keyof typeof mockChamados] : null);
+  const [chamado, setChamado] = useState<Chamado | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
   const [novoComentario, setNovoComentario] = useState("");
+  
+  // Dados do usuário atual
+  const tokenData = getTokenData();
+  const userRole = tokenData.RoleName;
 
-  const adicionarComentario = () => {
-    if (!novoComentario.trim()) return;
-    
-    const novoUpdate = {
-      date: new Date().toISOString(),
-      text: novoComentario
-    };
-    
-    setChamado(prev => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        updates: [...prev.updates, novoUpdate]
-      };
-    });
-    
-    setNovoComentario("");
+  const fetchChamadoDetails = async () => {
+    setLoading(true);
+    try {
+      // Faz as requisições simultaneamente
+      const [chamadosResponse, usersResponse, propertiesResponse, updatesResponse] = await Promise.all([
+        axiosInstance.get(`property/Chamados/PegarChamadoPorId/${id}`),
+        axiosInstance.get("auth/User/PegarTodosUsuarios"),
+        axiosInstance.get("property/Imoveis/PegarTodosImoveis"),
+        axiosInstance.get(`property/Chamados/GetUpdates/${id}`)
+      ]);
+
+      // Verifica se os dados de resposta são válidos
+      if (!chamadosResponse.data) {
+        showErrorToast("Chamado não encontrado.");
+        navigate("/chamados");
+        return;
+      }
+
+      const chamadoData = chamadosResponse.data;
+      const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
+      const properties = Array.isArray(propertiesResponse.data) ? propertiesResponse.data : [];
+      const updates = Array.isArray(updatesResponse.data) ? updatesResponse.data : [];
+
+      // Encontra o usuário e o imóvel relacionados
+      const user = users.find((u: { usuarioId: number }) => u.usuarioId === chamadoData.solicitanteId) || {};
+      const property = properties.find((p: { imovelId: number }) => p.imovelId === chamadoData.idImovel) || {};
+
+      // Formata os dados do chamado
+      setChamado({
+        chamadoId: chamadoData.idChamado,
+        title: chamadoData.titulo || "Título não informado",
+        solicitor: user.nome || "Usuário desconhecido",
+        solicitorId: chamadoData.solicitanteId,
+        property: property.tipoImovel || "Imóvel desconhecido",
+        address: property.endereco || "Endereço desconhecido",
+        propertyId: chamadoData.idImovel,
+        date: chamadoData.dataSolicitacao || "Data não informada",
+        status: chamadoData.status || "Status não informado",
+        description: chamadoData.descricao || "Descrição não informada",
+        updates: updates.map((update: { dataAtualizacao: string; comentario: string }) => ({
+          date: update.dataAtualizacao,
+          text: update.comentario
+        }))
+      });
+    } catch (error) {
+      console.error("Erro ao buscar detalhes do chamado:", error);
+      
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const errorMessage = error.response.data || "Erro ao processar a requisição.";
+          showErrorToast(errorMessage);
+        } else if (error.request) {
+          showErrorToast("Erro de rede. Verifique sua conexão e tente novamente.");
+        } else {
+          showErrorToast("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+      } else if (error instanceof Error) {
+        showErrorToast(error.message);
+      } else {
+        showErrorToast("Erro ao se conectar com o servidor.");
+      }
+      
+      navigate("/chamados");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const alterarStatus = (novoStatus: string) => {
-    setChamado(prev => {
-      if (!prev) return prev;
-      return {
-        ...prev,
+  const adicionarComentario = async () => {
+    if (!novoComentario.trim() || !chamado) return;
+    
+    setUpdating(true);
+    try {
+      await axiosInstance.post(`property/Chamados/AddUpdate`, {
+        chamadoId: chamado.chamadoId,
+        comentario: novoComentario
+      });
+      
+      // Atualiza o estado local com o novo comentário
+      const novoUpdate = {
+        date: new Date().toISOString(),
+        text: novoComentario
+      };
+      
+      setChamado({
+        ...chamado,
+        updates: [...chamado.updates, novoUpdate]
+      });
+      
+      setNovoComentario("");
+      showSuccessToast("Atualização adicionada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao adicionar atualização:", error);
+      showErrorToast("Não foi possível adicionar a atualização. Tente novamente.");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const alterarStatus = async (novoStatus: string) => {
+    if (!chamado) return;
+    
+    setUpdating(true);
+    try {
+      await axiosInstance.put(`property/Chamados/AtualizarStatusChamado/${chamado.chamadoId}`, {
         status: novoStatus
-      };
-    });
+      });
+      
+      setChamado({
+        ...chamado,
+        status: novoStatus
+      });
+      
+      showSuccessToast(`Status do chamado alterado para ${novoStatus}.`);
+    } catch (error) {
+      console.error("Erro ao atualizar status do chamado:", error);
+      showErrorToast("Não foi possível atualizar o status do chamado.");
+    } finally {
+      setUpdating(false);
+    }
   };
+
+  useEffect(() => {
+    if (id) {
+      fetchChamadoDetails();
+    }
+  }, [id]);
 
   // Verifica se o chamado existe
+  if (loading) {
+    return (
+      <main className="main-custom">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center p-6">
+          <Loading type="spinner" />
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
   if (!chamado) {
     return (
       <main className="main-custom">
@@ -97,6 +199,11 @@ export default function DetalhesChamadoMobile() {
       </main>
     );
   }
+
+  // Determina se o usuário pode editar o chamado com base em seu papel
+  const canEditChamado = userRole === "Admin" || 
+                         (userRole === "Locador" && chamado.status === "aberto") ||
+                         (userRole === "Judiciario");
 
   return (
     <main className="main-custom">
@@ -129,22 +236,24 @@ export default function DetalhesChamadoMobile() {
             </span>
           </div>
           
-          {/* Ações específicas para o Locador */}
-          {chamado.viewType === "locador" && (
+          {/* Ações específicas para usuários com permissão */}
+          {canEditChamado && (
             <div className="mt-3">
               {chamado.status === "aberto" ? (
                 <button
                   onClick={() => alterarStatus("fechado")}
                   className="bg-red-600 hover:bg-red-700 text-white rounded px-3 py-2 text-sm w-full"
+                  disabled={updating}
                 >
-                  Fechar Chamado
+                  {updating ? "Processando..." : "Fechar Chamado"}
                 </button>
               ) : (
                 <button
                   onClick={() => alterarStatus("aberto")}
                   className="bg-green-600 hover:bg-green-700 text-white rounded px-3 py-2 text-sm w-full"
+                  disabled={updating}
                 >
-                  Reabrir Chamado
+                  {updating ? "Processando..." : "Reabrir Chamado"}
                 </button>
               )}
             </div>
@@ -195,18 +304,22 @@ export default function DetalhesChamadoMobile() {
           <h2 className="text-lg font-semibold text-neutral-800 mb-3">Histórico de Atualizações</h2>
           
           <div className="space-y-3">
-            {chamado.updates.map((update, index) => (
-              <div key={index} className="pb-3 border-b border-neutral-200 last:border-0">
-                <div className="text-xs text-neutral-500 mb-1">
-                  {new Date(update.date).toLocaleDateString('pt-BR')} às{' '}
-                  {new Date(update.date).toLocaleTimeString('pt-BR', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
+            {chamado.updates.length === 0 ? (
+              <p className="text-neutral-500 italic">Nenhuma atualização registrada.</p>
+            ) : (
+              chamado.updates.map((update, index) => (
+                <div key={index} className="pb-3 border-b border-neutral-200 last:border-0">
+                  <div className="text-xs text-neutral-500 mb-1">
+                    {new Date(update.date).toLocaleDateString('pt-BR')} às{' '}
+                    {new Date(update.date).toLocaleTimeString('pt-BR', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </div>
+                  <p className="text-neutral-700">{update.text}</p>
                 </div>
-                <p className="text-neutral-700">{update.text}</p>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
         
@@ -222,14 +335,15 @@ export default function DetalhesChamadoMobile() {
                 className="w-full p-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-800"
                 rows={3}
                 placeholder="Digite uma nova atualização sobre este chamado..."
+                disabled={updating}
               ></textarea>
               
               <button
                 onClick={adicionarComentario}
                 className="w-full py-2 bg-[#1F1E1C] text-white rounded hover:bg-neutral-800"
-                disabled={!novoComentario.trim()}
+                disabled={!novoComentario.trim() || updating}
               >
-                Enviar Atualização
+                {updating ? "Enviando..." : "Enviar Atualização"}
               </button>
             </div>
           </div>

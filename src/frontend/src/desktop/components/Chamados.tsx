@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import ProblemCard from "../components/CardChamado";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
@@ -9,29 +9,37 @@ import axiosInstance from "../../services/axiosConfig";
 import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
 import axios from "axios";
+import getTokenData from "../../services/tokenConfig";
 
-export default function ChamadosComponent() {
-  interface Ticket {
-    chamadoId: number;
-    title: string;
-    solicitor: string;
-    address: string;
-    date: string;
-    open: boolean;
-    description: string;
-  }
+interface Ticket {
+  chamadoId: number;
+  title: string;
+  solicitor: string;
+  solicitorId: number;
+  address: string;
+  propertyId: number;
+  date: string;
+  open: boolean;
+  description: string;
+}
 
+const ChamadosComponent = () => {
   const navigate = useNavigate();
-  const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
-  const [data, setData] = useState<any[]>([]);
-  const [advancedFiltered, setAdvancedFiltered] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<Ticket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<Ticket[]>([]);
+  const [advancedFiltered, setAdvancedFiltered] = useState<Ticket[]>([]);
 
   // Busca textual
   const [search, setSearch] = useState("");
 
   // Controle do modal
   const [isModalOpen, setModalOpen] = useState(false);
+
+  // Dados do usuário atual
+  const tokenData = getTokenData();
+  const userRole = tokenData.RoleName;
+  const userId = tokenData.RoleID;
 
   const TicketFilterFields: IFilterField<Ticket>[] = [
     {
@@ -72,11 +80,11 @@ export default function ChamadosComponent() {
     },
   ];
 
-  const fetchTickets = async () => {
-    setLoading(true); // Inicia o estado de carregamento
+  const fetchTickets = useCallback(async () => {
+    setLoading(true);
 
     try {
-      // Faz as requisições simultaneamente
+      // Faz as requisições simultaneamente para buscar todos os dados necessários
       const [chamadosResponse, usersResponse, propertiesResponse] =
         await Promise.all([
           axiosInstance.get("property/Chamados/PegarTodosOsChamados"),
@@ -105,37 +113,58 @@ export default function ChamadosComponent() {
         : [];
 
       // Mescla os dados
-      const mergedData = chamados.map(
+      let mergedData = chamados.map(
         (chamado: {
           descricao: string;
-          solicitanteId: any;
-          idImovel: any;
-          idChamado: any;
-          titulo: any;
-          dataSolicitacao: any;
-          status: any;
-          description: any;
+          solicitanteId: number;
+          idImovel: number;
+          idChamado: number;
+          titulo: string;
+          dataSolicitacao: string;
+          status: string;
         }) => {
           const user =
             users.find(
-              (u: { usuarioId: any }) => u.usuarioId === chamado.solicitanteId
+              (u: { usuarioId: number }) => u.usuarioId === chamado.solicitanteId
             ) || {};
           const property =
             properties.find(
-              (p: { imovelId: any }) => p.imovelId === chamado.idImovel
+              (p: { imovelId: number }) => p.imovelId === chamado.idImovel
             ) || {};
 
           return {
             chamadoId: chamado.idChamado,
             title: chamado.titulo || "Título não informado",
             solicitor: user.nome || "Usuário desconhecido",
+            solicitorId: chamado.solicitanteId,
             address: property.endereco || "Endereço desconhecido",
+            propertyId: chamado.idImovel,
             date: chamado.dataSolicitacao || "Data não informada",
-            open: chamado.status === "aberto" ? true : false,
+            open: chamado.status === "aberto",
             description: chamado.descricao || "Descrição não informada",
           };
         }
       );
+
+      // Filtra os chamados de acordo com o papel do usuário
+      if (userRole === "Locatario") {
+        // Locatário vê apenas seus próprios chamados
+        mergedData = mergedData.filter((chamado) => chamado.solicitorId === userId);
+      } else if (userRole === "Locador") {
+        // Locador vê apenas chamados relacionados aos seus imóveis
+        // Primeiro, encontramos os imóveis do locador
+        const locadorImoveis = properties.filter(
+          (property: { locadorId: number }) => property.locadorId === userId
+        );
+        const locadorImoveisIds = locadorImoveis.map(
+          (property: { imovelId: number }) => property.imovelId
+        );
+        // Depois filtramos os chamados para mostrar apenas os relacionados aos imóveis do locador
+        mergedData = mergedData.filter(
+          (chamado) => locadorImoveisIds.includes(chamado.propertyId)
+        );
+      }
+      // Admin e Judiciário veem todos os chamados (nenhum filtro necessário)
 
       // Atualiza os estados com os dados mesclados
       setFilteredData(mergedData);
@@ -176,15 +205,22 @@ export default function ChamadosComponent() {
     } finally {
       setLoading(false); // Finaliza o estado de carregamento, independentemente de sucesso ou erro
     }
-  };
+  }, [userRole, userId]);
+
+  useEffect(() => {
+    fetchTickets();
+  }, [fetchTickets]);
 
   useEffect(() => {
     if (!search.trim()) {
       setFilteredData(advancedFiltered);
     } else {
       const lower = search.toLowerCase();
-      const finalResult = advancedFiltered.filter((user: any) =>
-        user.nome?.toLowerCase().includes(lower)
+      const finalResult = advancedFiltered.filter(
+        (chamado) => 
+          chamado.title.toLowerCase().includes(lower) || 
+          chamado.solicitor.toLowerCase().includes(lower) ||
+          chamado.address.toLowerCase().includes(lower)
       );
       setFilteredData(finalResult);
     }
@@ -197,13 +233,13 @@ export default function ChamadosComponent() {
   };
 
   // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
-  const handleFilteredResult = (resultado: any[]) => {
+  const handleFilteredResult = (resultado: Ticket[]) => {
     // Esse "resultado" já está filtrado pelos campos avançados
     setAdvancedFiltered(resultado);
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10; // Número de imóveis por página
+  const pageSize = 10; // Número de itens por página
 
   // Função para calcular os dados paginados
   const getPagedData = () => {
@@ -213,10 +249,6 @@ export default function ChamadosComponent() {
 
   // Total de páginas
   const totalPages = Math.ceil(filteredData.length / pageSize);
-
-  useEffect(() => {
-    fetchTickets();
-  }, []);
 
   return (
     <div className="flex flex-col bg-[#F0F0F0]  max-w-6xl gap-y-5 p-6 flex-grow">
@@ -237,7 +269,7 @@ export default function ChamadosComponent() {
         <div className="flex-grow">
           <div className="w-full">
             <FormFieldFilter
-              label="Buscar chamado pelo título"
+              label="Buscar chamado"
               onFilter={(searchTerm) => {
                 setSearch(searchTerm);
               }}
@@ -284,7 +316,7 @@ export default function ChamadosComponent() {
                   contact={ticket.address}
                   description={ticket.description}
                   date={ticket.date.split("T")[0]}
-                  time={ticket.date.split("T")[1].split(".")[0]}
+                  time={ticket.date.split("T")[1]?.split(".")[0] || "00:00"}
                   status={ticket.open ? "Aberto" : "Fechado"}
                 />
               ))}
@@ -303,18 +335,18 @@ export default function ChamadosComponent() {
                 Anterior
               </button>
               <span className="text-neutral-700">
-                Página {currentPage} de {totalPages}
+                Página {currentPage} de {totalPages || 1}
               </span>
               <button
                 className={`px-4 py-2 text-sm font-medium rounded ${
-                  currentPage === totalPages
+                  currentPage === totalPages || totalPages === 0
                     ? "bg-neutral-300 cursor-not-allowed"
                     : "bg-[#1F1E1C] hover:bg-neutral-800 text-neutral-50"
                 }`}
                 onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages || 1))
                 }
-                disabled={currentPage === totalPages}
+                disabled={currentPage === totalPages || totalPages === 0}
               >
                 Próxima
               </button>
@@ -324,4 +356,6 @@ export default function ChamadosComponent() {
       </section>
     </div>
   );
-}
+};
+
+export default ChamadosComponent;

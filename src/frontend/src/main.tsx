@@ -50,8 +50,6 @@ import ProtectedRoute from "./components/Router/ProtectedRouter";
 import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
 import ImovelByIdAdm from "./mobile/pages/Imovel-adm";
 import DetalhesChamadoMobile from "./mobile/pages/DetalhesChamado";
-import VisualizarChamadosTeste from "./desktop/pages/VisualizarChamadosTeste";
-import VisualizarChamadosTesteMobile from "./mobile/pages/VisualizarChamadosTeste";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -96,7 +94,7 @@ const Root = () => {
         <Route
           path="/chamados"
           element={
-            <ProtectedRoute requiredRole={["Admin"]}>
+            <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
               {isDesktop ? (
                 <VisualizarChamados />
               ) : (
@@ -280,20 +278,14 @@ const Root = () => {
           }
         />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
-        <Route
-          path="/chamados-teste"
-          element={
-            <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
-              {isDesktop ? <VisualizarChamadosTeste /> : <VisualizarChamadosTesteMobile />}
-            </ProtectedRoute>
-          }
-        />
       </Routes>
 
       <ToastContainer />
     </BrowserRouter>
   );
 };
+
+export default Root;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
