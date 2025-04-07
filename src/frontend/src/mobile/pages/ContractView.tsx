@@ -10,7 +10,7 @@ import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useAtom } from "jotai";
 import { userRoleAtom } from "../../store/atoms";
-import { Contract, Property, Lessor, Renter, Payment } from '../../types';
+import { Property, Lessor, Renter } from '../../types';
 import { toast } from "react-toastify";
 
 export interface Contract {
