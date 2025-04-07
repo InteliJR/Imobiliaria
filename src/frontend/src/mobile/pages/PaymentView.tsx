@@ -25,7 +25,7 @@ interface Payment {
   iptu?: number;
   taxaCondominio?: number;
   valorAluguel?: number;
-  taxaAdministratia?: number;
+  taxaAdministrativa?: number;
 }
 
 interface Property {
@@ -423,7 +423,7 @@ export default function PagamentosImovel() {
 
                         <p>
                           <strong>Taxa Administrativa:</strong>{" "}
-                          {payment.taxaAdministratia?.toLocaleString("pt-BR", {
+                          {payment.taxaAdministrativa?.toLocaleString("pt-BR", {
                             style: "currency",
                             currency: "BRL",
                           }) ?? "R$ 0,00"}
