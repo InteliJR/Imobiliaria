@@ -6,11 +6,10 @@ import FormField from "../components/Form/FormField";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
 import Botao from "../../components/Botoes/Botao";
 import Loading from "../../components/Loading";
-import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import getTokenData from "../../services/tokenConfig";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 export default function EditarPerfil() {
   // Estado do formulário para armazenar dados do usuário
   const [resultMessage, setResultMessage] = useState("");
@@ -81,11 +80,11 @@ export default function EditarPerfil() {
       const tokenInfo = getTokenData();
 
       if (!tokenInfo) {
-        console.log("Token não encontrado");
+        // console.log("Token não encontrado");
         return;
       }
 
-      console.log(tokenInfo);
+      // console.log(tokenInfo);
 
       // http://schemas.microsoft.com/ws/2008/06/identity/claims/role
 
@@ -144,20 +143,26 @@ export default function EditarPerfil() {
 
       if (responseUpdate && responseUpdate.status === 200) {
         setResultMessage("Perfil atualizado com sucesso");
-        showSuccessToast(
+        // showSuccessToast(
+        //   responseUpdate?.data?.message || "Perfil alterado com sucesso."
+        // );
+        toast.success(
           responseUpdate?.data?.message || "Perfil alterado com sucesso."
         );
-        console.log("Perfil atualizado com sucesso");
+        // console.log("Perfil atualizado com sucesso");
         navigate("/perfil");
       } else {
         setResultMessage("Erro ao atualizar o perfil");
-        console.log("Erro ao atualizar o perfil");
+        // console.log("Erro ao atualizar o perfil");
       }
     } catch (error: any) {
-      showErrorToast(
+      // showErrorToast(
+      //   error?.response?.data?.message || "Erro ao se conectar com o servidor."
+      // );
+      toast.error(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
       );
-      console.error(error);
+      // console.error(error);
     } finally {
       setLoading(false);
     }
@@ -168,7 +173,7 @@ export default function EditarPerfil() {
   const getUser = async () => {
     try {
       const response = await axiosInstance.get(`auth/Account/WhoAmI`);
-      console.log(response.data);
+      // console.log(response.data);
 
       // Alterar os valores dos campos com os dados do usuário
 
@@ -217,7 +222,8 @@ export default function EditarPerfil() {
         });
       }
     } catch (erro: any) {
-      console.log(erro.response?.data?.message || "Erro ao buscar o usuário");
+      // console.log(erro.response?.data?.message || "Erro ao buscar o usuário");
+      toast.error(erro.response?.data?.message || "Erro ao buscar o usuário");
     }
   };
 

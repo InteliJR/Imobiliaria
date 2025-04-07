@@ -4,10 +4,9 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
-import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import ImovelImage from "../components/Imoveis/ImovelImage";
-
+import { toast } from "react-toastify";
 interface Property {
   imovelId: number;
   tipoImovel: string;
@@ -46,7 +45,8 @@ export default function PropertyDetails() {
 
 
       if (!response.data) {
-        console.error("Dados de resposta inválidos");
+        // console.error("Dados de resposta inválidos");
+        toast.error("Dados de resposta inválidos");
         return;
       }
 
@@ -71,19 +71,23 @@ export default function PropertyDetails() {
       // Assinar as fotos
       const responsePhotos = await axiosInstance.post('property/Imoveis/AssinarFotos', allPhotos);
       if (!responsePhotos.data) {
-        console.error("Dados de resposta inválidos do endpoint de assinatura");
+        // console.error("Dados de resposta inválidos do endpoint de assinatura");
+        toast.error("Dados de resposta inválidos do endpoint de assinatura");
         return;
       }
 
       // Substituir as URLs das fotos pelas URLs assinadas
       property.fotos = responsePhotos.data;
       // console.log(property.fotos);
-      console.log(property);
+      // console.log(property);
       setProperty(property);
       // console.log(property)
     } catch (error: any) {
-      console.error(error);
-      showErrorToast(
+      // console.error(error);
+      // showErrorToast(
+      //   error?.response?.data?.message || "Erro ao se conectar com o servidor."
+      // );
+      toast.error(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
       );
     } finally {

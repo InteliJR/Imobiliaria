@@ -33,7 +33,7 @@ export default function CreateTicket() {
     try {
       const tokenData = getTokenData();
 
-      console.log(tokenData.UserID);
+      // console.log(tokenData.UserID);
 
       const data = {
         idImovel: parseInt(property),
@@ -49,7 +49,12 @@ export default function CreateTicket() {
         data
       );
 
-      console.log(response.data);
+      // console.log(response.data);
+
+      if (!response.data) {
+        showErrorToast("Erro ao abrir o chamado. Tente novamente mais tarde.");
+        return;
+      }
 
       // Limpa o formulário
       setProperty("");
@@ -113,7 +118,7 @@ export default function CreateTicket() {
   
       const imoveis = imoveisResponse.data;
   
-      console.log("Imóveis encontrados:", imoveis);
+      // console.log("Imóveis encontrados:", imoveis);
   
       // Cria um array com os endereços dos imóveis
       const houseNamesArray = imoveis.map(
@@ -124,7 +129,7 @@ export default function CreateTicket() {
       const houseNamesString = houseNamesArray.join("; ");
       setHouseNames(houseNamesString);
   
-      console.log("Endereços dos imóveis:", houseNamesArray);
+      // console.log("Endereços dos imóveis:", houseNamesArray);
   
       // Cria um dicionário onde a chave é o ID do imóvel e o valor é o endereço
       const houseDictionary = imoveis.reduce(
@@ -135,7 +140,7 @@ export default function CreateTicket() {
         {}
       );
   
-      console.log("Dicionário de imóveis:", houseDictionary);
+      // console.log("Dicionário de imóveis:", houseDictionary);
   
       // Atualiza o estado com o dicionário de imóveis
       setHouseNames(houseDictionary);

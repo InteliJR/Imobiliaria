@@ -4,10 +4,10 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
 import Voltar from "../../components/Botoes/Voltar";
-import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
+import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import CurrencyInput from "react-currency-input-field"; // máscara de valores monetários
-
+import { toast } from "react-toastify";
 export default function CreateContractMobile() {
   const [rentalValue, setRentalValue] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -63,10 +63,10 @@ export default function CreateContractMobile() {
       const rentersData = renterResponse.data?.$values || [];
       const propertiesData = propertyResponse.data || [];
 
-      console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
-      console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
-      console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
-      console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
+      // console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
+      // console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
+      // console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
+      // console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
 
       setLocadores(lessorsData);
       setLocatarios(rentersData);
@@ -76,7 +76,8 @@ export default function CreateContractMobile() {
       setLocadores([]);
       setLocatarios([]);
       setImoveis([]);
-      showErrorToast("Erro ao carregar dados. Tente novamente.");
+      // showErrorToast("Erro ao carregar dados. Tente novamente.");
+      toast.error("Erro ao carregar dados. Tente novamente.");
     }
   };
 
@@ -87,7 +88,7 @@ export default function CreateContractMobile() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files); // Converter para array
-      console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
+      // console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
       setDocuments(filesArray); // Atualize o estado
     }
   };
@@ -106,7 +107,8 @@ export default function CreateContractMobile() {
 
     if (missingFields.length > 0) {
       const message = `Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(", ")}.`;
-      showErrorToast(message);
+      // showErrorToast(message);
+      toast.error(message);
       return false; // Indica que a validação falhou
     }
 
@@ -182,7 +184,10 @@ export default function CreateContractMobile() {
         }
       );
 
-      showSuccessToast(
+      // showSuccessToast(
+      //   response?.data?.message || "Contrato criado com sucesso!"
+      // );
+      toast.success(
         response?.data?.message || "Contrato criado com sucesso!"
       );
 

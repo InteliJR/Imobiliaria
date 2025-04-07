@@ -10,7 +10,8 @@ import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useAtom } from "jotai";
 import { userRoleAtom } from "../../store/atoms";
-import { Property, Lessor, Renter } from '../../types';
+import { Contract, Property, Lessor, Renter, Payment } from '../../types';
+import { toast } from "react-toastify";
 
 export interface Contract {
   dataReajuste?: any;
@@ -105,21 +106,22 @@ function ContractView() {
       const rentersData = renterResponse.data?.$values || [];
       const propertiesData = propertyResponse.data || [];
 
-      console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
-      console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
-      console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
-      console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
+      // console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
+      // console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
+      // console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
+      // console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
 
       setLessors(lessorsData);
       setRenters(rentersData);
       setProperties(propertiesData);
 
-      console.log('Lessors data:', lessorsData);
-      console.log('Renters data:', rentersData);
-      console.log('Properties data:', propertiesData);
+      // console.log('Lessors data:', lessorsData);
+      // console.log('Renters data:', rentersData);
+      // console.log('Properties data:', propertiesData);
     } catch (error) {
       console.error('Error fetching select options:', error);
-      showErrorToast("Erro ao carregar lessors, locatários e properties.");
+      // showErrorToast("Erro ao carregar lessors, locatários e properties.");
+      toast.error("Erro ao carregar lessors, locatários e properties.");
       // Set empty arrays on error
       setLessors([]);
       setRenters([]);
@@ -356,11 +358,12 @@ function ContractView() {
 
       // console.log("Campos alterados:", updatedFields);
   
-      showSuccessToast("Contrato atualizado com sucesso!");
+      // showSuccessToast("Contrato atualizado com sucesso!");
       setOriginalContract({ ...contract, ...updatedFields }); // Atualiza o estado original com os novos dados
     } catch (error) {
-      showErrorToast("Erro ao atualizar o contrato.");
-      console.error("Erro ao salvar contrato:", error);
+      // showErrorToast("Erro ao atualizar o contrato.");
+      // console.error("Erro ao salvar contrato:", error);
+      toast.error("Erro ao atualizar o contrato.");
     } finally {
       setLoadingSpinner(false);
     }

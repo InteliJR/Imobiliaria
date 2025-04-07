@@ -8,6 +8,7 @@ import { ContractForm } from "../../components/Form/ContractForm"; // Importando
 import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import type { Contract, Payment } from "../../types/contract";
+import { toast } from "react-toastify";
 
 export default function Contrato() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function Contrato() {
   useEffect(() => {
     const fetchContract = async () => {
       try {
-        console.log("🔄 Buscando contrato para o imóvel ID:", id);
+        // console.log("🔄 Buscando contrato para o imóvel ID:", id);
         const response = await axiosInstance.get(`property/Contratos/PegarContratoPorImovelIdComVerificacao/${id}`);
         const contractData = response.data;
         let allDocuments = [];
@@ -60,15 +61,16 @@ export default function Contrato() {
             // Atualizar o contrato com os documentos assinados
             contractData.documentos = responseDocumentos.data;
           } catch (error) {
-            console.error("Erro ao assinar documentos:", error);
-            showErrorToast("Erro ao assinar documentos.");
+            // console.error("Erro ao assinar documentos:", error);
+            // showErrorToast("Erro ao assinar documentos.");
+            toast.error("Erro ao assinar documentos.");
             return;
           }
         }
   
         // Atualizar o estado com o contrato assinado
         setContract(contractData);
-        console.log("✅ Resposta do backend (contrato):", response.data);
+        // console.log("✅ Resposta do backend (contrato):", response.data);
         setSelectedPropertyId(contractData.imovelId);
         setSelectedLessorId(contractData.locadorId);
         setSelectedRenterId(contractData.locatarioId);
@@ -77,7 +79,7 @@ export default function Contrato() {
           throw new Error("Nenhum contrato encontrado para o imóvel especificado.");
         }
 
-        console.log("📌 Contrato armazenado no estado:", response.data);
+        // console.log("📌 Contrato armazenado no estado:", response.data);
         setLoading(false);
       } catch (error: any) {
         console.error("❌ Erro ao carregar contrato:", error.response ? error.response.data : error.message);
@@ -89,13 +91,13 @@ export default function Contrato() {
 
     const fetchPayments = async () => {
       try {
-        console.log("🔄 Buscando pagamentos para o imóvel ID:", id);
+        // console.log("🔄 Buscando pagamentos para o imóvel ID:", id);
         const response = await axiosInstance.get(`payment/payment/ByImovel/${id}`);
 
-        console.log("✅ Resposta do backend (pagamentos):", response.data);
+        // console.log("✅ Resposta do backend (pagamentos):", response.data);
         setPayments(response.data);
       } catch (error: any) {
-        console.error("❌ Erro ao carregar pagamentos:", error.response ? error.response.data : error.message);
+        // console.error("❌ Erro ao carregar pagamentos:", error.response ? error.response.data : error.message);
       } finally {
         setLoadingPayments(false);
       }
@@ -105,7 +107,7 @@ export default function Contrato() {
       fetchContract();
       fetchPayments();
     } else {
-      console.error("❌ ID do imóvel não encontrado.");
+      // console.error("❌ ID do imóvel não encontrado.");
     }
   }, [id]);
 

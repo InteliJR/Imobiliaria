@@ -4,7 +4,6 @@ import Card from "../components/Usuarios/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../../components/Botoes/Voltar";
-import { showErrorToast } from "../../utils/toastMessage";
 import { useState, useEffect } from "react";
 import Loading from "../../components/Loading";
 import axiosInstance from "../../services/axiosConfig";
@@ -12,7 +11,7 @@ import { IUser } from "../../components/Filter/UserInterfaces";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
 import { GenericFilterModal } from "../../components/Filter/Filter";  
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 export default function Users() {
   const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
@@ -92,7 +91,8 @@ export default function Users() {
       );
 
       if (!responseAuth.data || !responseProperty.data) {
-        console.error("Dados de resposta inválidos");
+        // console.error("Dados de resposta inválidos");
+        toast.error("Dados de resposta inválidos");
         return;
       }
 
@@ -100,8 +100,8 @@ export default function Users() {
       const usersWithRelevantRoles = responseAuth.data?.$values || [];
       const properties = responseProperty.data || [];
 
-      console.log('Users raw data:', JSON.stringify(responseAuth.data, null, 2));
-      console.log('First user example:', JSON.stringify(usersWithRelevantRoles[0], null, 2));
+      // console.log('Users raw data:', JSON.stringify(responseAuth.data, null, 2));
+      // console.log('First user example:', JSON.stringify(usersWithRelevantRoles[0], null, 2));
 
       // Remove the unnecessary setUsers call
       const combinedData = usersWithRelevantRoles.map((user: any) => {
@@ -113,7 +113,7 @@ export default function Users() {
           return isLocador || isLocatario;
         });
 
-        console.log(`Usuário: ${user.nome}, Imóveis encontrados:`, imoveis);
+        // console.log(`Usuário: ${user.nome}, Imóveis encontrados:`, imoveis);
 
         return {
           ...user,
@@ -125,15 +125,18 @@ export default function Users() {
       setData(combinedData);
       setFilteredData(combinedData); // Inicialmente exibir todos os usuários
       setAdvancedFiltered(combinedData); // Inicialmente exibir todos os usuários
-      console.log("Dados combinados:", combinedData);
+      // console.log("Dados combinados:", combinedData);
     } catch (error: any) {
-      showErrorToast(
+      // showErrorToast(
+      //   error?.response?.data?.message || "Erro ao se conectar com o servidor."
+      // );
+      toast.error(
         error?.response?.data?.message || "Erro ao se conectar com o servidor."
       );
-      console.error(
-        "Erro ao obter informações de usuários ou imóveis:",
-        error.message
-      );
+      // console.error(
+      //   "Erro ao obter informações de usuários ou imóveis:",
+      //   error.message
+      // );
     } finally {
       setLoading(false);
     }
