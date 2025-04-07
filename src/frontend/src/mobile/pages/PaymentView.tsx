@@ -44,10 +44,8 @@ interface Property {
 
 export default function PagamentosImovel() {
   const { id } = useParams<{ id: string }>(); // Captura o imovelid da URL
-  // const { id } = useParams<{ id: string }>();
   const [isEditable, setIsEditable] = useState(false); // Controla se o formulário é editável
   const [payments, setPayments] = useState<Payment[]>([]); // Lista de pagamentos
-  // const [paymentId, setPaymentId] = useState<number>(0); // ID do pagamento
   const [loadingSkeleton, setLoadingSkeleton] = useState(true); // Loading inicial
   const [property, setProperty] = useState<Property | null>(null);
   const [imovelId, setImovelId] = useState<number>(0);
@@ -98,17 +96,16 @@ export default function PagamentosImovel() {
 
   const fetchPropertyDetails = async () => {
     try {
-      const imovelIdParsed = parseInt(id ?? "0", 10);
       let response;
 
       if (userRole == "Admin" || userRole == "Judiciario"){
         response = await axiosInstance.get(
-          `property/Imoveis/PegarImovelPorId/${imovelIdParsed}`
+          `property/Imoveis/PegarImovelPorId/${imovelId}`
         );
       } 
       else{
         response = await axiosInstance.get(
-          `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelIdParsed}`
+          `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
         );
       }
 
@@ -136,10 +133,11 @@ export default function PagamentosImovel() {
   }, [id]);
   
   useEffect(() => {
-    if (id) {
+    if (imovelId !== 0) {
       fetchPropertyDetails();
     }
-  }, [id]);
+  }, [imovelId]);
+  
 
   const handleSave = async (payment: Payment) => {
     setLoadingSpinner(true);
