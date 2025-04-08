@@ -229,7 +229,7 @@ const Root = () => {
           }
         />
         <Route
-          path="/pagamento-for-admin/:paymentid"
+          path="/pagamento-for-admin/:id"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
               <PaymentView />

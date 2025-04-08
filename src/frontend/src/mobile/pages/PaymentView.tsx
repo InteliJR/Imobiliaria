@@ -83,7 +83,7 @@ export default function PagamentosImovel() {
       // Define os pagamentos retornados pela API
       setPayments(normalizedPayments);
       setImovelId(normalizedPayments[0].imovelId);
-      // console.log("Pagamentos recebidos:", normalizedPayments);
+      console.log("Pagamentos recebidos:", normalizedPayments);
     } catch (error) {
       console.error(error);
       showErrorToast("Não foi possível carregar os pagamentos.");
