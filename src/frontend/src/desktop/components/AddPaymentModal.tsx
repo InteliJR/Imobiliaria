@@ -125,7 +125,7 @@ const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               onChange={(e) => setMulta(e.target.checked)}
               className="mr-2"
             />
-            <label className="font-medium">Multa?</label>
+            <label className="font-medium">Existe Multa?</label>
           </div>
 
           <div>
