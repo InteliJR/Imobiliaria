@@ -50,6 +50,10 @@ namespace Layer.Application.Controllers
         public async Task<ActionResult<IEnumerable<Rent>>> GetAllRentsByIdImovel(int imovelid)
         {
             var rents = await _rentService.GetAllRentsWithPaymentsByIdImovel(imovelid);
+            if (!rents.Any())
+            {
+                return NotFound("Nenhum aluguel encontrado para este imovelId");
+            }
             return Ok(rents);
         }
 
