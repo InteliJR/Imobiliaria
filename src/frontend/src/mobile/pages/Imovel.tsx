@@ -141,7 +141,7 @@ export default function PropertyDetails() {
         <div className="flex gap-4 mt-6">
           <button
             className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
-            onClick={() => navigate(`/chamados/${property.imovelId}`)}
+            onClick={() => navigate(`/chamados/imovel/${property.imovelId}`)}
           >
             Ver Chamados
           </button>

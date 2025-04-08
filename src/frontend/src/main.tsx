@@ -42,6 +42,7 @@ import HomeLocador from "./mobile/pages/HomeLocador";
 import HomeLocatario from "./mobile/pages/HomeLocatario";
 import ImovelById from "./mobile/pages/Imovel";
 import PagamentosImovel from "./mobile/pages/PagamentosImovel";
+import ChamadosImovel from "./mobile/pages/ChamadosImovel";
 import ContratosMobile from "./mobile/pages/Contratos";
 import ContractView from "./mobile/pages/ContractView";
 import ContractViewLoc from "./mobile/pages/ContractView-loc";
@@ -49,7 +50,7 @@ import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
 import ImovelByIdAdm from "./mobile/pages/Imovel-adm";
-import DetalhesChamadoMobile from "./mobile/pages/DetalhesChamado";
+import DetalhesChamadoMobile from "./mobile/pages/DetalhesChamadoMobile";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -112,7 +113,15 @@ const Root = () => {
           }
         />
         <Route
-          path="/chamado/:id"
+          path="/chamados/imovel/:imovelId"
+          element={
+            <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
+              <ChamadosImovel />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chamados/:id"
           element={
             <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
               {isDesktop ? <DetalhesChamado /> : <DetalhesChamadoMobile />}

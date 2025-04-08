@@ -11,7 +11,7 @@ import { IFilterField } from "../../components/Filter/InputsInterfaces";
 import axios from "axios";
 import getTokenData from "../../services/tokenConfig";
 
-interface Ticket {
+interface Chamado {
   chamadoId: number;
   title: string;
   solicitor: string;
@@ -25,10 +25,10 @@ interface Ticket {
 
 const ChamadosComponent = () => {
   const navigate = useNavigate();
-  const [filteredData, setFilteredData] = useState<Ticket[]>([]);
+  const [filteredData, setFilteredData] = useState<Chamado[]>([]);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<Ticket[]>([]);
-  const [advancedFiltered, setAdvancedFiltered] = useState<Ticket[]>([]);
+  const [data, setData] = useState<Chamado[]>([]);
+  const [advancedFiltered, setAdvancedFiltered] = useState<Chamado[]>([]);
 
   // Busca textual
   const [search, setSearch] = useState("");
@@ -41,7 +41,7 @@ const ChamadosComponent = () => {
   const userRole = tokenData.RoleName;
   const userId = tokenData.RoleID;
 
-  const TicketFilterFields: IFilterField<Ticket>[] = [
+  const TicketFilterFields: IFilterField<Chamado>[] = [
     {
       name: "title",
       label: "Título",
@@ -233,7 +233,7 @@ const ChamadosComponent = () => {
   };
 
   // Callback do modal que ao clicar em "Buscar" já recebemos a array filtrada
-  const handleFilteredResult = (resultado: Ticket[]) => {
+  const handleFilteredResult = (resultado: Chamado[]) => {
     // Esse "resultado" já está filtrado pelos campos avançados
     setAdvancedFiltered(resultado);
   };
