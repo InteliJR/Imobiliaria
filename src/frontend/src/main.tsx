@@ -49,6 +49,7 @@ import PaymentView from "./mobile/pages/PaymentView";
 import ProtectedRoute from "./components/Router/ProtectedRouter";
 import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
 import ImovelByIdAdm from "./mobile/pages/Imovel-adm";
+import AlugueisImovel from "./mobile/pages/AlugueisImovel"
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -268,6 +269,16 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
+        {/* Página de Lista Aluguéis */}
+        <Route
+          path="alugueis"
+          element={
+            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
+              <AlugueisImovel />
+            </ProtectedRoute>
+          }
+        />
+        {/* Tela de visualizar alugueis por imovel */}
         <Route
           path="/visualizar/alugueis/:id"
           element={
