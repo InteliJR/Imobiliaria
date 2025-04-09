@@ -46,7 +46,7 @@ namespace Layer.Application.Controllers
         }
 
         [HttpGet("alugueisPorImovel/{imovelid}")]
-        [Authorize(Policy = nameof(Roles.Admin))]
+        [Authorize(Policy = "AllRoles")]
         public async Task<ActionResult<IEnumerable<Rent>>> GetAllRentsByIdImovel(int imovelid)
         {
             var rents = await _rentService.GetAllRentsWithPaymentsByIdImovel(imovelid);
