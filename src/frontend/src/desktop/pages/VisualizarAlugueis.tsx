@@ -50,10 +50,21 @@ export default function VisualizarAlugueis() {
   // Busca de dados na API
   const fetchRents = async () => {
     try {
+      const userRole = localStorage.getItem("userRole");
+      let contractIdResponse = null;
       const response = await axiosInstance.get(`payment/Rent/alugueisPorImovel/${id}`);
-      const contractIdResponse = await axiosInstance.get(`payment/Rent/pegarContratoIdPorImovelId/${id}`);
+
+      if(userRole === "Locatario" || userRole === "Locador") {
+        contractIdResponse = await axiosInstance.get(`property/Contratos/PegarContratoPorImovelIdComVerificacao/${id}`);
+      } else {
+        contractIdResponse = await axiosInstance.get(`payment/Rent/pegarContratoIdPorImovelId/${id}`);
+      }
 
       // console.log(contractIdResponse.data);
+      if(!contractIdResponse.data) {
+        console.error("Dados de resposta inválidos");
+        return; 
+      }
       setContractId(contractIdResponse.data);
       if (!response.data) {
         console.error("Dados de resposta inválidos");
