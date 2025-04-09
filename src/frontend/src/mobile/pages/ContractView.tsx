@@ -178,7 +178,9 @@ function ContractView() {
         try {
           const responseDocumentos = await axiosInstance.post(
             "property/Contratos/AssinarPdfs",
-            allDocuments
+            allDocuments.map((doc: string) => 
+              doc.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
+            )
           );
 
           if (!responseDocumentos.data) {
@@ -298,7 +300,7 @@ function ContractView() {
   const handleSave = async (event: React.FormEvent) => {
     event.preventDefault();
   
-    if (!contract) {
+    if (!contract || !id) {
       showErrorToast("Contrato não encontrado.");
       return;
     }
@@ -354,15 +356,19 @@ function ContractView() {
     }
   
     try {
-      await axiosInstance.put(`property/Contratos/AtualizarContrato/${id}`, updatedFields);
+      // Inclui o contratoId no objeto de atualização
+      const updateData = {
+        ...updatedFields,
+        contratoId: parseInt(id)
+      };
 
-      // console.log("Campos alterados:", updatedFields);
+      await axiosInstance.put(`property/Contratos/AtualizarContrato/${id}`, updateData);
   
-      // showSuccessToast("Contrato atualizado com sucesso!");
-      setOriginalContract({ ...contract, ...updatedFields }); // Atualiza o estado original com os novos dados
+      // Atualiza o estado original com os novos dados
+      setOriginalContract({ ...contract, ...updatedFields });
+      toast.success("Contrato atualizado com sucesso!");
     } catch (error) {
-      // showErrorToast("Erro ao atualizar o contrato.");
-      // console.error("Erro ao salvar contrato:", error);
+      console.error("Erro ao salvar contrato:", error);
       toast.error("Erro ao atualizar o contrato.");
     } finally {
       setLoadingSpinner(false);
