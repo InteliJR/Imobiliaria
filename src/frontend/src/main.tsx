@@ -282,7 +282,7 @@ const Root = () => {
         <Route
           path="/visualizar/alugueis/:id"
           element={
-            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
+            <ProtectedRoute requiredRole={["Admin", "Judiciario", "Locatario", "Locador"]}>
               <VisualizarAlugueis />
             </ProtectedRoute>
           }
