@@ -10,9 +10,45 @@ import { showErrorToast, showSuccessToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useAtom } from "jotai";
 import { userRoleAtom } from "../../store/atoms";
-import { Contract, Property, Lessor, Renter, Payment } from '../../types';
+import { Property, Lessor, Renter } from '../../types';
 import { toast } from "react-toastify";
-const ContractView: React.FC = () => {
+
+export interface Contract {
+  dataReajuste?: any;
+  contratoId?: string;
+  documentos?: string[];
+  valorAluguel?: number;
+  dataInicio?: string;
+  dataEncerramento?: string;
+  locadorId?: string;
+  locatarioId?: string;
+  imovelId?: string;
+  tipoGarantia?: string;
+  condicoesEspeciais?: string;
+  status?: any;
+  iptu?: number;
+  dataPagamento?: string;
+  taxaAdm?: number;
+  DataRescisao?: string;
+  renovado?: boolean;
+  DataEncerramentoRenovacao?: string;
+  valorReajuste?: number;
+}
+
+export interface Payment {
+  paymentId: string;
+  contratoId: string;
+  valor: number;
+  data: string;
+  pagante: string;
+  MetodoPagamento: string;
+  descricao: string;
+  TipoPagamento: string;
+  multa: boolean; // Alterado para boolean
+  valor_multa: number;
+}
+
+function ContractView() {
   const navigate = useNavigate();
   const { id } = useParams(); // Obtém o ID do contrato pela URLe
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
@@ -97,30 +133,54 @@ const ContractView: React.FC = () => {
     }
   };
 
-  const fetchContract = async () => {
+  const fetchContract = async (): Promise<Contract | null> => {
     try {
       const response = await axiosInstance.get(`property/Contratos/PegarContratoPorId/${id}`);
       // console.log("Contrato:", response.data);
 
-      const contractData = response.data;
+      let contractData = response.data;
+      // console.log("Contrato:", contractData);
 
       // Se 'documentos' for uma string, transformá-la em um array
-      let allDocuments = [];
+      let allDocuments: string[] = [];
       if (typeof contractData.documentos === "string" && contractData.documentos.length > 0) {
-        allDocuments = contractData.documentos.split(",").map((documento: string) =>
+        allDocuments = contractData.documentos.split(";").map((documento: string) =>
           decodeURIComponent(
             documento.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
           )
         );
       }
 
-      // console.log("Este é o valor de allDocuments: ", allDocuments)
+      allDocuments = allDocuments.map((documento) => {
+        // Se conter o link da imobiliaria-kk, remove
+        if (documento.startsWith("https://storage.googleapis.com/imobiliaria-kk.appspot.com/")) {
+          return documento.replace(
+            "https://storage.googleapis.com/imobiliaria-kk.appspot.com/",
+            ""
+          );
+        } 
+        // Se conter o link da administradora-kk, remove
+        else if (documento.startsWith("https://storage.googleapis.com/administradora-kk.appspot.com/")) {
+          return documento.replace(
+            "https://storage.googleapis.com/administradora-kk.appspot.com/",
+            ""
+          );
+        }
+      
+        return documento;
+      });
+
+      // console.log("Documentos:", allDocuments);
+      
+
 
       if (allDocuments.length > 0) {
         try {
           const responseDocumentos = await axiosInstance.post(
             "property/Contratos/AssinarPdfs",
-            allDocuments
+            allDocuments.map((doc: string) => 
+              doc.replace("https://storage.googleapis.com/administradora-kk.appspot.com/", "")
+            )
           );
 
           if (!responseDocumentos.data) {
@@ -133,7 +193,7 @@ const ContractView: React.FC = () => {
         } catch (error) {
           console.error("Erro ao assinar documentos:", error);
           showErrorToast("Erro ao assinar documentos.");
-          return;
+          return contractData;
         }
       }
 
@@ -146,16 +206,18 @@ const ContractView: React.FC = () => {
       setSelectedRenterId(contractData.locatarioId);
 
       setLoading(false);
+      return contractData;
     } catch (error) {
       console.error("Erro ao carregar contrato:", error);
       showErrorToast("Erro ao carregar contrato.");
     }
+    return null;
   };
 
-  const fetchPayments = async () => {
+  const fetchPayments = async (imovelId: number) => {
     try {
       // Simulação de chamada de API
-      const response = await axiosInstance.get(`payment/payment/ByImovel/${contract?.imovelId}`);
+      const response = await axiosInstance.get(`payment/payment/ByImovel/${imovelId}`);
 //payment/payment/criar-pagamentos
       // console.log("Pagamentos:", response.data);
       setPayments(response.data);
@@ -174,10 +236,17 @@ const ContractView: React.FC = () => {
   
       try {
         // Primeiro, faça a requisição para os contratos e aguarde a resposta
-        await fetchContract();
+        const contractData = await fetchContract();
+        if (!contractData) {
+         return;
+        }
   
         // Após a requisição de contrato, faça a requisição de pagamentos
-        await fetchPayments();
+        if (contractData.imovelId) {
+          await fetchPayments(Number(contractData.imovelId));
+        } else {
+          console.error("imovelId is undefined or invalid.");
+        }
         
         // Se necessário, adicione outras requisições aqui
         await fetchSelectOptions();
@@ -231,7 +300,7 @@ const ContractView: React.FC = () => {
   const handleSave = async (event: React.FormEvent) => {
     event.preventDefault();
   
-    if (!contract) {
+    if (!contract || !id) {
       showErrorToast("Contrato não encontrado.");
       return;
     }
@@ -287,15 +356,19 @@ const ContractView: React.FC = () => {
     }
   
     try {
-      await axiosInstance.put(`property/Contratos/AtualizarContrato/${id}`, updatedFields);
+      // Inclui o contratoId no objeto de atualização
+      const updateData = {
+        ...updatedFields,
+        contratoId: parseInt(id)
+      };
 
-      // console.log("Campos alterados:", updatedFields);
+      await axiosInstance.put(`property/Contratos/AtualizarContrato/${id}`, updateData);
   
-      // showSuccessToast("Contrato atualizado com sucesso!");
-      setOriginalContract({ ...contract, ...updatedFields }); // Atualiza o estado original com os novos dados
+      // Atualiza o estado original com os novos dados
+      setOriginalContract({ ...contract, ...updatedFields });
+      toast.success("Contrato atualizado com sucesso!");
     } catch (error) {
-      // showErrorToast("Erro ao atualizar o contrato.");
-      // console.error("Erro ao salvar contrato:", error);
+      console.error("Erro ao salvar contrato:", error);
       toast.error("Erro ao atualizar o contrato.");
     } finally {
       setLoadingSpinner(false);
@@ -340,7 +413,8 @@ const ContractView: React.FC = () => {
       if (response.status === 200) {
         showSuccessToast("Pagamento adicionado com sucesso!");
         setNewPayment({ data: getTodayDate() }); // Reseta o estado do novo pagamento
-        fetchPayments(); // Atualiza a lista de pagamentos
+        console.log(response.data);
+        // fetchPayments(); // Atualiza a lista de pagamentos
       }
     } catch (error) {
       console.error("Erro ao adicionar pagamento:", error);
@@ -404,9 +478,9 @@ const ContractView: React.FC = () => {
                       .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime()) // Ordena as datas do mais recente para o mais antigo
                       .map((payment) => (
                         <li
-                          key={payment.pagamentoId}
+                          key={payment.paymentId}
                           className="mt-1 cursor-pointer hover:underline duration-300 ease-in-out"
-                          onClick={() => handleRedirect(`/pagamento/${payment.pagamentoId}`)}
+                          onClick={() => handleRedirect(`/pagamento/${payment.paymentId}`)}
                         >
                           <p className="inline">
                             <strong>Valor: R$</strong> {payment.valor}, <strong>Data:</strong>{" "}

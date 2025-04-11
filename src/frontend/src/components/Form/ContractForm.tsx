@@ -5,6 +5,8 @@ import Botao from "../Botoes/Botao";
 // import { Contract } from "../../mobile/pages/ContractView";
 import { FaTrash } from "react-icons/fa";
 import { ContractFormProps } from '../../types';
+import { toast } from "react-toastify";
+import axiosInstance from "../../services/axiosConfig";
 
 export const ContractForm: React.FC<ContractFormProps> = ({
   contract,
@@ -32,11 +34,28 @@ export const ContractForm: React.FC<ContractFormProps> = ({
     // console.log('Renters data:', renters);
   }, [lessors, renters]);
 
-  const handleRemoveDocument = (index: number) => {
+  const handleRemoveDocument = async (index: number) => {
     if (!contract) return;
     const updatedDocuments = [...(contract.documentos ?? [])];
-    updatedDocuments.splice(index, 1); // Remove o documento do array
-    onValueChange("documentos", updatedDocuments); // Atualiza o estado do contrato
+    const documentToRemove = updatedDocuments[index];
+    
+    try {
+      // Chama o endpoint para deletar o documento
+      await axiosInstance.delete(`property/Contratos/DeletarDocumento/${contract.contratoId}`, {
+        params: {
+          documentUrl: documentToRemove
+        }
+      });
+      
+      // Remove o documento do array local
+      updatedDocuments.splice(index, 1);
+      onValueChange("documentos", updatedDocuments);
+      
+      toast.success("Documento removido com sucesso!");
+    } catch (error) {
+      console.error("Erro ao remover documento:", error);
+      toast.error("Erro ao remover documento. Por favor, tente novamente.");
+    }
   };
 
   if (!contract) {
@@ -44,7 +63,14 @@ export const ContractForm: React.FC<ContractFormProps> = ({
   }
 
   const documentos = contract?.documentos
-    ? (typeof contract.documentos === "string" ? [contract.documentos] : contract.documentos)
+    ? (typeof contract.documentos === "string" 
+        ? [contract.documentos] 
+        : contract.documentos.map(doc => 
+            doc.startsWith('https://') 
+              ? doc 
+              : `https://storage.googleapis.com/administradora-kk.appspot.com/${doc}`
+          )
+      )
     : [];
 
   const formatDate = (dateString:any) => {
@@ -358,7 +384,73 @@ export const ContractForm: React.FC<ContractFormProps> = ({
 </div>
 
 
-        {isEditable && <p className="cursor-pointer">Enviar documento</p>}
+{isEditable && (
+  <div className="mt-2">
+    <input
+      type="file"
+      id="document-upload"
+      className="hidden"
+      onChange={async (e) => {
+        if (!e.target.files || !contract?.contratoId) return;
+        
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        try {
+          const response = await axiosInstance.post(
+            `property/Contratos/UploadDocumento/${contract.contratoId}`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }
+          );
+          
+          // Atualiza a lista de documentos
+          const newDocUrl = response.data.documentUrl;
+          
+          // Trata o documentos atual corretamente seja string ou array
+          let currentDocs: string | number | any[] = [];
+          if (contract.documentos) {
+            if (typeof contract.documentos === 'string') {
+              currentDocs = (contract.documentos as string).split(/[;,]/).filter(Boolean);
+            } else if (Array.isArray(contract.documentos)) {
+              currentDocs = [...contract.documentos];
+            }
+          }
+          
+          // Adiciona o novo documento
+          currentDocs.push(newDocUrl);
+          
+          // Atualiza o contrato com os novos documentos
+          onValueChange("documentos", currentDocs);
+          
+          toast.success("Documento enviado com sucesso!");
+          // Limpa o input
+          e.target.value = '';
+        } catch (error) {
+          console.error("Erro ao enviar documento:", error);
+          toast.error("Erro ao enviar documento. Tente novamente.");
+        }
+      }}
+    />
+    <button
+      type="button"
+      onClick={() => document.getElementById('document-upload')?.click()}
+      className="flex items-center gap-2 p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition duration-200"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+      </svg>
+      Enviar documento
+    </button>
+  </div>
+)}
 
         {/* Botão Salvar Alterações */}
         {isEditable && <Botao label="Salvar Alterações" onClick={handleSave} />}

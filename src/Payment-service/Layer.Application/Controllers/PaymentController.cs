@@ -40,7 +40,7 @@ namespace Layer.Application.Controllers
         // GET: api/payment/pagamentos/{id}
         [HttpGet("pagamentos/{id}")]
         [Authorize(Policy = "AllRoles")]
-        public async Task<ActionResult<Payment>> GetPaymentById(int id)
+        public async Task<ActionResult<GetPaymentDTO>> GetPaymentById(int id)
         {
             var payment = await _paymentService.GetPaymentByIdAsync(id);
             if (payment == null)
@@ -54,15 +54,31 @@ namespace Layer.Application.Controllers
 
         // GET: api/Payments/ByImovel/5
         [HttpGet("ByImovel/{imovelid}")]
-        public async Task<IActionResult> GetPaymentsByImovel(int imovelid)
+        [Authorize(Policy = "AllRoles")]
+        public async Task<ActionResult<List<GetPaymentDTO>>> GetPaymentsByImovel(int imovelid)
         {
-            var payment = await _paymentService.GetAllPaymentsByIdImovel(imovelid);
-            if (payment == null)
+            var payments = (await _paymentService.GetAllPaymentsByIdImovel(imovelid)).ToList();
+
+            if (payments.Any())
             {
-                return NotFound();
+                await _applicationLog.LogAsync(
+                    $"Payments retrieved for Imovel ID {imovelid}.",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada"
+                );
+                return Ok(payments);
             }
-            return Ok(payment);
+            else
+            {
+                await _applicationLog.LogAsync(
+                    $"No payments found for Imovel ID {imovelid}.",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada"
+                );
+                return Ok(new List<GetPaymentDTO>()); // ← Retorna 200 com lista vazia
+            }
         }
+
 
         // POST: api/payment/criar-pagamentos
         [HttpPost("criar-pagamentos")]
@@ -109,17 +125,20 @@ namespace Layer.Application.Controllers
                 return NotFound();
             }
 
-            existingPayment.ContratoId = paymentDto.ContratoId;
-            existingPayment.Valor = paymentDto.Valor;
-            existingPayment.Data = paymentDto.Data;
-            existingPayment.Pagante = paymentDto.Pagante;
-            existingPayment.MetodoPagamento = paymentDto.MetodoPagamento;
-            existingPayment.Descricao = paymentDto.Descricao;
-            existingPayment.TipoPagamento = paymentDto.TipoPagamento;
-            existingPayment.Multa = paymentDto.Multa;
-            existingPayment.ValorMulta = paymentDto.ValorMulta;
+            var newPayment = new Payment
+            {
+                ContratoId = paymentDto.ContratoId,
+                Valor = paymentDto.Valor,
+                Data = paymentDto.Data,
+                Pagante = paymentDto.Pagante,
+                MetodoPagamento = paymentDto.MetodoPagamento,
+                Descricao = paymentDto.Descricao,
+                TipoPagamento = paymentDto.TipoPagamento,
+                Multa = paymentDto.Multa,
+                ValorMulta = paymentDto.ValorMulta
+            };
 
-            await _paymentService.UpdatePaymentAsync(existingPayment);
+            await _paymentService.UpdatePaymentAsync(newPayment);
             _applicationLog.LogAsync($"Payment with ID {id} updated.", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado", HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada");
             return NoContent();
         }
