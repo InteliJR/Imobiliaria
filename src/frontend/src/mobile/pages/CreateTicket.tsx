@@ -78,9 +78,27 @@ export default function CreateTicket() {
 
   const allHousesNames = async () => {
     try {
-      const imoveisResponse = await axiosInstance.get(
-        "property/Imoveis/PegarTodosImoveis"
-      );
+      const tokenData = getTokenData();
+      const userRole = localStorage.getItem('userRole');
+      
+      let imoveisResponse;
+      
+      // Use different endpoints based on user role
+      if (userRole === "Admin" || userRole === "Judiciario") {
+        imoveisResponse = await axiosInstance.get(
+          "property/Imoveis/PegarTodosImoveis"
+        );
+      } else if (userRole === "Locatario") {
+        // Endpoint para locatario - buscar apenas imóveis associados ao usuário
+        imoveisResponse = await axiosInstance.get(
+          `property/Imoveis/PegarImoveisPorLocatario/${tokenData.UserID}`
+        );
+      } else {
+        // Para outros perfis, como locador
+        imoveisResponse = await axiosInstance.get(
+          `property/Imoveis/PegarImoveisPorLocador/${tokenData.UserID}`
+        );
+      }
 
       const imoveis = imoveisResponse.data;
 
