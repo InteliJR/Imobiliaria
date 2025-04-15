@@ -26,12 +26,7 @@ namespace Layer.Infrastructure.Database
             base.OnModelCreating(modelBuilder);
 
             // Mapeamento para Pagamentos
-            modelBuilder.Entity<Payment>()
-            .ToTable("pagamentos")
-            .HasOne(p => p.Contrato)
-            .WithMany()      
-            .HasForeignKey(p => p.ContratoId);
-
+            modelBuilder.Entity<Payment>().ToTable("pagamentos").HasOne<Contratos>().WithMany().HasForeignKey(p => p.ContratoId);
         }
     }
 }

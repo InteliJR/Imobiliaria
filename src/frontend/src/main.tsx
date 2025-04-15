@@ -220,7 +220,7 @@ const Root = () => {
         />
         {/* Contratos e pagamentos */}
         <Route
-          path="/pagamento/:id"
+          path="/pagamento/:imovelid"
           element={
             <ProtectedRoute
               requiredRole={["Admin", "Locatario", "Locador", "Judiciario"]}
@@ -230,7 +230,7 @@ const Root = () => {
           }
         />
         <Route
-          path="/pagamento-for-admin/:id"
+          path="/pagamento-for-admin/:paymentid"
           element={
             <ProtectedRoute requiredRole={["Admin"]}>
               <PaymentView />

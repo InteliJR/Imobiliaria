@@ -14,9 +14,7 @@ using Google.Apis.Auth.OAuth2;
 using MongoDB.Driver;
 using Layer.Domain.Entities;
 using Layer.Infrastructure.ExternalAPIs;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Carregar variáveis de ambiente do arquivo .
@@ -191,21 +189,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.Configure<IISServerOptions>(options =>
-{
-    options.MaxRequestBodySize = 50 * 1024 * 1024; // 50MB
-});
-
-builder.Services.Configure<KestrelServerOptions>(options =>
-{
-    options.Limits.MaxRequestBodySize = 50 * 1024 * 1024; // 50MB
-});
-
-builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 50 * 1024 * 1024; // 50MB
-});
 
 // Configura o Swagger com o JWT
 builder.Services.AddSwaggerGen(c =>
