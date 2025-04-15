@@ -291,5 +291,56 @@ namespace property_management.Controllers
             }
         }
 
+        [HttpDelete("DeletarDocumento/{contractId}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
+        public async Task<IActionResult> DeleteDocument(int contractId, [FromQuery] string documentUrl)
+        {
+            if (string.IsNullOrEmpty(documentUrl))
+            {
+                return BadRequest("URL do documento é obrigatória.");
+            }
+
+            var result = await _contratoService.DeleteDocumentFromContractAsync(contractId, documentUrl);
+            
+            if (!result)
+            {
+                return NotFound("Contrato não encontrado.");
+            }
+
+            return Ok("Documento removido com sucesso.");
+        }
+
+        [HttpPost("UploadDocumento/{contractId}")]
+        [Authorize(Policy = nameof(Roles.Admin))]
+        public async Task<IActionResult> UploadDocument(int contractId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nenhum arquivo foi enviado.");
+            }
+
+            try
+            {
+                var documentUrl = await _contratoService.AddDocumentToContractAsync(contractId, file);
+                
+                if (documentUrl == null)
+                {
+                    return NotFound("Contrato não encontrado ou erro ao fazer upload do documento.");
+                }
+
+                await _applicationLog.LogAsync(
+                    $"Upload de documento para contrato com id: {contractId}",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? "Email não encontrado",
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? "Role não encontrada"
+                );
+
+                return Ok(new { documentUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao fazer upload do documento: {ex.Message}");
+            }
+        }
+
     }
 }
