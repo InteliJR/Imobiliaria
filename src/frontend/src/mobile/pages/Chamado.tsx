@@ -6,6 +6,7 @@ import Loading from "../../components/Loading";
 import { showErrorToast } from "../../utils/toastMessage";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosConfig";
+import { toast } from "react-toastify";
 
 export default function Chamado() {
   const [loading, setLoading] = useState(true); // estado para controlar o componente de carregamento
@@ -49,13 +50,13 @@ export default function Chamado() {
         `auth/Locatario/PegarLocatarioPorLocatarioID?LocatarioID=${propertiesResponse.data.locatarioId}`
       );
 
-      console.log("Locatario:", LocatarioResponse.data);
+      // console.log("Locatario:", LocatarioResponse.data);
 
       const LocadorResponse = await axiosInstance.get(
         `auth/Locador/PegarLocadorPorLocadorID?locadorID=${propertiesResponse.data.locadorId}`
       );
 
-      console.log("Locador:", LocadorResponse.data);
+      // console.log("Locador:", LocadorResponse.data);
 
       if (
         !chamadosResponse.data ||
@@ -67,9 +68,9 @@ export default function Chamado() {
         return;
       }
 
-      console.log("Chamado:", chamadosResponse.data);
-      console.log("Usuário:", SolicitorResponse.data);
-      console.log("Imóvel:", propertiesResponse.data);
+      // console.log("Chamado:", chamadosResponse.data);
+      // console.log("Usuário:", SolicitorResponse.data);
+      // console.log("Imóvel:", propertiesResponse.data);
 
       const newTicket = {
         ChamadoId: chamadosResponse.data.idChamado,
@@ -132,19 +133,19 @@ export default function Chamado() {
       );
 
       if (!response.data) {
-        console.error("Dados de resposta inválidos");
-        showErrorToast("Erro ao se conectar com o servidor.");
+        // console.error("Dados de resposta inválidos");
+        toast.error("Erro ao se conectar com o servidor.");
         return;
       }
 
-      console.log("Chamado fechado com sucesso!");
+      // console.log("Chamado fechado com sucesso!");
 
       // Redirecionar para a página de chamados
       window.location.href = "/chamados";
     } catch (error) {
       console.error(error);
 
-      showErrorToast("Erro ao se conectar com o servidor.");
+      toast.error("Erro ao se conectar com o servidor.");
     }
   };
 

@@ -98,7 +98,7 @@ const Menu: React.FC<MenuProps> = ({ userType, toggleMenu, isOpen }) => {
   }
 
   const renderMenuItems = () => {
-    console.log("Este é o valor de userType: ", userType);
+    // console.log("Este é o valor de userType: ", userType);
     switch (userType) {
       case "Admin":
         return (

@@ -6,12 +6,11 @@ import Card from "../components/Imoveis/Card";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Loading from "../../components/Loading";
-import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import getTokenData from "../../services/tokenConfig";
 import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
-
+import { toast } from "react-toastify";
 export default function LocatarioPage() {
   const navigate = useNavigate();
 
@@ -72,7 +71,7 @@ export default function LocatarioPage() {
   useEffect(() => {
     const fetchPropertiesForLocatario = async () => {
       if (!roleID) {
-        console.error("Role ID is not available.");
+        // console.error("Role ID is not available.");
         return;
       }
 
@@ -81,10 +80,10 @@ export default function LocatarioPage() {
           `property/Imoveis/PegarImovelPorIdDoLocatario/${roleID}`
         );
 
-        console.log(response.data);
+        // console.log(response.data);
 
         if (!response.data) {
-          console.error("Invalid response data");
+          // console.error("Invalid response data");
           return;
         }
 
@@ -109,7 +108,7 @@ export default function LocatarioPage() {
         // Assinar as URLs das imagens
         const responsePhotos = await axiosInstance.post('property/Imoveis/AssinarFotos', allPhotos);
         if (!responsePhotos.data) {
-          console.error("Dados de resposta inválidos do endpoint de assinatura");
+          // console.error("Dados de resposta inválidos do endpoint de assinatura");
           return;
         }
 
@@ -132,8 +131,11 @@ export default function LocatarioPage() {
         setAdvancedFiltered(imoveisData);
         setData(imoveisData);
       } catch (error: any) {
-        console.error(error);
-        showErrorToast(
+        // console.error(error);
+        // showErrorToast(
+        //   error?.response?.data?.message || "Erro ao se conectar com o servidor."
+        // );
+        toast.error(
           error?.response?.data?.message || "Erro ao se conectar com o servidor."
         );
       } finally {

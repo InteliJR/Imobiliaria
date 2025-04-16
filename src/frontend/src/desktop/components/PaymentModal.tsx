@@ -46,7 +46,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       const response = await axiosInstance.get(
         `payment/Rent/assinarComprovantes?contractUrl=${fileName}`
       );
-      console.log("Resposta da assinatura:", response);
+      // console.log("Resposta da assinatura:", response);
 
       // Define a nova URL do PDF
       setUpdatedBoletoDoc(response.data);

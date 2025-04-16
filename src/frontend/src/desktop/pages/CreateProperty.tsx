@@ -34,10 +34,10 @@ export default function CreateProperty() {
       const lessorsData = lessorResponse.data?.$values || [];
       const rentersData = renterResponse.data?.$values || [];
 
-      console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
-      console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
-      console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
-      console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
+      // console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
+      // console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
+      // console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
+      // console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
 
       setLocadores(lessorsData);
       setLocatarios(rentersData);
@@ -57,7 +57,7 @@ export default function CreateProperty() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files) {
         const filesArray = Array.from(e.target.files); // Converter para array
-        console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
+        // console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
         setPhotos(filesArray); // Atualize o estado
       }
     };
@@ -106,10 +106,10 @@ export default function CreateProperty() {
       photos.forEach((photo) => formData.append("files", photo));
   
       // Log detalhado
-      console.log("Verificar FormData:");
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
+      // console.log("Verificar FormData:");
+      // formData.forEach((value, key) => {
+      //   console.log(key, value);
+      // });
   
       const response = await axiosInstance.post("property/Imoveis/CriarImovelComFoto", formData, {
         headers: {

@@ -4,10 +4,10 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Loading from "../../components/Loading";
 import Voltar from "../../components/Botoes/Voltar";
-import { showSuccessToast, showErrorToast } from "../../utils/toastMessage";
+import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import CurrencyInput from "react-currency-input-field"; // máscara de valores monetários
-
+import { toast } from "react-toastify";
 export default function CreateContractMobile() {
   const [rentalValue, setRentalValue] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -63,10 +63,10 @@ export default function CreateContractMobile() {
       const rentersData = renterResponse.data?.$values || [];
       const propertiesData = propertyResponse.data || [];
 
-      console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
-      console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
-      console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
-      console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
+      // console.log('Lessors raw data:', JSON.stringify(lessorResponse.data, null, 2));
+      // console.log('First lessor example:', JSON.stringify(lessorsData[0], null, 2));
+      // console.log('Renters raw data:', JSON.stringify(renterResponse.data, null, 2));
+      // console.log('First renter example:', JSON.stringify(rentersData[0], null, 2));
 
       setLocadores(lessorsData);
       setLocatarios(rentersData);
@@ -76,7 +76,8 @@ export default function CreateContractMobile() {
       setLocadores([]);
       setLocatarios([]);
       setImoveis([]);
-      showErrorToast("Erro ao carregar dados. Tente novamente.");
+      // showErrorToast("Erro ao carregar dados. Tente novamente.");
+      toast.error("Erro ao carregar dados. Tente novamente.");
     }
   };
 
@@ -86,9 +87,18 @@ export default function CreateContractMobile() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const filesArray = Array.from(e.target.files); // Converter para array
-      console.log("Arquivos selecionados:", filesArray); // Log para verificar os arquivos
-      setDocuments(filesArray); // Atualize o estado
+      const filesArray = Array.from(e.target.files);
+      
+      // Verifica o tamanho total dos arquivos (limite de 10MB por arquivo)
+      const maxSize = 10 * 1024 * 1024; // 10MB em bytes
+      const invalidFiles = filesArray.filter(file => file.size > maxSize);
+      
+      if (invalidFiles.length > 0) {
+        toast.error(`Os seguintes arquivos excedem o limite de 10MB: ${invalidFiles.map(f => f.name).join(', ')}`);
+        return;
+      }
+      
+      setDocuments(filesArray);
     }
   };
 
@@ -100,23 +110,21 @@ export default function CreateContractMobile() {
     if (!selectedImovelId) missingFields.push("Imóvel");
     if (!paymentDate) missingFields.push("Data de pagamento");
     if (!startDate) missingFields.push("Data de inicio");
-    if (!rentalValue) missingFields.push("Taxa de administração");
+    if (!rentalValue) missingFields.push("Valor do aluguel");
     if (!guaranteeType) missingFields.push("Tipo de garantia");
     if (!endDate) missingFields.push("Data de encerramento");
 
     if (missingFields.length > 0) {
       const message = `Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(", ")}.`;
-      showErrorToast(message);
-      return false; // Indica que a validação falhou
+      toast.error(message);
+      return false;
     }
 
-    return true; // Indica que a validação foi bem-sucedida
+    return true;
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    
     setIsLoading(true);
     
     try {
@@ -126,54 +134,35 @@ export default function CreateContractMobile() {
 
       const formData = new FormData();
 
+      // Primeiro, adiciona todos os campos do contrato
       formData.append("LocadorId", selectedLocadorId);
       formData.append("LocatarioId", selectedLocatarioId);
       formData.append("ImovelId", selectedImovelId);
       formData.append("ValorAluguel", cleanCurrencyValue(rentalValue));
       formData.append("Iptu", cleanCurrencyValue(iptu));
       formData.append("TaxaAdm", cleanCurrencyValue(adminFee));
-      formData.append("DataInicio", new Date(startDate).toISOString()); // Envia como UTC
+      formData.append("DataInicio", new Date(startDate).toISOString());
       formData.append("DataEncerramento", new Date(endDate).toISOString());
       formData.append("TipoGarantia", guaranteeType);
       formData.append("CondicoesEspeciais", specialConditions);
       formData.append("Status", status);
       formData.append("DataPagamento", new Date(paymentDate).toISOString());
-      // formData.append("DataRescisao", terminationDate || "");
       formData.append("DataRescisao", terminationDate ? new Date(terminationDate).toISOString() : "");
       formData.append("Renovado", renewed ? "true" : "false");
       formData.append("DataEncerramentoRenovacao", renewalEndDate ? new Date(renewalEndDate).toISOString() : "");
       formData.append("ValorReajuste", cleanCurrencyValue(adjustmentValue));
 
-      // formData.append("files", documents || "");
-
       documents?.forEach((document) => formData.append("files", document));
-      // console.log({
-      //   rentalValue,
-      //   startDate,
-      //   endDate,
-      //   guaranteeType,
-      //   specialConditions,
-      //   status,
-      //   iptu,
-      //   paymentDate,
-      //   adminFee,
-      //   terminationDate,
-      //   renewed,
-      //   renewalEndDate,
-      //   adjustmentValue,
-      //   selectedLocadorId,
-      //   selectedLocatarioId,
-      //   selectedImovelId,
-      //   documents,
-      //   locadorEmail,
-      //   locatarioEmail,
-      // });
-      
 
+      // Só inclui os emails se eles não estiverem vazios
+      const emailParams = [];
+      if (locatarioEmail) emailParams.push(`emailLocatario=${encodeURIComponent(locatarioEmail)}`);
+      if (locadorEmail) emailParams.push(`emailLocador=${encodeURIComponent(locadorEmail)}`);
+      
+      const queryString = emailParams.length > 0 ? `?${emailParams.join('&')}` : '';
+      
       const response = await axiosInstance.post(
-        `property/Contratos/CriarContratoComMultiplosArquivos?emailLocatario=${encodeURIComponent(
-          locatarioEmail
-        )}&emailLocador=${encodeURIComponent(locadorEmail)}`,
+        `property/Contratos/CriarContratoComMultiplosArquivos${queryString}`,
         formData,
         {
           headers: {
@@ -182,9 +171,7 @@ export default function CreateContractMobile() {
         }
       );
 
-      showSuccessToast(
-        response?.data?.message || "Contrato criado com sucesso!"
-      );
+      toast.success(response?.data?.message || "Contrato criado com sucesso!");
 
       // Limpa formulário
       setRentalValue("");

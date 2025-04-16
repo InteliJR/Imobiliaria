@@ -32,7 +32,7 @@ export default function MainPage() {
     onClick: () => void;  
   }
 
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState<Property[]>([]);
   const [locadorId, setLocadorId] = useState<number | null>(null);
@@ -180,7 +180,7 @@ export default function MainPage() {
         // console.log("Este é o valor de imoveisData: ", imoveisData); 
   
         setProperties(imoveisData);
-        console.log("Este é o valor de property: ", properties);
+        // console.log("Este é o valor de property: ", properties);
         setFilteredData(imoveisData);
         setAdvancedFiltered(imoveisData);
         setData(imoveisData);
@@ -199,14 +199,14 @@ export default function MainPage() {
   
   useEffect(() => {
     const tokenData = getTokenData();
-    console.log(tokenData);
+    // console.log(tokenData);
   
     if (tokenData) {
       const userId = tokenData.UserID; // Case-sensitive check
       if (!userId) {
-        console.error("User ID is not available in the token.");
+        // console.error("User ID is not available in the token.");
       } else {
-        console.log(userId);
+        // console.log(userId);
       }
     }
   }, []);

@@ -6,12 +6,12 @@ import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Voltar from "../../components/Botoes/Voltar";
 import Loading from "../../components/Loading";
-import { showErrorToast } from "../../utils/toastMessage";
 import axiosInstance from "../../services/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { GenericFilterModal } from "../../components/Filter/Filter";
 import { IFilterField } from "../../components/Filter/InputsInterfaces";
 import { IProperty } from "../../components/Filter/PropertyInterfaces.ts";
+import { toast } from "react-toastify";
 
 export default function Properties() {
   const navigate = useNavigate();
@@ -74,15 +74,16 @@ export default function Properties() {
         );
   
       if (!propertiesResponse.data || !usersResponse.data) {
-        console.error("Dados de resposta inválidos");
+        // console.error("Dados de resposta inválidos");
+        toast.error("Dados de resposta inválidos");
         return;
       }
 
       const properties = Array.isArray(propertiesResponse.data) ? propertiesResponse.data : [];
       const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
 
-      console.log("Properties:", properties);
-      console.log("Users:", users);
+      // console.log("Properties:", properties);
+      // console.log("Users:", users);
 
       const mergedProperties = properties.map(
         (property: {
@@ -145,7 +146,8 @@ export default function Properties() {
       // Assinar as URLs das imagens
       const responsePhotos = await axiosInstance.post('property/Imoveis/AssinarFotos', allPhotos);
       if (!responsePhotos.data) {
-        console.error("Dados de resposta inválidos do endpoint de assinatura");
+        // console.error("Dados de resposta inválidos do endpoint de assinatura");
+        toast.error("Dados de resposta inválidos do endpoint de assinatura");
         return;
       }
       
@@ -173,10 +175,11 @@ export default function Properties() {
       setLoading(false); // Caso a requisição dos dados tenha sido bem sucedida
       setFilteredData(mergedProperties);
       setData(mergedProperties)
-      console.log(mergedProperties);
+      // console.log(mergedProperties);
     } catch (error: any) {
-      console.error(error);
-      showErrorToast("Erro ao se conectar com o servidor.");
+      // console.error(error);
+      // showErrorToast("Erro ao se conectar com o servidor.");
+      toast.error("Erro ao se conectar com o servidor.");
     }
   };
 

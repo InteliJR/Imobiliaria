@@ -1,10 +1,6 @@
 import axios from 'axios';
 const baseUrl = import.meta.env.VITE_BASE_URL
 
-if (baseUrl == null) {
-    console.log("Ta faltando o .env")
-}
-
 const axiosInstance = axios.create({
     baseURL: baseUrl, // https://gateway-2ev7.onrender.com/
     withCredentials: true, // Necessário para enviar cookies/credenciais
