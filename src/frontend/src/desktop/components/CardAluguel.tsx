@@ -75,7 +75,10 @@ const RentCard: React.FC<RentCardProps> = ({
           )}
         </div>
 
-        {/* Contrato e Status */}
+        {/* AluguelId, ContratoId e Status */}
+        <p className="text-sm text-neutral-700 mb-1">
+          <strong>Aluguel ID:</strong> {id}
+        </p>
         <p className="text-sm text-neutral-700 mb-1">
           <strong>Contrato ID:</strong> {contractId}
         </p>

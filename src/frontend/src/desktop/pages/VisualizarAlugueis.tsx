@@ -8,6 +8,7 @@ import Footer from "../../components/Footer/FooterSmall";
 import FormFieldFilter from "../components/Form/FormFieldFilter";
 import FilterIcon from "/Filter.svg";
 import Loading from "../../components/Loading";
+import Voltar from "../../components/Botoes/Voltar";
 import { showErrorToast } from "../../utils/toastMessage";
 
 // Tipagem do objeto Rent retornado da API
@@ -36,7 +37,7 @@ payment: {
 
 export default function VisualizarAlugueis() {
   // const navigate = useNavigate();
-  const { id } = useParams(); // Obtém o ID do contrato pela URL
+  const { id } = useParams(); // Obtém o ID do imóvel pela URL
 
   // Estados
   const [data, setData] = useState<Rent[]>([]);
@@ -49,10 +50,21 @@ export default function VisualizarAlugueis() {
   // Busca de dados na API
   const fetchRents = async () => {
     try {
+      const userRole = localStorage.getItem("userRole");
+      let contractIdResponse = null;
       const response = await axiosInstance.get(`payment/Rent/alugueisPorImovel/${id}`);
-      const contractIdResponse = await axiosInstance.get(`payment/Rent/pegarContratoIdPorImovelId/${id}`);
+
+      if(userRole === "Locatario" || userRole === "Locador") {
+        contractIdResponse = await axiosInstance.get(`property/Contratos/PegarContratoPorImovelIdComVerificacao/${id}`);
+      } else {
+        contractIdResponse = await axiosInstance.get(`payment/Rent/pegarContratoIdPorImovelId/${id}`);
+      }
 
       // console.log(contractIdResponse.data);
+      if(!contractIdResponse.data) {
+        console.error("Dados de resposta inválidos");
+        return; 
+      }
       setContractId(contractIdResponse.data);
       if (!response.data) {
         console.error("Dados de resposta inválidos");
@@ -143,6 +155,7 @@ export default function VisualizarAlugueis() {
 
       <div className="flex flex-col bg-[#F0F0F0] gap-y-5 p-6 min-h-screen">
         {/* Header */}
+        <Voltar />
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-neutral-800">
             Aluguéis do imóvel

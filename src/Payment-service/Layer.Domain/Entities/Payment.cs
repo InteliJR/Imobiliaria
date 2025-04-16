@@ -51,7 +51,7 @@ namespace Layer.Domain.Entities
         public decimal? ValorMulta { get; set; }
 
         // Relacionamento com a entidade Contrato
-        [ForeignKey("ContratoId")]
-        public Contratos Contrato { get; set; }
+        // [ForeignKey("ContratoId")]
+        // public Contrato Contrato { get; set; }
     }
 }

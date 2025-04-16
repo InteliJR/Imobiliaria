@@ -17,7 +17,7 @@ namespace Layer.Domain.Entities
         public int ContratoId { get; set; }
 
         [Column("documentos", TypeName = "varchar")] // Nome da coluna e tipo no banco de dados
-        public string Documentos { get; set; }
+        public string? Documentos { get; set; }
 
         [Column("valor_aluguel")] // Nome da coluna no banco de dados
         public decimal ValorAluguel { get; set; }
@@ -44,7 +44,7 @@ namespace Layer.Domain.Entities
         public string TipoGarantia { get; set; }
 
         [Column("condicoes_especiais", TypeName = "text")] // Nome da coluna no banco de dados
-        public string CondicoesEspeciais { get; set; }
+        public string? CondicoesEspeciais { get; set; }
 
         [Column("status", TypeName = "varchar")] // Nome da coluna e tipo no banco de dados
         public string Status { get; set; }

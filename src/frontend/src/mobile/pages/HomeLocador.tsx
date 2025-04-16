@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Card from "../components/Imoveis/Card";
@@ -15,7 +15,7 @@ import { IFilterField } from "../../components/Filter/InputsInterfaces";
 
 export default function MainPage() {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   interface Property {
     imovelId: number;
     tipoImovel: string;
@@ -299,9 +299,7 @@ export default function MainPage() {
                     imageSrc={property.fotos && property.fotos.length > 0 ? property.fotos[0] : "../../../ImovelSemFoto.png"}
                     price={`R$ ${property.valorImovel.toFixed(2)}`}
                     condominio={`R$ ${property.condominio?.toString() ?? "R$ 0"}`}
-    
-                    onClick={() => navigate(`/imovel/${property.imovelId}`)}
-                  />
+                    />
                 ))}
               </div>
             )}

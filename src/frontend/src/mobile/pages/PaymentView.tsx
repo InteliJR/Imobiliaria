@@ -22,45 +22,24 @@ interface Payment {
   tipoPagamento: string;
   multa: boolean;
   valorMulta: number;
-  iptu?: number;
-  taxaCondominio?: number;
-  valorAluguel?: number;
-  taxaAdministrativa?: number;
-}
-
-interface Property {
-  imovelId: number;
-  tipoImovel: string;
-  cep: string;
-  condominio: number;
-  valorImovel: number;
-  bairro: string;
-  endereco: string;
-  descricao: string;
-  complemento: string;
-  taxa: number;
-  fotos: string | string[];
 }
 
 export default function PagamentosImovel() {
-  const { id } = useParams<{ id: string }>(); // Captura o imovelid da URL
+  const { imovelid } = useParams<{ imovelid: string }>(); // Captura o imovelid da URL
+  const { paymentid } = useParams<{ paymentid: string }>();
   const [isEditable, setIsEditable] = useState(false); // Controla se o formulário é editável
   const [payments, setPayments] = useState<Payment[]>([]); // Lista de pagamentos
   const [loadingSkeleton, setLoadingSkeleton] = useState(true); // Loading inicial
-  const [property, setProperty] = useState<Property | null>(null);
-  const [imovelId, setImovelId] = useState<number>(0);
-  const [isOpen, setIsOpen] = useState(false); // Controla a abertura do modal
   const [loadingSpinner, setLoadingSpinner] = useState(false); // Loading durante salvamento
   const [role] = useAtom(userRoleAtom);
 
   const fetchPayments = async () => {
     setLoadingSkeleton(true);
     try {
-      const imovelIdParsed = id ? parseInt(id, 10) : 0;
       const requestUrl =
         role === "Admin"
-          ? `payment/payment/pagamentos/${imovelIdParsed}`
-          : `payment/payment/ByImovel/${imovelIdParsed}`;
+          ? `payment/payment/pagamentos/${paymentid}`
+          : `payment/payment/ByImovel/${imovelid}`;
 
       const response = await axiosInstance.get(requestUrl);
 
@@ -74,15 +53,8 @@ export default function PagamentosImovel() {
         ? response.data
         : [response.data];
 
-
-      if(normalizedPayments.length === 0){
-        showErrorToast("Nenhum pagamento encontrado.");
-        return;
-      }
-
       // Define os pagamentos retornados pela API
       setPayments(normalizedPayments);
-      setImovelId(normalizedPayments[0].imovelId);
       console.log("Pagamentos recebidos:", normalizedPayments);
     } catch (error) {
       console.error(error);
@@ -92,52 +64,10 @@ export default function PagamentosImovel() {
     }
   };
 
-  const userRole = localStorage.getItem('userRole');
-
-  const fetchPropertyDetails = async () => {
-    try {
-      let response;
-
-      if (userRole == "Admin" || userRole == "Judiciario"){
-        response = await axiosInstance.get(
-          `property/Imoveis/PegarImovelPorId/${imovelId}`
-        );
-      } 
-      else{
-        response = await axiosInstance.get(
-          `property/Imoveis/PegarImovelPorIdComVerificacao/${imovelId}`
-        );
-      }
-
-      if (!response.data) {
-        console.error("Dados de resposta inválidos");
-        return;
-      }
-
-      console.log(response.data);
-
-      setProperty(response.data);
-    }
-    catch (error: any) {
-      console.error(error);
-      showErrorToast("Não foi possível carregar os detalhes do imóvel.");
-    }
-  };
-
-
   useEffect(() => {
-    if (id) {
-      fetchPayments();
-      setIsEditable(role === "Admin");
-    }
-  }, [id]);
-  
-  useEffect(() => {
-    if (imovelId !== 0) {
-      fetchPropertyDetails();
-    }
-  }, [imovelId]);
-  
+    fetchPayments();
+    setIsEditable(role === "Admin"); // Somente admin pode editar
+  }, [imovelid]);
 
   const handleSave = async (payment: Payment) => {
     setLoadingSpinner(true);
@@ -171,7 +101,7 @@ export default function PagamentosImovel() {
           <div className="flex flex-col justify-center items-center">
             <div className="flex flex-col gap-4 w-[42rem] m-auto">
               <h1 className="w-full font-bold text-lg">
-                Pagamentos do Imóvel {imovelId}
+                Pagamentos do Imóvel {imovelid}
               </h1>
 
               {payments.length > 0 ? (
@@ -354,82 +284,6 @@ export default function PagamentosImovel() {
                         disabled={!isEditable}
                       />
                     </div>
-
-                  <div className="mt-4 border rounded-md overflow-hidden">
-                    <button
-                      type="button"
-                      onClick={() => setIsOpen(!isOpen)}
-                      className="w-full flex justify-between items-center p-4 bg-neutral-200 hover:bg-neutral-300 transition-colors duration-200"
-                    >
-                      <span className="font-semibold text-left">Ver detalhes do pagamento</span>
-                      <svg
-                        className={`w-5 h-5 transition-transform duration-300 ${
-                          isOpen ? "rotate-180" : "rotate-0"
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-
-                    {isOpen && (
-                      <div className="flex flex-col gap-2 bg-neutral-100 p-4">
-                        <p>
-                          <strong>Valor do Imóvel:</strong>{" "}
-                          {property?.valorImovel?.toLocaleString("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }) ?? "R$ 0,00"}
-                        </p>
-
-                        <p><strong>Multa:</strong> {payment.multa ? "Sim" : "Não"}</p>
-
-                        <p>
-                          <strong>Valor da Multa:</strong>{" "}
-                          {payment.valorMulta?.toLocaleString("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }) ?? "R$ 0,00"}
-                        </p>
-
-                        <p>
-                          <strong>IPTU:</strong>{" "}
-                          {payment.iptu?.toLocaleString("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }) ?? "R$ 0,00"}
-                        </p>
-
-                        <p>
-                          <strong>Taxa de Condomínio:</strong>{" "}
-                          {property?.condominio?.toLocaleString("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }) ?? "R$ 0,00"}
-                        </p>
-
-                        <p>
-                          <strong>Valor do Aluguel:</strong>{" "}
-                          {payment.valorAluguel?.toLocaleString("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }) ?? "R$ 0,00"}
-                        </p>
-
-                        <p>
-                          <strong>Taxa Administrativa:</strong>{" "}
-                          {payment.taxaAdministrativa?.toLocaleString("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }) ?? "R$ 0,00"}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
 
                     {/* Botão Salvar Alterações */}
                     {isEditable && (

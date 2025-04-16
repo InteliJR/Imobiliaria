@@ -1,6 +1,5 @@
 ﻿using Layer.Domain.Entities;
 using Layer.Domain.Interfaces;
-using Layer.Domain.DTO;
 using Layer.Infrastructure;
 using Layer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -28,76 +27,37 @@ namespace Layer.Services.Services
             return await _context.Pagamentos.ToListAsync();
         }
 
-        public async Task<IEnumerable<GetPaymentDTO>> GetAllPaymentsByIdImovel(int imovelid)
+        public async Task<IEnumerable<Payment>> GetAllPaymentsByIdImovel(int imovelid)
         {
             var contratos = new Contratos();
             var contratoId = contratos.ContratoId;
 
             var payments = await _context.Pagamentos
                 .Join(_context.Contratos,
-                    payment => payment.ContratoId,
-                    contrato => contrato.ContratoId,
-                    (payment, contrato) => new { Payment = payment, Contrato = contrato })
+                        payment => payment.ContratoId,
+                        contrato => contrato.ContratoId,
+                        (payment, contrato) => new { Payment = payment, Contrato = contrato })
                 .Where(pc => pc.Contrato.ImovelId == imovelid)
+                .Select(pc => pc.Payment)
                 .ToListAsync();
 
             if (!payments.Any())
-                return new List<GetPaymentDTO>();
-
-            var paymentsDTO = payments.Select(pc => new GetPaymentDTO
             {
-                PaymentId = pc.Payment.PaymentId,
-                ContratoId = pc.Payment.ContratoId,
-                Valor = pc.Payment.Valor,
-                Data = pc.Payment.Data,
-                Pagante = pc.Payment.Pagante,
-                MetodoPagamento = pc.Payment.MetodoPagamento,
-                Descricao = pc.Payment.Descricao,
-                TipoPagamento = pc.Payment.TipoPagamento,
-                Multa = pc.Payment.Multa,
-                ValorMulta = pc.Payment.ValorMulta,
-                ValorAluguel = pc.Contrato.ValorAluguel,
-                Iptu = pc.Contrato.Iptu,
-                TaxaAdministratia = pc.Contrato.TaxaAdm,
-                ImovelId = pc.Contrato.ImovelId
-            });
+                throw new KeyNotFoundException("No payments found for this locatarioId");
+            }
 
-            return paymentsDTO;
+            return payments;
         }
 
-        public async Task<GetPaymentDTO> GetPaymentByIdAsync(int id)
+        public async Task<Payment> GetPaymentByIdAsync(int id)
         {
-            var payment = await _context.Pagamentos
-                .Include(p => p.Contrato)
-                .FirstOrDefaultAsync(p => p.PaymentId == id);
-
+            var payment = await _context.Pagamentos.FindAsync(id);
             if (payment == null)
             {
                 throw new Exception("Payment not found.");
             }
-
-            var paymentDto = new GetPaymentDTO
-            {
-                PaymentId = payment.PaymentId,
-                ContratoId = payment.ContratoId,
-                Valor = payment.Valor,
-                Data = payment.Data,
-                Pagante = payment.Pagante,
-                MetodoPagamento = payment.MetodoPagamento,
-                Descricao = payment.Descricao,
-                TipoPagamento = payment.TipoPagamento,
-                Multa = payment.Multa,
-                ValorMulta = payment.ValorMulta,
-                ValorAluguel = payment.Contrato.ValorAluguel,
-                Iptu = payment.Contrato.Iptu,
-                TaxaAdministratia = payment.Contrato.TaxaAdm,
-                ImovelId = payment.Contrato.ImovelId
-            };
-
-            return paymentDto;
+            return payment;
         }
-
-
         public async Task<Payment> AddPaymentAsync(Payment payment)
         {   
             try{
