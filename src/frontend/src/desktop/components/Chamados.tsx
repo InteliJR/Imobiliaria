@@ -152,19 +152,17 @@ const ChamadosComponent = () => {
         mergedData = mergedData.filter((chamado) => chamado.solicitorId === userId);
       } else if (userRole === "Locador") {
         // Locador vê apenas chamados relacionados aos seus imóveis
-        // Primeiro, encontramos os imóveis do locador
         const locadorImoveis = properties.filter(
           (property: { locadorId: number }) => property.locadorId === userId
         );
         const locadorImoveisIds = locadorImoveis.map(
           (property: { imovelId: number }) => property.imovelId
         );
-        // Depois filtramos os chamados para mostrar apenas os relacionados aos imóveis do locador
         mergedData = mergedData.filter(
           (chamado) => locadorImoveisIds.includes(chamado.propertyId)
         );
       }
-      // Admin e Judiciário veem todos os chamados (nenhum filtro necessário)
+      // Admin e Judiciário veem todos os chamados 
 
       // Atualiza os estados com os dados mesclados
       setFilteredData(mergedData);

@@ -26,7 +26,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({
 
   // Function to handle navigation
   const handleClick = () => {
-    navigate(`/chamado/${id}`);
+    navigate(`/chamados/${id}`);
   };
 
   return (

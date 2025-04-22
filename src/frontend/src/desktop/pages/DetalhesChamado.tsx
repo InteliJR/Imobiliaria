@@ -42,15 +42,13 @@ export default function DetalhesChamado() {
   const fetchChamadoDetails = async () => {
     setLoading(true);
     try {
-      // Faz as requisições simultaneamente
       const [chamadosResponse, usersResponse, propertiesResponse, updatesResponse] = await Promise.all([
-        axiosInstance.get(`property/Chamados/PegarChamadoPorId/${id}`),
+        axiosInstance.get(`property/Chamados/PegarChamadosPorId/${id}`),
         axiosInstance.get("auth/User/PegarTodosUsuarios"),
         axiosInstance.get("property/Imoveis/PegarTodosImoveis"),
         axiosInstance.get(`property/Chamados/GetUpdates/${id}`)
       ]);
 
-      // Verifica se os dados de resposta são válidos
       if (!chamadosResponse.data) {
         showErrorToast("Chamado não encontrado.");
         navigate("/chamados");
