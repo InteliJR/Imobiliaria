@@ -18,6 +18,7 @@ import VisualizarChamados from "./desktop/pages/VisualizarChamados";
 import VisualizarUsuarios from "./desktop/pages/VisualizarUsuarios";
 import Contratos from "./desktop/pages/VisualizarContratos";
 import VisualizarAlugueis from "./desktop/pages/VisualizarAlugueis";
+import DetalhesChamado from "./desktop/pages/DetalhesChamado";
 
 // Import mobile components and pages
 import LandingMobile from "./mobile/pages/Landing";
@@ -29,7 +30,6 @@ import AlterarSenha from "./mobile/pages/AlterarSenha";
 import VisualizarImoveisMobile from "./mobile/pages/VisualizarImoveis";
 import CreateProperty from "./desktop/pages/CreateProperty";
 import VisualizarChamadosMobile from "./mobile/pages/VisualizarChamados";
-import Chamado from "./mobile/pages/Chamado";
 import VisualizarUsuariosMobile from "./mobile/pages/VisualizarUsuarios";
 import CreateUser from "./desktop/pages/CreateUser";
 import CreateTicket from "./desktop/pages/CreateTicket";
@@ -42,6 +42,7 @@ import HomeLocador from "./mobile/pages/HomeLocador";
 import HomeLocatario from "./mobile/pages/HomeLocatario";
 import ImovelById from "./mobile/pages/Imovel";
 import PagamentosImovel from "./mobile/pages/PagamentosImovel";
+import ChamadosImovel from "./mobile/pages/ChamadosImovel";
 import ContratosMobile from "./mobile/pages/Contratos";
 import ContractView from "./mobile/pages/ContractView";
 import ContractViewLoc from "./mobile/pages/ContractView-loc";
@@ -50,6 +51,7 @@ import ProtectedRoute from "./components/Router/ProtectedRouter";
 import UnauthorizedPage from "./desktop/pages/UnauthorizedPage";
 import ImovelByIdAdm from "./mobile/pages/Imovel-adm";
 import AlugueisImovel from "./mobile/pages/AlugueisImovel"
+import DetalhesChamadoMobile from "./mobile/pages/DetalhesChamadoMobile";
 
 const Root = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -94,7 +96,7 @@ const Root = () => {
         <Route
           path="/chamados"
           element={
-            <ProtectedRoute requiredRole={["Admin"]}>
+            <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
               {isDesktop ? (
                 <VisualizarChamados />
               ) : (
@@ -112,10 +114,18 @@ const Root = () => {
           }
         />
         <Route
-          path="/chamado/:id"
+          path="/chamados/imovel/:imovelId"
           element={
-            <ProtectedRoute requiredRole={["Admin", "Judiciario"]}>
-               <Chamado/>
+            <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
+              <ChamadosImovel />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chamados/:id"
+          element={
+            <ProtectedRoute requiredRole={["Admin", "Locador", "Locatario", "Judiciario"]}>
+              {isDesktop ? <DetalhesChamado /> : <DetalhesChamadoMobile />}
             </ProtectedRoute>
           }
         />
@@ -294,6 +304,8 @@ const Root = () => {
     </BrowserRouter>
   );
 };
+
+export default Root;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

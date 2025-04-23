@@ -81,8 +81,8 @@ export default function EditarPerfil() {
       const tokenInfo = getTokenData();
 
       if (!tokenInfo) {
-        // console.log("Token não encontrado");
-        return false;
+        toast.error("Token não encontrado. Por favor, faça login novamente.");
+        return;
       }
 
       // console.log(tokenInfo);

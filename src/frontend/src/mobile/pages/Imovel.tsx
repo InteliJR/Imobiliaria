@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterSmall";
 import Voltar from "../../components/Botoes/Voltar";
@@ -7,6 +7,8 @@ import Loading from "../../components/Loading";
 import axiosInstance from "../../services/axiosConfig";
 import ImovelImage from "../components/Imoveis/ImovelImage";
 import { toast } from "react-toastify";
+import axios from "axios";
+
 interface Property {
   imovelId: number;
   tipoImovel: string;
@@ -27,8 +29,10 @@ export default function PropertyDetails() {
   const [loading, setLoading] = useState(true);
 
   const userRole = localStorage.getItem('userRole');
-  const fetchPropertyDetails = async () => {
+  
+  const fetchPropertyDetails = useCallback(async () => {
     try {
+      console.log('URL imovelId param:', imovelId);
       
       let response;
 
@@ -43,18 +47,14 @@ export default function PropertyDetails() {
         );
       }
 
-
       if (!response.data) {
-        // console.error("Dados de resposta inválidos");
         toast.error("Dados de resposta inválidos");
         return;
       }
 
-      // console.log(response.data);
-
-      // separar string por vírgula
       const property: Property = response.data;
-      // console.log(property);
+      console.log('API Response property:', property);
+      
       if (typeof property.fotos === 'string') {
         property.fotos = property.fotos.split(";").map((foto) => foto.trim());
       }
@@ -81,23 +81,24 @@ export default function PropertyDetails() {
       // console.log(property.fotos);
       // console.log(property);
       setProperty(property);
-      // console.log(property)
-    } catch (error: any) {
-      // console.error(error);
-      // showErrorToast(
-      //   error?.response?.data?.message || "Erro ao se conectar com o servidor."
-      // );
-      toast.error(
-        error?.response?.data?.message || "Erro ao se conectar com o servidor."
-      );
+      console.log('Final property state:', property);
+    } catch (error: unknown) {
+      console.error('Error fetching property:', error);
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "Erro ao se conectar com o servidor."
+        );
+      } else {
+        toast.error("Erro ao se conectar com o servidor.");
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [imovelId, userRole]);
 
   useEffect(() => {
     fetchPropertyDetails();
-  }, [imovelId]);
+  }, [fetchPropertyDetails]);
 
   if (loading) {
     return (
@@ -139,18 +140,27 @@ export default function PropertyDetails() {
           <p><span className="text-[#76726A]">Condomínio:  </span>R${property.condominio.toFixed(2)}</p>
         </div>
         <div className="flex gap-4 mt-6">
+        {property.imovelId && (
           <button
             className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
-            onClick={() => navigate(`/chamados/${property.imovelId}`)}
+            onClick={() => {
+              try {             
+                navigate(`/chamados/imovel/${property.imovelId}`);
+              } catch (error) {
+                console.error('Error navigating to chamados:', error);
+                toast.error('Erro ao navegar para a página de chamados');
+              }
+            }}
           >
             Ver Chamados
           </button>
-          <button
+        )}
+          {/* <button
             className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
             onClick={() => navigate(`/visualizar/alugueis/${property.imovelId}`)}
           >
             Ver Pagamentos
-          </button>
+          </button> */}
           {userRole === "Admin" && (
             <button
             
@@ -158,7 +168,7 @@ export default function PropertyDetails() {
               onClick={() => navigate(`/imovel-adm/${property.imovelId}`)}
             > Editar as informações do Imóvel</button>
           )}
-          {userRole === "Locatario" && (
+          {/* {userRole === "Locatario" && (
             <button
             
               className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
@@ -171,7 +181,7 @@ export default function PropertyDetails() {
               className="px-4 py-2 bg-[#1F1E1C] text-white rounded"
               onClick={() => navigate(`/contratos-loc/${property.imovelId}`)}
             > Visualizar o contrato de locação </button>
-          )}
+          )} */}
         </div>
       </section>
       <Footer />
