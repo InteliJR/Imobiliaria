@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaClipboardList, FaUsers, FaFileContract } from "react-icons/fa";
-import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { FaFileInvoiceDollar, FaMoneyBillTrendUp } from "react-icons/fa6";
 
 export type UserRole = 'Admin' | 'Locatario' | 'Locador' | 'Judiciario';
 
@@ -16,7 +16,8 @@ export default function NavigationButtons({ userRole }: NavigationButtonsProps) 
     usuarios: ['Admin'],
     contratos: ['Admin', 'Judiciario'],
     pagamentos: ['Admin', 'Judiciario'],
-    chamados: ['Admin']
+    chamados: ['Admin'],
+    alugueis: ['Admin', 'Judiciario']
   };
 
   const buttons = [
@@ -49,7 +50,13 @@ export default function NavigationButtons({ userRole }: NavigationButtonsProps) 
       icon: <FaClipboardList className="z-10" />,
       label: "Chamados",
       roles: routePermissions.chamados
-    }
+    },
+    {
+      path: "/alugueis",
+      icon: <FaFileInvoiceDollar className="z-10"/>,
+      label: "Aluguéis",
+      roles: routePermissions.alugueis
+   }
   ];
 
   return (

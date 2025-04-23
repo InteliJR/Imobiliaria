@@ -52,58 +52,6 @@ namespace Layer.Services.Services
             return contrato;
         }
 
-        public async Task<string> AddDocumentToContractAsync(int contractId, IFormFile file)
-        {
-            var contrato = await GetByIdAsync(contractId);
-            if (contrato == null)
-            {
-                return null;
-            }
-
-            try
-            {
-                // Caminho para upload no Firebase Storage
-                string fileName = $"contratos/{contractId}/{Guid.NewGuid()}_{file.FileName}";
-                
-                // Upload para o Firebase usando o método adequado
-                string documentUrl;
-                
-                // Criar arquivo temporário para upload
-                var tempFilePath = Path.GetTempFileName();
-                using (var stream = new FileStream(tempFilePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                
-                // Upload do arquivo para o Firebase
-                documentUrl = await _storageService.UploadFileAsync(tempFilePath, fileName);
-                
-                // Atualizar a lista de documentos no contrato
-                List<string> documentos = new List<string>();
-                
-                if (!string.IsNullOrEmpty(contrato.Documentos))
-                {
-                    // Split por ',' ou ';' dependendo do formato usado em seu sistema
-                    documentos = contrato.Documentos.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                }
-                
-                documentos.Add(documentUrl);
-                
-                // Atualizar o campo Documentos com a string resultante
-                contrato.Documentos = string.Join(";", documentos);
-                
-                // Atualizar o contrato no banco de dados
-                await UpdateAsync(contractId, contrato);
-                
-                return documentUrl;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao fazer upload do documento: {ex.Message}");
-                return null;
-            }
-        }
-
         public async Task<List<string>> GenerateSignedUrlsOfPdfsAsync(List<string> objectNames)
         {
             return await _storageService.GenerateSignedUrlsAsync(objectNames, 5);
